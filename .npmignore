@@ -1,6 +1,5 @@
 node_modules
 .svn
-lib
 build
 .DS_STORE
 .DS_Store
