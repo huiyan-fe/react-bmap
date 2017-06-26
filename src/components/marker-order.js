@@ -1,4 +1,5 @@
 import Component from './component';
+import {DataSet, baiduMapLayer} from 'mapv';
 
 export default class App extends Component {
     constructor(args) {
@@ -45,7 +46,7 @@ export default class App extends Component {
         }
 
         if (!this.pointLayer) {
-            this.dataSet = new mapv.DataSet([]);
+            this.dataSet = new DataSet([]);
 
             var options = this.props.textOptions || {
                 fillStyle: '#6c6c6c',
@@ -61,7 +62,7 @@ export default class App extends Component {
                 draw: 'text'
             }
 
-            this.textLayer = new mapv.baiduMapLayer(map, this.dataSet, options);
+            this.textLayer = new baiduMapLayer(map, this.dataSet, options);
 
             var options = this.props.pointOptions || {
                 fillStyle: 'red',
@@ -83,7 +84,7 @@ export default class App extends Component {
                 }
             }
 
-            this.pointLayer = new mapv.baiduMapLayer(map, this.dataSet, options);
+            this.pointLayer = new baiduMapLayer(map, this.dataSet, options);
 
 
             var options = {
@@ -92,7 +93,7 @@ export default class App extends Component {
                 textKey: 'number',
                 draw: 'text'
             }
-            this.numberLayer = new mapv.baiduMapLayer(map, this.dataSet, options);
+            this.numberLayer = new baiduMapLayer(map, this.dataSet, options);
         }
 
         var data = this.props.data;

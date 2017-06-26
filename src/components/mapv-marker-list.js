@@ -1,4 +1,5 @@
 import Component from './component';
+import {DataSet, baiduMapLayer, baiduMapAnimationLayer} from 'mapv';
 
 export default class App extends Component {
     constructor(args) {
@@ -138,12 +139,12 @@ export default class App extends Component {
         this.project = map.getMapType().getProjection();
 
         let self = this;
-        let shadowSet = this.shadowSet = new mapv.DataSet([]);
-        let circleSet = this.circleSet =  new mapv.DataSet([]);
-        let textSet = this.textSet = new mapv.DataSet([]);
-        let numSet = this.numSet = new mapv.DataSet([]);
-        let otherSet = this.otherSet = new mapv.DataSet([]);
-        let otherShadowSet = this.otherShadowSet = new mapv.DataSet([]);
+        let shadowSet = this.shadowSet = new DataSet([]);
+        let circleSet = this.circleSet =  new DataSet([]);
+        let textSet = this.textSet = new DataSet([]);
+        let numSet = this.numSet = new DataSet([]);
+        let otherSet = this.otherSet = new DataSet([]);
+        let otherShadowSet = this.otherShadowSet = new DataSet([]);
         this.layers = [];
 
         let otherOptions = {
@@ -201,9 +202,9 @@ export default class App extends Component {
             minSize: 5,
             draw: 'category'
         };
-        this.layers.push(new mapv.baiduMapLayer(map, otherShadowSet, otherShadowOptions));
+        this.layers.push(new baiduMapLayer(map, otherShadowSet, otherShadowOptions));
         
-        this.layers.push(new mapv.baiduMapLayer(map, otherSet, otherOptions));
+        this.layers.push(new baiduMapLayer(map, otherSet, otherOptions));
 
         if (this.props.animation === true) {
             let shadowOptions = {
@@ -220,7 +221,7 @@ export default class App extends Component {
                 minSize: 10,
                 draw: 'category'
             };
-            this.layers.push(new mapv.baiduMapAnimationLayer(map, shadowSet, shadowOptions));
+            this.layers.push(new baiduMapAnimationLayer(map, shadowSet, shadowOptions));
         }
 
         let circleOptions = {
@@ -261,7 +262,7 @@ export default class App extends Component {
                 }
             },
         };
-        this.layers.push(new mapv.baiduMapLayer(map, circleSet, circleOptions));
+        this.layers.push(new baiduMapLayer(map, circleSet, circleOptions));
 
         let numOptions = {
             coordType: 'bd09mc',
@@ -271,7 +272,7 @@ export default class App extends Component {
             shadowColor: '#ffffff',
             shadowBlur: 10
         }
-        this.layers.push(new mapv.baiduMapLayer(map, numSet, numOptions));
+        this.layers.push(new baiduMapLayer(map, numSet, numOptions));
 
 
         let textOptions = {
@@ -289,7 +290,7 @@ export default class App extends Component {
                 y: 0
             }
         }
-        this.layers.push(new mapv.baiduMapLayer(map, textSet, textOptions));
+        this.layers.push(new baiduMapLayer(map, textSet, textOptions));
 
     }
 

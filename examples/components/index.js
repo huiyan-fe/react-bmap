@@ -3,6 +3,8 @@ import Marker from './marker';
 import TrafficLayer from './traffic-layer';
 import InfoWindow from './infowindow';
 import MarkerList from './marker-list';
+import MarkerOrder from './marker-order';
+import MapvMarkerList from './mapv-marker-list';
 import Road from './road';
 import Boundary from './boundary';
 import Control from './control';
@@ -20,8 +22,12 @@ const examples = (
     <InfoWindow />
     <h2>控件</h2>
     <Control />
-    <h2>图标</h2>
+    <h2>marker列表</h2>
+    <MapvMarkerList />
+    <h2>marker列表</h2>
     <MarkerList />
+    <h2>marker列表</h2>
+    <MarkerOrder />
     <h2>道路</h2>
     <Road />
     <h2>行政区划</h2>

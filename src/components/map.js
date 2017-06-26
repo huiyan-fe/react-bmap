@@ -134,15 +134,6 @@ export default class App extends Component {
             lastZoom = zoom;
         });
 
-        if (this.props.navigationControl) {
-            map.addControl(new BMap.NavigationControl({
-                type: BMAP_NAVIGATION_CONTROL_ZOOM,
-                offset: new BMap.Size(10, 20)
-            })); // 添加平移缩放控件
-            // var navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_LEFT, type: BMAP_NAVIGATION_CONTROL_SMALL}); //右上角，仅包含平移和缩放按钮
-            // map.addControl(navigation);
-        }
-
     }
 
     renderChildren() {
