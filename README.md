@@ -1,4 +1,4 @@
-# react-bmap
+# react-bmap [![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)
 基于百度地图api封装的React组件库
 
 ## 示例
