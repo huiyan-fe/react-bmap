@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Map, MarkerOrder} from '../../src'
+import {Map, MarkerOrder} from '../../../src'
 import {simpleMapStyle} from './mapstyle'
 
 var markerData = [

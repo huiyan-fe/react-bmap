@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Map, InfoWindow} from '../../src'
+import {Map, InfoWindow} from '../../../src'
 import {simpleMapStyle} from './mapstyle'
 
 export default class App extends Component {

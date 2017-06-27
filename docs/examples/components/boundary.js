@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Map, Boundary} from '../../src'
+import {Map, Boundary} from '../../../src'
 import {simpleMapStyle} from './mapstyle'
 
 export default class App extends Component {

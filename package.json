@@ -6,8 +6,8 @@
   "scripts": {
     "build": "rm -rf lib && babel src -d lib",
     "prepublish": "npm run build",
-    "examples:build": "webpack --config ./examples/webpack.config.js",
-    "examples": "webpack-dev-server --config ./examples/webpack.config.js"
+    "examples:build": "webpack --config ./docs/examples/webpack.config.js",
+    "examples": "webpack-dev-server --config ./docs/examples/webpack.config.js"
   },
   "repository": {
     "type": "git",

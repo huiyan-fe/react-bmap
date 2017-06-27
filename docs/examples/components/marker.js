@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Map, Marker} from '../../src'
+import {Map, Marker} from '../../../src'
 import {simpleMapStyle} from './mapstyle'
 
 export default class App extends Component {
