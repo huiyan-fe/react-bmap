@@ -32,3 +32,8 @@ export {default as TrafficLayer} from './components/traffic-layer';
  * 一些公用方法
  */
 export {default as Merge} from './utils/merge';
+
+/**
+ * mapv图层
+ */
+export {default as MapvLayer} from './components/mapv-layer';
