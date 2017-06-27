@@ -2,7 +2,7 @@
 基于百度地图api封装的React组件库
 
 ## 示例
-可查看示例文件夹下的示例使用[示例代码](https://github.com/huiyan-fe/react-bmap/tree/master/docs/examples)，示例效果可访问[预览地址](https://github.com/huiyan-fe/react-bmap/tree/master/docs/examples/)
+可查看示例文件夹下的示例使用[示例代码](https://github.com/huiyan-fe/react-bmap/tree/master/docs/examples)，示例效果可访问[预览地址](https://huiyan-fe.github.io/react-bmap/examples/)
 
 ## 安装使用
 
