@@ -3,6 +3,12 @@
   "version": "1.0.6",
   "description": "react-bmap",
   "main": "lib/index.js",
+  "contributors": [
+    {
+      "name": "kyle",
+      "email": "hinikai@gmail.com"
+    }
+  ],
   "scripts": {
     "build": "rm -rf lib && babel src -d lib",
     "prepublish": "npm run build",
@@ -13,8 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/huiyan-fe/react-bmap.git"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/huiyan-fe/react-bmap/issues"
   },
