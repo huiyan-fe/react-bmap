@@ -12,10 +12,10 @@
     npm install
 ### 示例中开发
     npm run examples
-### 编译
-    npm run build
-### 发布
-    npm publish
+
+## 组件文档
+
+* [Map](./src/components/map.md)
 
 ## 许可证
 [MIT](./LICENSE)
