@@ -10,12 +10,19 @@
 
 ### 初始化环境
     npm install
+    
 ### 示例中开发
     npm run examples
-
+    
+## Hello World
+    <Map center={{lng: 116.402544, lat: 39.928216}}>
+        <Marker position={{lng: 116.402544, lat: 39.928216}}  />
+    </Map>
+    
 ## 组件文档
 
-* [Map](./src/components/map.md)
+- [Map](./src/components/map.md)
+- [Marker](./src/components/marker.md)
 
 ## 许可证
 [MIT](./LICENSE)
