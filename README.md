@@ -15,14 +15,20 @@
     npm run examples
     
 ## Hello World
+    import {Map,Marker,NavigationControl,InfoWindow} from 'react-bmap'
+
     <Map center={{lng: 116.402544, lat: 39.928216}}>
-        <Marker position={{lng: 116.402544, lat: 39.928216}}  />
+        <Marker position={{lng: 116.402544, lat: 39.928216}} />
+        <NavigationControl /> 
+        <InfoWindow position={{lng: 116.402544, lat: 39.928216}} text="内容" title="标题"/>
     </Map>
     
 ## 组件文档
 
 - [Map](./src/components/map.md)
 - [Marker](./src/components/marker.md)
+- [Control](./src/components/control.md)
+- [InfoWindow](./src/components/infowindow.md)
 
 ## 许可证
 [MIT](./LICENSE)
