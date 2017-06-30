@@ -31,25 +31,36 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
     
 ## 基础地图组件文档
 - [Map](./src/components/map.md)
+
     <Map center={{lng: 116.402544, lat: 39.928216}} zoom="12" />
+
 - [Marker](./src/components/marker.md)
+
     <Marker position={{lng: 116.402544, lat: 39.928216}}/>
+
 - [Control](./src/components/control.md)
+
     <NavigationControl />
     <MapTypeControl />
     <ScaleControl />
     <OverviewMapControl />
+
 - [InfoWindow](./src/components/infowindow.md)
+
     <InfoWindow position={{lng: 116.402544, lat: 39.928216}} text="信息窗口内容" title="信息窗口标题"/>
+
 ### 图形覆盖物，圆形、折线、多边形
 - Circle
+
     <Circle 
         center={{lng: 116.403119, lat: 39.929543}} 
         fillColor='blue' 
         strokeColor='white' 
         radius="3000"
     />
+
 - Polyline
+
     <Polyline 
         strokeColor='green' 
         path={[
@@ -58,7 +69,9 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
             {lng: 116.217996, lat: 39.904309}
         ]}
     />
+
 - Polygon
+
     <Polygon 
         fillColor='red' 
         strokeColor='yellow' 
@@ -73,8 +86,11 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 ## 其它一些场景组件
 
 - MapvLayer
+
     <MapvLayer data={[]} options={{}} />
+
 - Road
+
     <Road roadPath={['116.330484,40.031406,116.33124,40.029496,116.33124,40.029496']}/>
 
 ## 许可证
