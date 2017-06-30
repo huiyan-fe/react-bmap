@@ -200,25 +200,6 @@ export default class App extends Component {
                     autoViewport={false}
                 />
             </Map>
-            <Map mapStyle={simpleMapStyle}>
-                <MarkerList 
-                    data={citylist} 
-                    onClick={(item)=>{
-                        console.log(item);
-                    }} 
-                    splitList={{
-                        4: '#d53938',
-                        3: '#fe6261',
-                        2: '#ffb02d',
-                        1: '#80db69'
-                    }} 
-                    coordType="bd09mc" 
-                    isShowShadow={false} 
-                    animation={true} 
-                    multiple={true} 
-                    autoViewport={false}
-                />
-            </Map>
         </div>
     }
 }

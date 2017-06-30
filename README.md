@@ -1,17 +1,27 @@
-# react-bmap [![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)
-基于百度地图api封装的React组件库
+# [react-bmap](https://huiyan-fe.github.io/react-bmap/) [![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)
+
+基于百度地图JavaScript Api封装的React组件库，使用这个库最好需要先了解[React](https://facebook.github.io/react/)和[百度地图JavaScript Api](http://lbsyun.baidu.com/index.php?title=jspopular)。
+
+React-BMap只是利用了React组件的生命周期，来调用对应的百度地图JavaScript Api的方法，比如在componentDidMount和componentDidUpdate的时候在地图上添加覆盖物，componentWillUnmount的时候移除覆盖物，React对应的render渲染函数模块返回的是null。所以这里面地图相关的dom并不是react渲染的，真正创建地图之类的还是使用百度地图JavaScript Api，React-BMap只是利用了React组件的写法来封装百度地图JavaScript Api，使我们在使用React的时候能更方便的使用百度地图JavaScript Api。
 
 ## 示例
-可查看示例文件夹下的示例使用[示例代码](https://github.com/huiyan-fe/react-bmap/tree/master/docs/examples)，示例效果可访问[预览地址](https://huiyan-fe.github.io/react-bmap/examples/)
+可查看示例文件夹下的示例使用[示例代码](https://github.com/huiyan-fe/react-bmap/tree/master/docs/examples)，示例效果可访问[示例地址](https://huiyan-fe.github.io/react-bmap/examples/)
 
 ## 安装使用
+
+### 页面头部需加载百度地图JavaScript Api代码
+
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=您的密钥"></script>
+
+密钥可去[百度地图开放平台官网](http://lbsyun.baidu.com/apiconsole/key)申请
 
 ### 使用npm方式安装使用
 
     npm install react-bmap
 
 ## Hello World
-    import {Map,Marker,NavigationControl,InfoWindow} from 'react-bmap'
+
+    import {Map, Marker, NavigationControl, InfoWindow} from 'react-bmap'
 
     <Map center={{lng: 116.402544, lat: 39.928216}}>
         <Marker position={{lng: 116.402544, lat: 39.928216}} />
@@ -30,7 +40,7 @@
     <ScaleControl />
     <OverviewMapControl />
 - [InfoWindow](./src/components/infowindow.md)
-    <InfoWindow position={{lng: 116.402544, lat: 39.928216}}/>
+    <InfoWindow position={{lng: 116.402544, lat: 39.928216}} text="信息窗口内容" title="信息窗口标题"/>
 ### 图形覆盖物，圆形、折线、多边形
 - Circle
     <Circle 
@@ -59,8 +69,13 @@
             {lng: 116.426709, lat: 39.900001}
         ]}
     />
+
 ## 其它一些场景组件
+
+- MapvLayer
     <MapvLayer data={[]} options={{}} />
+- Road
+    <Road roadPath={['116.330484,40.031406,116.33124,40.029496,116.33124,40.029496']}/>
 
 ## 许可证
 [MIT](./LICENSE)

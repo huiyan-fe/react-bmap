@@ -15895,67 +15895,122 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    '\u7B80\u5355\u5730\u56FE'
+    '\u7B80\u5355\u5730\u56FE Map ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/map.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_map2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    '\u6807\u6CE8'
+    '\u6807\u6CE8 Marker ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_marker2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    '\u4FE1\u606F\u7A97\u53E3'
+    '\u4FE1\u606F\u7A97\u53E3 InfoWindow ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/infowindow.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_infowindow2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    '\u63A7\u4EF6'
+    '\u5404\u7C7B\u5730\u56FE\u63A7\u4EF6 ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/control.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_control2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    '\u56FE\u5F62\u8986\u76D6\u7269'
+    '\u56FE\u5F62\u8986\u76D6\u7269 Circle Polyline Polygon ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/graphy.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_graphy2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    'mapv\u56FE\u5C42'
+    'mapv\u56FE\u5C42 MapvLayer ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-layer.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_mapvLayer2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    'marker\u5217\u8868'
-  ),
-  _react2.default.createElement(_mapvMarkerList2.default, null),
-  _react2.default.createElement(
-    'h2',
-    null,
-    'marker\u5217\u8868'
+    'marker\u5217\u8868 MarkerList ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker-list.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_markerList2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    '\u9053\u8DEF'
+    'marker\u5217\u8868 ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-marker-list.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
+  ),
+  _react2.default.createElement(_mapvMarkerList2.default, null),
+  _react2.default.createElement(
+    'h2',
+    null,
+    '\u9053\u8DEF Road ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/road.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_road2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    '\u884C\u653F\u533A\u5212'
+    '\u884C\u653F\u533A\u5212 Boundary ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/boundary.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_boundary2.default, null),
   _react2.default.createElement(
     'h2',
     null,
-    '\u4EA4\u901A\u8DEF\u51B5\u56FE\u5C42'
+    '\u4EA4\u901A\u8DEF\u51B5\u56FE\u5C42 TrafficLayer ',
+    _react2.default.createElement(
+      'a',
+      { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/traffic-layer.js' },
+      '\u793A\u4F8B\u4EE3\u7801'
+    )
   ),
   _react2.default.createElement(_trafficLayer2.default, null)
 );
@@ -18695,6 +18750,40 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
+var defaultIconUrl = 'http://webmap1.map.bdstatic.com/wolfman/static/common/images/markers_new2x_fbb9e99.png';
+var icons = {
+    'simple_red': new BMap.Icon(defaultIconUrl, new BMap.Size(42 / 2, 66 / 2), {
+        imageOffset: new BMap.Size(-454 / 2, -378 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'simple_blue': new BMap.Icon(defaultIconUrl, new BMap.Size(42 / 2, 66 / 2), {
+        imageOffset: new BMap.Size(-454 / 2, -450 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'loc_red': new BMap.Icon(defaultIconUrl, new BMap.Size(46 / 2, 70 / 2), {
+        imageOffset: new BMap.Size(-400 / 2, -378 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'loc_blue': new BMap.Icon(defaultIconUrl, new BMap.Size(46 / 2, 70 / 2), {
+        imageOffset: new BMap.Size(-400 / 2, -450 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'start': new BMap.Icon(defaultIconUrl, new BMap.Size(50 / 2, 80 / 2), {
+        imageOffset: new BMap.Size(-400 / 2, -278 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'end': new BMap.Icon(defaultIconUrl, new BMap.Size(50 / 2, 80 / 2), {
+        imageOffset: new BMap.Size(-450 / 2, -278 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    })
+};
+
 var App = function (_Component) {
     _inherits(App, _Component);
 
@@ -18747,17 +18836,14 @@ var App = function (_Component) {
             var icon;
             var propsIcon = this.props.icon;
 
-            if (propsIcon) {
+            if (propsIcon && propsIcon instanceof BMap.Icon) {
                 icon = propsIcon;
             } else {
-                var defaultIconUrl = 'http://webmap1.map.bdstatic.com/wolfman/static/common/images/markers_new2x_fbb9e99.png';
-                var iconWidth = 42 / 2;
-                var iconHeight = 66 / 2;
-                icon = new BMap.Icon(defaultIconUrl, new BMap.Size(iconWidth, iconHeight), {
-                    imageOffset: new BMap.Size(-454 / 2, -378 / 2),
-                    anchor: new BMap.Size(iconWidth / 2, iconHeight / 2),
-                    imageSize: new BMap.Size(600 / 2, 600 / 2)
-                });
+                if (propsIcon && icons[propsIcon]) {
+                    icon = icons[propsIcon];
+                } else {
+                    icon = icons.simple_red;
+                }
             }
 
             var position = new BMap.Point(this.props.position.lng, this.props.position.lat);
@@ -21069,12 +21155,18 @@ var App = function (_Component) {
                 { mapStyle: _mapstyle.simpleMapStyle },
                 _react2.default.createElement(_src.Marker, {
                     position: { lng: 116.402544, lat: 39.928216 },
+                    icon: 'simple_red',
                     events: {
                         click: function click() {
                             console.log('marker click event');
                         }
                     }
-                })
+                }),
+                _react2.default.createElement(_src.Marker, { position: { lng: 119.0874, lat: 36.665582 }, icon: 'simple_blue' }),
+                _react2.default.createElement(_src.Marker, { position: { lng: 112.538537, lat: 37.874899 }, icon: 'loc_blue' }),
+                _react2.default.createElement(_src.Marker, { position: { lng: 114.501011, lat: 33.920864 }, icon: 'loc_red' }),
+                _react2.default.createElement(_src.Marker, { position: { lng: 109.210063, lat: 34.339622 }, icon: 'start' }),
+                _react2.default.createElement(_src.Marker, { position: { lng: 109.430831, lat: 38.211366 }, icon: 'end' })
             );
         }
     }]);
@@ -21493,27 +21585,6 @@ var App = function (_Component) {
                         multiple: true,
                         autoViewport: false
                     })
-                ),
-                _react2.default.createElement(
-                    _src.Map,
-                    { mapStyle: _mapstyle.simpleMapStyle },
-                    _react2.default.createElement(_src.MarkerList, {
-                        data: citylist,
-                        onClick: function onClick(item) {
-                            console.log(item);
-                        },
-                        splitList: {
-                            4: '#d53938',
-                            3: '#fe6261',
-                            2: '#ffb02d',
-                            1: '#80db69'
-                        },
-                        coordType: 'bd09mc',
-                        isShowShadow: false,
-                        animation: true,
-                        multiple: true,
-                        autoViewport: false
-                    })
                 )
             );
         }
@@ -21569,13 +21640,13 @@ var App = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _src.Map,
-                { mapStyle: _mapstyle.simpleMapStyle },
+                { mapStyle: { style: 'redalert' } },
                 _react2.default.createElement(_src.MapvLayer, { data: data, options: {
-                        fillStyle: 'rgba(255, 50, 50, 0.6)',
-                        shadowColor: 'rgba(255, 50, 50, 1)',
+                        fillStyle: 'rgba(255, 250, 50, 0.8)',
+                        shadowColor: 'rgba(255, 250, 50, 1)',
                         shadowBlur: 30,
                         globalCompositeOperation: 'lighter',
-                        size: 10,
+                        size: 8,
                         draw: 'simple'
                     } })
             );

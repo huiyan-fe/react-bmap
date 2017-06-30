@@ -1,1 +1,88 @@
-docs
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+    <style type="text/css">
+        html,body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            color: #fff;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .main {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            padding-top: 20px;
+            bottom: 0;
+        }
+
+        h1 {
+            color: rgb(51, 153, 255);
+            font-size: 80px;
+            text-shadow: 0px 0px 50px white;
+        }
+
+        .btn {
+            display: inline-block;
+            background: black;
+            padding: 10px 30px;
+            font-size: 18px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        a.btn:hover{
+            background: #333;
+        }
+
+        #map {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=1XjLLEhZhQNUzd93EjU5nOGQ"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="main">
+        <a class="logo" href="http://lbsyun.baidu.com"><img style="height: 70px;" src="http://wiki.lbsyun.baidu.com/cms/logo/lbsyunlogo296-120.png?logo2017"></a>
+        <h1>React-BMap</h1>
+        <a href="https://github.com/huiyan-fe/react-bmap" class="btn">GitHub</a>
+        <a href="./examples" class="btn">示例</a>
+    </div>
+
+    <script type="text/javascript">
+        // 百度地图API功能
+        var map = new BMap.Map("map", {
+            enableMapClick: false
+        });    // 创建Map实例
+        map.centerAndZoom(new BMap.Point(105.403119, 38.028658), 5);  // 初始化地图,设置中心点坐标和地图级别
+        map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+
+        map.setMapStyle({
+            styleJson: [
+                {
+                    "featureType": "all",
+                    "elementType": "all",
+                    "stylers": {
+                        "lightness": 80,
+                        "saturation": -100
+                    }
+                }
+            ]
+        });
+    </script>
+</body>
+</html>

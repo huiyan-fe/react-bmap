@@ -5,6 +5,40 @@
 
 import Component from './component';
 
+const defaultIconUrl = 'http://webmap1.map.bdstatic.com/wolfman/static/common/images/markers_new2x_fbb9e99.png';
+var icons = {
+    'simple_red': new BMap.Icon(defaultIconUrl , new BMap.Size(42 / 2, 66 / 2), {
+        imageOffset: new BMap.Size(-454 / 2, -378 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'simple_blue': new BMap.Icon(defaultIconUrl , new BMap.Size(42 / 2, 66 / 2), {
+        imageOffset: new BMap.Size(-454 / 2, -450 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'loc_red': new BMap.Icon(defaultIconUrl , new BMap.Size(46 / 2, 70 / 2), {
+        imageOffset: new BMap.Size(-400 / 2, -378 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'loc_blue': new BMap.Icon(defaultIconUrl , new BMap.Size(46 / 2, 70 / 2), {
+        imageOffset: new BMap.Size(-400 / 2, -450 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'start': new BMap.Icon(defaultIconUrl , new BMap.Size(50 / 2, 80 / 2), {
+        imageOffset: new BMap.Size(-400 / 2, -278 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'end': new BMap.Icon(defaultIconUrl , new BMap.Size(50 / 2, 80 / 2), {
+        imageOffset: new BMap.Size(-450 / 2, -278 / 2),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+}
+
 export default class App extends Component {
 
     constructor(args) {
@@ -93,17 +127,14 @@ export default class App extends Component {
         var icon;
         var propsIcon = this.props.icon;
 
-        if (propsIcon) {
+        if (propsIcon && propsIcon instanceof BMap.Icon) {
             icon = propsIcon;
         } else {
-            var defaultIconUrl = 'http://webmap1.map.bdstatic.com/wolfman/static/common/images/markers_new2x_fbb9e99.png';
-            var iconWidth = 42 / 2;
-            var iconHeight = 66 / 2;
-            icon = new BMap.Icon(defaultIconUrl , new BMap.Size(iconWidth, iconHeight), {
-                imageOffset: new BMap.Size(-454 / 2, -378 / 2),
-                anchor: new BMap.Size(iconWidth / 2, iconHeight / 2),
-                imageSize: new BMap.Size(600 / 2, 600 / 2)
-            });
+            if (propsIcon && icons[propsIcon]) {
+                icon = icons[propsIcon];
+            } else {
+                icon = icons.simple_red;
+            }
         }
 
         var position = new BMap.Point(this.props.position.lng, this.props.position.lat);

@@ -6,13 +6,13 @@ var data = [{"geometry":{"type":"Point","coordinates":[116.84037246524984,39.824
 
 export default class App extends Component {
     render() {
-        return <Map mapStyle={simpleMapStyle}>
+        return <Map mapStyle={{style: 'redalert'}}>
             <MapvLayer data={data} options={{
-                fillStyle: 'rgba(255, 50, 50, 0.6)',
-                shadowColor: 'rgba(255, 50, 50, 1)',
+                fillStyle: 'rgba(255, 250, 50, 0.8)',
+                shadowColor: 'rgba(255, 250, 50, 1)',
                 shadowBlur: 30,
                 globalCompositeOperation: 'lighter',
-                size: 10,
+                size: 8,
                 draw: 'simple'
             }} />
         </Map>
