@@ -38,8 +38,7 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
     <Marker position={{lng: 116.402544, lat: 39.928216}}/>
 
-![Marker](./docs/assets/screenshot/marker.png)
-
+<img src="./docs/assets/screenshot/marker.png" style="width: 50%;"/>
 
 ### [Control](./src/components/control.md)
 
