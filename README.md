@@ -6,14 +6,10 @@
 
 ## 安装使用
 
+### 使用npm方式安装使用
+
     npm install react-bmap
 
-### 初始化环境
-    npm install
-    
-### 示例中开发
-    npm run examples
-    
 ## Hello World
     import {Map,Marker,NavigationControl,InfoWindow} from 'react-bmap'
 
@@ -23,12 +19,48 @@
         <InfoWindow position={{lng: 116.402544, lat: 39.928216}} text="内容" title="标题"/>
     </Map>
     
-## 组件文档
-
+## 基础地图组件文档
 - [Map](./src/components/map.md)
+    <Map center={{lng: 116.402544, lat: 39.928216}} zoom="12" />
 - [Marker](./src/components/marker.md)
+    <Marker position={{lng: 116.402544, lat: 39.928216}}/>
 - [Control](./src/components/control.md)
+    <NavigationControl />
+    <MapTypeControl />
+    <ScaleControl />
+    <OverviewMapControl />
 - [InfoWindow](./src/components/infowindow.md)
+    <InfoWindow position={{lng: 116.402544, lat: 39.928216}}/>
+### 图形覆盖物，圆形、折线、多边形
+- Circle
+    <Circle 
+        center={{lng: 116.403119, lat: 39.929543}} 
+        fillColor='blue' 
+        strokeColor='white' 
+        radius="3000"
+    />
+- Polyline
+    <Polyline 
+        strokeColor='green' 
+        path={[
+            {lng: 116.403119, lat: 39.929543},
+            {lng: 116.265139, lat: 39.978658},
+            {lng: 116.217996, lat: 39.904309}
+        ]}
+    />
+- Polygon
+    <Polygon 
+        fillColor='red' 
+        strokeColor='yellow' 
+        path={[
+            {lng: 116.442519, lat: 39.945597},
+            {lng: 116.484488, lat: 39.905315},
+            {lng: 116.443094, lat: 39.886494},
+            {lng: 116.426709, lat: 39.900001}
+        ]}
+    />
+## 其它一些场景组件
+    <MapvLayer data={[]} options={{}} />
 
 ## 许可证
 [MIT](./LICENSE)

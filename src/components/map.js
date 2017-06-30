@@ -18,7 +18,7 @@ export default class App extends Component {
     static get defaultProps() {
         return {
             style: {
-                height: '500px'
+                height: '350px'
             },
             center: {
                 lng: 105.403119,
@@ -108,7 +108,7 @@ export default class App extends Component {
 
         // 创建Map实例
         var options = this.options;
-        if (options.enableMapClick !== true) {
+        if (this.props.enableMapClick !== true) {
             options.enableMapClick = false;
         }
         var map = new BMap.Map(this.refs.map, this.getOptions(this.options));
@@ -154,8 +154,8 @@ export default class App extends Component {
 
     render() {
         return (
-            <div>
-                <div ref='map' className={this.props.className} style={this.props.style}>
+            <div style={{height: '100%'}} style={this.props.style}>
+                <div ref='map' className={this.props.className} style={{height: '100%'}}>
                  加载地图中...
                 </div>
                 {this.renderChildren()}

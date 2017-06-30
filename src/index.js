@@ -19,6 +19,13 @@ export {default as ScaleControl} from './components/scale-control';
 export {default as MapTypeControl} from './components/map-type-control';
 
 /**
+ * 图形覆盖物组件
+ */
+export {default as Circle} from './components/circle';
+export {default as Polyline} from './components/polyline';
+export {default as Polygon} from './components/polygon';
+
+/**
  * 一些常用场景的组件
  */
 export {default as Road} from './components/road';

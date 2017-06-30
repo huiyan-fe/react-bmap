@@ -1,7 +1,8 @@
-import Simple from './simple';
+import Map from './map';
 import Marker from './marker';
 import TrafficLayer from './traffic-layer';
 import InfoWindow from './infowindow';
+import Graphy from './graphy';
 import MarkerList from './marker-list';
 import MarkerOrder from './marker-order';
 import MapvLayer from './mapv-layer';
@@ -16,13 +17,15 @@ const examples = (
   <div>
     <h1>React-BMap 示例</h1>
     <h2>简单地图</h2>
-    <Simple />
+    <Map />
     <h2>标注</h2>
     <Marker />
     <h2>信息窗口</h2>
     <InfoWindow />
     <h2>控件</h2>
     <Control />
+    <h2>图形覆盖物</h2>
+    <Graphy />
     <h2>mapv图层</h2>
     <MapvLayer/>
     <h2>marker列表</h2>
