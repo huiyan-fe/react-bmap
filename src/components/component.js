@@ -53,4 +53,7 @@ export default class App extends Component {
         return result;
     }
 
+    render() {
+        return null;
+    }
 }

@@ -152,7 +152,4 @@ export default class App extends Component {
         this.canvasLayer.hide();
     }
 
-    render() {
-        return null;
-    }
 }

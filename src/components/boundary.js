@@ -138,10 +138,6 @@ class App extends Component {
 
         this.getBoundaryData();
     }
-
-    render() {
-        return null;
-    }
 }
 
 export default App;

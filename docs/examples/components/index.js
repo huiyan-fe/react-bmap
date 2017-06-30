@@ -10,7 +10,7 @@ import Road from './road';
 import Boundary from './boundary';
 import Control from './control';
 import React from 'react';
-import { render } from 'react-dom';
+import {render} from 'react-dom';
 
 const examples = (
   <div>
@@ -25,12 +25,10 @@ const examples = (
     <Control />
     <h2>图形覆盖物 Circle Polyline Polygon <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/graphy.js">示例代码</a></h2>
     <Graphy />
-    <h2>mapv图层 MapvLayer <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-layer.js">示例代码</a></h2>
+    <h2>Mapv图层 MapvLayer <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-layer.js">示例代码</a></h2>
     <MapvLayer/>
-    <h2>marker列表 MarkerList <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker-list.js">示例代码</a></h2>
+    <h2>标注列表 MarkerList <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker-list.js">示例代码</a></h2>
     <MarkerList />
-    <h2>marker列表 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-marker-list.js">示例代码</a></h2>
-    <MapvMarkerList />
     <h2>道路 Road <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/road.js">示例代码</a></h2>
     <Road />
     <h2>行政区划 Boundary <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/boundary.js">示例代码</a></h2>

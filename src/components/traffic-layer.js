@@ -1,6 +1,12 @@
+/**
+ * @file 交通路况图层组件
+ * @author kyle(hinikai@gmail.com)
+ */
+
 import Component from './component';
 
 export default class App extends Component {
+
     constructor(args) {
         super(args);
         this.state = {
@@ -41,10 +47,6 @@ export default class App extends Component {
             };
         }
         map.addTileLayer(this.tileLayer);
-
     }
 
-    render() {
-        return null;
-    }
 }

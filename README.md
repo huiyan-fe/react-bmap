@@ -1,4 +1,4 @@
-# [react-bmap](https://huiyan-fe.github.io/react-bmap/) [![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)
+# [React-BMap](https://huiyan-fe.github.io/react-bmap/) [![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)
 
 基于百度地图JavaScript Api封装的React组件库，使用这个库最好需要先了解[React](https://facebook.github.io/react/)和[百度地图JavaScript Api](http://lbsyun.baidu.com/index.php?title=jspopular)。
 
@@ -38,6 +38,9 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
     <Marker position={{lng: 116.402544, lat: 39.928216}}/>
 
+![Marker](./docs/assets/screenshot/marker.png)
+
+
 ### [Control](./src/components/control.md)
 
     <NavigationControl />
@@ -49,7 +52,7 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
     <InfoWindow position={{lng: 116.402544, lat: 39.928216}} text="信息窗口内容" title="信息窗口标题"/>
 
-## 图形组件，圆形、折线、多边形
+## 图形组件，圆形、折线、多边形组件
 
 ### Circle
 
@@ -86,6 +89,26 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
 ## 其它一些场景组件
 
+### MarkerList
+
+    <MarkerList 
+        data={[
+            {
+                text: "长沙大道",
+                location: "113.22183,28.191712"
+            },
+            {
+                text: "机场高速",
+                location: "113.057565,28.175208"
+            }
+        ]} 
+        fillStyle="#ff3333" 
+        animation={true} 
+        isShowShadow={false} 
+        multiple={true} 
+        autoViewport={true}
+    />
+
 ### MapvLayer
 
     <MapvLayer data={[]} options={{}} />
@@ -93,6 +116,9 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 ### Road
 
     <Road roadPath={['116.330484,40.031406,116.33124,40.029496,116.33124,40.029496']}/>
+
+### TrafficLayer
+    <TrafficLayer />
 
 ## 许可证
 [MIT](./LICENSE)

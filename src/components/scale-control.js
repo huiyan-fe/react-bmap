@@ -6,6 +6,7 @@
 import Control from './control';
 
 export default class App extends Control {
+
     constructor(args) {
         super(args);
     }

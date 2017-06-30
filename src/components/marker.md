@@ -4,7 +4,7 @@
 ## 可配置属性
 - position={{lng: 123, lat: 23}}
 - offset={new BMap.Size(10, 10)}
-- icon={String|BMap.Icon} 可配置一些我们事先配置好的icon样式，'simple_red','simple_blue','loc_red','loc_blue','start','end',或者可以自定义icon
+- icon={String|BMap.Icon} 可配置一些我们事先配置好的icon样式，'simple_red','simple_blue','loc_red','loc_blue','start','end', 'number1', 'number2', ``` 'number10',或者可以自定义icon
 - enableClicking={false}
 - raiseOnDrag={false}
 - draggingCursor='default'
