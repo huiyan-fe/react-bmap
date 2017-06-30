@@ -30,7 +30,6 @@ export {default as Polygon} from './components/polygon';
  */
 export {default as Road} from './components/road';
 export {default as Boundary} from './components/boundary';
-export {default as MarkerOrder} from './components/marker-order';
 export {default as MarkerList} from './components/marker-list';
 export {default as MapvMarkerList} from './components/mapv-marker-list';
 export {default as TrafficLayer} from './components/traffic-layer';

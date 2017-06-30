@@ -4,7 +4,6 @@ import TrafficLayer from './traffic-layer';
 import InfoWindow from './infowindow';
 import Graphy from './graphy';
 import MarkerList from './marker-list';
-import MarkerOrder from './marker-order';
 import MapvLayer from './mapv-layer';
 import MapvMarkerList from './mapv-marker-list';
 import Road from './road';
@@ -32,8 +31,6 @@ const examples = (
     <MapvMarkerList />
     <h2>marker列表</h2>
     <MarkerList />
-    <h2>marker列表</h2>
-    <MarkerOrder />
     <h2>道路</h2>
     <Road />
     <h2>行政区划</h2>
