@@ -10,7 +10,8 @@
     }
   ],
   "scripts": {
-    "build": "rm -rf lib && babel src -d lib",
+    "build:lib": "rm -rf lib && babel src -d lib",
+    "build:dist": "webpack",
     "prepublish": "npm run build",
     "examples:build": "webpack --config ./docs/examples/webpack.config.js",
     "examples": "webpack-dev-server --config ./docs/examples/webpack.config.js"

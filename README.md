@@ -15,9 +15,15 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
 密钥可去[百度地图开放平台官网](http://lbsyun.baidu.com/apiconsole/key)申请
 
-### 使用npm方式安装使用
+### 推荐使用npm方式安装使用
 
     npm install react-bmap
+
+### UMD方式打包库
+
+    <script src="http://huiyan-fe.github.io/react-bmap/dist/react-bmap.min.js"></script>
+
+入口命名空间window.ReactBMap。[示例](http://huiyan-fe.github.io/react-bmap/examples/umd.html)
 
 ## Hello World
 

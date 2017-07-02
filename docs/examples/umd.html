@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>React-BMap umd示例</title>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=1XjLLEhZhQNUzd93EjU5nOGQ"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react-dom.js"></script>
+    <script src="../dist/react-bmap.min.js"></script>
+</head>
+<body>
+    <div id="container"></div>
+    <script type="text/babel" data-presets="es2015,react">
+    const React = window.React;
+    const { Map, Marker } = window.ReactBMap;
+    const position = {lng: 116.403981, lat: 39.91582};
+    const Example = () =>
+        <Map center={position} zoom={13}>
+            <Marker position={position} />
+        </Map>
+
+    window.ReactDOM.render(<Example />, document.getElementById('container'))
+    </script>
+</body>
+</html>
