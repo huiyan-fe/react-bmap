@@ -35,7 +35,7 @@ export default class App extends Component {
         }
 
         if (points.length > 0 && this.props.autoViewport !== false) {
-            this.props.map.setViewport(points, this.props.viewportOptions);
+            //this.props.map.setViewport(points, this.props.viewportOptions);
         }
     }
 

@@ -12,6 +12,7 @@
   "scripts": {
     "build:lib": "rm -rf lib && babel src -d lib",
     "build:dist": "webpack",
+    "build": "npm run build:lib && npm run build:dist && npm run examples:build",
     "prepublish": "npm run build",
     "examples:build": "webpack --config ./docs/examples/webpack.config.js",
     "examples": "webpack-dev-server --config ./docs/examples/webpack.config.js"

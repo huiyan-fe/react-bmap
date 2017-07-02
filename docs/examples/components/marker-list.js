@@ -66,7 +66,7 @@ export default class App extends Component {
                     isShowShadow={false} 
                     animation={true} 
                     multiple={true} 
-                    autoViewport={false}
+                    autoViewport={true}
                 />
             </Map>
 

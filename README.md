@@ -44,7 +44,9 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
     <Marker position={{lng: 116.402544, lat: 39.928216}}/>
 
-<img src="./docs/assets/screenshot/marker.png" width="428"/>
+<img src="./docs/assets/screenshot/marker.png" width="50%"/>
+
+<img src="./docs/assets/screenshot/markers.png" width="50%"/>
 
 ### [Control](./src/components/control.md)
 
@@ -58,6 +60,8 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
     <InfoWindow position={{lng: 116.402544, lat: 39.928216}} text="信息窗口内容" title="信息窗口标题"/>
 
 ## 图形组件，圆形、折线、多边形组件
+
+<img src="./docs/assets/screenshot/graphy.png" width="50%"/>
 
 ### Circle
 
@@ -96,6 +100,8 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
 ### MarkerList
 
+<img src="./docs/assets/screenshot/markerlist.png" width="50%"/>
+
     <MarkerList 
         data={[
             {
@@ -122,7 +128,20 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
     <Road roadPath={['116.330484,40.031406,116.33124,40.029496,116.33124,40.029496']}/>
 
-### TrafficLayer
+### Boundary 
+
+    <Boundary data={[
+        {
+            name: '海淀区',
+            count: 20
+        },
+        {
+            name: '朝阳区',
+            count: 10
+        }
+    ]}/>
+
+### TrafficLayer 交通路况图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/traffic-layer.js">示例代码</a>
     <TrafficLayer />
 
 ## 许可证

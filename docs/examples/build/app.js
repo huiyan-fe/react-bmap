@@ -15890,7 +15890,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    '\u7B80\u5355\u5730\u56FE Map ',
+    'Map \u7B80\u5355\u5730\u56FE ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/map.js' },
@@ -15901,7 +15901,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    '\u6807\u6CE8 Marker ',
+    'Marker \u6807\u6CE8 ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker.js' },
@@ -15912,7 +15912,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    '\u4FE1\u606F\u7A97\u53E3 InfoWindow ',
+    'InfoWindow \u4FE1\u606F\u7A97\u53E3 ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/infowindow.js' },
@@ -15945,7 +15945,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    'Mapv\u56FE\u5C42 MapvLayer ',
+    'MapvLayer Mapv\u56FE\u5C42 ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-layer.js' },
@@ -15956,7 +15956,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    '\u6807\u6CE8\u5217\u8868 MarkerList ',
+    'MarkerList \u6807\u6CE8\u5217\u8868 ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker-list.js' },
@@ -15967,7 +15967,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    '\u9053\u8DEF Road ',
+    'Road \u9053\u8DEF ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/road.js' },
@@ -15978,7 +15978,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    '\u884C\u653F\u533A\u5212 Boundary ',
+    'Boundary \u884C\u653F\u533A\u5212 ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/boundary.js' },
@@ -15989,7 +15989,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    '\u4EA4\u901A\u8DEF\u51B5\u56FE\u5C42 TrafficLayer ',
+    'TrafficLayer \u4EA4\u901A\u8DEF\u51B5\u56FE\u5C42 ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/traffic-layer.js' },
@@ -19428,7 +19428,7 @@ var App = function (_Component) {
             }
 
             if (points.length > 0 && this.props.autoViewport !== false) {
-                this.props.map.setViewport(points, this.props.viewportOptions);
+                //this.props.map.setViewport(points, this.props.viewportOptions);
             }
         }
     }, {
@@ -21460,7 +21460,7 @@ var App = function (_Component) {
                         isShowShadow: false,
                         animation: true,
                         multiple: true,
-                        autoViewport: false
+                        autoViewport: true
                     })
                 ),
                 _react2.default.createElement(
@@ -21679,7 +21679,7 @@ var App = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _src.Map,
-                { mapStyle: _mapstyle.simpleMapStyle },
+                { mapStyle: _mapstyle.simpleMapStyle, center: { lng: 105.403119, lat: 38.028658 }, zoom: '5' },
                 _react2.default.createElement(_src.Road, { roadPath: ['116.330484,40.031406,116.33124,40.029496,116.33124,40.029496'] })
             );
         }
