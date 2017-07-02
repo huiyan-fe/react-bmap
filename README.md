@@ -44,9 +44,9 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
     <Marker position={{lng: 116.402544, lat: 39.928216}}/>
 
-<img src="./docs/assets/screenshot/marker.png" width="50%"/>
+<img src="./docs/assets/screenshot/marker.png" width="428"/>
 
-<img src="./docs/assets/screenshot/markers.png" width="50%"/>
+<img src="./docs/assets/screenshot/markers.png" width="651"/>
 
 ### [Control](./src/components/control.md)
 
@@ -61,7 +61,7 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
 ## 图形组件，圆形、折线、多边形组件
 
-<img src="./docs/assets/screenshot/graphy.png" width="50%"/>
+<img src="./docs/assets/screenshot/graphy.png" width="584"/>
 
 ### Circle
 
@@ -100,7 +100,7 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
 ### MarkerList
 
-<img src="./docs/assets/screenshot/markerlist.png" width="50%"/>
+<img src="./docs/assets/screenshot/markerlist.png" width="482"/>
 
     <MarkerList 
         data={[
