@@ -5,7 +5,7 @@
 React-BMap只是利用了React组件的生命周期，来调用对应的百度地图JavaScript Api的方法，比如在componentDidMount和componentDidUpdate的时候在地图上添加覆盖物，componentWillUnmount的时候移除覆盖物，React对应的render渲染函数模块返回的是null。所以这里面地图相关的dom并不是react渲染的，真正创建地图之类的还是使用百度地图JavaScript Api，React-BMap只是利用了React组件的写法来封装百度地图JavaScript Api，使我们在使用React的时候能更方便的使用百度地图JavaScript Api。
 
 ## 示例
-可查看示例文件夹下的示例使用[示例代码](https://github.com/huiyan-fe/react-bmap/tree/master/docs/examples)，示例效果可访问[示例地址](https://huiyan-fe.github.io/react-bmap/examples/)
+可查看示例文件夹下的示例使用[示例代码](https://github.com/huiyan-fe/react-bmap/tree/master/docs/examples)，示例效果可访问[预览地址](https://huiyan-fe.github.io/react-bmap/examples/)
 
 ## 安装使用
 
@@ -15,15 +15,15 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
 密钥可去[百度地图开放平台官网](http://lbsyun.baidu.com/apiconsole/key)申请
 
-### 推荐使用npm方式安装使用
+### 推荐使用npm方式安装使用，然后通过es6模块加载
 
     npm install react-bmap
 
-### UMD方式打包库
+### 支持UMD规范的打包库
 
     <script src="http://huiyan-fe.github.io/react-bmap/dist/react-bmap.min.js"></script>
 
-入口命名空间window.ReactBMap。[示例](http://huiyan-fe.github.io/react-bmap/examples/umd.html)
+入口命名空间window.ReactBMap [示例预览](http://huiyan-fe.github.io/react-bmap/examples/umd.html) [示例源码](https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/umd.html)
 
 ## Hello World
 

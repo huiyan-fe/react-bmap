@@ -18842,7 +18842,15 @@ var App = function (_Component) {
                 }
             }
 
-            var position = new BMap.Point(this.props.position.lng, this.props.position.lat);
+            if (this.props.coordType === 'bd09mc') {
+                var projection = map.getMapType().getProjection();
+                var position = projection.pointToLngLat(new BMap.Pixel(this.props.position.lng, this.props.position.lat));
+            } else {
+                var position = new BMap.Point(this.props.position.lng, this.props.position.lat);
+            }
+
+            var projection = map.getMapType().getProjection();
+
             var options = this.getOptions(this.options);
             options.icon = icon;
             this.marker = new BMap.Marker(position, options);
