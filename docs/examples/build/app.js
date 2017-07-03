@@ -19428,7 +19428,7 @@ var App = function (_Component) {
             }
 
             if (points.length > 0 && this.props.autoViewport !== false) {
-                //this.props.map.setViewport(points, this.props.viewportOptions);
+                this.props.map.setViewport(points, this.props.viewportOptions);
             }
         }
     }, {
@@ -21679,7 +21679,7 @@ var App = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _src.Map,
-                { mapStyle: _mapstyle.simpleMapStyle, center: { lng: 105.403119, lat: 38.028658 }, zoom: '5' },
+                { style: { height: '200px' }, mapStyle: _mapstyle.simpleMapStyle, center: { lng: 105.403119, lat: 38.028658 }, zoom: '5' },
                 _react2.default.createElement(_src.Road, { roadPath: ['116.330484,40.031406,116.33124,40.029496,116.33124,40.029496'] })
             );
         }
