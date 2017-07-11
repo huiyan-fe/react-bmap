@@ -10,11 +10,22 @@ var App = {
                 newRoadPath.push(roadPath[i]);
             } else {
                 var item = roadPath[i].split(',');
-                var last = newRoadPath[newRoadPath.length - 1].split(',');
-                if (item[0] === last[last.length - 2] && item[1] === last[last.length - 1]) {
-                    var add = item.slice(2);
-                    newRoadPath[newRoadPath.length - 1] += ',' + add.join(',');
-                } else {
+                var isAdd = false;
+                for (var j = 0; j < newRoadPath.length; j++) {
+                    var last = newRoadPath[j].split(',');
+                    if (item[0] === last[last.length - 2] && item[1] === last[last.length - 1]) {
+                        var add = item.slice(2);
+                        newRoadPath[j] += ',' + add.join(',');
+                        isAdd = true;
+                    } 
+
+                    if (item[item.length - 2] === last[0] && item[item.length - 1] === last[1]) {
+                        var add = item.slice(0, item.length - 2);
+                        newRoadPath[j] = add.join(',') + ',' + newRoadPath[j];
+                        isAdd = true;
+                    }
+                }
+                if (isAdd === false) {
                     newRoadPath.push(roadPath[i]);
                 }
             }

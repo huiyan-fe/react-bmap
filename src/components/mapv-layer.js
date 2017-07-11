@@ -51,7 +51,7 @@ export default class App extends Component {
     }
 
     componentWillUnmount() {
-        this.layer.dispose();
+        this.layer.destroy();
         this.layer = null;
     }
 

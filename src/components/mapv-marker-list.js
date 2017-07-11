@@ -57,7 +57,7 @@ export default class App extends Component {
         this.otherShadowSet = null;
 
         for (var i = 0; i < this.layers.length; i++) {
-            this.layers[i].dispose();
+            this.layers[i].destroy();
             this.layers[i] = null;
         }
 
