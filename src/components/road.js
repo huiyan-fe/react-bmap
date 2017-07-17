@@ -130,7 +130,7 @@ export default class App extends Component {
                 });
             } else {
                 mapLine.drawRoads(this.props.map, ctx, roadPath, {
-                    color: `#1495ff`,
+                    color: this.props.color || `#1495ff`,
                     lineWidth: 12,
                     line: true,
                     lineCap: 'butt',

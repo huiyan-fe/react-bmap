@@ -19532,7 +19532,7 @@ var App = function (_Component) {
                     });
                 } else {
                     _mapLine2.default.drawRoads(this.props.map, ctx, roadPath, {
-                        color: '#1495ff',
+                        color: this.props.color || '#1495ff',
                         lineWidth: 12,
                         line: true,
                         lineCap: 'butt',
