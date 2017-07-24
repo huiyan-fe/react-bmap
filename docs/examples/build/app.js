@@ -18590,7 +18590,7 @@ var App = function (_Component) {
         value: function componentDidUpdate(prevProps) {
             var preCenter = prevProps.center;
             var center = this.props.center;
-            if (preCenter && center && preCenter.lng != center.lng | preCenter.lat != center.lat) {
+            if (preCenter && center && (preCenter.lng != center.lng || preCenter.lat != center.lat)) {
                 this.map.panTo(new BMap.Point(center.lng, center.lat));
             }
         }
