@@ -20312,6 +20312,7 @@ Overlay.prototype.initialize = function (map) {
     style.color = "white";
     style.textShadow = "0px 0px 5px #fff";
     style.width = this._size + "px";
+    style.boxSizing = "content-box";
     style.borderRadius = "30px";
     style.height = this._size + "px";
     style.lineHeight = this._size + "px";
