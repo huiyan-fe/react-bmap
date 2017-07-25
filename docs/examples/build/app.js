@@ -10777,8 +10777,8 @@ var App = function (_Component) {
     }, {
         key: 'destroy',
         value: function destroy() {
-            this.props.map.removeOverlay(this.control);
-            this.control = null;
+            this.props.map.removeOverlay(this.overlay);
+            this.overlay = null;
         }
     }, {
         key: 'initialize',

@@ -24,8 +24,8 @@ export default class App extends Component {
     }
 
     destroy() {
-        this.props.map.removeOverlay(this.control);
-        this.control = null;
+        this.props.map.removeOverlay(this.overlay);
+        this.overlay = null;
     }
 
     initialize() {
