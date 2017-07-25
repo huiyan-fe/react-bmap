@@ -1497,9 +1497,9 @@ var App = function (_Component) {
             for (var key in toggleMethods) {
                 if (this.props[key] !== undefined) {
                     if (this.props[key]) {
-                        obj[methods[key][0]]();
+                        obj[toggleMethods[key][0]]();
                     } else {
-                        obj[methods[key][1]]();
+                        obj[toggleMethods[key][1]]();
                     }
                 }
             }
@@ -16053,6 +16053,7 @@ var App = function (_Component) {
         value: function render() {
             return _react2.default.createElement(_src.Map, {
                 style: { height: '150px' },
+                enableScrollWheelZoom: true,
                 center: { lng: '116.403981', lat: '39.927773' },
                 zoom: '13',
                 mapStyle: { style: 'midnight' } // 个性化底图配置

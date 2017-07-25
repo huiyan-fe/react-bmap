@@ -35,9 +35,9 @@ export default class App extends Component {
         for (var key in toggleMethods) {
             if (this.props[key] !== undefined) {
                 if (this.props[key]) {
-                    obj[methods[key][0]](); 
+                    obj[toggleMethods[key][0]](); 
                 } else {
-                    obj[methods[key][1]]();
+                    obj[toggleMethods[key][1]]();
                 }
             }
         }
