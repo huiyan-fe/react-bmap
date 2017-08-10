@@ -30252,7 +30252,7 @@ Overlay.prototype.initialize = function (map) {
         self.dispatchEvent('click', self.options.number);
     });
 
-    map.getPanes().labelPane.appendChild(div);
+    map.getPanes().markerPane.appendChild(div);
 
     return div;
 };
