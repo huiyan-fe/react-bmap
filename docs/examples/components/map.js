@@ -5,8 +5,8 @@ import {Map} from '../../../src';
 export default class App extends Component {
     getEvents() {
         return {
-            click: () => {
-                console.log('map click event');
+            click: (e) => {
+                console.log('map click event', e, type);
             }
         }
     }

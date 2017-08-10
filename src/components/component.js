@@ -16,10 +16,11 @@ export default class App extends Component {
      * @return null;
      */
     bindEvent(obj, events) {
+        var self = this;
         if (events) {
             events.forEach((event) => {
-                obj.addEventListener(event, () => {
-                    this.props.events && this.props.events[event] && this.props.events[event].apply(this, arguments);
+                obj.addEventListener(event, function () {
+                    self.props.events && self.props.events[event] && self.props.events[event].apply(self, arguments);
                 });
             });
         }
