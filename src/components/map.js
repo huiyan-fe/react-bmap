@@ -5,6 +5,7 @@
 
 import React from 'react';
 import Component from './component';
+import {isString} from '../utils/common';
 
 export default class App extends Component {
 
@@ -99,8 +100,14 @@ export default class App extends Component {
     componentDidUpdate(prevProps) {
         var preCenter = prevProps.center;
         var center = this.props.center;
-        if (preCenter && center && (preCenter.lng != center.lng || preCenter.lat != center.lat)) {
-            this.map.panTo(new BMap.Point(center.lng, center.lat));
+        if (preCenter && center) {
+            if (isString(center)) { // 可以传入城市名
+                this.map.centerAndZoom(center);
+            } else {
+                if (preCenter.lng != center.lng || preCenter.lat != center.lat) {
+                    this.map.panTo(new BMap.Point(center.lng, center.lat));
+                }
+            }
         }
     }
 
@@ -119,10 +126,14 @@ export default class App extends Component {
             map.setMapStyle(this.props.mapStyle);
         }
 
-        var center = new BMap.Point(this.props.center.lng, this.props.center.lat);
         var zoom = this.props.zoom;
 
-        map.centerAndZoom(center, zoom);  // 初始化地图,设置中心点坐标和地图级别
+        if (isString(this.props.center)) { // 可以传入城市名
+            map.centerAndZoom(this.props.center);
+        } else { // 正常传入经纬度坐标
+            var center = new BMap.Point(this.props.center.lng, this.props.center.lat);
+            map.centerAndZoom(center, zoom);  // 初始化地图,设置中心点坐标和地图级别
+        }
 
         this.bindToggleMeghods(map, this.toggleMethods);
         this.bindEvent(map, this.events);

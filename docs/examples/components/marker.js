@@ -65,6 +65,13 @@ export default class App extends Component {
             <Marker position={{lng: 109.430831, lat: 38.211366}} icon="end" />
         </Map>
         <Map mapStyle={simpleMapStyle}>
+            <Marker position={{lng: 109.430831, lat: 38.211366}} offset={new BMap.Size(-75, -60)}>
+                <div style={{width: '150px', height: '40px', lineHeight: '40px', background: 'red', textAlign: 'center'}}>自定义覆盖物</div>
+            </Marker>
+            <Marker position={{lng: 109.430831, lat: 38.211366}}>
+            </Marker>
+        </Map>
+        <Map mapStyle={simpleMapStyle}>
             {markers.map((marker, index) => {
                 var icon = "red" + (index + 1);
                 return <Marker map={this.props.map} icon={icon} position={{lng: marker.lng, lat: marker.lat}} {...marker} />

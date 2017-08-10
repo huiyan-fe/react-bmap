@@ -13,8 +13,8 @@ export default class App extends Component {
 
     render() {
         return <Map 
-            style={{height: '150px'}} 
-            enableScrollWheelZoom={true} 
+            style={{height: '250px'}} 
+            enableScrollWheelZoom={false} 
             center={{lng: '116.403981', lat: '39.927773'}} 
             zoom='13' 
             mapStyle={{style: 'midnight'}} // 个性化底图配置

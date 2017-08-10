@@ -6,7 +6,7 @@ module.exports = {
     },
     output: {
         filename: '[name].js',
-        publicPath: 'http://localhost:8080/build',
+        publicPath: 'http://localhost:8090/build',
         path: path.resolve(__dirname, 'build')
     },
     module: {
@@ -21,6 +21,6 @@ module.exports = {
     },
     devServer: {
         contentBase: __dirname,
-        port: 8080
+        port: 8090
     },
 };
