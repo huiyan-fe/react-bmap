@@ -7,7 +7,7 @@ import React from 'react';
 import Component from './component';
 import {isString} from '../utils/common';
 
-export default class App extends Component {
+export default class Map extends Component {
 
     constructor(args) {
         super(args);
@@ -109,6 +109,10 @@ export default class App extends Component {
                 }
             }
         }
+
+        if (prevProps.zoom !== this.props.zoom) {
+            this.map.zoomTo(this.props.zoom);
+        }
     }
 
     initMap() {
@@ -118,7 +122,7 @@ export default class App extends Component {
         if (this.props.enableMapClick !== true) {
             options.enableMapClick = false;
         }
-        var map = new BMap.Map(this.refs.map, this.getOptions(this.options));
+        var map = new BMap.Map(this.refs.map, this.getOptions(options));
 
         this.map = map;
 

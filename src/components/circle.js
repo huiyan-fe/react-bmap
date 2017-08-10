@@ -5,7 +5,7 @@
 
 import Graphy from './graphy';
 
-export default class App extends Graphy {
+export default class Circle extends Graphy {
 
     constructor(args) {
         super(args);

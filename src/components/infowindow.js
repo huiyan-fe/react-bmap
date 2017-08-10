@@ -5,7 +5,7 @@
 
 import Component from './component';
 
-export default class App extends Component {
+export default class Infowindow extends Component {
     constructor(args) {
         super(args);
         this.state = {

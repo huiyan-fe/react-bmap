@@ -5,7 +5,7 @@
 
 import Control from './control';
 
-export default class App extends Control {
+export default class MapTypeControl extends Control {
     constructor(args) {
         super(args);
     }

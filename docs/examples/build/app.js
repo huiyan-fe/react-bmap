@@ -1472,13 +1472,11 @@ var App = function (_Component) {
     _createClass(App, [{
         key: 'bindEvent',
         value: function bindEvent(obj, events) {
-            var _this2 = this,
-                _arguments = arguments;
-
+            var self = this;
             if (events) {
                 events.forEach(function (event) {
                     obj.addEventListener(event, function () {
-                        _this2.props.events && _this2.props.events[event] && _this2.props.events[event].apply(_this2, _arguments);
+                        self.props.events && self.props.events[event] && self.props.events[event].apply(self, arguments);
                     });
                 });
             }
@@ -1507,12 +1505,12 @@ var App = function (_Component) {
     }, {
         key: 'getOptions',
         value: function getOptions(options) {
-            var _this3 = this;
+            var _this2 = this;
 
             var result = {};
             options.map(function (key) {
-                if (_this3.props[key] !== undefined) {
-                    result[key] = _this3.props[key];
+                if (_this2.props[key] !== undefined) {
+                    result[key] = _this2.props[key];
                 }
             });
             return result;
@@ -10594,19 +10592,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var Control = function (_Component) {
+    _inherits(Control, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Control(args) {
+        _classCallCheck(this, Control);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (Control.__proto__ || Object.getPrototypeOf(Control)).call(this, args));
 
         _this.state = {};
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(Control, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -10646,10 +10644,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return Control;
 }(_component2.default);
 
-exports.default = App;
+exports.default = Control;
 
 /***/ }),
 /* 38 */
@@ -12696,16 +12694,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var Graphy = function (_Component) {
+    _inherits(Graphy, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Graphy(args) {
+        _classCallCheck(this, Graphy);
 
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        return _possibleConstructorReturn(this, (Graphy.__proto__ || Object.getPrototypeOf(Graphy)).call(this, args));
     }
 
-    _createClass(App, [{
+    _createClass(Graphy, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -12762,10 +12760,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return Graphy;
 }(_component2.default);
 
-exports.default = App;
+exports.default = Graphy;
 
 /***/ }),
 /* 57 */
@@ -16416,8 +16414,8 @@ var App = function (_Component) {
         key: 'getEvents',
         value: function getEvents() {
             return {
-                click: function click() {
-                    console.log('map click event');
+                click: function click(e) {
+                    console.log('map click event', e, type);
                 }
             };
         }
@@ -18941,13 +18939,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var Map = function (_Component) {
+    _inherits(Map, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Map(args) {
+        _classCallCheck(this, Map);
 
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        return _possibleConstructorReturn(this, (Map.__proto__ || Object.getPrototypeOf(Map)).call(this, args));
     }
 
     /**
@@ -18955,7 +18953,7 @@ var App = function (_Component) {
      */
 
 
-    _createClass(App, [{
+    _createClass(Map, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
             this.initMap();
@@ -18976,6 +18974,10 @@ var App = function (_Component) {
                     }
                 }
             }
+
+            if (prevProps.zoom !== this.props.zoom) {
+                this.map.zoomTo(this.props.zoom);
+            }
         }
     }, {
         key: 'initMap',
@@ -18987,7 +18989,7 @@ var App = function (_Component) {
             if (this.props.enableMapClick !== true) {
                 options.enableMapClick = false;
             }
-            var map = new BMap.Map(this.refs.map, this.getOptions(this.options));
+            var map = new BMap.Map(this.refs.map, this.getOptions(options));
 
             this.map = map;
 
@@ -19093,10 +19095,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return Map;
 }(_component2.default);
 
-exports.default = App;
+exports.default = Map;
 
 /***/ }),
 /* 112 */
@@ -28835,19 +28837,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var Infowindow = function (_Component) {
+    _inherits(Infowindow, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Infowindow(args) {
+        _classCallCheck(this, Infowindow);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (Infowindow.__proto__ || Object.getPrototypeOf(Infowindow)).call(this, args));
 
         _this.state = {};
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(Infowindow, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -28893,10 +28895,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return Infowindow;
 }(_component2.default);
 
-exports.default = App;
+exports.default = Infowindow;
 
 /***/ }),
 /* 192 */
@@ -29088,16 +29090,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Control) {
-    _inherits(App, _Control);
+var MapTypeControl = function (_Control) {
+    _inherits(MapTypeControl, _Control);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function MapTypeControl(args) {
+        _classCallCheck(this, MapTypeControl);
 
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        return _possibleConstructorReturn(this, (MapTypeControl.__proto__ || Object.getPrototypeOf(MapTypeControl)).call(this, args));
     }
 
-    _createClass(App, [{
+    _createClass(MapTypeControl, [{
         key: 'getControl',
         value: function getControl() {
             return new BMap.MapTypeControl(this.getOptions(this.options));
@@ -29109,10 +29111,10 @@ var App = function (_Control) {
         }
     }]);
 
-    return App;
+    return MapTypeControl;
 }(_control2.default);
 
-exports.default = App;
+exports.default = MapTypeControl;
 
 /***/ }),
 /* 196 */
@@ -29142,16 +29144,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Graphy) {
-    _inherits(App, _Graphy);
+var Circle = function (_Graphy) {
+    _inherits(Circle, _Graphy);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Circle(args) {
+        _classCallCheck(this, Circle);
 
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        return _possibleConstructorReturn(this, (Circle.__proto__ || Object.getPrototypeOf(Circle)).call(this, args));
     }
 
-    _createClass(App, [{
+    _createClass(Circle, [{
         key: 'getOverlay',
         value: function getOverlay() {
             var center = this.props.center;
@@ -29160,10 +29162,10 @@ var App = function (_Graphy) {
         }
     }]);
 
-    return App;
+    return Circle;
 }(_graphy2.default);
 
-exports.default = App;
+exports.default = Circle;
 
 /***/ }),
 /* 197 */
@@ -29796,19 +29798,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var Boundary = function (_Component) {
+    _inherits(Boundary, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Boundary(args) {
+        _classCallCheck(this, Boundary);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (Boundary.__proto__ || Object.getPrototypeOf(Boundary)).call(this, args));
 
         _this.state = {};
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(Boundary, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -29947,7 +29949,7 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return Boundary;
 }(_component2.default);
 
 exports.default = App;
@@ -30927,19 +30929,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var MapvLayer = function (_Component) {
+    _inherits(MapvLayer, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function MapvLayer(args) {
+        _classCallCheck(this, MapvLayer);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (MapvLayer.__proto__ || Object.getPrototypeOf(MapvLayer)).call(this, args));
 
         _this.state = {};
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(MapvLayer, [{
         key: 'handleClick',
         value: function handleClick(id) {
             this.props.onClick && this.props.onClick(id);
@@ -31001,10 +31003,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return MapvLayer;
 }(_component2.default);
 
-exports.default = App;
+exports.default = MapvLayer;
 
 /***/ }),
 /* 209 */
