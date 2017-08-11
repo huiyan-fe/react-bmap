@@ -18970,7 +18970,7 @@ var Map = function (_Component) {
                     this.map.centerAndZoom(center);
                 } else {
                     if (preCenter.lng != center.lng || preCenter.lat != center.lat) {
-                        this.map.panTo(new BMap.Point(center.lng, center.lat));
+                        this.map.setCenter(new BMap.Point(center.lng, center.lat));
                     }
                 }
             }
@@ -29952,7 +29952,7 @@ var Boundary = function (_Component) {
     return Boundary;
 }(_component2.default);
 
-exports.default = App;
+exports.default = Boundary;
 
 /***/ }),
 /* 203 */
@@ -30706,7 +30706,7 @@ var App = function (_Component) {
                 this.tileLayer = new BMap.TileLayer({
                     isTransparentPng: true
                 });
-                var scaler = Math.random(window.devicePixelRatio || 1);
+                var scaler = Math.round(window.devicePixelRatio || 1);
                 scaler = Math.min(2, scaler);
                 scaler = Math.max(1, scaler);
                 this.tileLayer.getTilesUrl = function (tileCoord, zoom) {

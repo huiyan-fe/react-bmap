@@ -36,7 +36,7 @@ export default class App extends Component {
             this.tileLayer = new BMap.TileLayer({
                 isTransparentPng: true
             });
-            let scaler = Math.random(window.devicePixelRatio || 1);
+            let scaler = Math.round(window.devicePixelRatio || 1);
             scaler = Math.min(2, scaler);
             scaler = Math.max(1, scaler);
             this.tileLayer.getTilesUrl = (tileCoord, zoom) => {

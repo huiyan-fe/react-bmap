@@ -105,7 +105,7 @@ export default class Map extends Component {
                 this.map.centerAndZoom(center);
             } else {
                 if (preCenter.lng != center.lng || preCenter.lat != center.lat) {
-                    this.map.panTo(new BMap.Point(center.lng, center.lat));
+                    this.map.setCenter(new BMap.Point(center.lng, center.lat));
                 }
             }
         }

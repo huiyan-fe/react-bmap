@@ -1,7 +1,7 @@
 import Component from './component';
 import {DataSet, baiduMapLayer} from 'mapv';
 
-class Boundary extends Component {
+export default class Boundary extends Component {
     constructor(args) {
         super(args);
         this.state = {
@@ -140,4 +140,3 @@ class Boundary extends Component {
     }
 }
 
-export default App;
