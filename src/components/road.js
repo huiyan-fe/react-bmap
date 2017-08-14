@@ -45,19 +45,26 @@ export default class App extends Component {
         var splitList = this.props.splitList;
         var data = {};
         var allPath = [];
-        for (var i = 0; i < category.length; i++) {
-            if (!data[category[i]]) {
-                data[category[i]] = {
-                    roadPath: [],
-                    color: splitList[category[i]]
-                };
+        if (category) {
+            for (var i = 0; i < category.length; i++) {
+                if (!data[category[i]]) {
+                    data[category[i]] = {
+                        roadPath: [],
+                        color: splitList[category[i]]
+                    };
+                }
+                allPath.push(roadPath[i]);
+                data[category[i]].roadPath.push(roadPath[i]);
             }
-            allPath.push(roadPath[i]);
-            data[category[i]].roadPath.push(roadPath[i]);
+        } else {
+            data[0] = {
+                roadPath: roadPath,
+                color: this.props.color || '#1495ff'
+            };
         }
         return {
             group: data,
-            allPath: geoUtils.mergeRoadPath(allPath)
+            allPath: geoUtils.mergeRoadPath(roadPath)
         };
     }
 
@@ -93,53 +100,40 @@ export default class App extends Component {
         var roadPath = this.props.roadPath;
 
         if (roadPath) {
-            if (this.props.category) {
-                var roadGroup = this.getRoadGroup();
-                var data = roadGroup.group;
+            var roadGroup = this.getRoadGroup();
+            var data = roadGroup.group;
 
-                mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
-                    color: '#fff',
-                    lineWidth: 14,
-                    lineCap: 'butt',
-                    arrow: false,
-                    line: true
-                });
+            mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
+                color: '#fff',
+                lineWidth: 14,
+                lineCap: 'butt',
+                arrow: false,
+                line: true
+            });
 
-                for (var key in data) {
-                    var item = data[key];
-                    var roadPath = geoUtils.mergeRoadPath(item.roadPath);
-                    mapLine.drawRoads(this.props.map, ctx, roadPath, {
-                        color: item.color,
-                        line: true,
-                        lineWidth: 10,
-                        lineCap: 'butt',
-                        arrow: false
-                    });
-                };
-
-                mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
-                    color: item.color,
-                    lineWidth: 10,
-                    border: {
-                    },
-                    lineCap: 'butt',
-                    arrow: {
-                        width: 5,
-                        height: 3
-                    }
-                });
-            } else {
+            for (var key in data) {
+                var item = data[key];
+                var roadPath = geoUtils.mergeRoadPath(item.roadPath);
                 mapLine.drawRoads(this.props.map, ctx, roadPath, {
-                    color: this.props.color || `#1495ff`,
-                    lineWidth: 12,
+                    color: item.color,
                     line: true,
+                    lineWidth: 10,
                     lineCap: 'butt',
-                    arrow: {
-                        width: 5,
-                        height: 3
-                    }
+                    arrow: false
                 });
-            }
+            };
+
+            mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
+                color: item.color,
+                lineWidth: 10,
+                border: {
+                },
+                lineCap: 'butt',
+                arrow: {
+                    width: 5,
+                    height: 3
+                }
+            });
         }
 
     }
