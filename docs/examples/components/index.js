@@ -9,6 +9,7 @@ import MapvMarkerList from './mapv-marker-list';
 import Road from './road';
 import Boundary from './boundary';
 import Control from './control';
+import DrivingRoute from './driving-route';
 import React from 'react';
 import {render} from 'react-dom';
 
@@ -35,6 +36,8 @@ const examples = (
     <Boundary />
     <h2>TrafficLayer 交通路况图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/traffic-layer.js">示例代码</a></h2>
     <TrafficLayer />
+    <h2>驾车组件<a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/driving-route.js">示例代码</a></h2>
+    <DrivingRoute />
   </div>
 )
 

@@ -43,3 +43,8 @@ export {default as Merge} from './utils/merge';
  * mapv图层
  */
 export {default as MapvLayer} from './components/mapv-layer';
+
+/**
+ * 服务组件
+ */
+export {default as DrivingRoute} from './components/driving-route';

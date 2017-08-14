@@ -173,6 +173,10 @@ export default class App extends Component {
             this.bindToggleMeghods(this.marker, this.toggleMethods);
         }
 
+        if (this.props.autoViewport) {
+            map.panTo(position);
+        }
+
 
     }
 
