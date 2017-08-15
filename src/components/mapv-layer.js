@@ -38,6 +38,13 @@ export default class MapvLayer extends Component {
             this.createLayers();
         }
 
+        if(this.props.options.autoViewport){
+            const points = this.props.data.map(item => {
+                return new BMap.Point(item.geometry.coordinates[0],item.geometry.coordinates[1])
+            });
+            map.setViewport(points,this.props.options.autoViewport);
+        }
+
         this.dataSet.set(this.props.data);
         this.layer.update({
             options: this.props.options

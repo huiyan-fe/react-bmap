@@ -13,7 +13,8 @@ export default class App extends Component {
                 shadowBlur: 30,
                 globalCompositeOperation: 'lighter',
                 size: 8,
-                draw: 'simple'
+                draw: 'simple',
+                autoViewport: {zoomFactor: 1}
             }} />
         </Map>
     }
