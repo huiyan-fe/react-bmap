@@ -14,7 +14,8 @@ export default class App extends Component {
                 globalCompositeOperation: 'lighter',
                 size: 8,
                 draw: 'simple',
-                autoViewport: {zoomFactor: 1}
+                autoViewport: true,
+                viewportOptions: {zoomFactor: 1}
             }} />
         </Map>
     }

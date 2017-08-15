@@ -31030,10 +31030,17 @@ var MapvLayer = function (_Component) {
             }
 
             if (this.props.options.autoViewport) {
-                var points = this.props.data.map(function (item) {
-                    return new BMap.Point(item.geometry.coordinates[0], item.geometry.coordinates[1]);
-                });
-                map.setViewport(points, this.props.options.autoViewport);
+                if (this.props.options.coordType === 'bd09mc') {
+                    var projection = map.getMapType().getProjection();
+                    var points = this.props.data.map(function (item) {
+                        return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0], item.geometry.coordinates[1]));
+                    });
+                } else {
+                    var points = this.props.data.map(function (item) {
+                        return new BMap.Point(item.geometry.coordinates[0], item.geometry.coordinates[1]);
+                    });
+                }
+                map.setViewport(points, this.props.options.viewportOptions);
             }
 
             this.dataSet.set(this.props.data);
@@ -31668,7 +31675,8 @@ var App = function (_Component) {
                         globalCompositeOperation: 'lighter',
                         size: 8,
                         draw: 'simple',
-                        autoViewport: { zoomFactor: 1 }
+                        autoViewport: true,
+                        viewportOptions: { zoomFactor: 1 }
                     } })
             );
         }

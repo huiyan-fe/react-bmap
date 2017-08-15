@@ -39,10 +39,17 @@ export default class MapvLayer extends Component {
         }
 
         if(this.props.options.autoViewport){
-            const points = this.props.data.map(item => {
-                return new BMap.Point(item.geometry.coordinates[0],item.geometry.coordinates[1])
-            });
-            map.setViewport(points,this.props.options.autoViewport);
+            if (this.props.options.coordType === 'bd09mc') {
+                var projection = map.getMapType().getProjection();
+                var points = this.props.data.map(item => {
+                    return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0],item.geometry.coordinates[1]));
+                });
+            } else {
+                var points = this.props.data.map(item => {
+                    return new BMap.Point(item.geometry.coordinates[0],item.geometry.coordinates[1])
+                });
+            }
+            map.setViewport(points,this.props.options.viewportOptions);
         }
 
         this.dataSet.set(this.props.data);
