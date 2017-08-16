@@ -344,43 +344,45 @@ var emptyFunction = __webpack_require__(13);
 var warning = emptyFunction;
 
 if (process.env.NODE_ENV !== 'production') {
-  var printWarning = function printWarning(format) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    var argIndex = 0;
-    var message = 'Warning: ' + format.replace(/%s/g, function () {
-      return args[argIndex++];
-    });
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-
-  warning = function warning(condition, format) {
-    if (format === undefined) {
-      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-    }
-
-    if (format.indexOf('Failed Composite propType: ') === 0) {
-      return; // Ignore CompositeComponent proptype check.
-    }
-
-    if (!condition) {
-      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        args[_key2 - 2] = arguments[_key2];
+  (function () {
+    var printWarning = function printWarning(format) {
+      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
       }
 
-      printWarning.apply(undefined, [format].concat(args));
-    }
-  };
+      var argIndex = 0;
+      var message = 'Warning: ' + format.replace(/%s/g, function () {
+        return args[argIndex++];
+      });
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    };
+
+    warning = function warning(condition, format) {
+      if (format === undefined) {
+        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+      }
+
+      if (format.indexOf('Failed Composite propType: ') === 0) {
+        return; // Ignore CompositeComponent proptype check.
+      }
+
+      if (!condition) {
+        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+          args[_key2 - 2] = arguments[_key2];
+        }
+
+        printWarning.apply(undefined, [format].concat(args));
+      }
+    };
+  })();
 }
 
 module.exports = warning;
@@ -3825,7 +3827,7 @@ module.exports = ReactInstanceMap;
 	(factory((global.mapv = global.mapv || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "2.0.16";
+var version = "2.0.17";
 
 /**
  * @author kyle / http://nikai.us/
@@ -8288,6 +8290,9 @@ var Layer = function (_BaseLayer) {
         var data = null;
         options = options || {};
 
+        _this.clickEvent = _this.clickEvent.bind(_this);
+        _this.mousemoveEvent = _this.mousemoveEvent.bind(_this);
+
         self.init(options);
         self.argCheck(options);
         self.transferToMercator();
@@ -8309,10 +8314,6 @@ var Layer = function (_BaseLayer) {
             canvasLayer.draw();
         });
 
-        _this.clickEvent = _this.clickEvent.bind(_this);
-        _this.mousemoveEvent = _this.mousemoveEvent.bind(_this);
-        _this.bindEvent();
-
         return _this;
     }
 
@@ -8331,6 +8332,7 @@ var Layer = function (_BaseLayer) {
     }, {
         key: "bindEvent",
         value: function bindEvent(e) {
+            this.unbindEvent();
             var map = this.map;
 
             if (this.options.methods) {
@@ -8508,6 +8510,7 @@ var Layer = function (_BaseLayer) {
             }
 
             this.initAnimator();
+            this.bindEvent();
         }
     }, {
         key: "addAnimatorEvent",
@@ -15299,11 +15302,18 @@ module.exports = ReactDefaultBatchingStrategy;
 
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * @typechecks
  */
@@ -19047,10 +19057,11 @@ var Map = function (_Component) {
 
             // 创建Map实例
             var options = this.options;
+            options = this.getOptions(options);
             if (this.props.enableMapClick !== true) {
                 options.enableMapClick = false;
             }
-            var map = new BMap.Map(this.refs.map, this.getOptions(options));
+            var map = new BMap.Map(this.refs.map, options);
 
             this.map = map;
 
@@ -31670,6 +31681,9 @@ var App = function (_Component) {
                 { mapStyle: { style: 'redalert' } },
                 _react2.default.createElement(_src.MapvLayer, { data: data, options: {
                         fillStyle: 'rgba(255, 250, 50, 0.8)',
+                        methods: { click: function click() {
+                                alert(1);
+                            } },
                         shadowColor: 'rgba(255, 250, 50, 1)',
                         shadowBlur: 30,
                         globalCompositeOperation: 'lighter',

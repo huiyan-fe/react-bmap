@@ -1,6 +1,6 @@
 {
   "name": "react-bmap",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "description": "react-bmap",
   "main": "lib/index.js",
   "contributors": [
@@ -38,6 +38,6 @@
     "react-dom": "^15.6.1"
   },
   "dependencies": {
-    "mapv": "^2.0.16"
+    "mapv": "^2.0.17"
   }
 }
