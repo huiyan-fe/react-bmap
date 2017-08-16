@@ -344,45 +344,43 @@ var emptyFunction = __webpack_require__(13);
 var warning = emptyFunction;
 
 if (process.env.NODE_ENV !== 'production') {
-  (function () {
-    var printWarning = function printWarning(format) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
+  var printWarning = function printWarning(format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function warning(condition, format) {
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
       }
 
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    };
-
-    warning = function warning(condition, format) {
-      if (format === undefined) {
-        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-      }
-
-      if (format.indexOf('Failed Composite propType: ') === 0) {
-        return; // Ignore CompositeComponent proptype check.
-      }
-
-      if (!condition) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          args[_key2 - 2] = arguments[_key2];
-        }
-
-        printWarning.apply(undefined, [format].concat(args));
-      }
-    };
-  })();
+      printWarning.apply(undefined, [format].concat(args));
+    }
+  };
 }
 
 module.exports = warning;
@@ -15302,18 +15300,11 @@ module.exports = ReactDefaultBatchingStrategy;
 
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
+ * All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @typechecks
  */
@@ -31042,13 +31033,22 @@ var MapvLayer = function (_Component) {
 
             if (this.props.options.autoViewport) {
                 if (this.props.options.coordType === 'bd09mc') {
+                    if (this.props.data[0].geometry.type === 'Point') {}
                     var projection = map.getMapType().getProjection();
                     var points = this.props.data.map(function (item) {
-                        return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0], item.geometry.coordinates[1]));
+                        if (item.geometry.type === 'Point') {
+                            return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0], item.geometry.coordinates[1]));
+                        } else if (item.geometry.type === 'Polygon') {
+                            return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0][0][0], item.geometry.coordinates[0][0][1]));
+                        }
                     });
                 } else {
                     var points = this.props.data.map(function (item) {
-                        return new BMap.Point(item.geometry.coordinates[0], item.geometry.coordinates[1]);
+                        if (item.geometry.type === 'Point') {
+                            return new BMap.Point(item.geometry.coordinates[0], item.geometry.coordinates[1]);
+                        } else if (item.geometry.type === 'Polygon') {
+                            return new BMap.Point(item.geometry.coordinates[0][0][0], item.geometry.coordinates[0][0][1]);
+                        }
                     });
                 }
                 map.setViewport(points, this.props.options.viewportOptions);

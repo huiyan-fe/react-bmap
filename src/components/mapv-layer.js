@@ -40,13 +40,24 @@ export default class MapvLayer extends Component {
 
         if(this.props.options.autoViewport){
             if (this.props.options.coordType === 'bd09mc') {
+                if(this.props.data[0].geometry.type==='Point'){
+
+                }
                 var projection = map.getMapType().getProjection();
                 var points = this.props.data.map(item => {
-                    return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0],item.geometry.coordinates[1]));
+                    if(item.geometry.type === 'Point'){
+                        return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0],item.geometry.coordinates[1]));
+                    } else if (item.geometry.type === 'Polygon') {
+                        return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0][0][0],item.geometry.coordinates[0][0][1]));
+                    }
                 });
             } else {
                 var points = this.props.data.map(item => {
-                    return new BMap.Point(item.geometry.coordinates[0],item.geometry.coordinates[1])
+                    if(item.geometry.type === 'Point'){
+                        return new BMap.Point(item.geometry.coordinates[0],item.geometry.coordinates[1]);
+                    } else if (item.geometry.type === 'Polygon') {
+                        return new BMap.Point(item.geometry.coordinates[0][0][0],item.geometry.coordinates[0][0][1]);
+                    }
                 });
             }
             map.setViewport(points,this.props.options.viewportOptions);
