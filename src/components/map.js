@@ -119,10 +119,11 @@ export default class Map extends Component {
 
         // 创建Map实例
         var options = this.options;
+        options = this.getOptions(options);
         if (this.props.enableMapClick !== true) {
             options.enableMapClick = false;
         }
-        var map = new BMap.Map(this.refs.map, this.getOptions(options));
+        var map = new BMap.Map(this.refs.map, options);
 
         this.map = map;
 
