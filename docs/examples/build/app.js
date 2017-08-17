@@ -31033,7 +31033,6 @@ var MapvLayer = function (_Component) {
 
             if (this.props.options.autoViewport) {
                 if (this.props.options.coordType === 'bd09mc') {
-                    if (this.props.data[0].geometry.type === 'Point') {}
                     var projection = map.getMapType().getProjection();
                     var points = this.props.data.map(function (item) {
                         if (item.geometry.type === 'Point') {
@@ -31681,8 +31680,8 @@ var App = function (_Component) {
                 { mapStyle: { style: 'redalert' } },
                 _react2.default.createElement(_src.MapvLayer, { data: data, options: {
                         fillStyle: 'rgba(255, 250, 50, 0.8)',
-                        methods: { click: function click() {
-                                alert(1);
+                        methods: { click: function click(item) {
+                                console.log(item);
                             } },
                         shadowColor: 'rgba(255, 250, 50, 1)',
                         shadowBlur: 30,
