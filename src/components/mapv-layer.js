@@ -40,9 +40,6 @@ export default class MapvLayer extends Component {
 
         if(this.props.options.autoViewport){
             if (this.props.options.coordType === 'bd09mc') {
-                if(this.props.data[0].geometry.type==='Point'){
-
-                }
                 var projection = map.getMapType().getProjection();
                 var points = this.props.data.map(item => {
                     if(item.geometry.type === 'Point'){

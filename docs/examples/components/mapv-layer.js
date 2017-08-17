@@ -9,7 +9,7 @@ export default class App extends Component {
         return <Map mapStyle={{style: 'redalert'}}>
             <MapvLayer data={data} options={{
                 fillStyle: 'rgba(255, 250, 50, 0.8)',
-                methods: {click: ()=>{alert(1)}},
+                methods: {click: (item)=>{console.log(item)}},
                 shadowColor: 'rgba(255, 250, 50, 1)',
                 shadowBlur: 30,
                 globalCompositeOperation: 'lighter',
