@@ -19354,6 +19354,10 @@ var App = function (_Component) {
             if (this.props.autoViewport) {
                 map.panTo(position);
             }
+
+            if (this.props.autoCenterAndZoom) {
+                map.setViewport([position], this.props.centerAndZoomOptions);
+            }
         }
     }, {
         key: 'events',

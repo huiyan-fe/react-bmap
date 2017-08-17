@@ -177,7 +177,9 @@ export default class App extends Component {
             map.panTo(position);
         }
 
-
+        if(this.props.autoCenterAndZoom) {
+            map.setViewport([position],this.props.centerAndZoomOptions);
+        }
     }
 
 }
