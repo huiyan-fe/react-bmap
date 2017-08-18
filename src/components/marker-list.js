@@ -131,20 +131,17 @@ export default class App extends Component {
                     point: point,
                     fillStyle: fillStyle,
                     isShowShadow: this.props.isShowShadow,
-                    size: 10,
+                    size: 26,
                     zIndex: data.length - i,
                     number: i + 1
                 }
 
-                if (i < 10) {
-                    options.size = 26;
-                    if (this.props.multiple) {
-                        options.size = 20;
-                        options.lineWidth = 0;
-                    }
-                } else {
-                    options.isShowNumber = false;
-                    if (this.props.multiple) {
+                if (this.props.multiple) {
+                    options.size = 20;
+                    options.lineWidth = 0;
+                    if (i >= 10) {
+                        options.isShowNumber = false;
+                        options.size = 10;
                         options.strokeStyle = fillStyle;
                         options.lineWidth = 3;
                         options.strokeOpacity = 0.4;
