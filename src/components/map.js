@@ -156,11 +156,17 @@ export default class Map extends Component {
 
         const {children} = this.props;
 
-        if (!children) return;
+        if (!children || !this.map) return;
 
-        return React.Children.map(children, c => {
-            if (c) {
-                return React.cloneElement(c, {
+        return React.Children.map(children, child => {
+
+            // dom元素，自定义组件
+            if (typeof child.type === 'string') {
+                return child;
+            }
+
+            if (child) {
+                return React.cloneElement(child, {
                     map: this.map
                 });
             }
@@ -169,8 +175,15 @@ export default class Map extends Component {
     }
 
     render() {
+        var style = {
+            height: '100%',
+            position: 'relative'
+        };
+        for (var key in this.props.style) {
+            style[key] = this.props.style[key];
+        }
         return (
-            <div style={{height: '100%'}} style={this.props.style}>
+            <div style={style}>
                 <div ref='map' className={this.props.className} style={{height: '100%'}}>
                  加载地图中...
                 </div>

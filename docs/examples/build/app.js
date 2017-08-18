@@ -344,43 +344,45 @@ var emptyFunction = __webpack_require__(13);
 var warning = emptyFunction;
 
 if (process.env.NODE_ENV !== 'production') {
-  var printWarning = function printWarning(format) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    var argIndex = 0;
-    var message = 'Warning: ' + format.replace(/%s/g, function () {
-      return args[argIndex++];
-    });
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-
-  warning = function warning(condition, format) {
-    if (format === undefined) {
-      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-    }
-
-    if (format.indexOf('Failed Composite propType: ') === 0) {
-      return; // Ignore CompositeComponent proptype check.
-    }
-
-    if (!condition) {
-      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        args[_key2 - 2] = arguments[_key2];
+  (function () {
+    var printWarning = function printWarning(format) {
+      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
       }
 
-      printWarning.apply(undefined, [format].concat(args));
-    }
-  };
+      var argIndex = 0;
+      var message = 'Warning: ' + format.replace(/%s/g, function () {
+        return args[argIndex++];
+      });
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    };
+
+    warning = function warning(condition, format) {
+      if (format === undefined) {
+        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+      }
+
+      if (format.indexOf('Failed Composite propType: ') === 0) {
+        return; // Ignore CompositeComponent proptype check.
+      }
+
+      if (!condition) {
+        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+          args[_key2 - 2] = arguments[_key2];
+        }
+
+        printWarning.apply(undefined, [format].concat(args));
+      }
+    };
+  })();
 }
 
 module.exports = warning;
@@ -15300,11 +15302,18 @@ module.exports = ReactDefaultBatchingStrategy;
 
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * @typechecks
  */
@@ -16463,6 +16472,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// 自定义组件
+function CustomComponent(props) {
+    console.log('获取map对象', props.map);
+    return _react2.default.createElement(
+        'div',
+        { style: { position: 'absolute', left: '0', top: '0', color: 'white' } },
+        '\u81EA\u5B9A\u4E49\u7EC4\u4EF6'
+    );
+}
+
 var App = function (_Component) {
     _inherits(App, _Component);
 
@@ -16484,14 +16503,18 @@ var App = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            return _react2.default.createElement(_src.Map, {
-                style: { height: '250px' },
-                enableScrollWheelZoom: false,
-                center: { lng: '116.403981', lat: '39.927773' },
-                zoom: '13',
-                mapStyle: { style: 'midnight' } // 个性化底图配置
-                , events: this.getEvents() // 为地图添加各类监听事件
-            });
+            return _react2.default.createElement(
+                _src.Map,
+                {
+                    style: { height: '250px' },
+                    enableScrollWheelZoom: false,
+                    center: { lng: '116.403981', lat: '39.927773' },
+                    zoom: '13',
+                    mapStyle: { style: 'midnight' } // 个性化底图配置
+                    , events: this.getEvents() // 为地图添加各类监听事件
+                },
+                _react2.default.createElement(CustomComponent, null)
+            );
         }
     }]);
 
@@ -18990,8 +19013,6 @@ var _common = __webpack_require__(112);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -19089,11 +19110,17 @@ var Map = function (_Component) {
             var children = this.props.children;
 
 
-            if (!children) return;
+            if (!children || !this.map) return;
 
-            return _react2.default.Children.map(children, function (c) {
-                if (c) {
-                    return _react2.default.cloneElement(c, {
+            return _react2.default.Children.map(children, function (child) {
+
+                // dom元素，自定义组件
+                if (typeof child.type === 'string') {
+                    return child;
+                }
+
+                if (child) {
+                    return _react2.default.cloneElement(child, {
                         map: _this3.map
                     });
                 }
@@ -19102,9 +19129,16 @@ var Map = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
+            var style = {
+                height: '100%',
+                position: 'relative'
+            };
+            for (var key in this.props.style) {
+                style[key] = this.props.style[key];
+            }
             return _react2.default.createElement(
                 'div',
-                _defineProperty({ style: { height: '100%' } }, 'style', this.props.style),
+                { style: style },
                 _react2.default.createElement(
                     'div',
                     { ref: 'map', className: this.props.className, style: { height: '100%' } },
@@ -30182,20 +30216,17 @@ var App = function (_Component) {
                         point: point,
                         fillStyle: fillStyle,
                         isShowShadow: this.props.isShowShadow,
-                        size: 10,
+                        size: 26,
                         zIndex: data.length - i,
                         number: i + 1
                     };
 
-                    if (i < 10) {
-                        options.size = 26;
-                        if (this.props.multiple) {
-                            options.size = 20;
-                            options.lineWidth = 0;
-                        }
-                    } else {
-                        options.isShowNumber = false;
-                        if (this.props.multiple) {
+                    if (this.props.multiple) {
+                        options.size = 20;
+                        options.lineWidth = 0;
+                        if (i >= 10) {
+                            options.isShowNumber = false;
+                            options.size = 10;
                             options.strokeStyle = fillStyle;
                             options.lineWidth = 3;
                             options.strokeOpacity = 0.4;
@@ -31314,6 +31345,11 @@ var App = function (_Component) {
                             { style: { width: '150px', height: '40px', lineHeight: '40px', background: 'red', textAlign: 'center' } },
                             '\u81EA\u5B9A\u4E49\u8986\u76D6\u7269'
                         )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { style: { position: 'absolute', left: '10px', top: '10px', color: 'white' } },
+                        '\u81EA\u5B9A\u4E49\u7EC4\u4EF6'
                     ),
                     _react2.default.createElement(_src.Marker, { position: { lng: 109.430831, lat: 38.211366 } })
                 ),

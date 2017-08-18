@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 import {simpleMapStyle} from './mapstyle';
 import {Map} from '../../../src';
 
+// 自定义组件
+function CustomComponent(props) {
+    console.log('获取map对象', props.map);
+    return <div style={{position: 'absolute', left: '0', top: '0',  color: 'white'}}>自定义组件</div>;
+}
+
 export default class App extends Component {
     getEvents() {
         return {
@@ -19,7 +25,9 @@ export default class App extends Component {
             zoom='13' 
             mapStyle={{style: 'midnight'}} // 个性化底图配置
             events={this.getEvents()} // 为地图添加各类监听事件
-        />;
+        >
+            <CustomComponent />
+        </Map>
     }
 }
 
