@@ -84,7 +84,26 @@ export default class App extends Component {
                     update(this);
                 }
             });
-        }
+            if (this.props.onClick) {
+                map.addEventListener('click', (e) => {
+                    const ctx = this.canvasLayer.canvas.getContext('2d');
+                    var roadGroup = this.getRoadGroup();
+                    ctx.beginPath();
+                    mapLine.drawRoads(map, ctx, roadGroup.allPath, {
+                        color: '#fff',
+                        lineWidth: 14,
+                        lineCap: 'butt',
+                        arrow: false,
+                        line: false
+                    });
+                    ctx.lineWidth = 16;
+                    var isPointInStroke = ctx.isPointInStroke(e.pixel.x * window.devicePixelRatio, e.pixel.y * window.devicePixelRatio);
+                    if (isPointInStroke) {
+                        this.props.onClick(); 
+                    }
+                });
+            }
+            }
 
         this.updateViewport();
         

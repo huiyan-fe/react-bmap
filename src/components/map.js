@@ -161,9 +161,9 @@ export default class Map extends Component {
         return React.Children.map(children, child => {
 
             // dom元素，自定义组件
-            if (typeof child.type === 'string') {
-                return child;
-            }
+            // if (typeof child.type === 'string') {
+            //     return child;
+            // }
 
             if (child) {
                 return React.cloneElement(child, {

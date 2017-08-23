@@ -19115,9 +19115,9 @@ var Map = function (_Component) {
             return _react2.default.Children.map(children, function (child) {
 
                 // dom元素，自定义组件
-                if (typeof child.type === 'string') {
-                    return child;
-                }
+                // if (typeof child.type === 'string') {
+                //     return child;
+                // }
 
                 if (child) {
                     return _react2.default.cloneElement(child, {
@@ -29492,6 +29492,8 @@ var App = function (_Component) {
     }, {
         key: 'initialize',
         value: function initialize() {
+            var _this2 = this;
+
             var map = this.props.map;
             if (!map) {
                 return;
@@ -29507,6 +29509,25 @@ var App = function (_Component) {
                         _update(this);
                     }
                 });
+                if (this.props.onClick) {
+                    map.addEventListener('click', function (e) {
+                        var ctx = _this2.canvasLayer.canvas.getContext('2d');
+                        var roadGroup = _this2.getRoadGroup();
+                        ctx.beginPath();
+                        _mapLine2.default.drawRoads(map, ctx, roadGroup.allPath, {
+                            color: '#fff',
+                            lineWidth: 14,
+                            lineCap: 'butt',
+                            arrow: false,
+                            line: false
+                        });
+                        ctx.lineWidth = 16;
+                        var isPointInStroke = ctx.isPointInStroke(e.pixel.x * window.devicePixelRatio, e.pixel.y * window.devicePixelRatio);
+                        if (isPointInStroke) {
+                            _this2.props.onClick();
+                        }
+                    });
+                }
             }
 
             this.updateViewport();
@@ -31338,6 +31359,11 @@ var App = function (_Component) {
                     _src.Map,
                     { mapStyle: _mapstyle.simpleMapStyle },
                     _react2.default.createElement(
+                        'div',
+                        { style: { position: 'absolute', left: '10px', top: '10px', color: 'red' } },
+                        '\u81EA\u5B9A\u4E49\u7EC4\u4EF6'
+                    ),
+                    _react2.default.createElement(
                         _src.Marker,
                         { position: { lng: 109.430831, lat: 38.211366 }, offset: new BMap.Size(-75, -60) },
                         _react2.default.createElement(
@@ -31345,11 +31371,6 @@ var App = function (_Component) {
                             { style: { width: '150px', height: '40px', lineHeight: '40px', background: 'red', textAlign: 'center' } },
                             '\u81EA\u5B9A\u4E49\u8986\u76D6\u7269'
                         )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { style: { position: 'absolute', left: '10px', top: '10px', color: 'white' } },
-                        '\u81EA\u5B9A\u4E49\u7EC4\u4EF6'
                     ),
                     _react2.default.createElement(_src.Marker, { position: { lng: 109.430831, lat: 38.211366 } })
                 ),
