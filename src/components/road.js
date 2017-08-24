@@ -20,18 +20,28 @@ export default class App extends Component {
 
     }
 
+    getRoadPoints(roadPath) {
+        var points = [];
+        for (var i = 0; i < roadPath.length; i++) {
+            var tmp = roadPath[i].split(',');
+            for (var j = 0; j < tmp.length; j += 2) {
+                points.push(new BMap.Point(tmp[j], tmp[j + 1]));
+            }
+        }
+        return points;
+    }
+
     updateViewport() {
 
         var roadPath = this.props.roadPath;
-
         var points = [];
-        if (roadPath) {
-            for (var i = 0; i < roadPath.length; i++) {
-                var tmp = roadPath[i].split(',');
-                for (var j = 0; j < tmp.length; j += 2) {
-                    points.push(new BMap.Point(tmp[j], tmp[j + 1]));
-                }
-            }
+
+        if (this.props.roadPaths) {
+            this.props.roadPaths.forEach((roadPath) => {
+                points = points.concat(this.getRoadPoints(roadPath));
+            });
+        } else if (this.props.roadPath) {
+            points = points.concat(this.getRoadPoints(this.props.roadPath));
         }
 
         if (points.length > 0 && this.props.autoViewport !== false) {
@@ -39,10 +49,10 @@ export default class App extends Component {
         }
     }
 
-    getRoadGroup() {
-        var roadPath = this.props.roadPath;
-        var category = this.props.category;
-        var splitList = this.props.splitList;
+    getRoadGroup(roadPath, category, splitList) {
+        var roadPath = roadPath;
+        var category = category;
+        var splitList = splitList;
         var data = {};
         var allPath = [];
         if (category) {
@@ -68,6 +78,22 @@ export default class App extends Component {
         };
     }
 
+    isClick(map, pixel, roadPath) {
+        const ctx = this.canvasLayer.canvas.getContext('2d');
+        var roadGroup = this.getRoadGroup(roadPath);
+        ctx.beginPath();
+        mapLine.drawRoads(map, ctx, roadGroup.allPath, {
+            color: '#fff',
+            lineWidth: 14,
+            lineCap: 'butt',
+            arrow: false,
+            line: false
+        });
+        ctx.lineWidth = 16;
+        var isPointInStroke = ctx.isPointInStroke(pixel.x * window.devicePixelRatio, pixel.y * window.devicePixelRatio);
+        return isPointInStroke;
+    }
+
     initialize() {
         var map = this.props.map;
         if (!map) {
@@ -86,21 +112,26 @@ export default class App extends Component {
             });
             if (this.props.onClick) {
                 map.addEventListener('click', (e) => {
-                    const ctx = this.canvasLayer.canvas.getContext('2d');
-                    var roadGroup = this.getRoadGroup();
-                    ctx.beginPath();
-                    mapLine.drawRoads(map, ctx, roadGroup.allPath, {
-                        color: '#fff',
-                        lineWidth: 14,
-                        lineCap: 'butt',
-                        arrow: false,
-                        line: false
-                    });
-                    ctx.lineWidth = 16;
-                    var isPointInStroke = ctx.isPointInStroke(e.pixel.x * window.devicePixelRatio, e.pixel.y * window.devicePixelRatio);
-                    if (isPointInStroke) {
-                        this.props.onClick(); 
+
+                    var isClick = false;
+                    if (this.props.roadPaths) {
+                        for (var i = 0; i < this.props.roadPaths.length; i++) {
+                            var roadPath = this.props.roadPaths[i];
+                            isClick = this.isClick(map, e.pixel, roadPath);
+                            if (isClick) {
+                                this.props.onClick(i); 
+                            }
+                        };
+                    } else if (this.props.roadPath) {
+                        isClick = this.isClick(map, e.pixel, this.props.roadPath);
+                        if (isClick) {
+                            this.props.onClick(); 
+                        }
                     }
+
+
+
+                    
                 });
             }
             }
@@ -117,44 +148,53 @@ export default class App extends Component {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         var roadPath = this.props.roadPath;
+        var roadPaths = this.props.roadPaths;
 
-        if (roadPath) {
-            var roadGroup = this.getRoadGroup();
-            var data = roadGroup.group;
-
-            mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
-                color: '#fff',
-                lineWidth: 14,
-                lineCap: 'butt',
-                arrow: false,
-                line: true
+        if (roadPaths) {
+            roadPaths.forEach((roadPath) => {
+                this.drawRoad(ctx, roadPath, this.props.category, this.props.splitList);
             });
-
-            for (var key in data) {
-                var item = data[key];
-                var roadPath = geoUtils.mergeRoadPath(item.roadPath);
-                mapLine.drawRoads(this.props.map, ctx, roadPath, {
-                    color: item.color,
-                    line: true,
-                    lineWidth: 10,
-                    lineCap: 'butt',
-                    arrow: false
-                });
-            };
-
-            mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
-                color: item.color,
-                lineWidth: 10,
-                border: {
-                },
-                lineCap: 'butt',
-                arrow: {
-                    width: 5,
-                    height: 3
-                }
-            });
+        } else if(roadPath) {
+            this.drawRoad(ctx, this.props.roadPath, this.props.category, this.props.splitList);
         }
 
+    }
+
+    drawRoad(ctx, roadPath, category, splitList) {
+        var roadGroup = this.getRoadGroup(roadPath, category, splitList);
+        var data = roadGroup.group;
+
+        mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
+            color: '#fff',
+            lineWidth: 14,
+            lineCap: 'butt',
+            arrow: false,
+            line: true
+        });
+
+        for (var key in data) {
+            var item = data[key];
+            var roadPath = geoUtils.mergeRoadPath(item.roadPath);
+            mapLine.drawRoads(this.props.map, ctx, roadPath, {
+                color: item.color,
+                line: true,
+                lineWidth: 10,
+                lineCap: 'butt',
+                arrow: false
+            });
+        };
+
+        mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
+            color: item.color,
+            lineWidth: 10,
+            border: {
+            },
+            lineCap: 'butt',
+            arrow: {
+                width: 5,
+                height: 3
+            }
+        });
     }
 
     componentDidMount() {

@@ -29440,19 +29440,31 @@ var App = function (_Component) {
             this.initialize();
         }
     }, {
+        key: 'getRoadPoints',
+        value: function getRoadPoints(roadPath) {
+            var points = [];
+            for (var i = 0; i < roadPath.length; i++) {
+                var tmp = roadPath[i].split(',');
+                for (var j = 0; j < tmp.length; j += 2) {
+                    points.push(new BMap.Point(tmp[j], tmp[j + 1]));
+                }
+            }
+            return points;
+        }
+    }, {
         key: 'updateViewport',
         value: function updateViewport() {
+            var _this2 = this;
 
             var roadPath = this.props.roadPath;
-
             var points = [];
-            if (roadPath) {
-                for (var i = 0; i < roadPath.length; i++) {
-                    var tmp = roadPath[i].split(',');
-                    for (var j = 0; j < tmp.length; j += 2) {
-                        points.push(new BMap.Point(tmp[j], tmp[j + 1]));
-                    }
-                }
+
+            if (this.props.roadPaths) {
+                this.props.roadPaths.forEach(function (roadPath) {
+                    points = points.concat(_this2.getRoadPoints(roadPath));
+                });
+            } else if (this.props.roadPath) {
+                points = points.concat(this.getRoadPoints(this.props.roadPath));
             }
 
             if (points.length > 0 && this.props.autoViewport !== false) {
@@ -29461,10 +29473,10 @@ var App = function (_Component) {
         }
     }, {
         key: 'getRoadGroup',
-        value: function getRoadGroup() {
-            var roadPath = this.props.roadPath;
-            var category = this.props.category;
-            var splitList = this.props.splitList;
+        value: function getRoadGroup(roadPath, category, splitList) {
+            var roadPath = roadPath;
+            var category = category;
+            var splitList = splitList;
             var data = {};
             var allPath = [];
             if (category) {
@@ -29490,9 +29502,26 @@ var App = function (_Component) {
             };
         }
     }, {
+        key: 'isClick',
+        value: function isClick(map, pixel, roadPath) {
+            var ctx = this.canvasLayer.canvas.getContext('2d');
+            var roadGroup = this.getRoadGroup(roadPath);
+            ctx.beginPath();
+            _mapLine2.default.drawRoads(map, ctx, roadGroup.allPath, {
+                color: '#fff',
+                lineWidth: 14,
+                lineCap: 'butt',
+                arrow: false,
+                line: false
+            });
+            ctx.lineWidth = 16;
+            var isPointInStroke = ctx.isPointInStroke(pixel.x * window.devicePixelRatio, pixel.y * window.devicePixelRatio);
+            return isPointInStroke;
+        }
+    }, {
         key: 'initialize',
         value: function initialize() {
-            var _this2 = this;
+            var _this3 = this;
 
             var map = this.props.map;
             if (!map) {
@@ -29511,20 +29540,21 @@ var App = function (_Component) {
                 });
                 if (this.props.onClick) {
                     map.addEventListener('click', function (e) {
-                        var ctx = _this2.canvasLayer.canvas.getContext('2d');
-                        var roadGroup = _this2.getRoadGroup();
-                        ctx.beginPath();
-                        _mapLine2.default.drawRoads(map, ctx, roadGroup.allPath, {
-                            color: '#fff',
-                            lineWidth: 14,
-                            lineCap: 'butt',
-                            arrow: false,
-                            line: false
-                        });
-                        ctx.lineWidth = 16;
-                        var isPointInStroke = ctx.isPointInStroke(e.pixel.x * window.devicePixelRatio, e.pixel.y * window.devicePixelRatio);
-                        if (isPointInStroke) {
-                            _this2.props.onClick();
+
+                        var isClick = false;
+                        if (_this3.props.roadPaths) {
+                            for (var i = 0; i < _this3.props.roadPaths.length; i++) {
+                                var roadPath = _this3.props.roadPaths[i];
+                                isClick = _this3.isClick(map, e.pixel, roadPath);
+                                if (isClick) {
+                                    _this3.props.onClick(i);
+                                }
+                            };
+                        } else if (_this3.props.roadPath) {
+                            isClick = _this3.isClick(map, e.pixel, _this3.props.roadPath);
+                            if (isClick) {
+                                _this3.props.onClick();
+                            }
                         }
                     });
                 }
@@ -29535,6 +29565,8 @@ var App = function (_Component) {
     }, {
         key: 'canvasLayerUpdate',
         value: function canvasLayerUpdate(canvasLayer) {
+            var _this4 = this;
+
             var ctx = canvasLayer.canvas.getContext('2d');
             if (!ctx) {
                 return false;
@@ -29542,42 +29574,52 @@ var App = function (_Component) {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
             var roadPath = this.props.roadPath;
+            var roadPaths = this.props.roadPaths;
 
-            if (roadPath) {
-                var roadGroup = this.getRoadGroup();
-                var data = roadGroup.group;
-
-                _mapLine2.default.drawRoads(this.props.map, ctx, roadGroup.allPath, {
-                    color: '#fff',
-                    lineWidth: 14,
-                    lineCap: 'butt',
-                    arrow: false,
-                    line: true
+            if (roadPaths) {
+                roadPaths.forEach(function (roadPath) {
+                    _this4.drawRoad(ctx, roadPath, _this4.props.category, _this4.props.splitList);
                 });
-
-                for (var key in data) {
-                    var item = data[key];
-                    var roadPath = _geoUtils2.default.mergeRoadPath(item.roadPath);
-                    _mapLine2.default.drawRoads(this.props.map, ctx, roadPath, {
-                        color: item.color,
-                        line: true,
-                        lineWidth: 10,
-                        lineCap: 'butt',
-                        arrow: false
-                    });
-                };
-
-                _mapLine2.default.drawRoads(this.props.map, ctx, roadGroup.allPath, {
-                    color: item.color,
-                    lineWidth: 10,
-                    border: {},
-                    lineCap: 'butt',
-                    arrow: {
-                        width: 5,
-                        height: 3
-                    }
-                });
+            } else if (roadPath) {
+                this.drawRoad(ctx, this.props.roadPath, this.props.category, this.props.splitList);
             }
+        }
+    }, {
+        key: 'drawRoad',
+        value: function drawRoad(ctx, roadPath, category, splitList) {
+            var roadGroup = this.getRoadGroup(roadPath, category, splitList);
+            var data = roadGroup.group;
+
+            _mapLine2.default.drawRoads(this.props.map, ctx, roadGroup.allPath, {
+                color: '#fff',
+                lineWidth: 14,
+                lineCap: 'butt',
+                arrow: false,
+                line: true
+            });
+
+            for (var key in data) {
+                var item = data[key];
+                var roadPath = _geoUtils2.default.mergeRoadPath(item.roadPath);
+                _mapLine2.default.drawRoads(this.props.map, ctx, roadPath, {
+                    color: item.color,
+                    line: true,
+                    lineWidth: 10,
+                    lineCap: 'butt',
+                    arrow: false
+                });
+            };
+
+            _mapLine2.default.drawRoads(this.props.map, ctx, roadGroup.allPath, {
+                color: item.color,
+                lineWidth: 10,
+                border: {},
+                lineCap: 'butt',
+                arrow: {
+                    width: 5,
+                    height: 3
+                }
+            });
         }
     }, {
         key: 'componentDidMount',
@@ -31896,7 +31938,10 @@ var App = function (_Component) {
                 //    3: '#ff5e47'
                 //}} 
                 , { color: '#1495ff',
-                    roadPath: ["116.488838,39.911212,116.489818,39.911292,116.490838,39.911387", "116.490838,39.911387,116.491164,39.911424,116.491454,39.911463,116.491707,39.911499,116.491926,39.911536,116.492145,39.911582,116.492374,39.911637,116.492781,39.911755,116.493174,39.911884,116.493791,39.912089,116.494033,39.91217,116.494171,39.912216", "116.494171,39.912216,116.494771,39.912415,116.495098,39.912526,116.495156,39.912544,116.495428,39.912634,116.49559,39.912688,116.4958,39.912758,116.496114,39.912863,116.496263,39.912913,116.496354,39.912943,116.496514,39.912997,116.496613,39.913029,116.496777,39.913084", "116.496777,39.913084,116.496997,39.913158,116.497585,39.913355", "116.497585,39.913355,116.497732,39.913434,116.498083,39.913551,116.498295,39.913652,116.49836,39.913686,116.498457,39.913737,116.498528,39.913779,116.498601,39.913832,116.498694,39.913925,116.498763,39.914018,116.498811,39.914114,116.498817,39.914134,116.498848,39.914243,116.498865,39.914342,116.498871,39.914375,116.498884,39.914527,116.498879,39.914676,116.498871,39.91473,116.498858,39.91482,116.498842,39.914863,116.49881,39.914955,116.498736,39.915081,116.498631,39.915198,116.498495,39.915309,116.498321,39.915415,116.498089,39.915526,116.497796,39.915617,116.497515,39.915734,116.497409,39.915771,116.497312,39.915814,116.497199,39.915898,116.497065,39.916021,116.496761,39.916372", "116.496761,39.916372,116.49673,39.916463", "116.49673,39.916463,116.496729,39.916465,116.496689,39.916608,116.496668,39.916691", "116.496668,39.916691,116.496647,39.916774", "116.496647,39.916774,116.496604,39.916953,116.496585,39.917192,116.49654,39.917395,116.496522,39.917438,116.496496,39.917537"]
+                    roadPath: ["116.488838,39.911212,116.489818,39.911292,116.490838,39.911387", "116.490838,39.911387,116.491164,39.911424,116.491454,39.911463,116.491707,39.911499,116.491926,39.911536,116.492145,39.911582,116.492374,39.911637,116.492781,39.911755,116.493174,39.911884,116.493791,39.912089,116.494033,39.91217,116.494171,39.912216", "116.494171,39.912216,116.494771,39.912415,116.495098,39.912526,116.495156,39.912544,116.495428,39.912634,116.49559,39.912688,116.4958,39.912758,116.496114,39.912863,116.496263,39.912913,116.496354,39.912943,116.496514,39.912997,116.496613,39.913029,116.496777,39.913084", "116.496777,39.913084,116.496997,39.913158,116.497585,39.913355", "116.497585,39.913355,116.497732,39.913434,116.498083,39.913551,116.498295,39.913652,116.49836,39.913686,116.498457,39.913737,116.498528,39.913779,116.498601,39.913832,116.498694,39.913925,116.498763,39.914018,116.498811,39.914114,116.498817,39.914134,116.498848,39.914243,116.498865,39.914342,116.498871,39.914375,116.498884,39.914527,116.498879,39.914676,116.498871,39.91473,116.498858,39.91482,116.498842,39.914863,116.49881,39.914955,116.498736,39.915081,116.498631,39.915198,116.498495,39.915309,116.498321,39.915415,116.498089,39.915526,116.497796,39.915617,116.497515,39.915734,116.497409,39.915771,116.497312,39.915814,116.497199,39.915898,116.497065,39.916021,116.496761,39.916372", "116.496761,39.916372,116.49673,39.916463", "116.49673,39.916463,116.496729,39.916465,116.496689,39.916608,116.496668,39.916691", "116.496668,39.916691,116.496647,39.916774", "116.496647,39.916774,116.496604,39.916953,116.496585,39.917192,116.49654,39.917395,116.496522,39.917438,116.496496,39.917537"],
+                    onClick: function onClick(index) {
+                        console.log(index);
+                    }
                 })
             );
         }
