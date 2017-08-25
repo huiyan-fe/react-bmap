@@ -102,7 +102,9 @@ export default class Map extends Component {
         var center = this.props.center;
         if (preCenter && center) {
             if (isString(center)) { // 可以传入城市名
-                this.map.centerAndZoom(center);
+                if (preCenter != center) {
+                    this.map.centerAndZoom(center);
+                }
             } else {
                 if (preCenter.lng != center.lng || preCenter.lat != center.lat) {
                     this.map.setCenter(new BMap.Point(center.lng, center.lat));
