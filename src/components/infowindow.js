@@ -21,6 +21,7 @@ export default class Infowindow extends Component {
     }
 
     componentWillUnmount() {
+        this.destroy();
     }
 
     destroy() {

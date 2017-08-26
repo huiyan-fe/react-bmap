@@ -45,6 +45,11 @@ var markers = [
     },
 ];
 
+const CustomControl = (props) => {
+    let map = props.map;
+    return <div onClick={()=>{map.setZoom(map.getZoom() + 2)}} style={{position: 'absolute', right: '10px', top: '10px',  color: 'white', background: 'blue'}}>放大2级</div>
+}
+
 export default class App extends Component {
     render() {
         return <div>
@@ -65,7 +70,8 @@ export default class App extends Component {
             <Marker position={{lng: 109.430831, lat: 38.211366}} icon="end" />
         </Map>
         <Map mapStyle={simpleMapStyle}>
-            <div style={{position: 'absolute', left: '10px', top: '10px',  color: 'red'}}>自定义组件</div>
+            <div style={{position: 'absolute', left: '10px', top: '10px',  color: 'white', background: 'blue'}}>自定义组件</div>
+            <CustomControl />
             <Marker position={{lng: 109.430831, lat: 38.211366}} offset={new BMap.Size(-75, -60)}>
                 <div style={{width: '150px', height: '40px', lineHeight: '40px', background: 'red', textAlign: 'center'}}>自定义覆盖物</div>
             </Marker>
