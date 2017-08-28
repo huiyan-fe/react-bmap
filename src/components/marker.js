@@ -3,9 +3,10 @@
  * @author kyle(hinikai@gmail.com)
  */
 
+import React from 'react';
+import { render } from 'react-dom';
 import Component from './component';
 import CustomOverlay from '../overlay/CustomOverlay';
-import ReactDOMServer from 'react-dom/server'
 
 const defaultIconUrl = 'http://webmap1.map.bdstatic.com/wolfman/static/common/images/markers_new2x_fbb9e99.png';
 
@@ -126,11 +127,6 @@ export default class App extends Component {
         this.marker = null;
     }
 
-    renderChildren() {
-        const {children} = this.props;
-        return ReactDOMServer.renderToString(children);
-    }
-
     initialize() {
 
         var map = this.props.map;
@@ -161,7 +157,10 @@ export default class App extends Component {
         }
 
         if ('children' in this.props) {
-            this.marker = new CustomOverlay(position, this.renderChildren(), this.props.offset);
+            this.contentDom = document.createElement('div');
+            const child = this.props.children;
+            render(<div>{child}</div>, this.contentDom)
+            this.marker = new CustomOverlay(position, this.contentDom, this.props.offset);
             map.addOverlay(this.marker);
         } else {
             var options = this.getOptions(this.options);

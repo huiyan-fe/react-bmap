@@ -73,7 +73,7 @@ export default class App extends Component {
             <div style={{position: 'absolute', left: '10px', top: '10px',  color: 'white', background: 'blue'}}>自定义组件</div>
             <CustomControl />
             <Marker position={{lng: 109.430831, lat: 38.211366}} offset={new BMap.Size(-75, -60)}>
-                <div style={{width: '150px', height: '40px', lineHeight: '40px', background: 'red', textAlign: 'center'}}>自定义覆盖物</div>
+                <div onClick={function(){alert(1)}} style={{width: '150px', height: '40px', lineHeight: '40px', background: 'red', textAlign: 'center'}}>自定义覆盖物</div>
             </Marker>
             <Marker position={{lng: 109.430831, lat: 38.211366}}>
             </Marker>

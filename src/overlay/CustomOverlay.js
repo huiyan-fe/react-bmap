@@ -12,7 +12,11 @@ CustomOverlay.prototype.initialize = function(map){
     var div = this._div = document.createElement("div");
     div.style.position = "absolute";
     div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
-    div.innerHTML = this.content;
+    if (Object.prototype.toString.call(this.content) == "[object String]") {
+        div.innerHTML = this.content;
+    } else {
+        div.appendChild(this.content);
+    }
     map.getPanes().labelPane.appendChild(div);
     return div;
 }
