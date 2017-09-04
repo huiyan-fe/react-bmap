@@ -111,6 +111,10 @@ export default class App extends Component {
         var data = this.props.data;
         var mapvData = [];
         for (var i = 0; i < data.length; i++) {
+            if (this.props.showIndex !== undefined && this.props.showIndex != i) {
+                continue;
+            }
+
             if (data[i].location) {
                 var location = data[i].location.split(',');
                 if (this.props.coordType && this.props.coordType === 'bd09mc') {
