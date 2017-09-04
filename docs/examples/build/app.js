@@ -30516,6 +30516,8 @@ var App = function (_Component) {
             var data = JSON.stringify(this.props.data);
             if (preData != data || !this.map) {
                 this.initialize();
+            } else {
+                this.setViewport();
             }
         }
     }, {
@@ -30605,7 +30607,6 @@ var App = function (_Component) {
             var projection = map.getMapType().getProjection();
 
             var data = this.props.data;
-            var points = [];
             var mapvData = [];
             for (var i = 0; i < data.length; i++) {
                 if (data[i].location) {
@@ -30615,7 +30616,6 @@ var App = function (_Component) {
                     } else {
                         var point = new BMap.Point(location[0], location[1]);
                     }
-                    points.push(point);
                     var fillStyle = data[i].color || this.props.fillStyle || '#1495ff';
                     if (this.props.splitList) {
                         if (this.props.splitList[data[i].count]) {
@@ -30679,8 +30679,32 @@ var App = function (_Component) {
 
             this.dataSet.set(mapvData.splice(0, 10));
 
+            this.setViewport();
+        }
+    }, {
+        key: 'setViewport',
+        value: function setViewport() {
+            var map = this.props.map;
+            if (!map) {
+                return;
+            }
+            var data = this.props.data;
+            var projection = map.getMapType().getProjection();
+            var points = [];
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].location) {
+                    var location = data[i].location.split(',');
+                    if (this.props.coordType && this.props.coordType === 'bd09mc') {
+                        var point = projection.pointToLngLat(new BMap.Pixel(location[0], location[1]));
+                    } else {
+                        var point = new BMap.Point(location[0], location[1]);
+                    }
+                    points.push(point);
+                }
+            }
+
             if (points.length > 0 && this.props.autoViewport !== false) {
-                map.setViewport(points, self.props.viewportOptions);
+                map.setViewport(points, this.props.viewportOptions);
             }
         }
     }], [{
