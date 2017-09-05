@@ -21,11 +21,13 @@ export default class Map extends Component {
             style: {
                 height: '350px'
             },
+            /*
             center: {
                 lng: 105.403119,
                 lat: 38.028658
             },
             zoom: 5
+            */
         }
     }
 
@@ -112,7 +114,7 @@ export default class Map extends Component {
             }
         }
 
-        if (prevProps.zoom !== this.props.zoom) {
+        if (prevProps.zoom !== this.props.zoom && this.props.zoom) {
             this.map.zoomTo(this.props.zoom);
         }
     }

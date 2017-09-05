@@ -53,7 +53,12 @@ const CustomControl = (props) => {
 export default class App extends Component {
     render() {
         return <div>
-        <Map mapStyle={simpleMapStyle}>
+        <Map center = {{
+                lng: 105.403119,
+                lat: 38.028658
+            }} 
+            zoom = '5' 
+            mapStyle={simpleMapStyle}>
             <Marker 
                 position={{lng: 116.402544, lat: 39.928216}} 
                 icon="simple_red" 
@@ -69,7 +74,12 @@ export default class App extends Component {
             <Marker position={{lng: 109.210063, lat: 34.339622}} icon="start" />
             <Marker position={{lng: 109.430831, lat: 38.211366}} icon="end" />
         </Map>
-        <Map mapStyle={simpleMapStyle}>
+        <Map center = {{
+                lng: 105.403119,
+                lat: 38.028658
+            }}
+            zoom = '5' 
+            mapStyle={simpleMapStyle}>
             <div style={{position: 'absolute', left: '10px', top: '10px',  color: 'white', background: 'blue'}}>自定义组件</div>
             <CustomControl />
             <Marker position={{lng: 109.430831, lat: 38.211366}} offset={new BMap.Size(-75, -60)}>
@@ -78,7 +88,12 @@ export default class App extends Component {
             <Marker position={{lng: 109.430831, lat: 38.211366}}>
             </Marker>
         </Map>
-        <Map mapStyle={simpleMapStyle}>
+        <Map center = {{
+                lng: 105.403119,
+                lat: 38.028658
+            }}
+            zoom = '5' 
+            mapStyle={simpleMapStyle}>
             {markers.map((marker, index) => {
                 var icon = "red" + (index + 1);
                 return <Marker map={this.props.map} icon={icon} position={{lng: marker.lng, lat: marker.lat}} {...marker} />

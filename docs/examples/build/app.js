@@ -18697,7 +18697,7 @@ var Map = function (_Component) {
                 }
             }
 
-            if (prevProps.zoom !== this.props.zoom) {
+            if (prevProps.zoom !== this.props.zoom && this.props.zoom) {
                 this.map.zoomTo(this.props.zoom);
             }
         }
@@ -18821,12 +18821,14 @@ var Map = function (_Component) {
             return {
                 style: {
                     height: '350px'
-                },
+                }
+                /*
                 center: {
                     lng: 105.403119,
                     lat: 38.028658
                 },
                 zoom: 5
+                */
             };
         }
     }]);
@@ -31770,7 +31772,12 @@ var App = function (_Component) {
                 null,
                 _react2.default.createElement(
                     _src.Map,
-                    { mapStyle: _mapstyle.simpleMapStyle },
+                    { center: {
+                            lng: 105.403119,
+                            lat: 38.028658
+                        },
+                        zoom: '5',
+                        mapStyle: _mapstyle.simpleMapStyle },
                     _react2.default.createElement(_src.Marker, {
                         position: { lng: 116.402544, lat: 39.928216 },
                         icon: 'simple_red',
@@ -31788,7 +31795,12 @@ var App = function (_Component) {
                 ),
                 _react2.default.createElement(
                     _src.Map,
-                    { mapStyle: _mapstyle.simpleMapStyle },
+                    { center: {
+                            lng: 105.403119,
+                            lat: 38.028658
+                        },
+                        zoom: '5',
+                        mapStyle: _mapstyle.simpleMapStyle },
                     _react2.default.createElement(
                         'div',
                         { style: { position: 'absolute', left: '10px', top: '10px', color: 'white', background: 'blue' } },
@@ -31810,7 +31822,12 @@ var App = function (_Component) {
                 ),
                 _react2.default.createElement(
                     _src.Map,
-                    { mapStyle: _mapstyle.simpleMapStyle },
+                    { center: {
+                            lng: 105.403119,
+                            lat: 38.028658
+                        },
+                        zoom: '5',
+                        mapStyle: _mapstyle.simpleMapStyle },
                     markers.map(function (marker, index) {
                         var icon = "red" + (index + 1);
                         return _react2.default.createElement(_src.Marker, _extends({ map: _this2.props.map, icon: icon, position: { lng: marker.lng, lat: marker.lat } }, marker));
@@ -31922,7 +31939,12 @@ var App = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _src.Map,
-                { mapStyle: _mapstyle.simpleMapStyle },
+                { center: {
+                        lng: 105.403119,
+                        lat: 38.028658
+                    },
+                    zoom: '5',
+                    mapStyle: _mapstyle.simpleMapStyle },
                 _react2.default.createElement(_src.InfoWindow, { position: { lng: 116.402544, lat: 39.928216 }, text: '\u5185\u5BB9', title: '\u6807\u9898' })
             );
         }
@@ -32081,7 +32103,12 @@ var App = function (_Component) {
                 null,
                 _react2.default.createElement(
                     _src.Map,
-                    { mapStyle: _mapstyle.simpleMapStyle },
+                    { center: {
+                            lng: 105.403119,
+                            lat: 38.028658
+                        },
+                        zoom: '5',
+                        mapStyle: _mapstyle.simpleMapStyle },
                     _react2.default.createElement(_src.MarkerList, {
                         data: citylist,
                         onClick: function onClick(item) {
@@ -32102,12 +32129,22 @@ var App = function (_Component) {
                 ),
                 _react2.default.createElement(
                     _src.Map,
-                    { mapStyle: _mapstyle.simpleMapStyle },
+                    { center: {
+                            lng: 105.403119,
+                            lat: 38.028658
+                        },
+                        zoom: '5',
+                        mapStyle: _mapstyle.simpleMapStyle },
                     _react2.default.createElement(_src.MarkerList, { data: markerData })
                 ),
                 _react2.default.createElement(
                     _src.Map,
-                    { mapStyle: _mapstyle.simpleMapStyle },
+                    { center: {
+                            lng: 105.403119,
+                            lat: 38.028658
+                        },
+                        zoom: '5',
+                        mapStyle: _mapstyle.simpleMapStyle },
                     _react2.default.createElement(_src.MarkerList, {
                         data: citylist,
                         fillStyle: '#ff3333',
@@ -32172,7 +32209,12 @@ var App = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _src.Map,
-                { mapStyle: { style: 'redalert' } },
+                { center: {
+                        lng: 105.403119,
+                        lat: 38.028658
+                    },
+                    zoom: '5',
+                    mapStyle: { style: 'redalert' } },
                 _react2.default.createElement(_src.MapvLayer, { data: data, options: {
                         fillStyle: 'rgba(255, 250, 50, 0.8)',
                         methods: { click: function click(item) {
@@ -32250,7 +32292,12 @@ var App = function (_Component) {
                 null,
                 _react2.default.createElement(
                     _src.Map,
-                    { mapStyle: _mapstyle.simpleMapStyle },
+                    { center: {
+                            lng: 105.403119,
+                            lat: 38.028658
+                        },
+                        zoom: '5',
+                        mapStyle: _mapstyle.simpleMapStyle },
                     _react2.default.createElement(_src.MapvMarkerList, {
                         data: citylist,
                         onClick: function onClick(item) {
@@ -32387,7 +32434,12 @@ var App = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _src.Map,
-                { mapStyle: _mapstyle.simpleMapStyle },
+                { center: {
+                        lng: 105.403119,
+                        lat: 38.028658
+                    },
+                    zoom: '5',
+                    mapStyle: _mapstyle.simpleMapStyle },
                 _react2.default.createElement(_src.Boundary, { data: [{
                         name: '海淀区',
                         count: Math.random() * 100
@@ -32477,7 +32529,12 @@ var App = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 _src.Map,
-                { mapStyle: _mapstyle.simpleMapStyle },
+                { center: {
+                        lng: 105.403119,
+                        lat: 38.028658
+                    },
+                    zoom: '5',
+                    mapStyle: _mapstyle.simpleMapStyle },
                 _react2.default.createElement(_src.NavigationControl, null),
                 _react2.default.createElement(_src.MapTypeControl, null),
                 _react2.default.createElement(_src.ScaleControl, null),

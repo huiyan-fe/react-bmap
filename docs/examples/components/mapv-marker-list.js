@@ -14,7 +14,12 @@ citylist = citylist.map((item) => {
 export default class App extends Component {
     render() {
         return <div>
-            <Map mapStyle={simpleMapStyle}>
+            <Map center={{
+                    lng: 105.403119,
+                    lat: 38.028658
+                }} 
+                zoom='5' 
+                mapStyle={simpleMapStyle}>
                 <MapvMarkerList 
                     data={citylist} 
                     onClick={(item)=>{

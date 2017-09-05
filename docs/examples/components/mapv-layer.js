@@ -6,7 +6,12 @@ var data = [{"geometry":{"type":"Point","coordinates":[116.84037246524984,39.824
 
 export default class App extends Component {
     render() {
-        return <Map mapStyle={{style: 'redalert'}}>
+        return <Map center = {{
+                    lng: 105.403119,
+                    lat: 38.028658
+                }}
+                zoom = '5' 
+                mapStyle={{style: 'redalert'}}>
             <MapvLayer data={data} options={{
                 fillStyle: 'rgba(255, 250, 50, 0.8)',
                 methods: {click: (item)=>{console.log(item)}},

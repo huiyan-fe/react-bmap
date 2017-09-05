@@ -50,7 +50,12 @@ var markerData = [
 export default class App extends Component {
     render() {
         return <div>
-            <Map mapStyle={simpleMapStyle}>
+            <Map center={{
+                    lng: 105.403119,
+                    lat: 38.028658
+                }}
+                zoom='5' 
+                mapStyle={simpleMapStyle}>
                 <MarkerList 
                     data={citylist} 
                     onClick={(item)=>{
@@ -70,11 +75,21 @@ export default class App extends Component {
                 />
             </Map>
 
-            <Map mapStyle={simpleMapStyle}>
+            <Map center={{
+                    lng: 105.403119,
+                    lat: 38.028658
+                }}
+                zoom='5' 
+                mapStyle={simpleMapStyle}>
                 <MarkerList data={markerData}/>
             </Map>
 
-            <Map mapStyle={simpleMapStyle}>
+            <Map center={{
+                    lng: 105.403119,
+                    lat: 38.028658
+                }}
+                zoom='5' 
+                mapStyle={simpleMapStyle}>
                 <MarkerList 
                     data={citylist} 
                     fillStyle="#ff3333" 
