@@ -108,13 +108,13 @@ export default class Map extends Component {
                     this.map.centerAndZoom(center);
                 }
             } else {
-                if (preCenter.lng != center.lng || preCenter.lat != center.lat) {
+                if (preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate) {
                     this.map.setCenter(new BMap.Point(center.lng, center.lat));
                 }
             }
         }
 
-        if (prevProps.zoom !== this.props.zoom && this.props.zoom) {
+        if (prevProps.zoom !== this.props.zoom && this.props.zoom || this.props.forceUpdate) {
             this.map.zoomTo(this.props.zoom);
         }
     }
