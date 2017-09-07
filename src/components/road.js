@@ -105,6 +105,7 @@ export default class App extends Component {
             this.canvasLayer.draw();
         } else {
             this.canvasLayer = new baiduMapCanvasLayer({
+                zIndex: this.props.zIndex,
                 map,
                 update() {
                     update(this);

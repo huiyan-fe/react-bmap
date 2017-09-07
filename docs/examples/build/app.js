@@ -29888,6 +29888,7 @@ var App = function (_Component) {
                 this.canvasLayer.draw();
             } else {
                 this.canvasLayer = new _mapv.baiduMapCanvasLayer({
+                    zIndex: this.props.zIndex,
                     map: map,
                     update: function update() {
                         _update(this);
