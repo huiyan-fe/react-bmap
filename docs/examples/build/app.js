@@ -19022,6 +19022,9 @@ var App = function (_Component) {
                 var options = this.getOptions(this.options);
                 options.icon = icon;
                 this.marker = new BMap.Marker(position, options);
+                if (this.props.isTop) {
+                    this.marker.setTop(true);
+                }
                 this.bindEvent(this.marker, this.events);
 
                 map.addOverlay(this.marker);
