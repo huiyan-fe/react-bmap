@@ -18684,21 +18684,23 @@ var Map = function (_Component) {
         value: function componentDidUpdate(prevProps) {
             var preCenter = prevProps.center;
             var center = this.props.center;
-            if (preCenter && center) {
-                if ((0, _common.isString)(center)) {
-                    // 可以传入城市名
-                    if (preCenter != center) {
-                        this.map.centerAndZoom(center);
-                    }
-                } else {
-                    if (preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate) {
-                        this.map.setCenter(new BMap.Point(center.lng, center.lat));
-                    }
-                }
-            }
 
-            if (prevProps.zoom !== this.props.zoom && this.props.zoom || this.props.forceUpdate) {
-                this.map.zoomTo(this.props.zoom);
+            if ((0, _common.isString)(center)) {
+                // 可以传入城市名
+                if (preCenter != center) {
+                    this.map.centerAndZoom(center);
+                }
+            } else {
+                var isCenterChanged = preCenter && center && preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate;
+                var isZoomChanged = prevProps.zoom !== this.props.zoom && this.props.zoom || this.props.forceUpdate;
+                var center = new BMap.Point(center.lng, center.lat);
+                if (isCenterChanged && isZoomChanged) {
+                    this.map.centerAndZoom(center, this.props.zoom);
+                } else if (isCenterChanged) {
+                    this.map.setCenter(center);
+                } else if (isZoomChanged) {
+                    this.map.zoomTo(this.props.zoom);
+                }
             }
         }
     }, {
@@ -30805,7 +30807,7 @@ Overlay.prototype.initialize = function (map) {
 Overlay.prototype.draw = function () {
     var map = this._map;
     var pixel = map.pointToOverlayPixel(this._point);
-    this._div.style.left = pixel.x - (this._size + this._lineWidth) / 2 + "px";
+    this._div.style.left = pixel.x - (this._size + this._lineWidth) / 2 + 1 + "px";
     this._div.style.top = pixel.y - (this._size + this._lineWidth) / 2 + "px";
 };
 

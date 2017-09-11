@@ -102,21 +102,24 @@ export default class Map extends Component {
     componentDidUpdate(prevProps) {
         var preCenter = prevProps.center;
         var center = this.props.center;
-        if (preCenter && center) {
-            if (isString(center)) { // 可以传入城市名
-                if (preCenter != center) {
-                    this.map.centerAndZoom(center);
-                }
-            } else {
-                if (preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate) {
-                    this.map.setCenter(new BMap.Point(center.lng, center.lat));
-                }
+
+        if (isString(center)) { // 可以传入城市名
+            if (preCenter != center) {
+                this.map.centerAndZoom(center);
+            }
+        } else {
+            var isCenterChanged = preCenter && center && preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate;
+            var isZoomChanged = prevProps.zoom !== this.props.zoom && this.props.zoom || this.props.forceUpdate;
+            var center = new BMap.Point(center.lng, center.lat);
+            if (isCenterChanged && isZoomChanged) {
+                this.map.centerAndZoom(center, this.props.zoom);
+            } else if (isCenterChanged) {
+                this.map.setCenter(center);
+            } else if (isZoomChanged) {
+                this.map.zoomTo(this.props.zoom);
             }
         }
 
-        if (prevProps.zoom !== this.props.zoom && this.props.zoom || this.props.forceUpdate) {
-            this.map.zoomTo(this.props.zoom);
-        }
     }
 
     initMap() {

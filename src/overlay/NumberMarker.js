@@ -62,7 +62,7 @@ Overlay.prototype.initialize = function(map){
 Overlay.prototype.draw = function(){
     var map = this._map;
     var pixel = map.pointToOverlayPixel(this._point);
-    this._div.style.left = pixel.x - (this._size + this._lineWidth) / 2 + "px";
+    this._div.style.left = pixel.x - (this._size + this._lineWidth) / 2 + 1 + "px";
     this._div.style.top  = pixel.y - (this._size + this._lineWidth) / 2 + "px";
 }
 
