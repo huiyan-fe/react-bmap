@@ -12658,6 +12658,11 @@ var Graphy = function (_Component) {
             this.overlay = this.getOverlay();
             this.bindEvent(this.overlay, this.events);
             map.addOverlay(this.overlay);
+
+            var path = this.overlay.getPath();
+            if (path && path.length > 0 && this.props.autoViewport === true) {
+                map.setViewport(path, this.props.viewportOptions);
+            }
         }
     }, {
         key: 'getOverlay',
@@ -32018,6 +32023,7 @@ var App = function (_Component) {
                 _react2.default.createElement(_src.Polygon, {
                     fillColor: 'red',
                     strokeColor: 'yellow',
+                    autoViewport: false,
                     path: [{ lng: 116.442519, lat: 39.945597 }, { lng: 116.484488, lat: 39.905315 }, { lng: 116.443094, lat: 39.886494 }, { lng: 116.426709, lat: 39.900001 }]
                 })
             );

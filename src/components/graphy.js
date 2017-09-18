@@ -40,6 +40,12 @@ export default class Graphy extends Component {
         this.bindEvent(this.overlay, this.events);
         map.addOverlay(this.overlay);
 
+
+        var path = this.overlay.getPath();
+        if (path && path.length > 0 && this.props.autoViewport === true) {
+            map.setViewport(path, this.props.viewportOptions);
+        }
+
     }
 
     get options() {

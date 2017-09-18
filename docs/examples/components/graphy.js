@@ -22,6 +22,7 @@ export default class App extends Component {
             <Polygon 
                 fillColor='red' 
                 strokeColor='yellow' 
+                autoViewport={false} 
                 path={[
                     {lng: 116.442519, lat: 39.945597},
                     {lng: 116.484488, lat: 39.905315},
