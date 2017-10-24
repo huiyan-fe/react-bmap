@@ -29,7 +29,7 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
     import {Map, Marker, NavigationControl, InfoWindow} from 'react-bmap'
 
-    <Map center={{lng: 116.402544, lat: 39.928216}}>
+    <Map center={{lng: 116.402544, lat: 39.928216}} zoom="11">
         <Marker position={{lng: 116.402544, lat: 39.928216}} />
         <NavigationControl /> 
         <InfoWindow position={{lng: 116.402544, lat: 39.928216}} text="内容" title="标题"/>
