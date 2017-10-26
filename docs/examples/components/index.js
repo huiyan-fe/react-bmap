@@ -1,5 +1,6 @@
 import Map from './map';
 import Marker from './marker';
+import PointLabel from './point-label';
 import TrafficLayer from './traffic-layer';
 import InfoWindow from './infowindow';
 import Graphy from './graphy';
@@ -38,6 +39,8 @@ const examples = (
     <TrafficLayer />
     <h2>驾车组件<a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/driving-route.js">示例代码</a></h2>
     <DrivingRoute />
+    <h2>PointLabel<a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/point-label.js">示例代码</a></h2>
+    <PointLabel />
   </div>
 )
 
