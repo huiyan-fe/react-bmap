@@ -31796,6 +31796,7 @@ var App = function (_Component) {
     }, {
         key: 'initialize',
         value: function initialize() {
+            var _this2 = this;
 
             var map = this.props.map;
             if (!map) {
@@ -31824,7 +31825,7 @@ var App = function (_Component) {
                         change: function change() {}
                     });
                     tip.show();
-                    this.tips.push(tip);
+                    _this2.tips.push(tip);
                 });
             }
         }

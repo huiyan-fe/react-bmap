@@ -61,7 +61,7 @@ export default class App extends Component {
         }
 
         if (this.props.data) {
-            this.props.data.forEach(function (item, index) {
+            this.props.data.forEach((item, index) => {
                 var tip = new DraggingTip({
                     isShowTipArrow: true,
                     map: map,
