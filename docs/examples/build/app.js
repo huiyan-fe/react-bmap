@@ -31761,6 +31761,7 @@ var App = function (_Component) {
         var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
 
         _this.state = {};
+        _this.tips = [];
         return _this;
     }
 
@@ -31787,8 +31788,10 @@ var App = function (_Component) {
     }, {
         key: 'destroy',
         value: function destroy() {
-            this.props.map.removeOverlay(this.marker);
-            this.marker = null;
+            this.tips.forEach(function (tip) {
+                tip.hide();
+            });
+            this.tips = [];
         }
     }, {
         key: 'initialize',
@@ -31821,6 +31824,7 @@ var App = function (_Component) {
                         change: function change() {}
                     });
                     tip.show();
+                    this.tips.push(tip);
                 });
             }
         }

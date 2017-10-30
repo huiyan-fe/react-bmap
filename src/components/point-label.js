@@ -14,6 +14,7 @@ export default class App extends Component {
         super(args);
         this.state = {
         };
+        this.tips = [];
     }
 
     /**
@@ -37,8 +38,10 @@ export default class App extends Component {
     }
 
     destroy() {
-        this.props.map.removeOverlay(this.marker);
-        this.marker = null;
+        this.tips.forEach((tip) => {
+            tip.hide();
+        });
+        this.tips = [];
     }
 
     initialize() {
@@ -71,6 +74,7 @@ export default class App extends Component {
                     change: function() {}
                 });
                 tip.show();
+                this.tips.push(tip);
             });
         }
     }
