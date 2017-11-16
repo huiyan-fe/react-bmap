@@ -21,6 +21,9 @@ function DraggingTip(options) {
         tip.setPosition(marker.point)
         options.change && options.change();
     });
+    marker.addEventListener('dragend', function () {
+        options.changePosition && options.changePosition(self.point);
+    });
     marker.enableDragging();
 }
 

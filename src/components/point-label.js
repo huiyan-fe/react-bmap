@@ -64,6 +64,9 @@ export default class App extends Component {
             this.props.data.forEach((item, index) => {
                 var tip = new DraggingTip({
                     isShowTipArrow: true,
+                    changePosition: (point) => {
+                        this.props.changePosition && this.props.changePosition(point, index);
+                    },
                     map: map,
                     numberDirection: item.numberDirection,
                     isShowNumber: item.isShowNumber,

@@ -31821,6 +31821,9 @@ var App = function (_Component) {
                 this.props.data.forEach(function (item, index) {
                     var tip = new _DraggingTip2.default({
                         isShowTipArrow: true,
+                        changePosition: function changePosition(point) {
+                            _this2.props.changePosition && _this2.props.changePosition(point, index);
+                        },
                         map: map,
                         numberDirection: item.numberDirection,
                         isShowNumber: item.isShowNumber,
@@ -31884,6 +31887,9 @@ function DraggingTip(options) {
         self.point = marker.point;
         tip.setPosition(marker.point);
         options.change && options.change();
+    });
+    marker.addEventListener('dragend', function () {
+        options.changePosition && options.changePosition(self.point);
     });
     marker.enableDragging();
 }
@@ -32373,7 +32379,11 @@ var App = function (_Component) {
                             lng: 116.32148092791,
                             lat: 39.967049268766
                         }
-                    }] })
+                    }],
+                    changePosition: function changePosition(point, index) {
+                        console.log(point, index);
+                    }
+                })
             );
         }
     }]);

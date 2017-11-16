@@ -106,7 +106,11 @@ export default class App extends Component {
                         lat: 39.967049268766
                     }
                 }
-            ]}/>
+            ]}
+            changePosition={(point, index) => {
+                console.log(point, index);
+            }}
+            />
         </Map>
     }
 }
