@@ -82,14 +82,15 @@ export default class App extends Component {
         const ctx = this.canvasLayer.canvas.getContext('2d');
         var roadGroup = this.getRoadGroup(roadPath);
         ctx.beginPath();
+        var lineWidth = this.props.lineWidth || 10;
         mapLine.drawRoads(map, ctx, roadGroup.allPath, {
             color: '#fff',
-            lineWidth: 14,
+            lineWidth: lineWidth + 4,
             lineCap: 'butt',
             arrow: false,
             line: false
         });
-        ctx.lineWidth = 16;
+        ctx.lineWidth = lineWidth + 6;
         var isPointInStroke = ctx.isPointInStroke(pixel.x * window.devicePixelRatio, pixel.y * window.devicePixelRatio);
         return isPointInStroke;
     }
@@ -151,23 +152,28 @@ export default class App extends Component {
         var roadPath = this.props.roadPath;
         var roadPaths = this.props.roadPaths;
 
+        var lineWidth = this.props.lineWidth || 10;
+
         if (roadPaths) {
-            roadPaths.forEach((roadPath) => {
-                this.drawRoad(ctx, roadPath, this.props.category, this.props.splitList);
+            roadPaths.forEach((roadPath, index) => {
+                if (this.props.lineWidths) {
+                    lineWidth = this.props.lineWidths[index];
+                }
+                this.drawRoad(ctx, roadPath, this.props.category, this.props.splitList, lineWidth);
             });
         } else if(roadPath) {
-            this.drawRoad(ctx, this.props.roadPath, this.props.category, this.props.splitList);
+            this.drawRoad(ctx, this.props.roadPath, this.props.category, this.props.splitList, lineWidth);
         }
 
     }
 
-    drawRoad(ctx, roadPath, category, splitList) {
+    drawRoad(ctx, roadPath, category, splitList, lineWidth) {
         var roadGroup = this.getRoadGroup(roadPath, category, splitList);
         var data = roadGroup.group;
 
         mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
             color: '#fff',
-            lineWidth: 14,
+            lineWidth: lineWidth + 4,
             lineCap: 'butt',
             arrow: false,
             line: true
@@ -179,7 +185,7 @@ export default class App extends Component {
             mapLine.drawRoads(this.props.map, ctx, roadPath, {
                 color: item.color,
                 line: true,
-                lineWidth: 10,
+                lineWidth: lineWidth,
                 lineCap: 'butt',
                 arrow: false
             });
@@ -187,7 +193,7 @@ export default class App extends Component {
 
         mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
             color: item.color,
-            lineWidth: 10,
+            lineWidth: lineWidth,
             border: {
             },
             lineCap: 'butt',
