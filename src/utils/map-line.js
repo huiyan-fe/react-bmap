@@ -33,6 +33,13 @@ const mapLine = {
         //
 
         ctx.beginPath();
+        var pixel;
+
+        var zoomUnit = Math.pow(2, 18 - map.getZoom());
+        var projection = map.getMapType().getProjection();
+        var mcCenter = projection.lngLatToPoint(map.getCenter());
+        var nwMc = new BMap.Pixel(mcCenter.x - (map.getSize().width / 2) * zoomUnit, mcCenter.y + (map.getSize().height / 2) * zoomUnit); //左上角墨卡托坐标
+
         roads.forEach((item, index) => {
             let startPos = null;
             pointTem = null;
@@ -40,7 +47,14 @@ const mapLine = {
             for (let k = 0; k < path.length; k += 2) {
                 const point = new BMap.Point(path[k], path[k + 1]);
                 allPoints.push(point);
-                const pixel = map.pointToPixel(point);
+                if (options.coordType === 'bd09mc') {
+                    pixel = {
+                        x: (point.lng - nwMc.x) / zoomUnit,
+                        y: (nwMc.y - point.lat) / zoomUnit
+                    }
+                } else {
+                    pixel = map.pointToPixel(point);
+                }
                 let arrowInfo;
                 if (pointTem) {
                     const deltaX = pixel.x - pointTem.x;

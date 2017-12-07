@@ -21,11 +21,16 @@ export default class App extends Component {
     }
 
     getRoadPoints(roadPath) {
+        var projection = this.props.map.getMapType().getProjection();
         var points = [];
         for (var i = 0; i < roadPath.length; i++) {
             var tmp = roadPath[i].split(',');
             for (var j = 0; j < tmp.length; j += 2) {
-                points.push(new BMap.Point(tmp[j], tmp[j + 1]));
+                if (this.props.coordType === 'bd09mc') {
+                    points.push(projection.pointToLngLat(new BMap.Pixel(tmp[j], tmp[j + 1])));
+                } else {
+                    points.push(new BMap.Point(tmp[j], tmp[j + 1]));
+                }
             }
         }
         return points;
@@ -173,6 +178,7 @@ export default class App extends Component {
 
         mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
             color: '#fff',
+            coordType: this.props.coordType,
             lineWidth: lineWidth + 4,
             lineCap: 'butt',
             arrow: false,
@@ -184,6 +190,7 @@ export default class App extends Component {
             var roadPath = geoUtils.mergeRoadPath(item.roadPath);
             mapLine.drawRoads(this.props.map, ctx, roadPath, {
                 color: item.color,
+                coordType: this.props.coordType,
                 line: true,
                 lineWidth: lineWidth,
                 lineCap: 'butt',
@@ -193,6 +200,7 @@ export default class App extends Component {
 
         mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
             color: item.color,
+            coordType: this.props.coordType,
             lineWidth: lineWidth,
             border: {
             },

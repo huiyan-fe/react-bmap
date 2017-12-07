@@ -29828,11 +29828,16 @@ var App = function (_Component) {
     }, {
         key: 'getRoadPoints',
         value: function getRoadPoints(roadPath) {
+            var projection = this.props.map.getMapType().getProjection();
             var points = [];
             for (var i = 0; i < roadPath.length; i++) {
                 var tmp = roadPath[i].split(',');
                 for (var j = 0; j < tmp.length; j += 2) {
-                    points.push(new BMap.Point(tmp[j], tmp[j + 1]));
+                    if (this.props.coordType === 'bd09mc') {
+                        points.push(projection.pointToLngLat(new BMap.Pixel(tmp[j], tmp[j + 1])));
+                    } else {
+                        points.push(new BMap.Point(tmp[j], tmp[j + 1]));
+                    }
                 }
             }
             return points;
@@ -29985,6 +29990,7 @@ var App = function (_Component) {
 
             _mapLine2.default.drawRoads(this.props.map, ctx, roadGroup.allPath, {
                 color: '#fff',
+                coordType: this.props.coordType,
                 lineWidth: lineWidth + 4,
                 lineCap: 'butt',
                 arrow: false,
@@ -29996,6 +30002,7 @@ var App = function (_Component) {
                 var roadPath = _geoUtils2.default.mergeRoadPath(item.roadPath);
                 _mapLine2.default.drawRoads(this.props.map, ctx, roadPath, {
                     color: item.color,
+                    coordType: this.props.coordType,
                     line: true,
                     lineWidth: lineWidth,
                     lineCap: 'butt',
@@ -30005,6 +30012,7 @@ var App = function (_Component) {
 
             _mapLine2.default.drawRoads(this.props.map, ctx, roadGroup.allPath, {
                 color: item.color,
+                coordType: this.props.coordType,
                 lineWidth: lineWidth,
                 border: {},
                 lineCap: 'butt',
@@ -30078,6 +30086,13 @@ var mapLine = {
         //
 
         ctx.beginPath();
+        var pixel;
+
+        var zoomUnit = Math.pow(2, 18 - map.getZoom());
+        var projection = map.getMapType().getProjection();
+        var mcCenter = projection.lngLatToPoint(map.getCenter());
+        var nwMc = new BMap.Pixel(mcCenter.x - map.getSize().width / 2 * zoomUnit, mcCenter.y + map.getSize().height / 2 * zoomUnit); //左上角墨卡托坐标
+
         roads.forEach(function (item, index) {
             var startPos = null;
             pointTem = null;
@@ -30085,7 +30100,14 @@ var mapLine = {
             for (var k = 0; k < path.length; k += 2) {
                 var point = new BMap.Point(path[k], path[k + 1]);
                 allPoints.push(point);
-                var pixel = map.pointToPixel(point);
+                if (options.coordType === 'bd09mc') {
+                    pixel = {
+                        x: (point.lng - nwMc.x) / zoomUnit,
+                        y: (nwMc.y - point.lat) / zoomUnit
+                    };
+                } else {
+                    pixel = map.pointToPixel(point);
+                }
                 var arrowInfo = void 0;
                 if (pointTem) {
                     var deltaX = pixel.x - pointTem.x;
