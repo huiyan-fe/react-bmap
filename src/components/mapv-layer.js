@@ -38,26 +38,29 @@ export default class MapvLayer extends Component {
             this.createLayers();
         }
 
-        if(this.props.options.autoViewport){
-            if (this.props.options.coordType === 'bd09mc') {
-                var projection = map.getMapType().getProjection();
-                var points = this.props.data.map(item => {
-                    if(item.geometry.type === 'Point'){
-                        return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0],item.geometry.coordinates[1]));
-                    } else if (item.geometry.type === 'Polygon') {
-                        return projection.pointToLngLat(new BMap.Pixel(item.geometry.coordinates[0][0][0],item.geometry.coordinates[0][0][1]));
-                    }
-                });
-            } else {
-                var points = this.props.data.map(item => {
-                    if(item.geometry.type === 'Point'){
-                        return new BMap.Point(item.geometry.coordinates[0],item.geometry.coordinates[1]);
-                    } else if (item.geometry.type === 'Polygon') {
-                        return new BMap.Point(item.geometry.coordinates[0][0][0],item.geometry.coordinates[0][0][1]);
-                    }
-                });
+        if (this.props.options.autoViewport) {
+            var getPoint = (coordinate) => {
+                if (this.props.options.coordType === 'bd09mc') {
+                    return projection.pointToLngLat(new BMap.Pixel(coordinate[0], coordinate[1]));
+                } else {
+                    return new BMap.Point(coordinate[0], coordinate[1]);
+                }
             }
-            map.setViewport(points,this.props.options.viewportOptions);
+
+            var projection = map.getMapType().getProjection();
+            var points = [];
+
+            this.props.data.map(item => {
+                if (item.geometry.type === 'Point') {
+                    points.push(getPoint(item.geometry.coordinates));
+                } else if (item.geometry.type === 'Polygon') {
+                    item.geometry.coordinates[0].map((item) => {
+                        points.push(getPoint(item));
+                    });
+                }
+            });
+
+            map.setViewport(points, this.props.options.viewportOptions);
         }
 
         this.dataSet.set(this.props.data);
