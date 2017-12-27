@@ -53,3 +53,8 @@ export {default as DrivingRoute} from './components/driving-route';
  * PointLabel组件
  */
 export {default as PointLabel} from './components/point-label';
+
+/**
+ * Arc组件
+ */
+export {default as Arc} from './components/arc';
