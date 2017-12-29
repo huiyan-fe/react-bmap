@@ -31968,8 +31968,6 @@ var App = function (_Component) {
                 this.createLayers();
             }
 
-            this.destroy();
-
             var lineData = [];
             var pointData = [];
             var options = this.props.options || {};
