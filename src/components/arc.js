@@ -67,6 +67,7 @@ export default class App extends Component {
 
         var lineData = [];
         var pointData = [];
+        var options = this.props.options || {};
 
         if (this.props.data) {
             this.props.data.forEach((item, index) => {
@@ -79,12 +80,25 @@ export default class App extends Component {
                         coordinates: curve
                     }
                 });
-                pointData.push({
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [toCenter.lng, toCenter.lat]
-                    }
-                });
+
+                if (options.showToPoint !== false) {
+                    pointData.push({
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [toCenter.lng, toCenter.lat]
+                        }
+                    });
+                }
+
+                if (options.showFromPoint !== false) {
+                    pointData.push({
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [fromCenter.lng, fromCenter.lat]
+                        }
+                    });
+                }
+
             });
         }
 
