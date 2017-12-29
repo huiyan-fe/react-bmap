@@ -31935,7 +31935,12 @@ var App = function (_Component) {
         }
     }, {
         key: 'destroy',
-        value: function destroy() {}
+        value: function destroy() {
+            this.lineLayer.destroy();
+            this.lineLayer = null;
+            this.pointLayer.destroy();
+            this.pointLayer = null;
+        }
     }, {
         key: 'createLayers',
         value: function createLayers() {

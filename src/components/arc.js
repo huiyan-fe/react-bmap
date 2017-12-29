@@ -36,6 +36,10 @@ export default class App extends Component {
     }
 
     destroy() {
+        this.lineLayer.destroy();
+        this.lineLayer = null;
+        this.pointLayer.destroy();
+        this.pointLayer = null;
     }
 
     createLayers() {
