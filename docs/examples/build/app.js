@@ -32006,7 +32006,7 @@ var App = function (_Component) {
 
             this.lineDataSet.set(lineData);
             this.lineLayer.update({
-                options: {
+                options: this.props.lineOptions || {
                     draw: 'simple',
                     strokeStyle: '#5E87DB',
                     lineWidth: 3
@@ -32015,11 +32015,9 @@ var App = function (_Component) {
 
             this.pointDataSet.set(pointData);
             this.pointLayer.update({
-                options: {
+                options: this.props.pointOptions || {
                     draw: 'simple',
                     fillStyle: '#5E87DB',
-                    strokeStyle: 'rgba(94,135,219,0.3)',
-                    lineWidth: 5,
                     size: 5
                 }
             });
