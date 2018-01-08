@@ -171,6 +171,11 @@ export default class Map extends Component {
             // if (typeof child.type === 'string') {
             //     return child;
             // }
+            let type = child.type;
+
+            if (type.preventMap || (typeof type === 'string')) {
+                return child;
+            }
 
             if (child) {
                 return React.cloneElement(child, {
@@ -179,6 +184,15 @@ export default class Map extends Component {
             }
         })
 
+    }
+
+    onRender() {
+
+        if (!this.props.render || !this.map) {
+            return;
+        }
+
+        return this.props.render(this.map);
     }
 
     render() {
@@ -195,6 +209,7 @@ export default class Map extends Component {
                  加载地图中...
                 </div>
                 {this.renderChildren()}
+                {this.onRender.bind(this)()}
             </div>
         );
     }

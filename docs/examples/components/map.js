@@ -25,6 +25,14 @@ export default class App extends Component {
             zoom='13' 
             mapStyle={{style: 'midnight'}} // 个性化底图配置
             events={this.getEvents()} // 为地图添加各类监听事件
+            render={(map)=>{
+                return <div style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '10px',
+                    background: 'red',
+                }}>自定义render</div>
+            }}
         >
             <CustomComponent />
         </Map>

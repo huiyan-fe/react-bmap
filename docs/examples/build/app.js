@@ -16100,6 +16100,18 @@ var App = function (_Component) {
                     zoom: '13',
                     mapStyle: { style: 'midnight' } // 个性化底图配置
                     , events: this.getEvents() // 为地图添加各类监听事件
+                    , render: function render(map) {
+                        return _react2.default.createElement(
+                            'div',
+                            { style: {
+                                    position: 'absolute',
+                                    right: '10px',
+                                    top: '10px',
+                                    background: 'red'
+                                } },
+                            '\u81EA\u5B9A\u4E49render'
+                        );
+                    }
                 },
                 _react2.default.createElement(CustomComponent, null)
             );
@@ -18712,6 +18724,11 @@ var Map = function (_Component) {
                 // if (typeof child.type === 'string') {
                 //     return child;
                 // }
+                var type = child.type;
+
+                if (type.preventMap || typeof type === 'string') {
+                    return child;
+                }
 
                 if (child) {
                     return _react2.default.cloneElement(child, {
@@ -18719,6 +18736,16 @@ var Map = function (_Component) {
                     });
                 }
             });
+        }
+    }, {
+        key: 'onRender',
+        value: function onRender() {
+
+            if (!this.props.render || !this.map) {
+                return;
+            }
+
+            return this.props.render(this.map);
         }
     }, {
         key: 'render',
@@ -18738,7 +18765,8 @@ var Map = function (_Component) {
                     { ref: 'map', className: this.props.className, style: { height: '100%' } },
                     '\u52A0\u8F7D\u5730\u56FE\u4E2D...'
                 ),
-                this.renderChildren()
+                this.renderChildren(),
+                this.onRender.bind(this)()
             );
         }
     }, {
