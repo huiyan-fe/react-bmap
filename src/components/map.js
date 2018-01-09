@@ -167,21 +167,18 @@ export default class Map extends Component {
 
         return React.Children.map(children, child => {
 
-            // dom元素，自定义组件
-            // if (typeof child.type === 'string') {
-            //     return child;
-            // }
-            let type = child.type;
-
-            if (type.preventMap || (typeof type === 'string')) {
-                return child;
+            if (!child) {
+                return;
             }
 
-            if (child) {
+            if (typeof child.type === 'string') {
+                return child;
+            } else {
                 return React.cloneElement(child, {
                     map: this.map
                 });
             }
+
         })
 
     }
@@ -209,7 +206,7 @@ export default class Map extends Component {
                  加载地图中...
                 </div>
                 {this.renderChildren()}
-                {this.onRender.bind(this)()}
+                {this.onRender()}
             </div>
         );
     }

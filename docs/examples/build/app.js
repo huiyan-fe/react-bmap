@@ -18720,17 +18720,13 @@ var Map = function (_Component) {
 
             return _react2.default.Children.map(children, function (child) {
 
-                // dom元素，自定义组件
-                // if (typeof child.type === 'string') {
-                //     return child;
-                // }
-                var type = child.type;
-
-                if (type.preventMap || typeof type === 'string') {
-                    return child;
+                if (!child) {
+                    return;
                 }
 
-                if (child) {
+                if (typeof child.type === 'string') {
+                    return child;
+                } else {
                     return _react2.default.cloneElement(child, {
                         map: _this3.map
                     });
@@ -18766,7 +18762,7 @@ var Map = function (_Component) {
                     '\u52A0\u8F7D\u5730\u56FE\u4E2D...'
                 ),
                 this.renderChildren(),
-                this.onRender.bind(this)()
+                this.onRender()
             );
         }
     }, {
