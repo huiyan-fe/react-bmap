@@ -205,10 +205,10 @@ export default class App extends Component {
             border: {
             },
             lineCap: 'butt',
-            arrow: {
+            arrow: this.props.isShowArrow !== false ? {
                 width: 5,
                 height: 3
-            }
+            } : false
         });
     }
 

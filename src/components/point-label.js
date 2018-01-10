@@ -53,14 +53,9 @@ export default class App extends Component {
 
         this.destroy();
 
-        if (this.props.autoViewport) {
-        }
-
-        if(this.props.autoCenterAndZoom) {
-            //map.setViewport([position],this.props.centerAndZoomOptions);
-        }
 
         if (this.props.data) {
+            var points = [];
             this.props.data.forEach((item, index) => {
                 var tip = new DraggingTip({
                     isShowTipArrow: true,
@@ -76,9 +71,14 @@ export default class App extends Component {
                     color: item.color,
                     change: function() {}
                 });
+                points.push(item.point);
                 tip.show();
                 this.tips.push(tip);
             });
+
+            if (this.props.autoViewport) {
+                map.setViewport(points, this.props.viewportOptions);
+            }
         }
     }
 

@@ -29799,10 +29799,10 @@ var App = function (_Component) {
                 lineWidth: lineWidth,
                 border: {},
                 lineCap: 'butt',
-                arrow: {
+                arrow: this.props.isShowArrow !== false ? {
                     width: 5,
                     height: 3
-                }
+                } : false
             });
         }
     }, {
@@ -31620,13 +31620,8 @@ var App = function (_Component) {
 
             this.destroy();
 
-            if (this.props.autoViewport) {}
-
-            if (this.props.autoCenterAndZoom) {
-                //map.setViewport([position],this.props.centerAndZoomOptions);
-            }
-
             if (this.props.data) {
+                var points = [];
                 this.props.data.forEach(function (item, index) {
                     var tip = new _DraggingTip2.default({
                         isShowTipArrow: true,
@@ -31642,9 +31637,14 @@ var App = function (_Component) {
                         color: item.color,
                         change: function change() {}
                     });
+                    points.push(item.point);
                     tip.show();
                     _this2.tips.push(tip);
                 });
+
+                if (this.props.autoViewport) {
+                    map.setViewport(points, this.props.viewportOptions);
+                }
             }
         }
     }], [{
