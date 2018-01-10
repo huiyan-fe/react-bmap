@@ -31982,6 +31982,7 @@ var App = function (_Component) {
     }, {
         key: 'initialize',
         value: function initialize() {
+            var _this2 = this;
 
             var map = this.map = this.props.map;
             if (!map) {
@@ -31997,10 +31998,22 @@ var App = function (_Component) {
             var options = this.props.options || {};
 
             if (this.props.data) {
+                var points = [];
+                var projection = map.getMapType().getProjection();
+
                 this.props.data.forEach(function (item, index) {
                     var fromCenter = item.from.point || _mapv.utilCityCenter.getCenterByCityName(item.from.name);
                     var toCenter = item.to.point || _mapv.utilCityCenter.getCenterByCityName(item.to.name);
                     var curve = _mapv.utilCurve.getPoints([fromCenter, toCenter]);
+
+                    if (_this2.props.coordType === 'bd09mc') {
+                        points.push(projection.pointToLngLat(new BMap.Pixel(fromCenter.lng, fromCenter.lat)));
+                        points.push(projection.pointToLngLat(new BMap.Pixel(toCenter.lng, toCenter.lat)));
+                    } else {
+                        points.push(fromCenter);
+                        points.push(toCenter);
+                    }
+
                     lineData.push({
                         geometry: {
                             type: 'LineString',
@@ -32024,6 +32037,12 @@ var App = function (_Component) {
                                 coordinates: [fromCenter.lng, fromCenter.lat]
                             }
                         });
+                    }
+
+                    if (points.length > 0) {
+                        if (_this2.props.autoViewport !== false) {
+                            map.setViewport(points, _this2.props.viewportOptions);
+                        }
                     }
                 });
             }
@@ -32989,7 +33008,7 @@ var App = function (_Component) {
             });
             return _react2.default.createElement(
                 _src.Map,
-                { style: { height: '400px' }, mapStyle: _mapstyle.simpleMapStyle, center: { lng: 105.403119, lat: 33.328658 }, zoom: '5' },
+                { style: { height: '400px' }, mapStyle: _mapstyle.simpleMapStyle, center: { lng: 105.403119, lat: 38.328658 }, zoom: '13' },
                 _react2.default.createElement(_src.Arc, { options: {
                         showFromPoint: false,
                         showToPoint: true

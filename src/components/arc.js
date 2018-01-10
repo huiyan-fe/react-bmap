@@ -71,11 +71,24 @@ export default class App extends Component {
         var pointData = [];
         var options = this.props.options || {};
 
+
         if (this.props.data) {
+            var points = [];
+            var projection = map.getMapType().getProjection();
+
             this.props.data.forEach((item, index) => {
                 var fromCenter = item.from.point || utilCityCenter.getCenterByCityName(item.from.name);
                 var toCenter = item.to.point || utilCityCenter.getCenterByCityName(item.to.name);
                 var curve = utilCurve.getPoints([fromCenter, toCenter]);
+
+                if (this.props.coordType === 'bd09mc') {
+                    points.push(projection.pointToLngLat(new BMap.Pixel(fromCenter.lng, fromCenter.lat)));
+                    points.push(projection.pointToLngLat(new BMap.Pixel(toCenter.lng, toCenter.lat)));
+                } else {
+                    points.push(fromCenter);
+                    points.push(toCenter);
+                }
+
                 lineData.push({
                     geometry: {
                         type: 'LineString',
@@ -101,6 +114,11 @@ export default class App extends Component {
                     });
                 }
 
+                if (points.length > 0) {
+                    if (this.props.autoViewport !== false) {
+                        map.setViewport(points, this.props.viewportOptions);
+                    }
+                }
             });
         }
 
