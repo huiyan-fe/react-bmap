@@ -31964,6 +31964,8 @@ var App = function (_Component) {
             this.lineLayer = null;
             this.pointLayer.destroy();
             this.pointLayer = null;
+            this.textLayer.destroy();
+            this.textLayer = null;
         }
     }, {
         key: 'createLayers',
@@ -31978,6 +31980,8 @@ var App = function (_Component) {
 
             this.pointDataSet = new _mapv.DataSet([]);
             this.pointLayer = new _mapv.baiduMapLayer(map, this.pointDataSet, {});
+
+            this.textLayer = new _mapv.baiduMapLayer(map, this.pointDataSet, {});
         }
     }, {
         key: 'initialize',
@@ -32002,8 +32006,8 @@ var App = function (_Component) {
                 var projection = map.getMapType().getProjection();
 
                 this.props.data.forEach(function (item, index) {
-                    var fromCenter = item.from.point || _mapv.utilCityCenter.getCenterByCityName(item.from.name);
-                    var toCenter = item.to.point || _mapv.utilCityCenter.getCenterByCityName(item.to.name);
+                    var fromCenter = item.from.point || _mapv.utilCityCenter.getCenterByCityName(item.from.city);
+                    var toCenter = item.to.point || _mapv.utilCityCenter.getCenterByCityName(item.to.city);
                     var curve = _mapv.utilCurve.getPoints([fromCenter, toCenter]);
 
                     if (_this2.props.coordType === 'bd09mc') {
@@ -32015,6 +32019,7 @@ var App = function (_Component) {
                     }
 
                     lineData.push({
+                        strokeStyle: item.color,
                         geometry: {
                             type: 'LineString',
                             coordinates: curve
@@ -32023,6 +32028,8 @@ var App = function (_Component) {
 
                     if (options.showToPoint !== false) {
                         pointData.push({
+                            fillStyle: item.color,
+                            text: item.to.name || item.to.city,
                             geometry: {
                                 type: 'Point',
                                 coordinates: [toCenter.lng, toCenter.lat]
@@ -32032,6 +32039,8 @@ var App = function (_Component) {
 
                     if (options.showFromPoint !== false) {
                         pointData.push({
+                            fillStyle: item.color,
+                            text: item.from.name || item.from.city,
                             geometry: {
                                 type: 'Point',
                                 coordinates: [fromCenter.lng, fromCenter.lat]
@@ -32062,6 +32071,19 @@ var App = function (_Component) {
                     draw: 'simple',
                     fillStyle: '#5E87DB',
                     size: 5
+                }
+            });
+
+            this.textLayer.update({
+                options: this.props.textOptions || {
+                    draw: 'text',
+                    font: '18px Arial',
+                    offset: {
+                        x: 0,
+                        y: 12
+                    },
+                    fillStyle: '#333',
+                    size: 12
                 }
             });
         }
@@ -33013,17 +33035,19 @@ var App = function (_Component) {
                         showFromPoint: false,
                         showToPoint: true
                     }, data: [{
+                        color: 'red',
                         from: {
-                            name: '北京'
+                            city: '北京'
                         },
                         to: {
-                            name: '南京'
+                            city: '南京'
                         }
                     }, {
                         from: {
-                            name: '北京'
+                            city: '北京'
                         },
                         to: {
+                            name: '哈哈',
                             point: {
                                 lng: 101.45934,
                                 lat: 39.135305
@@ -33031,17 +33055,17 @@ var App = function (_Component) {
                         }
                     }, {
                         from: {
-                            name: '北京'
+                            city: '北京'
                         },
                         to: {
-                            name: '成都'
+                            city: '成都'
                         }
                     }, {
                         from: {
-                            name: '北京'
+                            city: '北京'
                         },
                         to: {
-                            name: '广州'
+                            city: '广州'
                         }
                     }] }),
                 _react2.default.createElement(_src.Marker, { icon: icon, position: center })

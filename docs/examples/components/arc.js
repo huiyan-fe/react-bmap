@@ -16,18 +16,20 @@ export default class App extends Component {
                 showToPoint: true
             }} data={[
                 {
+                    color: 'red',
                     from: {
-                        name: '北京'
+                        city: '北京'
                     },
                     to: {
-                        name: '南京'
+                        city: '南京'
                     }
                 },
                 {
                     from: {
-                        name: '北京',
+                        city: '北京',
                     },
                     to: {
+                        name: '哈哈',
                         point: {
                             lng: 101.45934,
                             lat: 39.135305
@@ -36,18 +38,18 @@ export default class App extends Component {
                 },
                 {
                     from: {
-                        name: '北京'
+                        city: '北京'
                     },
                     to: {
-                        name: '成都'
+                        city: '成都'
                     }
                 },
                 {
                     from: {
-                        name: '北京'
+                        city: '北京'
                     },
                     to: {
-                        name: '广州'
+                        city: '广州'
                     }
                 }
             ]} />

@@ -40,6 +40,8 @@ export default class App extends Component {
         this.lineLayer = null;
         this.pointLayer.destroy();
         this.pointLayer = null;
+        this.textLayer.destroy();
+        this.textLayer = null;
     }
 
     createLayers() {
@@ -53,6 +55,8 @@ export default class App extends Component {
 
         this.pointDataSet = new DataSet([]);
         this.pointLayer = new baiduMapLayer(map, this.pointDataSet, {});
+
+        this.textLayer = new baiduMapLayer(map, this.pointDataSet, {});
 
     }
 
@@ -77,8 +81,8 @@ export default class App extends Component {
             var projection = map.getMapType().getProjection();
 
             this.props.data.forEach((item, index) => {
-                var fromCenter = item.from.point || utilCityCenter.getCenterByCityName(item.from.name);
-                var toCenter = item.to.point || utilCityCenter.getCenterByCityName(item.to.name);
+                var fromCenter = item.from.point || utilCityCenter.getCenterByCityName(item.from.city);
+                var toCenter = item.to.point || utilCityCenter.getCenterByCityName(item.to.city);
                 var curve = utilCurve.getPoints([fromCenter, toCenter]);
 
                 if (this.props.coordType === 'bd09mc') {
@@ -90,6 +94,7 @@ export default class App extends Component {
                 }
 
                 lineData.push({
+                    strokeStyle: item.color,
                     geometry: {
                         type: 'LineString',
                         coordinates: curve
@@ -98,6 +103,8 @@ export default class App extends Component {
 
                 if (options.showToPoint !== false) {
                     pointData.push({
+                        fillStyle: item.color,
+                        text: item.to.name || item.to.city,
                         geometry: {
                             type: 'Point',
                             coordinates: [toCenter.lng, toCenter.lat]
@@ -107,6 +114,8 @@ export default class App extends Component {
 
                 if (options.showFromPoint !== false) {
                     pointData.push({
+                        fillStyle: item.color,
+                        text: item.from.name || item.from.city,
                         geometry: {
                             type: 'Point',
                             coordinates: [fromCenter.lng, fromCenter.lat]
@@ -138,6 +147,19 @@ export default class App extends Component {
                 draw: 'simple',
                 fillStyle: '#5E87DB',
                 size: 5
+            }
+        });
+
+        this.textLayer.update({
+            options: this.props.textOptions || {
+                draw: 'text',
+                font: '18px Arial',
+                offset: {
+                    x: 0,
+                    y: 12,
+                },
+                fillStyle: '#333',
+                size: 12
             }
         });
     }
