@@ -5,7 +5,7 @@
 
 import React from 'react';
 import Component from './component';
-import {DataSet, utilCityCenter, utilCurve, baiduMapLayer} from 'mapv';
+import {DataSet, utilCityCenter, utilCurve, baiduMapLayer, baiduMapAnimationLayer} from 'mapv';
 
 export default class App extends Component {
 
@@ -58,6 +58,10 @@ export default class App extends Component {
 
         this.textLayer = new baiduMapLayer(map, this.pointDataSet, {});
 
+        if (this.props.enableAnimation) {
+            this.animationLayer = new baiduMapAnimationLayer(map, this.lineDataSet, {});
+        }
+
     }
 
     initialize() {
@@ -73,7 +77,6 @@ export default class App extends Component {
 
         var lineData = [];
         var pointData = [];
-        var options = this.props.options || {};
 
 
         if (this.props.data) {
@@ -101,7 +104,7 @@ export default class App extends Component {
                     }
                 });
 
-                if (options.showToPoint !== false) {
+                if (this.props.showToPoint !== false) {
                     pointData.push({
                         fillStyle: item.color,
                         text: item.to.name || item.to.city,
@@ -112,7 +115,7 @@ export default class App extends Component {
                     });
                 }
 
-                if (options.showFromPoint !== false) {
+                if (this.props.showFromPoint !== false) {
                     pointData.push({
                         fillStyle: item.color,
                         text: item.from.name || item.from.city,
@@ -162,6 +165,20 @@ export default class App extends Component {
                 size: 12
             }
         });
+
+        if (this.props.enableAnimation) {
+            this.animationLayer.update({
+                options: this.props.animationOptions || {
+                    fillStyle: 'rgba(255, 250, 250, 0.9)',
+                    lineWidth: 0,
+                    size: 4,
+                    animateTime: 50,
+                    draw: 'simple'
+                }
+            });
+        } else {
+            this.animationLayer && this.animationLayer.hide();
+        }
     }
 
 }

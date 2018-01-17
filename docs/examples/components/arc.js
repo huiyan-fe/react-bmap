@@ -11,10 +11,10 @@ export default class App extends Component {
             anchor: new BMap.Size(66 / 2 / 2, 82 / 2 - 10)
         });
         return <Map style={{height: '400px'}} mapStyle={simpleMapStyle} center={{lng: 105.403119, lat: 38.328658}} zoom='13'>
-            <Arc options={{
-                showFromPoint: false,
-                showToPoint: true
-            }} data={[
+            <Arc enableAnimation={true}
+                showFromPoint={false}
+                showToPoint={true}
+                data={[
                 {
                     color: 'red',
                     from: {

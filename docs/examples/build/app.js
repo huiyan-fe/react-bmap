@@ -2782,7 +2782,7 @@ module.exports = PooledClass;
 	(factory((global.mapv = global.mapv || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "2.0.19";
+var version = "2.0.20";
 
 /**
  * @author kyle / http://nikai.us/
@@ -7098,6 +7098,11 @@ var AnimationLayer = function (_BaseLayer) {
     }
 
     createClass(AnimationLayer, [{
+        key: "draw",
+        value: function draw() {
+            this.canvasLayer.draw();
+        }
+    }, {
         key: "init",
         value: function init(options) {
 
@@ -7249,12 +7254,12 @@ var AnimationLayer = function (_BaseLayer) {
                         data[i]._index = 0;
                     }
 
-                    ctx.lineWidth = options.lineWidth || 1;
                     var strokeStyle = data[i].strokeStyle || options.strokeStyle;
                     var fillStyle = data[i].fillStyle || options.fillStyle || 'yellow';
                     ctx.fillStyle = fillStyle;
                     ctx.fill();
-                    if (strokeStyle) {
+                    if (strokeStyle && options.lineWidth) {
+                        ctx.lineWidth = options.lineWidth || 1;
                         ctx.strokeStyle = strokeStyle;
                         ctx.stroke();
                     }
@@ -31982,6 +31987,10 @@ var App = function (_Component) {
             this.pointLayer = new _mapv.baiduMapLayer(map, this.pointDataSet, {});
 
             this.textLayer = new _mapv.baiduMapLayer(map, this.pointDataSet, {});
+
+            if (this.props.enableAnimation) {
+                this.animationLayer = new _mapv.baiduMapAnimationLayer(map, this.lineDataSet, {});
+            }
         }
     }, {
         key: 'initialize',
@@ -31999,7 +32008,6 @@ var App = function (_Component) {
 
             var lineData = [];
             var pointData = [];
-            var options = this.props.options || {};
 
             if (this.props.data) {
                 var points = [];
@@ -32026,7 +32034,7 @@ var App = function (_Component) {
                         }
                     });
 
-                    if (options.showToPoint !== false) {
+                    if (_this2.props.showToPoint !== false) {
                         pointData.push({
                             fillStyle: item.color,
                             text: item.to.name || item.to.city,
@@ -32037,7 +32045,7 @@ var App = function (_Component) {
                         });
                     }
 
-                    if (options.showFromPoint !== false) {
+                    if (_this2.props.showFromPoint !== false) {
                         pointData.push({
                             fillStyle: item.color,
                             text: item.from.name || item.from.city,
@@ -32086,6 +32094,20 @@ var App = function (_Component) {
                     size: 12
                 }
             });
+
+            if (this.props.enableAnimation) {
+                this.animationLayer.update({
+                    options: this.props.animationOptions || {
+                        fillStyle: 'rgba(255, 250, 250, 0.9)',
+                        lineWidth: 0,
+                        size: 4,
+                        animateTime: 50,
+                        draw: 'simple'
+                    }
+                });
+            } else {
+                this.animationLayer && this.animationLayer.hide();
+            }
         }
     }], [{
         key: 'defaultProps',
@@ -33031,10 +33053,10 @@ var App = function (_Component) {
             return _react2.default.createElement(
                 _src.Map,
                 { style: { height: '400px' }, mapStyle: _mapstyle.simpleMapStyle, center: { lng: 105.403119, lat: 38.328658 }, zoom: '13' },
-                _react2.default.createElement(_src.Arc, { options: {
-                        showFromPoint: false,
-                        showToPoint: true
-                    }, data: [{
+                _react2.default.createElement(_src.Arc, { enableAnimation: true,
+                    showFromPoint: false,
+                    showToPoint: true,
+                    data: [{
                         color: 'red',
                         from: {
                             city: '北京'
