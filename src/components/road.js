@@ -4,15 +4,16 @@
  */
 
 import Component from './component';
-import {baiduMapCanvasLayer} from 'mapv';
+import {
+    baiduMapCanvasLayer
+} from 'mapv';
 import mapLine from '../utils/map-line';
 import geoUtils from '../utils/geo-utils';
 
 export default class App extends Component {
     constructor(args) {
         super(args);
-        this.state = {
-        };
+        this.state = {};
     }
 
     componentDidUpdate(prevProps) {
@@ -89,7 +90,7 @@ export default class App extends Component {
         ctx.beginPath();
         var lineWidth = this.props.lineWidth || 10;
         mapLine.drawRoads(map, ctx, roadGroup.allPath, {
-            color: '#fff',
+            color: this.props.bgColor || '#fff',
             lineWidth: lineWidth + 4,
             lineCap: 'butt',
             arrow: false,
@@ -126,25 +127,25 @@ export default class App extends Component {
                             var roadPath = this.props.roadPaths[i];
                             isClick = this.isClick(map, e.pixel, roadPath);
                             if (isClick) {
-                                this.props.onClick(i); 
+                                this.props.onClick(i);
                             }
                         };
                     } else if (this.props.roadPath) {
                         isClick = this.isClick(map, e.pixel, this.props.roadPath);
                         if (isClick) {
-                            this.props.onClick(); 
+                            this.props.onClick();
                         }
                     }
 
 
 
-                    
+
                 });
             }
-            }
+        }
 
         this.updateViewport();
-        
+
     }
 
     canvasLayerUpdate(canvasLayer) {
@@ -166,7 +167,7 @@ export default class App extends Component {
                 }
                 this.drawRoad(ctx, roadPath, this.props.category, this.props.splitList, lineWidth);
             });
-        } else if(roadPath) {
+        } else if (roadPath) {
             this.drawRoad(ctx, this.props.roadPath, this.props.category, this.props.splitList, lineWidth);
         }
 
@@ -177,7 +178,7 @@ export default class App extends Component {
         var data = roadGroup.group;
 
         mapLine.drawRoads(this.props.map, ctx, roadGroup.allPath, {
-            color: '#fff',
+            color: this.props.bgColor || '#fff',
             coordType: this.props.coordType,
             lineWidth: lineWidth + 4,
             lineCap: 'butt',
@@ -202,12 +203,12 @@ export default class App extends Component {
             color: item.color,
             coordType: this.props.coordType,
             lineWidth: lineWidth,
-            border: {
-            },
+            border: {},
             lineCap: 'butt',
             arrow: this.props.isShowArrow !== false ? {
                 width: 5,
-                height: 3
+                height: 3,
+                color: this.props.arrowColor
             } : false
         });
     }

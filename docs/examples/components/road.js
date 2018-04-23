@@ -12,7 +12,9 @@ export default class App extends Component {
             //    2: 'yellow',
             //    3: '#ff5e47'
             //}} 
-            color='#1495ff' 
+            color='rgba(0,255,0,0.7)' 
+            bgColor="rgba(255,255,255,0.1)"
+            arrowColor='rgba(255,0,0,0.7)'
             lineWidth={10} 
             roadPath={[
                 "116.488838,39.911212,116.489818,39.911292,116.490838,39.911387",

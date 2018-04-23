@@ -184,7 +184,7 @@ const mapLine = {
                 ctx.restore();
             }
         });
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = options.arrow.color||'#fff';
         ctx.lineWidth = 3;
         ctx.stroke();
     }
