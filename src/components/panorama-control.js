@@ -1,12 +1,10 @@
 /**
- * @file 比例尺控件
- * @author kyle(hinikai@gmail.com)
+ * @file 地图的全景图控件
  */
 
 import Control from './control';
 
-export default class ScaleControl extends Control {
-
+export default class PanoramaControl extends Control {
     constructor(args) {
         super(args);
     }
@@ -16,7 +14,7 @@ export default class ScaleControl extends Control {
     }
 
     getControl() {
-        return new BMap.ScaleControl(this.getOptions(this.options));
+        return new BMap.PanoramaControl(this.getOptions(this.options));
     }
 
 }

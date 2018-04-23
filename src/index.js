@@ -17,6 +17,7 @@ export {default as NavigationControl} from './components/navigation-control';
 export {default as OverviewMapControl} from './components/overview-map-control';
 export {default as ScaleControl} from './components/scale-control';
 export {default as MapTypeControl} from './components/map-type-control';
+export {default as PanoramaControl} from './components/panorama-control';
 
 /**
  * 图形覆盖物组件

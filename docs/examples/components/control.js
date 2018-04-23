@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {Map, NavigationControl, MapTypeControl, ScaleControl, OverviewMapControl} from '../../../src'
-import {simpleMapStyle} from './mapstyle'
+import { Map, NavigationControl, MapTypeControl, ScaleControl, OverviewMapControl, PanoramaControl} from '../../../src';
+import {simpleMapStyle} from './mapstyle';
 
 export default class App extends Component {
     render() {
@@ -10,10 +10,11 @@ export default class App extends Component {
                 }}
                 zoom='5' 
                 mapStyle={simpleMapStyle}>
-            <NavigationControl />
+            <NavigationControl/>
             <MapTypeControl />
             <ScaleControl />
             <OverviewMapControl />
+            <PanoramaControl anchor={BMAP_ANCHOR_TOP_RIGHT} offset={new BMap.Size(10, 40)}/ >
         </Map>
     }
 }
