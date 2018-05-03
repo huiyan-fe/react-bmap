@@ -9,7 +9,7 @@ function DraggingTip(options) {
 
     this.map = map;
     var tip = this.tip = new Tip(options);
-    var icon = new BMap.Icon("http://huiyan.baidu.com/github/tools/gis-drawing/static/images/drag.png", new BMap.Size(25, 25), {
+    var icon = new BMap.Icon("//huiyan.baidu.com/github/tools/gis-drawing/static/images/drag.png", new BMap.Size(25, 25), {
         imageSize: new BMap.Size(25, 25)
     });
     var marker = this.marker = new BMap.Marker(this.point);
