@@ -10,8 +10,23 @@ CustomOverlay.prototype = new BMap.Overlay();
 CustomOverlay.prototype.initialize = function(map){
     this._map = map;
     var div = this._div = document.createElement("div");
+    div.setAttribute('tag', 'customoverlay');
     div.style.position = "absolute";
     div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+    div.addEventListener('touchstart', function (e) {
+        e.stopPropagation();
+        console.log('touchstart');
+    });
+    /*
+    div.addEventListener('touchmove', function (e) {
+        e.stopPropagation();
+        console.log('touchmove');
+    });
+    */
+    div.addEventListener('touchend', function (e) {
+        e.stopPropagation();
+        console.log('touchend');
+    });
     if (Object.prototype.toString.call(this.content) == "[object String]") {
         div.innerHTML = this.content;
     } else {
