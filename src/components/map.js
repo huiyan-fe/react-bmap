@@ -139,6 +139,9 @@ export default class Map extends Component {
         }
 
         var zoom = this.props.zoom;
+        
+        // 在 centerAndZoom() 之前执行事件绑定否则load无法正常触发
+        this.bindEvent(map, this.events);
 
         if (isString(this.props.center)) { // 可以传入城市名
             map.centerAndZoom(this.props.center);
@@ -148,7 +151,6 @@ export default class Map extends Component {
         }
 
         this.bindToggleMeghods(map, this.toggleMethods);
-        this.bindEvent(map, this.events);
 
         var lastZoom = zoom;
         map.addEventListener('zoomend', () => {
