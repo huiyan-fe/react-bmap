@@ -56,6 +56,7 @@ export {default as DrivingRoute} from './components/driving-route';
 export {default as PointLabel} from './components/point-label';
 
 /**
- * Arc组件
+ * Od迁徙组件
  */
 export {default as Arc} from './components/arc';
+export {default as ThickRay} from './components/thick-ray';

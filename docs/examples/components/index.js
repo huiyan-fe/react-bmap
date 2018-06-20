@@ -9,6 +9,7 @@ import MapvLayer from './mapv-layer';
 import MapvMarkerList from './mapv-marker-list';
 import Road from './road';
 import Arc from './arc';
+import ThickRay from './thick-ray';
 import Boundary from './boundary';
 import Control from './control';
 import DrivingRoute from './driving-route';
@@ -38,12 +39,14 @@ const examples = (
     <Boundary />
     <h2>TrafficLayer 交通路况图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/traffic-layer.js">示例代码</a></h2>
     <TrafficLayer />
-    <h2>驾车组件<a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/driving-route.js">示例代码</a></h2>
+    <h2>驾车组件 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/driving-route.js">示例代码</a></h2>
     <DrivingRoute />
-    <h2>PointLabel<a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/point-label.js">示例代码</a></h2>
+    <h2>PointLabel <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/point-label.js">示例代码</a></h2>
     <PointLabel />
-    <h2>Arc<a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/arc.js">示例代码</a></h2>
+    <h2>Arc 迁徙弧线 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/arc.js">示例代码</a></h2>
     <Arc />
+    <h2>ThickRay 迁徙射线 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/thick-ray.js">示例代码</a></h2>
+    <ThickRay />
   </div>
 )
 
