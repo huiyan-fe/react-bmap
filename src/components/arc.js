@@ -146,6 +146,7 @@ export default class App extends Component {
         this.pointDataSet.set(pointData);
         this.pointLayer.update({
             options: this.props.pointOptions || {
+                coordType: this.props.coordType,
                 draw: 'simple',
                 fillStyle: '#5E87DB',
                 size: 5
@@ -154,6 +155,7 @@ export default class App extends Component {
 
         this.textLayer.update({
             options: this.props.textOptions || {
+                coordType: this.props.coordType,
                 draw: 'text',
                 font: '18px Arial',
                 offset: {
@@ -168,6 +170,7 @@ export default class App extends Component {
         if (this.props.enableAnimation) {
             this.animationLayer.update({
                 options: this.props.animationOptions || {
+                    coordType: this.props.coordType,
                     fillStyle: 'rgba(255, 250, 250, 0.9)',
                     lineWidth: 0,
                     size: 4,

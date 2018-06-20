@@ -92,7 +92,8 @@ export default class App extends Component {
                 var intensity = new utilDataRangeIntensity({
                     maxSize: 10,
                     minSize: 1,
-                    max: 1000
+                    min: this.props.min || 0,
+                    max: this.props.max || 1000
                 });
                 var lineWidth = intensity.getSize(item.count)
                 
@@ -139,6 +140,7 @@ export default class App extends Component {
         this.lineDataSet.set(lineData);
         this.lineLayer.update({
             options: this.props.lineOptions || {
+                coordType: this.props.coordType,
                 draw: 'simple',
                 strokeStyle: '#5E87DB',
                 globalCompositeOperation: 'lighter',
@@ -152,16 +154,18 @@ export default class App extends Component {
         this.pointDataSet.set(pointData);
         this.pointLayer.update({
             options: this.props.pointOptions || {
+                coordType: this.props.coordType,
                 draw: 'simple',
                 fillStyle: '#5E87DB',
                 size: 5,
                 shadowColor: '#5E87DB',
-                shadowBlur: 20,
+                shadowBlur: 20
             }
         });
 
         this.textLayer.update({
             options: this.props.textOptions || {
+                coordType: this.props.coordType,
                 draw: 'text',
                 font: '18px Arial',
                 offset: {

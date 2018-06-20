@@ -32236,6 +32236,7 @@ var App = function (_Component) {
             this.pointDataSet.set(pointData);
             this.pointLayer.update({
                 options: this.props.pointOptions || {
+                    coordType: this.props.coordType,
                     draw: 'simple',
                     fillStyle: '#5E87DB',
                     size: 5
@@ -32244,6 +32245,7 @@ var App = function (_Component) {
 
             this.textLayer.update({
                 options: this.props.textOptions || {
+                    coordType: this.props.coordType,
                     draw: 'text',
                     font: '18px Arial',
                     offset: {
@@ -32258,6 +32260,7 @@ var App = function (_Component) {
             if (this.props.enableAnimation) {
                 this.animationLayer.update({
                     options: this.props.animationOptions || {
+                        coordType: this.props.coordType,
                         fillStyle: 'rgba(255, 250, 250, 0.9)',
                         lineWidth: 0,
                         size: 4,
@@ -32410,7 +32413,8 @@ var App = function (_Component) {
                     var intensity = new _mapv.utilDataRangeIntensity({
                         maxSize: 10,
                         minSize: 1,
-                        max: 1000
+                        min: _this2.props.min || 0,
+                        max: _this2.props.max || 1000
                     });
                     var lineWidth = intensity.getSize(item.count);
 
@@ -32457,6 +32461,7 @@ var App = function (_Component) {
             this.lineDataSet.set(lineData);
             this.lineLayer.update({
                 options: this.props.lineOptions || {
+                    coordType: this.props.coordType,
                     draw: 'simple',
                     strokeStyle: '#5E87DB',
                     globalCompositeOperation: 'lighter',
@@ -32469,6 +32474,7 @@ var App = function (_Component) {
             this.pointDataSet.set(pointData);
             this.pointLayer.update({
                 options: this.props.pointOptions || {
+                    coordType: this.props.coordType,
                     draw: 'simple',
                     fillStyle: '#5E87DB',
                     size: 5,
@@ -32479,6 +32485,7 @@ var App = function (_Component) {
 
             this.textLayer.update({
                 options: this.props.textOptions || {
+                    coordType: this.props.coordType,
                     draw: 'text',
                     font: '18px Arial',
                     offset: {

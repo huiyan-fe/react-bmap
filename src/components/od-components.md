@@ -43,6 +43,8 @@
 | lineOptions | 迁徙弧线样式参数 | - | - |
 | pointOptions | 起点终点样式参数 | - | - |
 | textOptions | 终点文字样式参数 | - | - |
+| min | 迁徙数据count最小值 | - | `0` |
+| max | 迁徙数据count最大值 | - | `1000` |
 | data | 迁徙数据 | - | - |
 
 ## 附：其他参数数据格式
