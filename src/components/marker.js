@@ -7,6 +7,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import Component from './component';
 import CustomOverlay from '../overlay/CustomOverlay';
+import {isString} from '../utils/common';
 
 const defaultIconUrl = 'http://webmap1.map.bdstatic.com/wolfman/static/common/images/markers_new2x_fbb9e99.png';
 
@@ -138,6 +139,7 @@ export default class App extends Component {
 
         var icon;
         var propsIcon = this.props.icon;
+		var that = this;
 
         if (propsIcon && propsIcon instanceof BMap.Icon) {
             icon = propsIcon;
@@ -149,39 +151,48 @@ export default class App extends Component {
             }
         }
 
-        if (this.props.coordType === 'bd09mc') {
-            var projection = map.getMapType().getProjection();
-            var position = projection.pointToLngLat(new BMap.Pixel(this.props.position.lng, this.props.position.lat));
-        } else {
-            var position = new BMap.Point(this.props.position.lng, this.props.position.lat);
+        if (isString(this.props.position)) { // 可以传入详细地址，地址错误默认为厦门市
+		var myGeo = new BMap.Geocoder();
+        var position = myGeo.getPoint(this.props.position, function(point){
+				if (point) {
+					position = point;
+					nextDo();
+				}
+            },
+            "厦门市");
+        }else {
+           var position = new BMap.Point(this.props.position.lng, this.props.position.lat);
+           nextDo();
         }
+		
+        function nextDo(){
+			if ('children' in that.props) {
+				that.contentDom = document.createElement('div');
+				const child = that.props.children;
+				render(<div>{child}</div>, that.contentDom)
+				that.marker = new CustomOverlay(position, that.contentDom, that.props.offset);
+				map.addOverlay(that.marker);
+			} else {
+				var options = that.getOptions(that.options);
+				options.icon = icon;
+				that.marker = new BMap.Marker(position, options);
+				if (that.props.isTop) {
+					that.marker.setTop(true);
+				}
+				that.bindEvent(that.marker, that.events);
 
-        if ('children' in this.props) {
-            this.contentDom = document.createElement('div');
-            const child = this.props.children;
-            render(<div>{child}</div>, this.contentDom)
-            this.marker = new CustomOverlay(position, this.contentDom, this.props.offset);
-            map.addOverlay(this.marker);
-        } else {
-            var options = this.getOptions(this.options);
-            options.icon = icon;
-            this.marker = new BMap.Marker(position, options);
-            if (this.props.isTop) {
-                this.marker.setTop(true);
-            }
-            this.bindEvent(this.marker, this.events);
+				map.addOverlay(that.marker);
+				that.bindToggleMeghods(that.marker, that.toggleMethods);
+			}
 
-            map.addOverlay(this.marker);
-            this.bindToggleMeghods(this.marker, this.toggleMethods);
-        }
+			if (that.props.autoViewport) {
+				map.panTo(position);
+			}
 
-        if (this.props.autoViewport) {
-            map.panTo(position);
-        }
-
-        if(this.props.autoCenterAndZoom) {
-            map.setViewport([position],this.props.centerAndZoomOptions);
-        }
+			if(that.props.autoCenterAndZoom) {
+				map.setViewport([position],that.props.centerAndZoomOptions);
+			}
+		}
     }
 
 }
