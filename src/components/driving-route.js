@@ -48,11 +48,20 @@ export default class App extends Component {
         this.destroy();
 
         if (!this.driving) {
-            this.driving = new BMap.DrivingRoute(map, {renderOptions:{
-                map: map,
-                policy: this.props.policy || BMAP_DRIVING_POLICY_LEAST_TIME,
-                autoViewport: true
-            }});
+            var self = this;
+            this.driving = new BMap.DrivingRoute(map, {
+                renderOptions:{
+                    map: map,
+                    policy: this.props.policy || BMAP_DRIVING_POLICY_LEAST_TIME,
+                    autoViewport: true,
+                    enableDragging: true,
+                },
+                onSearchComplete: function(results) {
+                  var plan = results.getPlan(0)
+                  var route = plan.getRoute(0)
+                  self.props.onRouteDataCallback(plan, route)
+                }
+            });
         }
 
         var start = this.props.start;

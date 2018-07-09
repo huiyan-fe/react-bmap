@@ -136,15 +136,12 @@ export default class App extends Component {
                             this.props.onClick();
                         }
                     }
-
-
-
-
                 });
             }
         }
-
-        this.updateViewport();
+        if (this.props.disableAutoZoom == undefined || !this.props.disableAutoZoom){
+            this.updateViewport();
+        }
 
     }
 
@@ -220,5 +217,4 @@ export default class App extends Component {
     componentWillUnmount() {
         this.canvasLayer.hide();
     }
-
 }

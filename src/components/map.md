@@ -19,6 +19,7 @@
 * enablePinchToZoom={false}
 * enableAutoResize={false}
 * events={事件options}
+* disableAutoZoom={false}
 
 ### map的事件options包含以下属性：
 * click
