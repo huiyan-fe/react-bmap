@@ -134,7 +134,7 @@ export default class App extends Component {
 
         var map = this.props.map;
         let type = this.props.type;
-        if (type == 'info_tip' || !map) {
+        if (type == 'order_tip' || !map) {
             return;
         }
 
@@ -190,7 +190,7 @@ export default class App extends Component {
 
     render(){
         let type = this.props.type;
-        if(type=='info_tip'){
+        if(type=='order_tip'){
             return <MarkerOrderTip {...this.props}/>
         }else{
             return null;

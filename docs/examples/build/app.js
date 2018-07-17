@@ -13467,7 +13467,7 @@ var App = function (_Component) {
 
             var map = this.props.map;
             var type = this.props.type;
-            if (type == 'info_tip' || !map) {
+            if (type == 'order_tip' || !map) {
                 return;
             }
 
@@ -13528,7 +13528,7 @@ var App = function (_Component) {
         key: 'render',
         value: function render() {
             var type = this.props.type;
-            if (type == 'info_tip') {
+            if (type == 'order_tip') {
                 return _react2.default.createElement(_markerOrderTip2.default, this.props);
             } else {
                 return null;
@@ -16461,7 +16461,7 @@ var examples = _react2.default.createElement(
   _react2.default.createElement(
     'h2',
     null,
-    ' Marker(type=\'info_tip\') \u7B80\u4ECB ',
+    ' Marker(type=\'order_tip\') \u7B80\u4ECB ',
     _react2.default.createElement(
       'a',
       { href: 'https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker-order-tip.js' },
@@ -33496,7 +33496,7 @@ var App = function (_Component) {
                     var name = '测试' + order;
                     return _react2.default.createElement(_src.Marker, {
                         key: order,
-                        type: 'info_tip',
+                        type: 'order_tip',
                         active: active,
                         leftStyle: leftStyle,
                         map: _this2.props.map

@@ -78,7 +78,7 @@ export default class App extends Component {
                 let name = '测试'+order;
                 return <Marker 
                     key={order}
-                    type={'info_tip'}
+                    type={'order_tip'}
                     active={active}
                     leftStyle={leftStyle}
                     map={this.props.map} 
