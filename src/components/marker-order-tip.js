@@ -1,6 +1,6 @@
 import React from 'react';
 import Marker from './marker';
-import { bmap as _bmap } from 'kits-js';
+import { bmap as _bmap, obj } from 'kits-js';
 
 class MarkerOrderTip extends React.Component {
     constructor(args) {
@@ -56,6 +56,7 @@ class MarkerOrderTip extends React.Component {
             'minHeight': '50px',
             'marginTop': '-25px',
         };
+
         let order_style = {
             minWidth: '30px',
             background: '#999999',
@@ -69,6 +70,10 @@ class MarkerOrderTip extends React.Component {
         if (this.props.active) {
             order_style.background = '#F5533D'
         }
+        if(this.props.leftStyle){
+            order_style = obj.merge(order_style,this.props.leftStyle);
+        }
+        
         let name_class = {
             flex: '1',
             padding: '6px',

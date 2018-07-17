@@ -64,6 +64,13 @@ export default class App extends Component {
             {points.map((position, index) => {
                 let order = index+1;
                 let updown = index/2 ? '-':'';
+                let active = false;
+                let leftStyle=null;
+                if(index%3 == 0){
+                    leftStyle={background:'blue'}
+                }else  if(index%3 == 1){
+                    active = true;
+                }
                 let ran = Math.random()*100;
                 let rn = this.toFixedNum(ran,2);
                 let rate=  updown + rn +'%'
@@ -72,6 +79,8 @@ export default class App extends Component {
                 return <Marker 
                     key={order}
                     type={'info_tip'}
+                    active={active}
+                    leftStyle={leftStyle}
                     map={this.props.map} 
                     // rightModule={<div>hello</div>}
                     position={position} 

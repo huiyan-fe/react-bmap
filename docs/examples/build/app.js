@@ -16172,6 +16172,7 @@ var MarkerOrderTip = function (_React$Component) {
                 'minHeight': '50px',
                 'marginTop': '-25px'
             };
+
             var order_style = {
                 minWidth: '30px',
                 background: '#999999',
@@ -16185,6 +16186,10 @@ var MarkerOrderTip = function (_React$Component) {
             if (this.props.active) {
                 order_style.background = '#F5533D';
             }
+            if (this.props.leftStyle) {
+                order_style = _kitsJs.obj.merge(order_style, this.props.leftStyle);
+            }
+
             var name_class = {
                 flex: '1',
                 padding: '6px',
@@ -33477,6 +33482,13 @@ var App = function (_Component) {
                 points.map(function (position, index) {
                     var order = index + 1;
                     var updown = index / 2 ? '-' : '';
+                    var active = false;
+                    var leftStyle = null;
+                    if (index % 3 == 0) {
+                        leftStyle = { background: 'blue' };
+                    } else if (index % 3 == 1) {
+                        active = true;
+                    }
                     var ran = Math.random() * 100;
                     var rn = _this2.toFixedNum(ran, 2);
                     var rate = updown + rn + '%';
@@ -33485,6 +33497,8 @@ var App = function (_Component) {
                     return _react2.default.createElement(_src.Marker, {
                         key: order,
                         type: 'info_tip',
+                        active: active,
+                        leftStyle: leftStyle,
                         map: _this2.props.map
                         // rightModule={<div>hello</div>}
                         , position: position,
