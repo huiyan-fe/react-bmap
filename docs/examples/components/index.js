@@ -1,5 +1,6 @@
 import Map from './map';
 import Marker from './marker';
+import MarkerOrderTip from './marker-order-tip';
 import PointLabel from './point-label';
 import TrafficLayer from './traffic-layer';
 import InfoWindow from './infowindow';
@@ -23,6 +24,8 @@ const examples = (
     <Map />
     <h2>Marker 标注 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker.js">示例代码</a></h2>
     <Marker />
+    <h2> Marker(type='info_tip') 简介 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker-order-tip.js">示例代码</a></h2>
+    <MarkerOrderTip />
     <h2>InfoWindow 信息窗口 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/infowindow.js">示例代码</a></h2>
     <InfoWindow />
     <h2>各类地图控件 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/control.js">示例代码</a></h2>

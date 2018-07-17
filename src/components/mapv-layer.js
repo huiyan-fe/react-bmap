@@ -68,7 +68,6 @@ export default class MapvLayer extends Component {
             options: this.props.options
         });
 
-        
     }
 
     componentDidMount() {

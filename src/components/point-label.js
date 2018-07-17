@@ -53,7 +53,6 @@ export default class App extends Component {
 
         this.destroy();
 
-
         if (this.props.data) {
             var points = [];
             this.props.data.forEach((item, index) => {

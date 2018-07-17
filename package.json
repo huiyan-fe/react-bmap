@@ -1,6 +1,6 @@
 {
   "name": "react-bmap",
-  "version": "1.0.74",
+  "version": "1.0.75",
   "description": "react-bmap",
   "main": "lib/index.js",
   "contributors": [
@@ -39,6 +39,7 @@
     "webpack-dev-server": "^2.5.0"
   },
   "dependencies": {
+    "kits-js": "^0.0.1",
     "mapv": "2.0.20"
   },
   "config": {

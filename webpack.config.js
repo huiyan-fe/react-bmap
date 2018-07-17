@@ -5,8 +5,7 @@ module.exports = {
     entry: {
         'react-bmap': path.join(__dirname, 'src/index.js'),
     },
-    externals: [
-        {
+    externals: [{
             react: {
                 amd: 'react',
                 commonjs: 'react',

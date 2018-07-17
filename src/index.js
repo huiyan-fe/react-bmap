@@ -8,6 +8,7 @@
  */
 export {default as Map} from './components/map';
 export {default as Marker} from './components/marker';
+export {default as MarkerOrderTip} from './components/marker-order-tip';
 export {default as InfoWindow} from './components/infowindow';
 
 /**

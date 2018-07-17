@@ -203,7 +203,7 @@ export default class Map extends Component {
             style[key] = this.props.style[key];
         }
         return (
-            <div style={style}>
+            <div style={style} key={this.props.key}>
                 <div ref='map' className={this.props.className} style={{height: '100%'}}>
                  加载地图中...
                 </div>
