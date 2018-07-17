@@ -13,7 +13,9 @@
     "build:lib": "rm -rf lib && babel src -d lib",
     "build:dist": "webpack",
     "build": "npm run build:lib && npm run build:dist && npm run examples:build",
+    "test": "npm run build:lib && npm run build:dist && npm link",
     "prepublish": "npm run build",
+    "pub": "npm run prepublish && npm publish",
     "examples:build": "webpack --config ./docs/examples/webpack.config.js",
     "examples": "webpack-dev-server --config ./docs/examples/webpack.config.js"
   },

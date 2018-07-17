@@ -128,6 +128,7 @@ class MarkerOrderTip extends React.Component {
                                             src='http://huiyan.baidu.com/cms/react-bmap/down.png'
                                         />
                                 }
+                                {')'}
                             </div>}
                             {rightModule  
                                 ? <div>  {rightModule} </div>
