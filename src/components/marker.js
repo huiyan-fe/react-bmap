@@ -180,11 +180,7 @@ export default class App extends Component {
         }
 
         if (this.props.autoViewport) {
-            map.panTo(position);
-        }
-
-        if(this.props.autoCenterAndZoom) {
-            map.setViewport([position],this.props.centerAndZoomOptions);
+            map.setViewport([position],this.props.ViewportOptions);
         }
     }
 

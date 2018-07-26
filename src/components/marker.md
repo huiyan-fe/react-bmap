@@ -13,6 +13,8 @@
 - title="鼠标移上来提示文本"
 - enableMassClear={false}
 - enableDragging={false}
+- autoViewport={true}
+- viewportOptions={{zoomFactor: -2}}
 
 ### marker的事件options包含以下属性，可传回调函数：
 - click 
