@@ -16123,9 +16123,7 @@ var MarkerOrderTip = function (_React$Component) {
         value: function componentDidUpdate(prevProps) {
             var preData = JSON.stringify(prevProps.data);
             var data = JSON.stringify(this.props.data);
-            if (preData != data || !this.map) {
-                this.initialize();
-            }
+            if (preData != data || !this.map) {}
         }
     }, {
         key: 'componentDidMount',

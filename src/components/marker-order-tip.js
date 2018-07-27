@@ -19,7 +19,6 @@ class MarkerOrderTip extends React.Component {
         var preData = JSON.stringify(prevProps.data);
         var data = JSON.stringify(this.props.data);
         if (preData != data || !this.map) {
-            this.initialize();
         }
     }
 
