@@ -17,7 +17,8 @@ var App = {
             }
         }
 
-        newRoadPath = this.uniqueRoadPath(newRoadPath);
+        // 点去重、性能有问题、先临时去掉
+        // newRoadPath = this.uniqueRoadPath(newRoadPath);
 
         return newRoadPath;
     },
