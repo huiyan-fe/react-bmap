@@ -143,6 +143,11 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
 ### TrafficLayer 交通路况图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/traffic-layer.js">示例代码</a>
     <TrafficLayer />
+    
+## 获取 `BMap.Map` 实例
+如果你使用 `BMapLib`，需要 `BMap.Map` 实例的话，可以通过 `<Map>` 组件实例的 `map` 属性访问到它。
+
+    <Map ref={ref => this.map = ref.map} />
 
 ## 许可证
 [MIT](./LICENSE)
