@@ -116,7 +116,7 @@ class MarkerOrderTip extends React.Component {
                                                 height: 'auto',
                                                 margin: '1px',
                                             }}
-                                            src='http://huiyan.baidu.com/cms/react-bmap/up.png'
+                                            src='//huiyan.baidu.com/cms/react-bmap/up.png'
                                         />
                                         : < img
                                             style={{
@@ -124,7 +124,7 @@ class MarkerOrderTip extends React.Component {
                                                 height: 'auto',
                                                 margin: '1px',
                                             }}
-                                            src='http://huiyan.baidu.com/cms/react-bmap/down.png'
+                                            src='//huiyan.baidu.com/cms/react-bmap/down.png'
                                         />
                                 }
                                 {')'}

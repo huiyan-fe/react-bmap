@@ -6,7 +6,7 @@ import {simpleMapStyle} from './mapstyle';
 export default class App extends Component {
     render() {
         var center = utilCityCenter.getCenterByCityName('北京');
-        var icon = new BMap.Icon('http://wiki.lbsyun.baidu.com/cms/images/huiyan_od_marker.png', new BMap.Size(66 / 2, 82 / 2), {
+        var icon = new BMap.Icon('//huiyan.baidu.com/cms/react-bmap/huiyan_od_marker.png', new BMap.Size(66 / 2, 82 / 2), {
             imageSize: new BMap.Size(66 / 2, 82 / 2),
             anchor: new BMap.Size(66 / 2 / 2, 82 / 2 - 10)
         });

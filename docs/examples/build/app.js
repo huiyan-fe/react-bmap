@@ -13378,7 +13378,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var defaultIconUrl = 'http://webmap1.map.bdstatic.com/wolfman/static/common/images/markers_new2x_fbb9e99.png';
+var defaultIconUrl = '//huiyan.baidu.com/cms/react-bmap/markers_new2x_fbb9e99.png';
 
 var icons = {
     'simple_red': new BMap.Icon(defaultIconUrl, new BMap.Size(42 / 2, 66 / 2), {
@@ -16235,14 +16235,14 @@ var MarkerOrderTip = function (_React$Component) {
                                         height: 'auto',
                                         margin: '1px'
                                     },
-                                    src: 'http://huiyan.baidu.com/cms/react-bmap/up.png'
+                                    src: '//huiyan.baidu.com/cms/react-bmap/up.png'
                                 }) : _react2.default.createElement('img', {
                                     style: {
                                         width: '8px',
                                         height: 'auto',
                                         margin: '1px'
                                     },
-                                    src: 'http://huiyan.baidu.com/cms/react-bmap/down.png'
+                                    src: '//huiyan.baidu.com/cms/react-bmap/down.png'
                                 }),
                                 ')'
                             ),
@@ -18516,6 +18516,27 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      */
     componentWillUnmount: 'DEFINE_MANY',
 
+    /**
+     * Replacement for (deprecated) `componentWillMount`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillMount: 'DEFINE_MANY',
+
+    /**
+     * Replacement for (deprecated) `componentWillReceiveProps`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillReceiveProps: 'DEFINE_MANY',
+
+    /**
+     * Replacement for (deprecated) `componentWillUpdate`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillUpdate: 'DEFINE_MANY',
+
     // ==== Advanced methods ====
 
     /**
@@ -18529,6 +18550,23 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      * @overridable
      */
     updateComponent: 'OVERRIDE_BASE'
+  };
+
+  /**
+   * Similar to ReactClassInterface but for static methods.
+   */
+  var ReactClassStaticInterface = {
+    /**
+     * This method is invoked after a component is instantiated and when it
+     * receives new props. Return an object to update state in response to
+     * prop changes. Return null to indicate no change to state.
+     *
+     * If an object is returned, its keys will be merged into the existing state.
+     *
+     * @return {object || null}
+     * @optional
+     */
+    getDerivedStateFromProps: 'DEFINE_MANY_MERGED'
   };
 
   /**
@@ -18765,6 +18803,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
     if (!statics) {
       return;
     }
+
     for (var name in statics) {
       var property = statics[name];
       if (!statics.hasOwnProperty(name)) {
@@ -18781,14 +18820,25 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         name
       );
 
-      var isInherited = name in Constructor;
-      _invariant(
-        !isInherited,
-        'ReactClass: You are attempting to define ' +
-          '`%s` on your component more than once. This conflict may be ' +
-          'due to a mixin.',
-        name
-      );
+      var isAlreadyDefined = name in Constructor;
+      if (isAlreadyDefined) {
+        var specPolicy = ReactClassStaticInterface.hasOwnProperty(name)
+          ? ReactClassStaticInterface[name]
+          : null;
+
+        _invariant(
+          specPolicy === 'DEFINE_MANY_MERGED',
+          'ReactClass: You are attempting to define ' +
+            '`%s` on your component more than once. This conflict may be ' +
+            'due to a mixin.',
+          name
+        );
+
+        Constructor[name] = createMergedResultFunction(Constructor[name], property);
+
+        return;
+      }
+
       Constructor[name] = property;
     }
   }
@@ -19096,6 +19146,12 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         !Constructor.prototype.componentWillRecieveProps,
         '%s has a method called ' +
           'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
+        spec.displayName || 'A component'
+      );
+      warning(
+        !Constructor.prototype.UNSAFE_componentWillRecieveProps,
+        '%s has a method called UNSAFE_componentWillRecieveProps(). ' +
+          'Did you mean UNSAFE_componentWillReceiveProps()?',
         spec.displayName || 'A component'
       );
     }
@@ -34221,7 +34277,7 @@ var App = function (_Component) {
         key: 'render',
         value: function render() {
             var center = _mapv.utilCityCenter.getCenterByCityName('北京');
-            var icon = new BMap.Icon('http://wiki.lbsyun.baidu.com/cms/images/huiyan_od_marker.png', new BMap.Size(66 / 2, 82 / 2), {
+            var icon = new BMap.Icon('//huiyan.baidu.com/cms/react-bmap/huiyan_od_marker.png', new BMap.Size(66 / 2, 82 / 2), {
                 imageSize: new BMap.Size(66 / 2, 82 / 2),
                 anchor: new BMap.Size(66 / 2 / 2, 82 / 2 - 10)
             });
@@ -34319,7 +34375,7 @@ var App = function (_Component) {
         key: 'render',
         value: function render() {
             var center = _mapv.utilCityCenter.getCenterByCityName('北京');
-            var icon = new BMap.Icon('http://wiki.lbsyun.baidu.com/cms/images/huiyan_od_marker.png', new BMap.Size(66 / 2, 82 / 2), {
+            var icon = new BMap.Icon('//huiyan.baidu.com/cms/react-bmap/huiyan_od_marker.png', new BMap.Size(66 / 2, 82 / 2), {
                 imageSize: new BMap.Size(66 / 2, 82 / 2),
                 anchor: new BMap.Size(66 / 2 / 2, 82 / 2 - 10)
             });
