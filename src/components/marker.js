@@ -9,7 +9,7 @@ import Component from './component';
 import MarkerOrderTip from './marker-order-tip';
 import CustomOverlay from '../overlay/CustomOverlay';
 
-const defaultIconUrl = 'http://webmap1.map.bdstatic.com/wolfman/static/common/images/markers_new2x_fbb9e99.png';
+const defaultIconUrl = '//huiyan.baidu.com/cms/images/markers.png';
 
 var icons = {
     'simple_red': new BMap.Icon(defaultIconUrl , new BMap.Size(42 / 2, 66 / 2), {

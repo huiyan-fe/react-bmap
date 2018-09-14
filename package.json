@@ -17,7 +17,8 @@
     "prepublish": "npm run build",
     "pub": "npm run prepublish && npm publish",
     "examples:build": "webpack --config ./docs/examples/webpack.config.js",
-    "examples": "webpack-dev-server --config ./docs/examples/webpack.config.js"
+    "examples": "webpack-dev-server --config ./docs/examples/webpack.config.js",
+    "start": "npm run examples"
   },
   "repository": {
     "type": "git",
