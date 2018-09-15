@@ -134,9 +134,12 @@ export default class Map extends Component {
 
         this.map = map;
 
-        if (this.props.mapStyle) {
+        if (this.props.mapStyleV2) {
+            map.setMapStyleV2(this.props.mapStyle);
+        } else if (this.props.mapStyle) {
             map.setMapStyle(this.props.mapStyle);
         }
+
 
         var zoom = this.props.zoom;
         
