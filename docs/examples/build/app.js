@@ -19252,12 +19252,6 @@ var Map = function (_Component) {
 
             this.map = map;
 
-            if (this.props.mapStyleV2) {
-                map.setMapStyleV2(this.props.mapStyle);
-            } else if (this.props.mapStyle) {
-                map.setMapStyle(this.props.mapStyle);
-            }
-
             var zoom = this.props.zoom;
 
             // 在 centerAndZoom() 之前执行事件绑定否则load无法正常触发
@@ -19270,6 +19264,12 @@ var Map = function (_Component) {
                 // 正常传入经纬度坐标
                 var center = new BMap.Point(this.props.center.lng, this.props.center.lat);
                 map.centerAndZoom(center, zoom); // 初始化地图,设置中心点坐标和地图级别
+            }
+
+            if (this.props.mapStyleV2) {
+                map.setMapStyleV2(this.props.mapStyle);
+            } else if (this.props.mapStyle) {
+                map.setMapStyle(this.props.mapStyle);
             }
 
             this.bindToggleMeghods(map, this.toggleMethods);
