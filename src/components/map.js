@@ -147,7 +147,7 @@ export default class Map extends Component {
         }
 
         if (this.props.mapStyleV2) {
-            map.setMapStyleV2(this.props.mapStyle);
+            map.setMapStyleV2(this.props.mapStyleV2);
         } else if (this.props.mapStyle) {
             map.setMapStyle(this.props.mapStyle);
         }
