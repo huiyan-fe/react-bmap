@@ -1,6 +1,6 @@
 {
   "name": "react-bmap",
-  "version": "1.0.85",
+  "version": "1.0.86",
   "description": "react-bmap",
   "main": "lib/index.js",
   "contributors": [
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "kits-js": "^0.0.1",
-    "mapv": "^2.0.32"
+    "mapv": "^2.0.33"
   },
   "config": {
     "commitizen": {
