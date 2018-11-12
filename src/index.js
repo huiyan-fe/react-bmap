@@ -61,3 +61,8 @@ export {default as PointLabel} from './components/point-label';
  */
 export {default as Arc} from './components/arc';
 export {default as ThickRay} from './components/thick-ray';
+
+/**
+ * 地图插件
+ */
+export {default as MapListener} from './components/map-listener';
