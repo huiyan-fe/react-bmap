@@ -51,7 +51,8 @@ export default class App extends Component {
             this.driving = new BMap.DrivingRoute(map, {renderOptions:{
                 map: map,
                 policy: this.props.policy || BMAP_DRIVING_POLICY_LEAST_TIME,
-                autoViewport: true
+                autoViewport: this.props.autoViewport !== undefined ? this.props.autoViewport : true,
+                viewportOptions: {zoomFactor: -1}
             }});
         }
 
