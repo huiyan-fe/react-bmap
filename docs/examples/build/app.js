@@ -32222,7 +32222,9 @@ var MapvLayer = function (_Component) {
         value: function componentDidUpdate(prevProps) {
             var preData = JSON.stringify(prevProps.data);
             var data = JSON.stringify(this.props.data);
-            if (preData != data || !this.map) {
+            var preOptions = JSON.stringify(prevProps.options);
+            var options = JSON.stringify(this.props.options);
+            if (preData != data || !this.map || preOptions != options) {
                 this.initialize();
             }
         }
@@ -32386,7 +32388,8 @@ var App = function (_Component) {
                 this.driving = new BMap.DrivingRoute(map, { renderOptions: {
                         map: map,
                         policy: this.props.policy || BMAP_DRIVING_POLICY_LEAST_TIME,
-                        autoViewport: true
+                        autoViewport: this.props.autoViewport !== undefined ? this.props.autoViewport : true,
+                        viewportOptions: { zoomFactor: -1 }
                     } });
             }
 
@@ -32852,6 +32855,10 @@ var App = function (_Component) {
             this.pointLayer = null;
             this.textLayer.destroy();
             this.textLayer = null;
+            if (this.animationLayer) {
+                this.animationLayer.destroy();
+                this.animationLayer = null;
+            }
         }
     }, {
         key: 'createLayers',
@@ -34820,7 +34827,7 @@ var App = function (_Component) {
                 _react2.default.createElement(
                     _src.Map,
                     { style: { height: '200px' }, mapStyle: _mapstyle.simpleMapStyle, center: { lng: 116.403981, lat: 39.915599 }, zoom: '10' },
-                    _react2.default.createElement(_src.DrivingRoute, { start: '\u5929\u5B89\u95E8', end: '\u767E\u5EA6\u5927\u53A6' })
+                    _react2.default.createElement(_src.DrivingRoute, { start: '\u5929\u5B89\u95E8', end: '\u767E\u5EA6\u5927\u53A6', autoViewport: true })
                 )
             );
         }

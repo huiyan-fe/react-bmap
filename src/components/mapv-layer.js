@@ -20,7 +20,9 @@ export default class MapvLayer extends Component {
     componentDidUpdate(prevProps) {
         var preData = JSON.stringify(prevProps.data);
         var data = JSON.stringify(this.props.data);
-        if (preData != data || !this.map) {
+        var preOptions = JSON.stringify(prevProps.options);
+        var options = JSON.stringify(this.props.options);
+        if (preData != data || !this.map || preOptions != options) {
             this.initialize();
         }
     }

@@ -41,6 +41,10 @@ export default class App extends Component {
         this.pointLayer = null;
         this.textLayer.destroy();
         this.textLayer = null;
+        if (this.animationLayer) {
+            this.animationLayer.destroy();
+            this.animationLayer = null;
+        }
     }
 
     createLayers() {
