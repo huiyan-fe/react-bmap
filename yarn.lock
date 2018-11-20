@@ -2513,9 +2513,9 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mapv@2.0.20:
-  version "2.0.20"
-  resolved "https://registry.npmjs.org/mapv/-/mapv-2.0.20.tgz#af6d5295f8925d07ce196e3d1e04b720722104c0"
+mapv@^2.0.33:
+  version "2.0.33"
+  resolved "http://registry.npm.taobao.org/mapv/download/mapv-2.0.33.tgz#6f3d50d61e47098f1ed70264d901bfe6b39c3f2a"
   dependencies:
     babel-plugin-external-helpers "^6.22.0"
 

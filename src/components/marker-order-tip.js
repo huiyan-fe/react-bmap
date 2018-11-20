@@ -29,19 +29,21 @@ class MarkerOrderTip extends React.Component {
 
     createMarker() {
         const self = this;
-        let {position,num, rate, name, rightModule,order, visible = true } = this.props;
+        let { position, num, rate, name, rightModule, order, visible = true } = this.props;
         let point = _bmap.createPoint(position);
         let up = true;
-        if (rate && rate.indexOf('-') > -1) {
-            up = false;
-            rate = rate.replace(/-/, '');
-        }
-        if (rate && rate.indexOf('+') > -1) {
-            up = true;
-            rate = rate.replace('+', '');
-        }
-        if (rate.length == 0) {
-            rate = '_';
+        if (rate) {
+            if (rate.indexOf('-') > -1) {
+                up = false;
+                rate = rate.replace(/-/, '');
+            }
+            if (rate.indexOf('+') > -1) {
+                up = true;
+                rate = rate.replace('+', '');
+            }
+            if (rate.length == 0) {
+                rate = '_';
+            }
         }
 
         let custom_overlay = {
@@ -69,10 +71,13 @@ class MarkerOrderTip extends React.Component {
         if (this.props.active) {
             order_style.background = '#F5533D'
         }
-        if(this.props.leftStyle){
-            order_style = obj.merge(order_style,this.props.leftStyle);
+        if (this.props.leftStyle) {
+            order_style = obj.merge(order_style, this.props.leftStyle);
         }
-        
+        if (this.props.style) {
+            custom_overlay = obj.merge(custom_overlay, this.props.style);
+        }
+
         let name_class = {
             flex: '1',
             padding: '6px',
@@ -91,7 +96,7 @@ class MarkerOrderTip extends React.Component {
                 [key]: self.props[key]
             });
         })
-        
+
         if (visible) {
             return (
                 <Marker
@@ -106,8 +111,8 @@ class MarkerOrderTip extends React.Component {
                         {...events}
                     >
                         <div style={order_style}>{order}</div>
-                       <div style={name_class}>
-                       {!rightModule && <div>  {`${num}(${rate}`}
+                        <div style={name_class}>
+                            {!rightModule && <div>  {`${num}(${rate}`}
                                 {
                                     up
                                         ? < img
@@ -129,7 +134,7 @@ class MarkerOrderTip extends React.Component {
                                 }
                                 {')'}
                             </div>}
-                            {rightModule  
+                            {rightModule
                                 ? <div>  {rightModule} </div>
                                 : <div>  {name} </div>
                             }

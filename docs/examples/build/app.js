@@ -2144,7 +2144,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 	(factory((global.mapv = global.mapv || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "2.0.20";
+var version = "2.0.33";
 
 /**
  * @author kyle / http://nikai.us/
@@ -2576,6 +2576,7 @@ DataSet.prototype.transferCoordinate = function (data, transferFn, fromColumn, t
                 }
                 geometry[toColumnName] = newCoordinates;
                 break;
+            case 'MultiLineString':
             case 'Polygon':
                 var newCoordinates = getPolygon(coordinates);
                 geometry[toColumnName] = newCoordinates;
@@ -2780,14 +2781,12 @@ var pathSimple = {
                 }
                 break;
             case 'LineString':
-                for (var j = 0; j < coordinates.length; j++) {
-                    var x = coordinates[j][0];
-                    var y = coordinates[j][1];
-                    if (j == 0) {
-                        context.moveTo(x, y);
-                    } else {
-                        context.lineTo(x, y);
-                    }
+                this.drawLineString(context, coordinates);
+                break;
+            case 'MultiLineString':
+                for (var i = 0; i < coordinates.length; i++) {
+                    var lineString = coordinates[i];
+                    this.drawLineString(context, lineString);
                 }
                 break;
             case 'Polygon':
@@ -2797,8 +2796,10 @@ var pathSimple = {
                 for (var i = 0; i < coordinates.length; i++) {
                     var polygon = coordinates[i];
                     this.drawPolygon(context, polygon);
+                    if (options.multiPolygonDraw) {
+                        options.multiPolygonDraw();
+                    }
                 }
-                context.closePath();
                 break;
             default:
                 console.log('type' + type + 'is not support now!');
@@ -2806,10 +2807,22 @@ var pathSimple = {
         }
     },
 
+    drawLineString: function drawLineString(context, coordinates) {
+        for (var j = 0; j < coordinates.length; j++) {
+            var x = coordinates[j][0];
+            var y = coordinates[j][1];
+            if (j == 0) {
+                context.moveTo(x, y);
+            } else {
+                context.lineTo(x, y);
+            }
+        }
+    },
+
     drawPolygon: function drawPolygon(context, coordinates) {
+        context.beginPath();
 
         for (var i = 0; i < coordinates.length; i++) {
-
             var coordinate = coordinates[i];
 
             context.moveTo(coordinate[0][0], coordinate[0][1]);
@@ -2817,6 +2830,7 @@ var pathSimple = {
                 context.lineTo(coordinate[j][0], coordinate[j][1]);
             }
             context.lineTo(coordinate[0][0], coordinate[0][1]);
+            context.closePath();
         }
     }
 
@@ -2856,10 +2870,18 @@ var drawSimple = {
 
                 context.fill();
 
+                if (context.lineDash) {
+                    context.setLineDash(context.lineDash);
+                }
+
+                if (item.lineDash) {
+                    context.setLineDash(item.lineDash);
+                }
+
                 if ((item.strokeStyle || options.strokeStyle) && options.lineWidth) {
                     context.stroke();
                 }
-            } else if (type == 'LineString') {
+            } else if (type == 'LineString' || type == 'MultiLineString') {
                 context.stroke();
             }
 
@@ -2880,11 +2902,26 @@ var drawSimple = {
                     context.strokeStyle = item.strokeStyle || item._strokeStyle;
                 }
 
+                if (context.lineDash) {
+                    context.setLineDash(context.lineDash);
+                }
+
+                if (item.lineDash) {
+                    context.setLineDash(item.lineDash);
+                }
+
                 var type = item.geometry.type;
 
                 context.beginPath();
 
                 pathSimple.draw(context, item, options);
+                options.multiPolygonDraw = function () {
+                    context.fill();
+
+                    if ((item.strokeStyle || options.strokeStyle) && options.lineWidth) {
+                        context.stroke();
+                    }
+                };
 
                 if (type == 'Point' || type == 'Polygon' || type == 'MultiPolygon') {
 
@@ -2893,7 +2930,7 @@ var drawSimple = {
                     if ((item.strokeStyle || options.strokeStyle) && options.lineWidth) {
                         context.stroke();
                     }
-                } else if (type == 'LineString') {
+                } else if (type == 'LineString' || type == 'MultiLineString') {
                     if (item.lineWidth || item._lineWidth) {
                         context.lineWidth = item.lineWidth || item._lineWidth;
                     }
@@ -3101,8 +3138,24 @@ function createCircle(size) {
 }
 
 function colorize(pixels, gradient, options) {
+    var max = getMax(options);
+    var min = getMin(options);
+    var diff = max - min;
+    var range = options.range || null;
+
+    var jMin = 0;
+    var jMax = 1024;
+    if (range && range.length === 2) {
+        jMin = (range[0] - min) / diff * 1024;
+    }
+
+    if (range && range.length === 2) {
+        jMax = (range[1] - min) / diff * 1024;
+    }
 
     var maxOpacity = options.maxOpacity || 0.8;
+    var range = options.range;
+
     for (var i = 3, len = pixels.length, j; i < len; i += 4) {
         j = pixels[i] * 4; // get gradient color from opacity value
 
@@ -3110,16 +3163,30 @@ function colorize(pixels, gradient, options) {
             pixels[i] = 256 * maxOpacity;
         }
 
-        pixels[i - 3] = gradient[j];
-        pixels[i - 2] = gradient[j + 1];
-        pixels[i - 1] = gradient[j + 2];
+        if (j && j >= jMin && j <= jMax) {
+            pixels[i - 3] = gradient[j];
+            pixels[i - 2] = gradient[j + 1];
+            pixels[i - 1] = gradient[j + 2];
+        } else {
+            pixels[i] = 0;
+        }
     }
+}
+
+function getMax(options) {
+    var max = options.max || 100;
+    return max;
+}
+
+function getMin(options) {
+    var min = options.min || 0;
+    return min;
 }
 
 function drawGray(context, dataSet, options) {
 
-    var max = options.max || 100;
-    var min = options.min || 0;
+    var max = getMax(options);
+    var min = getMin(options);
     // console.log(max)
     var size = options._size;
     if (size == undefined) {
@@ -4364,6 +4431,7 @@ function getCurvePoints(points, options) {
  * @param Point 终点
  */
 function getCurveByTwoPoints(obj1, obj2, count) {
+  console.info(obj1, obj2);
   if (!obj1 || !obj2) {
     return null;
   }
@@ -4404,22 +4472,18 @@ function getCurveByTwoPoints(obj1, obj2, count) {
     if (parseFloat(lng2 - lng1) > 180) {
       if (lng1 < 0) {
         lng1 = parseFloat(180 + 180 + lng1);
-      }
-    }
-  }
-
-  if (lng1 > lng2) {
-    if (parseFloat(lng1 - lng2) > 180) {
-      if (lng2 < 0) {
         lng2 = parseFloat(180 + 180 + lng2);
       }
     }
   }
+  // 此时纠正了 lng1 lng2
   j = 0;
   t2 = 0;
+  // 纬度相同
   if (lat2 == lat1) {
     t = 0;
     h = lng1 - lng2;
+    // 经度相同
   } else if (lng2 == lng1) {
     t = Math.PI / 2;
     h = lat1 - lat2;
@@ -4435,7 +4499,12 @@ function getCurveByTwoPoints(obj1, obj2, count) {
   lat3 = h2 * Math.sin(t2) + lat1;
 
   for (i = 0; i < count + 1; i++) {
-    curveCoordinates.push([lng1 * B1(inc) + lng3 * B2(inc) + lng2 * B3(inc), lat1 * B1(inc) + lat3 * B2(inc) + lat2 * B3(inc)]);
+    var x = lng1 * B1(inc) + lng3 * B2(inc) + lng2 * B3(inc);
+    var y = lat1 * B1(inc) + lat3 * B2(inc) + lat2 * B3(inc);
+    var lng1_src = obj1.lng;
+    var lng2_src = obj2.lng;
+
+    curveCoordinates.push([lng1_src < 0 && lng2_src > 0 ? x - 360 : x, y]);
     inc = inc + 1 / count;
   }
   return curveCoordinates;
@@ -5101,6 +5170,11 @@ if (global$3.BMap) {
             that.adjustSize();
             that._draw();
         });
+        /*
+        map.addEventListener('moving', function() {
+            that._draw();
+        });
+        */
         return this.canvas;
     };
 
@@ -5946,6 +6020,151 @@ TWEEN.Interpolation = {
 };
 
 /**
+ * 根据2点获取角度
+ * @param Array [123, 23] 点1
+ * @param Array [123, 23] 点2
+ * @return angle 角度,不是弧度
+ */
+function getAngle(start, end) {
+    var diff_x = end[0] - start[0];
+    var diff_y = end[1] - start[1];
+    var deg = 360 * Math.atan(diff_y / diff_x) / (2 * Math.PI);
+    if (end[0] < start[0]) {
+        deg = deg + 180;
+    }
+    return deg;
+}
+
+/**
+ * 绘制沿线箭头
+ * @author kyle / http://nikai.us/
+ */
+
+var imageCache = {};
+
+var object = {
+    draw: function draw(context, dataSet, options) {
+        var imageCacheKey = 'http://huiyan.baidu.com/github/tools/gis-drawing/static/images/direction.png';
+        if (options.arrow && options.arrow.url) {
+            imageCacheKey = options.arrow.url;
+        }
+
+        if (!imageCache[imageCacheKey]) {
+            imageCache[imageCacheKey] = null;
+        }
+
+        var directionImage = imageCache[imageCacheKey];
+
+        if (!directionImage) {
+            var args = Array.prototype.slice.call(arguments);
+            var image = new Image();
+            image.onload = function () {
+                imageCache[imageCacheKey] = image;
+                object.draw.apply(null, args);
+            };
+            image.src = imageCacheKey;
+            return;
+        }
+
+        var data = dataSet instanceof DataSet ? dataSet.get() : dataSet;
+
+        // console.log('xxxx',options)
+        context.save();
+
+        for (var key in options) {
+            context[key] = options[key];
+        }
+
+        var points = [];
+        var preCoordinate = null;
+        for (var i = 0, len = data.length; i < len; i++) {
+
+            var item = data[i];
+
+            context.save();
+
+            if (item.fillStyle || item._fillStyle) {
+                context.fillStyle = item.fillStyle || item._fillStyle;
+            }
+
+            if (item.strokeStyle || item._strokeStyle) {
+                context.strokeStyle = item.strokeStyle || item._strokeStyle;
+            }
+
+            var type = item.geometry.type;
+
+            context.beginPath();
+            if (type === 'LineString') {
+                var coordinates = item.geometry._coordinates || item.geometry.coordinates;
+                var interval = options.arrow.interval !== undefined ? options.arrow.interval : 1;
+                for (var j = 0; j < coordinates.length; j += interval) {
+                    if (coordinates[j] && coordinates[j + 1]) {
+                        var coordinate = coordinates[j];
+
+                        if (preCoordinate && getDistance(coordinate, preCoordinate) < 30) {
+                            continue;
+                        }
+
+                        context.save();
+                        var angle = getAngle(coordinates[j], coordinates[j + 1]);
+                        context.translate(coordinate[0], coordinate[1]);
+                        context.rotate(angle * Math.PI / 180);
+                        context.drawImage(directionImage, -directionImage.width / 2 / 2, -directionImage.height / 2 / 2, directionImage.width / 2, directionImage.height / 2);
+                        context.restore();
+
+                        points.push(coordinate);
+                        preCoordinate = coordinate;
+                    }
+                }
+            }
+
+            context.restore();
+        }
+
+        context.restore();
+    }
+};
+
+function getDistance(coordinateA, coordinateB) {
+    return Math.sqrt(Math.pow(coordinateA[0] - coordinateB[0], 2) + Math.pow(coordinateA[1] - coordinateB[1], 2));
+}
+
+/**
+ * @author Mofei Zhu<mapv@zhuwenlong.com>
+ * This file is to draw text
+ */
+
+var drawClip = {
+    draw: function draw(context, dataSet, options) {
+        var data = dataSet instanceof DataSet ? dataSet.get() : dataSet;
+        context.save();
+
+        context.fillStyle = options.fillStyle || 'rgba(0, 0, 0, 0.5)';
+        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+
+        options.multiPolygonDraw = function () {
+            context.save();
+            context.clip();
+            clear(context);
+            context.restore();
+        };
+
+        for (var i = 0, len = data.length; i < len; i++) {
+
+            context.beginPath();
+
+            pathSimple.drawDataSet(context, [data[i]], options);
+            context.save();
+            context.clip();
+            clear(context);
+            context.restore();
+        }
+
+        context.restore();
+    }
+};
+
+/**
  * @author Mofei Zhu<mapv@zhuwenlong.com>
  * This file is to draw text
  */
@@ -6271,15 +6490,7 @@ var BaseLayer = function () {
                     drawIcon.draw(context, dataSet, self.options);
                     break;
                 case 'clip':
-                    context.save();
-                    context.fillStyle = self.options.fillStyle || 'rgba(0, 0, 0, 0.5)';
-                    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-                    drawSimple.draw(context, dataSet, self.options);
-                    context.beginPath();
-                    pathSimple.drawDataSet(context, dataSet, self.options);
-                    context.clip();
-                    clear(context);
-                    context.restore();
+                    drawClip.draw(context, dataSet, self.options);
                     break;
                 default:
                     if (self.options.context == "webgl") {
@@ -6287,6 +6498,10 @@ var BaseLayer = function () {
                     } else {
                         drawSimple.draw(context, dataSet, self.options);
                     }
+            }
+
+            if (self.options.arrow && self.options.arrow.show !== false) {
+                object.draw(context, dataSet, self.options);
             }
         }
     }, {
@@ -6299,15 +6514,25 @@ var BaseLayer = function () {
                 pathSimple.draw(context, data[i], this.options);
                 var x = pixel.x * this.canvasLayer.devicePixelRatio;
                 var y = pixel.y * this.canvasLayer.devicePixelRatio;
-                if (context.isPointInPath(x, y) || context.isPointInStroke(x, y)) {
-                    return data[i];
+
+                var geoType = data[i].geometry && data[i].geometry.type;
+                if (geoType.indexOf('LineString') > -1) {
+                    if (context.isPointInStroke && context.isPointInStroke(x, y)) {
+                        return data[i];
+                    }
+                } else {
+                    if (context.isPointInPath(x, y)) {
+                        return data[i];
+                    }
                 }
             }
         }
     }, {
         key: "clickEvent",
         value: function clickEvent(pixel, e) {
-
+            if (!this.options.methods) {
+                return;
+            }
             var dataItem = this.isPointInPath(this.getContext(), pixel);
 
             if (dataItem) {
@@ -6319,6 +6544,9 @@ var BaseLayer = function () {
     }, {
         key: "mousemoveEvent",
         value: function mousemoveEvent(pixel, e) {
+            if (!this.options.methods) {
+                return;
+            }
             var dataItem = this.isPointInPath(this.getContext(), pixel);
             if (dataItem) {
                 this.options.methods.mousemove(dataItem, e);
@@ -6761,11 +6989,15 @@ var Layer = function (_BaseLayer) {
             if (this.options.coordType !== 'bd09mc') {
                 var data = this.dataSet.get();
                 data = this.dataSet.transferCoordinate(data, function (coordinates) {
-                    var pixel = projection.lngLatToPoint({
-                        lng: coordinates[0],
-                        lat: coordinates[1]
-                    });
-                    return [pixel.x, pixel.y];
+                    if (coordinates[0] < -180 || coordinates[0] > 180 || coordinates[1] < -90 || coordinates[1] > 90) {
+                        return coordinates;
+                    } else {
+                        var pixel = projection.lngLatToPoint({
+                            lng: coordinates[0],
+                            lat: coordinates[1]
+                        });
+                        return [pixel.x, pixel.y];
+                    }
                 }, 'coordinates', 'coordinates_mercator');
                 this.dataSet._set(data);
             }
@@ -7685,6 +7917,986 @@ var Layer$2 = function (_BaseLayer) {
 }(BaseLayer);
 
 /**
+ * MapV for maptalks.js (https://github.com/maptalks/maptalks.js)
+ * @author fuzhenn / https://github.com/fuzhenn
+ */
+// import * as maptalks from 'maptalks';
+var Layer$4 = void 0;
+if (typeof maptalks !== 'undefined') {
+    Layer$4 = function (_maptalks$Layer) {
+        inherits(Layer, _maptalks$Layer);
+
+        function Layer(id, dataSet, options) {
+            classCallCheck(this, Layer);
+
+            var _this = possibleConstructorReturn(this, (Layer.__proto__ || Object.getPrototypeOf(Layer)).call(this, id, options));
+
+            _this.options_ = options;
+            _this.dataSet = dataSet;
+            _this._initBaseLayer(options);
+            return _this;
+        }
+
+        createClass(Layer, [{
+            key: "_initBaseLayer",
+            value: function _initBaseLayer(options) {
+                var self = this;
+                var baseLayer = this.baseLayer = new BaseLayer(null, this.dataSet, options);
+                self.init(options);
+                baseLayer.argCheck(options);
+            }
+        }, {
+            key: "clickEvent",
+            value: function clickEvent(e) {
+                if (!this.baseLayer) {
+                    return;
+                }
+                var pixel = e.containerPoint;
+                this.baseLayer.clickEvent(pixel, e.domEvent);
+            }
+        }, {
+            key: "mousemoveEvent",
+            value: function mousemoveEvent(e) {
+                if (!this.baseLayer) {
+                    return;
+                }
+                var pixel = e.containerPoint;
+                this.baseLayer.mousemoveEvent(pixel, e.domEvent);
+            }
+        }, {
+            key: "getEvents",
+            value: function getEvents() {
+                return {
+                    'click': this.clickEvent,
+                    'mousemove': this.mousemoveEvent
+                };
+            }
+        }, {
+            key: "init",
+            value: function init(options) {
+
+                var base = this.baseLayer;
+
+                base.options = options;
+
+                base.initDataRange(options);
+
+                base.context = base.options.context || '2d';
+
+                base.initAnimator();
+            }
+        }, {
+            key: "addAnimatorEvent",
+            value: function addAnimatorEvent() {
+                this.map.addListener('movestart', this.animatorMovestartEvent.bind(this));
+                this.map.addListener('moveend', this.animatorMoveendEvent.bind(this));
+            }
+        }]);
+        return Layer;
+    }(maptalks.Layer);
+
+    var LayerRenderer = function (_maptalks$renderer$Ca) {
+        inherits(LayerRenderer, _maptalks$renderer$Ca);
+
+        function LayerRenderer() {
+            classCallCheck(this, LayerRenderer);
+            return possibleConstructorReturn(this, (LayerRenderer.__proto__ || Object.getPrototypeOf(LayerRenderer)).apply(this, arguments));
+        }
+
+        createClass(LayerRenderer, [{
+            key: "needToRedraw",
+            value: function needToRedraw() {
+                var base = this.layer.baseLayer;
+                if (base.isEnabledTime()) {
+                    return true;
+                }
+                return get(LayerRenderer.prototype.__proto__ || Object.getPrototypeOf(LayerRenderer.prototype), "needToRedraw", this).call(this);
+            }
+        }, {
+            key: "draw",
+            value: function draw() {
+                var base = this.layer.baseLayer;
+                if (!this.canvas || !base.isEnabledTime() || this._shouldClear) {
+                    this.prepareCanvas();
+                    this._shouldClear = false;
+                }
+                this._update(this.gl || this.context, this._mapvFrameTime);
+                delete this._mapvFrameTime;
+                this.completeRender();
+            }
+        }, {
+            key: "drawOnInteracting",
+            value: function drawOnInteracting() {
+                this.draw();
+                this._shouldClear = false;
+            }
+        }, {
+            key: "onSkipDrawOnInteracting",
+            value: function onSkipDrawOnInteracting() {
+                this._shouldClear = true;
+            }
+        }, {
+            key: "_canvasUpdate",
+            value: function _canvasUpdate(time) {
+                this.setToRedraw();
+                this._mapvFrameTime = time;
+            }
+        }, {
+            key: "_update",
+            value: function _update(context, time) {
+                if (!this.canvas) {
+                    return;
+                }
+
+                var self = this.layer.baseLayer;
+
+                var animationOptions = self.options.animation;
+
+                var map = this.getMap();
+
+                if (self.isEnabledTime()) {
+                    if (time === undefined) {
+                        clear(context);
+                        return;
+                    }
+                    if (self.context == '2d') {
+                        context.save();
+                        context.globalCompositeOperation = 'destination-out';
+                        context.fillStyle = 'rgba(0, 0, 0, .1)';
+                        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+                        context.restore();
+                    }
+                } else {
+                    clear(context);
+                }
+
+                if (self.context == '2d') {
+                    for (var key in self.options) {
+                        context[key] = self.options[key];
+                    }
+                } else {
+                    context.clear(context.COLOR_BUFFER_BIT);
+                }
+
+                var scale = 1;
+                if (self.context === '2d' && self.options.draw !== 'heatmap') {
+                    //in heatmap.js, devicePixelRatio is being mulitplied independently
+                    scale = self.canvasLayer.devicePixelRatio;
+                }
+
+                //reuse to save coordinate instance creation
+                var coord = new maptalks.Coordinate(0, 0);
+                var dataGetOptions = {
+                    fromColumn: self.options.coordType === 'bd09mc' ? 'coordinates_mercator' : 'coordinates',
+                    transferCoordinate: function transferCoordinate(coordinate) {
+                        coord.x = coordinate[0];
+                        coord.y = coordinate[1];
+                        var r = map.coordToContainerPoint(coord)._multi(scale).toArray();
+                        return r;
+                    }
+                };
+
+                if (time !== undefined) {
+                    dataGetOptions.filter = function (item) {
+                        var trails = animationOptions.trails || 10;
+                        if (time && item.time > time - trails && item.time < time) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    };
+                }
+
+                // get data from data set
+                var data = self.dataSet.get(dataGetOptions);
+
+                self.processData(data);
+
+                if (self.options.unit == 'm') {
+                    if (self.options.size) {
+                        self.options._size = self.options.size / zoomUnit;
+                    }
+                    if (self.options.width) {
+                        self.options._width = self.options.width / zoomUnit;
+                    }
+                    if (self.options.height) {
+                        self.options._height = self.options.height / zoomUnit;
+                    }
+                } else {
+                    self.options._size = self.options.size;
+                    self.options._height = self.options.height;
+                    self.options._width = self.options.width;
+                }
+
+                var zeroZero = new maptalks.Point(0, 0);
+                //screen position of the [0, 0] point
+                var zeroZeroScreen = map._pointToContainerPoint(zeroZero)._multi(scale);
+                self.drawContext(context, data, self.options, zeroZeroScreen);
+
+                //console.timeEnd('draw');
+
+                //console.timeEnd('update')
+                self.options.updateCallback && self.options.updateCallback(time);
+            }
+        }, {
+            key: "createCanvas",
+            value: function createCanvas() {
+                if (this.canvas) {
+                    return;
+                }
+                var map = this.getMap();
+                var size = map.getSize();
+                var r = maptalks.Browser.retina ? 2 : 1,
+                    w = r * size.width,
+                    h = r * size.height;
+                this.canvas = maptalks.Canvas.createCanvas(w, h, map.CanvasClass);
+                var mapvContext = this.layer.baseLayer.context;
+                if (mapvContext === '2d') {
+                    this.context = this.canvas.getContext('2d');
+                    if (this.layer.options['globalCompositeOperation']) {
+                        this.context.globalCompositeOperation = this.layer.options['globalCompositeOperation'];
+                    }
+                } else {
+                    var attributes = {
+                        'alpha': true,
+                        'preserveDrawingBuffer': true,
+                        'antialias': false
+                    };
+                    this.gl = this.canvas.getContext('webgl', attributes);
+                }
+
+                this.onCanvasCreate();
+
+                this._bindToMapv();
+
+                this.layer.fire('canvascreate', {
+                    'context': this.context,
+                    'gl': this.gl
+                });
+            }
+        }, {
+            key: "_bindToMapv",
+            value: function _bindToMapv() {
+                //some bindings needed by mapv baselayer
+                var base = this.layer.baseLayer;
+                this.devicePixelRatio = maptalks.Browser.retina ? 2 : 1;
+                base.canvasLayer = this;
+                base._canvasUpdate = this._canvasUpdate.bind(this);
+                base.getContext = function () {
+                    var renderer = self.getRenderer();
+                    return renderer.gl || renderer.context;
+                };
+            }
+        }]);
+        return LayerRenderer;
+    }(maptalks.renderer.CanvasRenderer);
+
+    Layer$4.registerRenderer('canvas', LayerRenderer);
+}
+
+var Layer$5 = Layer$4;
+
+/**
+ * MapV for AMap
+ * @author sakitam-fdd - https://github.com/sakitam-fdd
+ */
+
+/**
+ * create canvas
+ * @param width
+ * @param height
+ * @param Canvas
+ * @returns {HTMLCanvasElement}
+ */
+var createCanvas = function createCanvas(width, height, Canvas) {
+    if (typeof document !== 'undefined') {
+        var canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        return canvas;
+    } else {
+        // create a new canvas instance in node.js
+        // the canvas class needs to have a default constructor without any parameter
+        return new Canvas(width, height);
+    }
+};
+
+var Layer$6 = function (_BaseLayer) {
+    inherits(Layer, _BaseLayer);
+
+    function Layer() {
+        var map = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+        var dataSet = arguments[1];
+        var options = arguments[2];
+        classCallCheck(this, Layer);
+
+        var _this = possibleConstructorReturn(this, (Layer.__proto__ || Object.getPrototypeOf(Layer)).call(this, map, dataSet, options));
+
+        _this.options = options;
+
+        /**
+         * internal
+         * @type {{canvas: null, devicePixelRatio: number}}
+         */
+        _this.canvasLayer = {
+            canvas: null,
+            devicePixelRatio: window.devicePixelRatio
+        };
+
+        /**
+         * canvas layer
+         * @type {null}
+         * @private
+         */
+        _this.layer_ = null;
+
+        _this.initDataRange(options);
+        _this.initAnimator();
+        _this.onEvents();
+        map.on('complete', function () {
+            this.init(map, options);
+            this.argCheck(options);
+        }, _this);
+        return _this;
+    }
+
+    /**
+     * init mapv layer
+     * @param map
+     * @param options
+     */
+
+
+    createClass(Layer, [{
+        key: "init",
+        value: function init(map, options) {
+            if (map) {
+                this.map = map;
+                this.context = this.options.context || '2d';
+                this.getCanvasLayer();
+            } else {
+                throw new Error('not map object');
+            }
+        }
+
+        /**
+         * update layer
+         * @param time
+         * @private
+         */
+
+    }, {
+        key: "_canvasUpdate",
+        value: function _canvasUpdate(time) {
+            this.render(this.canvasLayer.canvas, time);
+        }
+
+        /**
+         * render layer
+         * @param canvas
+         * @param time
+         * @returns {Layer}
+         */
+
+    }, {
+        key: "render",
+        value: function render(canvas, time) {
+            if (!canvas) return;
+            var map = this.map;
+            var context = canvas.getContext(this.context);
+            var animationOptions = this.options.animation;
+            if (this.isEnabledTime()) {
+                if (time === undefined) {
+                    clear(context);
+                    return this;
+                }
+                if (this.context === '2d') {
+                    context.save();
+                    context.globalCompositeOperation = 'destination-out';
+                    context.fillStyle = 'rgba(0, 0, 0, .1)';
+                    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+                    context.restore();
+                }
+            } else {
+                clear(context);
+            }
+
+            if (this.context === '2d') {
+                for (var key in this.options) {
+                    context[key] = this.options[key];
+                }
+            } else {
+                context.clear(context.COLOR_BUFFER_BIT);
+            }
+            var dataGetOptions = {
+                transferCoordinate: function transferCoordinate(coordinate) {
+                    var _pixel = map.lngLatToContainer(new AMap.LngLat(coordinate[0], coordinate[1]));
+                    return [_pixel['x'], _pixel['y']];
+                }
+            };
+
+            if (time !== undefined) {
+                dataGetOptions.filter = function (item) {
+                    var trails = animationOptions.trails || 10;
+                    if (time && item.time > time - trails && item.time < time) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                };
+            }
+
+            var data = this.dataSet.get(dataGetOptions);
+            this.processData(data);
+
+            if (this.options.unit === 'm') {
+                if (this.options.size) {
+                    this.options._size = this.options.size / zoomUnit;
+                }
+                if (this.options.width) {
+                    this.options._width = this.options.width / zoomUnit;
+                }
+                if (this.options.height) {
+                    this.options._height = this.options.height / zoomUnit;
+                }
+            } else {
+                this.options._size = this.options.size;
+                this.options._height = this.options.height;
+                this.options._width = this.options.width;
+            }
+
+            this.drawContext(context, new DataSet(data), this.options, { x: 0, y: 0 });
+            this.options.updateCallback && this.options.updateCallback(time);
+            return this;
+        }
+
+        /**
+         * get canvas layer
+         */
+
+    }, {
+        key: "getCanvasLayer",
+        value: function getCanvasLayer() {
+            if (!this.canvasLayer.canvas && !this.layer_) {
+                var canvas = this.canvasFunction();
+                var bounds = this.map.getBounds();
+                this.layer_ = new AMap.CanvasLayer({
+                    canvas: canvas,
+                    bounds: this.options.bounds || bounds,
+                    zooms: this.options.zooms || [0, 22]
+                });
+                this.layer_.setMap(this.map);
+                this.map.on('mapmove', this.canvasFunction, this);
+                this.map.on('zoomchange', this.canvasFunction, this);
+            }
+        }
+
+        /**
+         * canvas constructor
+         * @returns {*}
+         */
+
+    }, {
+        key: "canvasFunction",
+        value: function canvasFunction() {
+            var _ref = [this.map.getSize().width, this.map.getSize().height],
+                width = _ref[0],
+                height = _ref[1];
+
+            if (!this.canvasLayer.canvas) {
+                this.canvasLayer.canvas = createCanvas(width, height);
+            } else {
+                this.canvasLayer.canvas.width = width;
+                this.canvasLayer.canvas.height = height;
+                var bounds = this.map.getBounds();
+                if (this.layer_) {
+                    this.layer_.setBounds(this.options.bounds || bounds);
+                }
+            }
+            this.render(this.canvasLayer.canvas);
+            return this.canvasLayer.canvas;
+        }
+
+        /**
+         * remove layer
+         */
+
+    }, {
+        key: "removeLayer",
+        value: function removeLayer() {
+            if (!this.map) return;
+            this.unEvents();
+            this.map.removeLayer(this.layer_);
+            delete this.map;
+            delete this.layer_;
+            delete this.canvasLayer.canvas;
+        }
+    }, {
+        key: "getContext",
+        value: function getContext() {
+            return this.canvasLayer.canvas.getContext(this.context);
+        }
+
+        /**
+         * handle click event
+         * @param event
+         */
+
+    }, {
+        key: "clickEvent",
+        value: function clickEvent(event) {
+            var pixel = event.pixel;
+            get(Layer.prototype.__proto__ || Object.getPrototypeOf(Layer.prototype), "clickEvent", this).call(this, pixel, event);
+        }
+
+        /**
+         * handle mousemove/pointermove event
+         * @param event
+         */
+
+    }, {
+        key: "mousemoveEvent",
+        value: function mousemoveEvent(event) {
+            var pixel = event.pixel;
+            get(Layer.prototype.__proto__ || Object.getPrototypeOf(Layer.prototype), "mousemoveEvent", this).call(this, pixel, event);
+        }
+
+        /**
+         * add animator event
+         */
+
+    }, {
+        key: "addAnimatorEvent",
+        value: function addAnimatorEvent() {
+            this.map.on('movestart', this.animatorMovestartEvent, this);
+            this.map.on('moveend', this.animatorMoveendEvent, this);
+        }
+
+        /**
+         * bind event
+         */
+
+    }, {
+        key: "onEvents",
+        value: function onEvents() {
+            var map = this.map;
+            this.unEvents();
+            if (this.options.methods) {
+                if (this.options.methods.click) {
+                    map.on('click', this.clickEvent, this);
+                }
+                if (this.options.methods.mousemove) {
+                    map.on('mousemove', this.mousemoveEvent, this);
+                }
+            }
+        }
+
+        /**
+         * unbind events
+         */
+
+    }, {
+        key: "unEvents",
+        value: function unEvents() {
+            var map = this.map;
+            if (this.options.methods) {
+                if (this.options.methods.click) {
+                    map.off('click', this.clickEvent, this);
+                }
+                if (this.options.methods.mousemove) {
+                    map.off('mousemove', this.mousemoveEvent, this);
+                }
+            }
+        }
+    }]);
+    return Layer;
+}(BaseLayer);
+
+/**
+ * MapV for openlayers (https://openlayers.org)
+ * @author sakitam-fdd - https://github.com/sakitam-fdd
+ */
+
+/**
+ * create canvas
+ * @param width
+ * @param height
+ * @returns {HTMLCanvasElement}
+ */
+var createCanvas$1 = function createCanvas(width, height) {
+  if (typeof document !== 'undefined') {
+    var canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    return canvas;
+  } else {
+    // create a new canvas instance in node.js
+    // the canvas class needs to have a default constructor without any parameter
+  }
+};
+
+var Layer$8 = function (_BaseLayer) {
+  inherits(Layer, _BaseLayer);
+
+  function Layer() {
+    var map = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var dataSet = arguments[1];
+    var options = arguments[2];
+    classCallCheck(this, Layer);
+
+    var _this = possibleConstructorReturn(this, (Layer.__proto__ || Object.getPrototypeOf(Layer)).call(this, map, dataSet, options));
+
+    _this.options = options;
+
+    /**
+     * internal
+     * @type {{canvas: null, devicePixelRatio: number}}
+     */
+    _this.canvasLayer = {
+      canvas: null,
+      devicePixelRatio: window.devicePixelRatio
+
+      /**
+       * cavnas layer
+       * @type {null}
+       * @private
+       */
+    };_this.layer_ = null;
+
+    /**
+     * previous cursor
+     * @type {undefined}
+     * @private
+     */
+    _this.previousCursor_ = undefined;
+
+    _this.init(map, options);
+    _this.argCheck(options);
+    return _this;
+  }
+
+  /**
+   * init mapv layer
+   * @param map
+   * @param options
+   */
+
+
+  createClass(Layer, [{
+    key: "init",
+    value: function init(map, options) {
+      if (map && map instanceof ol.Map) {
+        this.$Map = map;
+        this.context = this.options.context || '2d';
+        this.getCanvasLayer();
+        this.initDataRange(options);
+        this.initAnimator();
+        this.onEvents();
+      } else {
+        throw new Error('not map object');
+      }
+    }
+
+    /**
+     * update layer
+     * @param time
+     * @private
+     */
+
+  }, {
+    key: "_canvasUpdate",
+    value: function _canvasUpdate(time) {
+      this.render(this.canvasLayer.canvas, time);
+    }
+
+    /**
+     * render layer
+     * @param canvas
+     * @param time
+     * @returns {Layer}
+     */
+
+  }, {
+    key: "render",
+    value: function render(canvas, time) {
+      var map = this.$Map;
+      var context = canvas.getContext(this.context);
+      var animationOptions = this.options.animation;
+      var _projection = this.options.hasOwnProperty('projection') ? this.options.projection : 'EPSG:4326';
+      if (this.isEnabledTime()) {
+        if (time === undefined) {
+          clear(context);
+          return this;
+        }
+        if (this.context === '2d') {
+          context.save();
+          context.globalCompositeOperation = 'destination-out';
+          context.fillStyle = 'rgba(0, 0, 0, .1)';
+          context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+          context.restore();
+        }
+      } else {
+        clear(context);
+      }
+
+      if (this.context === '2d') {
+        for (var key in this.options) {
+          context[key] = this.options[key];
+        }
+      } else {
+        context.clear(context.COLOR_BUFFER_BIT);
+      }
+      var dataGetOptions = {
+        transferCoordinate: function transferCoordinate(coordinate) {
+          return map.getPixelFromCoordinate(ol.proj.transform(coordinate, _projection, 'EPSG:4326'));
+        }
+      };
+
+      if (time !== undefined) {
+        dataGetOptions.filter = function (item) {
+          var trails = animationOptions.trails || 10;
+          if (time && item.time > time - trails && item.time < time) {
+            return true;
+          } else {
+            return false;
+          }
+        };
+      }
+
+      var data = this.dataSet.get(dataGetOptions);
+      this.processData(data);
+
+      if (this.options.unit === 'm') {
+        if (this.options.size) {
+          this.options._size = this.options.size / zoomUnit;
+        }
+        if (this.options.width) {
+          this.options._width = this.options.width / zoomUnit;
+        }
+        if (this.options.height) {
+          this.options._height = this.options.height / zoomUnit;
+        }
+      } else {
+        this.options._size = this.options.size;
+        this.options._height = this.options.height;
+        this.options._width = this.options.width;
+      }
+
+      this.drawContext(context, new DataSet(data), this.options, { x: 0, y: 0 });
+      this.options.updateCallback && this.options.updateCallback(time);
+      return this;
+    }
+
+    /**
+     * get canvas layer
+     */
+
+  }, {
+    key: "getCanvasLayer",
+    value: function getCanvasLayer() {
+      if (!this.canvasLayer.canvas && !this.layer_) {
+        var extent = this.getMapExtent();
+        this.layer_ = new ol.layer.Image({
+          layerName: this.options.layerName,
+          minResolution: this.options.minResolution,
+          maxResolution: this.options.maxResolution,
+          zIndex: this.options.zIndex,
+          extent: extent,
+          source: new ol.source.ImageCanvas({
+            canvasFunction: this.canvasFunction.bind(this),
+            projection: this.options.hasOwnProperty('projection') ? this.options.projection : 'EPSG:4326',
+            ratio: this.options.hasOwnProperty('ratio') ? this.options.ratio : 1
+          })
+        });
+        this.$Map.addLayer(this.layer_);
+        this.$Map.un('precompose', this.reRender, this);
+        this.$Map.on('precompose', this.reRender, this);
+      }
+    }
+
+    /**
+     * re render
+     */
+
+  }, {
+    key: "reRender",
+    value: function reRender() {
+      if (!this.layer_) return;
+      var extent = this.getMapExtent();
+      this.layer_.setExtent(extent);
+    }
+
+    /**
+     * canvas constructor
+     * @param extent
+     * @param resolution
+     * @param pixelRatio
+     * @param size
+     * @param projection
+     * @returns {*}
+     */
+
+  }, {
+    key: "canvasFunction",
+    value: function canvasFunction(extent, resolution, pixelRatio, size, projection) {
+      if (!this.canvasLayer.canvas) {
+        this.canvasLayer.canvas = createCanvas$1(size[0], size[1]);
+      } else {
+        this.canvasLayer.canvas.width = size[0];
+        this.canvasLayer.canvas.height = size[1];
+      }
+      this.render(this.canvasLayer.canvas);
+      return this.canvasLayer.canvas;
+    }
+
+    /**
+     * get map current extent
+     * @returns {Array}
+     */
+
+  }, {
+    key: "getMapExtent",
+    value: function getMapExtent() {
+      var size = this.$Map.getSize();
+      return this.$Map.getView().calculateExtent(size);
+    }
+
+    /**
+     * add layer to map
+     * @param map
+     */
+
+  }, {
+    key: "addTo",
+    value: function addTo(map) {
+      this.init(map, this.options);
+    }
+
+    /**
+     * remove layer
+     */
+
+  }, {
+    key: "removeLayer",
+    value: function removeLayer() {
+      if (!this.$Map) return;
+      this.unEvents();
+      this.$Map.un('precompose', this.reRender, this);
+      this.$Map.removeLayer(this.layer_);
+      delete this.$Map;
+      delete this.layer_;
+      delete this.canvasLayer.canvas;
+    }
+  }, {
+    key: "getContext",
+    value: function getContext() {
+      return this.canvasLayer.canvas.getContext(this.context);
+    }
+
+    /**
+     * handle click event
+     * @param event
+     */
+
+  }, {
+    key: "clickEvent",
+    value: function clickEvent(event) {
+      var pixel = event.pixel;
+      get(Layer.prototype.__proto__ || Object.getPrototypeOf(Layer.prototype), "clickEvent", this).call(this, {
+        x: pixel[0],
+        y: pixel[1]
+      }, event);
+    }
+
+    /**
+     * handle mousemove/pointermove event
+     * @param event
+     */
+
+  }, {
+    key: "mousemoveEvent",
+    value: function mousemoveEvent(event) {
+      var pixel = event.pixel;
+      get(Layer.prototype.__proto__ || Object.getPrototypeOf(Layer.prototype), "mousemoveEvent", this).call(this, {
+        x: pixel[0],
+        y: pixel[1]
+      }, event);
+    }
+
+    /**
+     * add animator event
+     */
+
+  }, {
+    key: "addAnimatorEvent",
+    value: function addAnimatorEvent() {
+      this.$Map.on('movestart', this.animatorMovestartEvent, this);
+      this.$Map.on('moveend', this.animatorMoveendEvent, this);
+    }
+
+    /**
+     * bind event
+     */
+
+  }, {
+    key: "onEvents",
+    value: function onEvents() {
+      var map = this.$Map;
+      this.unEvents();
+      if (this.options.methods) {
+        if (this.options.methods.click) {
+          map.on('click', this.clickEvent, this);
+        }
+        if (this.options.methods.mousemove) {
+          map.on('pointermove', this.mousemoveEvent, this);
+        }
+      }
+    }
+
+    /**
+     * unbind events
+     */
+
+  }, {
+    key: "unEvents",
+    value: function unEvents() {
+      var map = this.$Map;
+      if (this.options.methods) {
+        if (this.options.methods.click) {
+          map.un('click', this.clickEvent, this);
+        }
+        if (this.options.methods.pointermove) {
+          map.un('pointermove', this.mousemoveEvent, this);
+        }
+      }
+    }
+
+    /**
+     * set map cursor
+     * @param cursor
+     * @param feature
+     */
+
+  }, {
+    key: "setDefaultCursor",
+    value: function setDefaultCursor(cursor, feature) {
+      if (!this.$Map) return;
+      var element = this.$Map.getTargetElement();
+      if (feature) {
+        if (element.style.cursor !== cursor) {
+          this.previousCursor_ = element.style.cursor;
+          element.style.cursor = cursor;
+        }
+      } else if (this.previousCursor_ !== undefined) {
+        element.style.cursor = this.previousCursor_;
+        this.previousCursor_ = undefined;
+      }
+    }
+  }]);
+  return Layer;
+}(BaseLayer);
+
+/**
  * @author kyle / http://nikai.us/
  */
 
@@ -7693,16 +8905,18 @@ var geojson = {
 
         var data = [];
         var features = geoJson.features;
-        for (var i = 0; i < features.length; i++) {
-            var feature = features[i];
-            var geometry = feature.geometry;
-            var properties = feature.properties;
-            var item = {};
-            for (var key in properties) {
-                item[key] = properties[key];
+        if (features) {
+            for (var i = 0; i < features.length; i++) {
+                var feature = features[i];
+                var geometry = feature.geometry;
+                var properties = feature.properties;
+                var item = {};
+                for (var key in properties) {
+                    item[key] = properties[key];
+                }
+                item.geometry = geometry;
+                data.push(item);
             }
-            item.geometry = geometry;
-            data.push(item);
         }
         return new DataSet(data);
     }
@@ -7828,6 +9042,9 @@ exports.baiduMapAnimationLayer = AnimationLayer;
 exports.baiduMapLayer = Layer;
 exports.googleMapCanvasLayer = CanvasLayer$2;
 exports.googleMapLayer = Layer$2;
+exports.MaptalksLayer = Layer$5;
+exports.AMapLayer = Layer$6;
+exports.OpenlayersLayer = Layer$8;
 exports.DataSet = DataSet;
 exports.geojson = geojson;
 exports.csv = csv;
@@ -16152,16 +17369,18 @@ var MarkerOrderTip = function (_React$Component) {
 
             var point = _kitsJs.bmap.createPoint(position);
             var up = true;
-            if (rate && rate.indexOf('-') > -1) {
-                up = false;
-                rate = rate.replace(/-/, '');
-            }
-            if (rate && rate.indexOf('+') > -1) {
-                up = true;
-                rate = rate.replace('+', '');
-            }
-            if (rate.length == 0) {
-                rate = '_';
+            if (rate) {
+                if (rate.indexOf('-') > -1) {
+                    up = false;
+                    rate = rate.replace(/-/, '');
+                }
+                if (rate.indexOf('+') > -1) {
+                    up = true;
+                    rate = rate.replace('+', '');
+                }
+                if (rate.length == 0) {
+                    rate = '_';
+                }
             }
 
             var custom_overlay = {
@@ -16191,6 +17410,9 @@ var MarkerOrderTip = function (_React$Component) {
             }
             if (this.props.leftStyle) {
                 order_style = _kitsJs.obj.merge(order_style, this.props.leftStyle);
+            }
+            if (this.props.style) {
+                custom_overlay = _kitsJs.obj.merge(custom_overlay, this.props.style);
             }
 
             var name_class = {
@@ -17602,13 +18824,31 @@ module.exports = factory(isValidElement);
 
 
 
-var emptyFunction = __webpack_require__(13);
-var invariant = __webpack_require__(1);
-var warning = __webpack_require__(2);
 var assign = __webpack_require__(5);
 
 var ReactPropTypesSecret = __webpack_require__(63);
 var checkPropTypes = __webpack_require__(104);
+
+var printWarning = function() {};
+
+if (process.env.NODE_ENV !== 'production') {
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+function emptyFunctionThatReturnsNull() {
+  return null;
+}
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -17752,12 +18992,13 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
       if (secret !== ReactPropTypesSecret) {
         if (throwOnDirectAccess) {
           // New behavior only for users of `prop-types` package
-          invariant(
-            false,
+          var err = new Error(
             'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
             'Use `PropTypes.checkPropTypes()` to call them. ' +
             'Read more at http://fb.me/use-check-prop-types'
           );
+          err.name = 'Invariant Violation';
+          throw err;
         } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
           // Old behavior for people using React.PropTypes
           var cacheKey = componentName + ':' + propName;
@@ -17766,15 +19007,12 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
             // Avoid spamming the console because they are often not actionable except for lib authors
             manualPropTypeWarningCount < 3
           ) {
-            warning(
-              false,
+            printWarning(
               'You are manually calling a React.PropTypes validation ' +
-              'function for the `%s` prop on `%s`. This is deprecated ' +
+              'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
               'and will throw in the standalone `prop-types` package. ' +
               'You may be seeing this warning due to a third-party PropTypes ' +
-              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
-              propFullName,
-              componentName
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
             );
             manualPropTypeCallCache[cacheKey] = true;
             manualPropTypeWarningCount++;
@@ -17818,7 +19056,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
   }
 
   function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
+    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
   }
 
   function createArrayOfTypeChecker(typeChecker) {
@@ -17868,8 +19106,8 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
   function createEnumTypeChecker(expectedValues) {
     if (!Array.isArray(expectedValues)) {
-      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
-      return emptyFunction.thatReturnsNull;
+      process.env.NODE_ENV !== 'production' ? printWarning('Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+      return emptyFunctionThatReturnsNull;
     }
 
     function validate(props, propName, componentName, location, propFullName) {
@@ -17911,21 +19149,18 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
   function createUnionTypeChecker(arrayOfTypeCheckers) {
     if (!Array.isArray(arrayOfTypeCheckers)) {
-      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
-      return emptyFunction.thatReturnsNull;
+      process.env.NODE_ENV !== 'production' ? printWarning('Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunctionThatReturnsNull;
     }
 
     for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
       var checker = arrayOfTypeCheckers[i];
       if (typeof checker !== 'function') {
-        warning(
-          false,
+        printWarning(
           'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
-          'received %s at index %s.',
-          getPostfixForTypeWarning(checker),
-          i
+          'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
         );
-        return emptyFunction.thatReturnsNull;
+        return emptyFunctionThatReturnsNull;
       }
     }
 
@@ -18152,11 +19387,24 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 
 
+var printWarning = function() {};
+
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(1);
-  var warning = __webpack_require__(2);
   var ReactPropTypesSecret = __webpack_require__(63);
   var loggedTypeFailures = {};
+
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
 }
 
 /**
@@ -18181,12 +19429,29 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
         try {
           // This is intentionally an invariant that gets caught. It's the same
           // behavior as without this statement except with a better message.
-          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
+          if (typeof typeSpecs[typeSpecName] !== 'function') {
+            var err = Error(
+              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
+              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
+            );
+            err.name = 'Invariant Violation';
+            throw err;
+          }
           error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
         } catch (ex) {
           error = ex;
         }
-        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
+        if (error && !(error instanceof Error)) {
+          printWarning(
+            (componentName || 'React class') + ': type specification of ' +
+            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
+            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
+            'You may have forgotten to pass an argument to the type checker ' +
+            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
+            'shape all require an argument).'
+          )
+
+        }
         if (error instanceof Error && !(error.message in loggedTypeFailures)) {
           // Only monitor this failure once because there tends to be a lot of the
           // same error.
@@ -18194,7 +19459,9 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
 
           var stack = getStack ? getStack() : '';
 
-          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+          printWarning(
+            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
+          );
         }
       }
     }
