@@ -17415,7 +17415,7 @@ var MarkerOrderTip = function (_React$Component) {
                 custom_overlay = _kitsJs.obj.merge(custom_overlay, this.props.style);
             }
 
-            var name_class = {
+            var right_style = {
                 flex: '1',
                 padding: '6px',
                 'justifyContent': 'center',
@@ -17424,6 +17424,11 @@ var MarkerOrderTip = function (_React$Component) {
                 color: '#8D93A3',
                 'letterSpacing': '0.6px'
             };
+
+            if (this.props.rightStyle) {
+                right_style = _kitsJs.obj.merge(right_style, this.props.rightStyle);
+            }
+
             var eventKeys = Object.keys(self.props).filter(function (p) {
                 return p.indexOf('on') == 0;
             });
@@ -17454,7 +17459,7 @@ var MarkerOrderTip = function (_React$Component) {
                         ),
                         _react2.default.createElement(
                             'div',
-                            { style: name_class },
+                            { style: right_style },
                             !rightModule && _react2.default.createElement(
                                 'div',
                                 null,
@@ -17477,13 +17482,7 @@ var MarkerOrderTip = function (_React$Component) {
                                 }),
                                 ')'
                             ),
-                            rightModule ? _react2.default.createElement(
-                                'div',
-                                null,
-                                '  ',
-                                rightModule,
-                                ' '
-                            ) : _react2.default.createElement(
+                            rightModule ? rightModule : _react2.default.createElement(
                                 'div',
                                 null,
                                 '  ',

@@ -78,7 +78,7 @@ class MarkerOrderTip extends React.Component {
             custom_overlay = obj.merge(custom_overlay, this.props.style);
         }
 
-        let name_class = {
+        let right_style = {
             flex: '1',
             padding: '6px',
             'justifyContent': 'center',
@@ -87,6 +87,11 @@ class MarkerOrderTip extends React.Component {
             color: '#8D93A3',
             'letterSpacing': '0.6px',
         }
+
+        if (this.props.rightStyle) {
+            right_style = obj.merge(right_style, this.props.rightStyle);
+        }
+
         let eventKeys = Object.keys(self.props).filter(p => {
             return p.indexOf('on') == 0
         })
@@ -111,7 +116,7 @@ class MarkerOrderTip extends React.Component {
                         {...events}
                     >
                         <div style={order_style}>{order}</div>
-                        <div style={name_class}>
+                        <div style={right_style}>
                             {!rightModule && <div>  {`${num}(${rate}`}
                                 {
                                     up
@@ -135,7 +140,7 @@ class MarkerOrderTip extends React.Component {
                                 {')'}
                             </div>}
                             {rightModule
-                                ? <div>  {rightModule} </div>
+                                ? rightModule 
                                 : <div>  {name} </div>
                             }
                         </div>
