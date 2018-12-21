@@ -6,6 +6,8 @@ export default class App extends Component {
     render() {
         return <Map mapStyle={simpleMapStyle} center={{lng: 116.402544, lat: 39.928658}} zoom={11}>
             <TrafficLayer/>
+
+            {/* <TrafficLayer tilesUrl="https://gsp0.baidu.com/7_AZsjOpB1gCo2Kml5_Y_DAcsMJiwa/traffic/TrafficTileService"/> */}
         </Map>
     }
 }

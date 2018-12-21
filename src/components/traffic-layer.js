@@ -28,6 +28,9 @@ export default class App extends Component {
 
     initialize() {
         var map = this.props.map;
+        const defaultTilesUrl = 'http://its.map.baidu.com:8002/traffic/TrafficTileService';
+        const tilesUrl = this.props.tilesUrl ? this.props.tilesUrl : defaultTilesUrl;
+
         if (!map) {
             return;
         }
@@ -43,7 +46,7 @@ export default class App extends Component {
                 const x = tileCoord.x;
                 const y = tileCoord.y;
                 const time = new Date().getTime();
-                return 'http://its.map.baidu.com:8002/traffic/TrafficTileService?level=' + zoom + '&x=' + x + '&y=' + y + '&time=' + time + '&v=081&scaler=' + scaler; // 根据当前坐标，选取合适的瓦片图
+                return tilesUrl + '?level=' + zoom + '&x=' + x + '&y=' + y + '&time=' + time + '&v=081&scaler=' + scaler; // 根据当前坐标，选取合适的瓦片图
             };
         }
         map.addTileLayer(this.tileLayer);
