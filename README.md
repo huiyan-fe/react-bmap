@@ -1,4 +1,4 @@
-# [React-BMap](https://huiyan-fe.github.io/react-bmap/) [![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)
+# [React-BMap](https://huiyan-fe.github.io/react-bmap/) [![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)[![Package Quality](http://npm.packagequality.com/shield/vis-ui.svg)](http://packagequality.com/#?package=vis-ui)
 
 基于百度地图JavaScript Api封装的React组件库，使用这个库最好需要先了解[React](https://facebook.github.io/react/)和[百度地图JavaScript Api](http://lbsyun.baidu.com/index.php?title=jspopular)。
 
