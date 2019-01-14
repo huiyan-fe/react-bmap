@@ -101,13 +101,14 @@ class MarkerOrderTip extends React.Component {
                 [key]: self.props[key]
             });
         })
-
         if (visible) {
             return (
                 <Marker
                     key={JSON.stringify(point) + Math.random()}
                     map={this.props.map}
                     position={point}
+                    zIndex={self.props.zIndex}
+                    // {...this.props}
                 // offset={new BMap.Size(-75, -60)}
                 >
                     <div
