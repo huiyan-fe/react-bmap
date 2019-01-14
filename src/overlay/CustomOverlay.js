@@ -1,8 +1,8 @@
 // 自定义覆盖物
-function CustomOverlay(point, content, offset) {
+function CustomOverlay(point, content, options) {
+    this.options = options || {};
     this._point = point;
     this.content = content;
-    this.offset = offset || new BMap.Size(0, 0);
 }
 
 CustomOverlay.prototype = new BMap.Overlay();
@@ -12,7 +12,8 @@ CustomOverlay.prototype.initialize = function(map){
     var div = this._div = document.createElement("div");
     div.setAttribute('tag', 'customoverlay');
     div.style.position = "absolute";
-    div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+    var zIndex = this.options.zIndex || BMap.Overlay.getZIndex(this._point.lat);
+    div.style.zIndex = zIndex;
     div.addEventListener('touchstart', function (e) {
         e.stopPropagation();
         console.log('touchstart');
@@ -39,8 +40,9 @@ CustomOverlay.prototype.initialize = function(map){
 CustomOverlay.prototype.draw = function(){
     var map = this._map;
     var pixel = map.pointToOverlayPixel(this._point);
-    this._div.style.left = pixel.x + this.offset.width + "px";
-    this._div.style.top  = pixel.y + this.offset.height + "px";
+    var offset = this.options.offset || new BMap.Size(0, 0);
+    this._div.style.left = pixel.x + offset.width + "px";
+    this._div.style.top  = pixel.y + offset.height + "px";
 }
 
 export default CustomOverlay;
