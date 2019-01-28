@@ -828,7 +828,7 @@ Object.defineProperty(exports, 'MarkerOrderTip', {
   }
 });
 
-var _infowindow = __webpack_require__(207);
+var _infowindow = __webpack_require__(205);
 
 Object.defineProperty(exports, 'InfoWindow', {
   enumerable: true,
@@ -837,7 +837,7 @@ Object.defineProperty(exports, 'InfoWindow', {
   }
 });
 
-var _navigationControl = __webpack_require__(208);
+var _navigationControl = __webpack_require__(206);
 
 Object.defineProperty(exports, 'NavigationControl', {
   enumerable: true,
@@ -846,7 +846,7 @@ Object.defineProperty(exports, 'NavigationControl', {
   }
 });
 
-var _overviewMapControl = __webpack_require__(209);
+var _overviewMapControl = __webpack_require__(207);
 
 Object.defineProperty(exports, 'OverviewMapControl', {
   enumerable: true,
@@ -855,7 +855,7 @@ Object.defineProperty(exports, 'OverviewMapControl', {
   }
 });
 
-var _scaleControl = __webpack_require__(210);
+var _scaleControl = __webpack_require__(208);
 
 Object.defineProperty(exports, 'ScaleControl', {
   enumerable: true,
@@ -864,7 +864,7 @@ Object.defineProperty(exports, 'ScaleControl', {
   }
 });
 
-var _mapTypeControl = __webpack_require__(211);
+var _mapTypeControl = __webpack_require__(209);
 
 Object.defineProperty(exports, 'MapTypeControl', {
   enumerable: true,
@@ -873,7 +873,7 @@ Object.defineProperty(exports, 'MapTypeControl', {
   }
 });
 
-var _panoramaControl = __webpack_require__(212);
+var _panoramaControl = __webpack_require__(210);
 
 Object.defineProperty(exports, 'PanoramaControl', {
   enumerable: true,
@@ -882,7 +882,7 @@ Object.defineProperty(exports, 'PanoramaControl', {
   }
 });
 
-var _circle = __webpack_require__(213);
+var _circle = __webpack_require__(211);
 
 Object.defineProperty(exports, 'Circle', {
   enumerable: true,
@@ -891,7 +891,7 @@ Object.defineProperty(exports, 'Circle', {
   }
 });
 
-var _polyline = __webpack_require__(214);
+var _polyline = __webpack_require__(212);
 
 Object.defineProperty(exports, 'Polyline', {
   enumerable: true,
@@ -900,7 +900,7 @@ Object.defineProperty(exports, 'Polyline', {
   }
 });
 
-var _polygon = __webpack_require__(215);
+var _polygon = __webpack_require__(213);
 
 Object.defineProperty(exports, 'Polygon', {
   enumerable: true,
@@ -909,7 +909,7 @@ Object.defineProperty(exports, 'Polygon', {
   }
 });
 
-var _road = __webpack_require__(216);
+var _road = __webpack_require__(214);
 
 Object.defineProperty(exports, 'Road', {
   enumerable: true,
@@ -918,7 +918,7 @@ Object.defineProperty(exports, 'Road', {
   }
 });
 
-var _boundary = __webpack_require__(219);
+var _boundary = __webpack_require__(217);
 
 Object.defineProperty(exports, 'Boundary', {
   enumerable: true,
@@ -927,7 +927,7 @@ Object.defineProperty(exports, 'Boundary', {
   }
 });
 
-var _markerList = __webpack_require__(220);
+var _markerList = __webpack_require__(218);
 
 Object.defineProperty(exports, 'MarkerList', {
   enumerable: true,
@@ -936,7 +936,7 @@ Object.defineProperty(exports, 'MarkerList', {
   }
 });
 
-var _mapvMarkerList = __webpack_require__(222);
+var _mapvMarkerList = __webpack_require__(220);
 
 Object.defineProperty(exports, 'MapvMarkerList', {
   enumerable: true,
@@ -945,7 +945,7 @@ Object.defineProperty(exports, 'MapvMarkerList', {
   }
 });
 
-var _trafficLayer = __webpack_require__(223);
+var _trafficLayer = __webpack_require__(221);
 
 Object.defineProperty(exports, 'TrafficLayer', {
   enumerable: true,
@@ -954,7 +954,7 @@ Object.defineProperty(exports, 'TrafficLayer', {
   }
 });
 
-var _merge = __webpack_require__(224);
+var _merge = __webpack_require__(222);
 
 Object.defineProperty(exports, 'Merge', {
   enumerable: true,
@@ -963,7 +963,7 @@ Object.defineProperty(exports, 'Merge', {
   }
 });
 
-var _mapvLayer = __webpack_require__(225);
+var _mapvLayer = __webpack_require__(223);
 
 Object.defineProperty(exports, 'MapvLayer', {
   enumerable: true,
@@ -972,7 +972,7 @@ Object.defineProperty(exports, 'MapvLayer', {
   }
 });
 
-var _drivingRoute = __webpack_require__(226);
+var _drivingRoute = __webpack_require__(224);
 
 Object.defineProperty(exports, 'DrivingRoute', {
   enumerable: true,
@@ -981,7 +981,7 @@ Object.defineProperty(exports, 'DrivingRoute', {
   }
 });
 
-var _pointLabel = __webpack_require__(227);
+var _pointLabel = __webpack_require__(225);
 
 Object.defineProperty(exports, 'PointLabel', {
   enumerable: true,
@@ -990,7 +990,7 @@ Object.defineProperty(exports, 'PointLabel', {
   }
 });
 
-var _arc = __webpack_require__(230);
+var _arc = __webpack_require__(228);
 
 Object.defineProperty(exports, 'Arc', {
   enumerable: true,
@@ -999,7 +999,7 @@ Object.defineProperty(exports, 'Arc', {
   }
 });
 
-var _thickRay = __webpack_require__(231);
+var _thickRay = __webpack_require__(229);
 
 Object.defineProperty(exports, 'ThickRay', {
   enumerable: true,
@@ -1008,7 +1008,7 @@ Object.defineProperty(exports, 'ThickRay', {
   }
 });
 
-var _mapListener = __webpack_require__(232);
+var _mapListener = __webpack_require__(230);
 
 Object.defineProperty(exports, 'MapListener', {
   enumerable: true,
@@ -14589,7 +14589,7 @@ var _markerOrderTip = __webpack_require__(90);
 
 var _markerOrderTip2 = _interopRequireDefault(_markerOrderTip);
 
-var _CustomOverlay = __webpack_require__(206);
+var _CustomOverlay = __webpack_require__(204);
 
 var _CustomOverlay2 = _interopRequireDefault(_CustomOverlay);
 
@@ -14729,6 +14729,7 @@ var App = function (_Component) {
                 ), this.contentDom);
                 this.marker = new _CustomOverlay2.default(position, this.contentDom, {
                     zIndex: this.props.zIndex,
+                    pane: this.props.pane,
                     offset: this.props.offset
                 });
                 map.addOverlay(this.marker);
@@ -17589,63 +17590,63 @@ var _map = __webpack_require__(93);
 
 var _map2 = _interopRequireDefault(_map);
 
-var _marker = __webpack_require__(233);
+var _marker = __webpack_require__(231);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _markerOrderTip = __webpack_require__(234);
+var _markerOrderTip = __webpack_require__(232);
 
 var _markerOrderTip2 = _interopRequireDefault(_markerOrderTip);
 
-var _pointLabel = __webpack_require__(235);
+var _pointLabel = __webpack_require__(233);
 
 var _pointLabel2 = _interopRequireDefault(_pointLabel);
 
-var _trafficLayer = __webpack_require__(236);
+var _trafficLayer = __webpack_require__(234);
 
 var _trafficLayer2 = _interopRequireDefault(_trafficLayer);
 
-var _infowindow = __webpack_require__(237);
+var _infowindow = __webpack_require__(235);
 
 var _infowindow2 = _interopRequireDefault(_infowindow);
 
-var _graphy = __webpack_require__(238);
+var _graphy = __webpack_require__(236);
 
 var _graphy2 = _interopRequireDefault(_graphy);
 
-var _markerList = __webpack_require__(239);
+var _markerList = __webpack_require__(237);
 
 var _markerList2 = _interopRequireDefault(_markerList);
 
-var _mapvLayer = __webpack_require__(240);
+var _mapvLayer = __webpack_require__(238);
 
 var _mapvLayer2 = _interopRequireDefault(_mapvLayer);
 
-var _mapvMarkerList = __webpack_require__(241);
+var _mapvMarkerList = __webpack_require__(239);
 
 var _mapvMarkerList2 = _interopRequireDefault(_mapvMarkerList);
 
-var _road = __webpack_require__(242);
+var _road = __webpack_require__(240);
 
 var _road2 = _interopRequireDefault(_road);
 
-var _arc = __webpack_require__(243);
+var _arc = __webpack_require__(241);
 
 var _arc2 = _interopRequireDefault(_arc);
 
-var _thickRay = __webpack_require__(244);
+var _thickRay = __webpack_require__(242);
 
 var _thickRay2 = _interopRequireDefault(_thickRay);
 
-var _boundary = __webpack_require__(245);
+var _boundary = __webpack_require__(243);
 
 var _boundary2 = _interopRequireDefault(_boundary);
 
-var _control = __webpack_require__(246);
+var _control = __webpack_require__(244);
 
 var _control2 = _interopRequireDefault(_control);
 
-var _drivingRoute = __webpack_require__(247);
+var _drivingRoute = __webpack_require__(245);
 
 var _drivingRoute2 = _interopRequireDefault(_drivingRoute);
 
@@ -18827,31 +18828,13 @@ module.exports = factory(isValidElement);
 
 
 
+var emptyFunction = __webpack_require__(13);
+var invariant = __webpack_require__(1);
+var warning = __webpack_require__(2);
 var assign = __webpack_require__(5);
 
 var ReactPropTypesSecret = __webpack_require__(63);
 var checkPropTypes = __webpack_require__(104);
-
-var printWarning = function() {};
-
-if (process.env.NODE_ENV !== 'production') {
-  printWarning = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-}
-
-function emptyFunctionThatReturnsNull() {
-  return null;
-}
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -18995,13 +18978,12 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
       if (secret !== ReactPropTypesSecret) {
         if (throwOnDirectAccess) {
           // New behavior only for users of `prop-types` package
-          var err = new Error(
+          invariant(
+            false,
             'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
             'Use `PropTypes.checkPropTypes()` to call them. ' +
             'Read more at http://fb.me/use-check-prop-types'
           );
-          err.name = 'Invariant Violation';
-          throw err;
         } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
           // Old behavior for people using React.PropTypes
           var cacheKey = componentName + ':' + propName;
@@ -19010,12 +18992,15 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
             // Avoid spamming the console because they are often not actionable except for lib authors
             manualPropTypeWarningCount < 3
           ) {
-            printWarning(
+            warning(
+              false,
               'You are manually calling a React.PropTypes validation ' +
-              'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
+              'function for the `%s` prop on `%s`. This is deprecated ' +
               'and will throw in the standalone `prop-types` package. ' +
               'You may be seeing this warning due to a third-party PropTypes ' +
-              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
+              propFullName,
+              componentName
             );
             manualPropTypeCallCache[cacheKey] = true;
             manualPropTypeWarningCount++;
@@ -19059,7 +19044,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
   }
 
   function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
   }
 
   function createArrayOfTypeChecker(typeChecker) {
@@ -19109,8 +19094,8 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
   function createEnumTypeChecker(expectedValues) {
     if (!Array.isArray(expectedValues)) {
-      process.env.NODE_ENV !== 'production' ? printWarning('Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
-      return emptyFunctionThatReturnsNull;
+      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+      return emptyFunction.thatReturnsNull;
     }
 
     function validate(props, propName, componentName, location, propFullName) {
@@ -19152,18 +19137,21 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
   function createUnionTypeChecker(arrayOfTypeCheckers) {
     if (!Array.isArray(arrayOfTypeCheckers)) {
-      process.env.NODE_ENV !== 'production' ? printWarning('Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
-      return emptyFunctionThatReturnsNull;
+      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunction.thatReturnsNull;
     }
 
     for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
       var checker = arrayOfTypeCheckers[i];
       if (typeof checker !== 'function') {
-        printWarning(
+        warning(
+          false,
           'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
-          'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
+          'received %s at index %s.',
+          getPostfixForTypeWarning(checker),
+          i
         );
-        return emptyFunctionThatReturnsNull;
+        return emptyFunction.thatReturnsNull;
       }
     }
 
@@ -19390,24 +19378,11 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 
 
-var printWarning = function() {};
-
 if (process.env.NODE_ENV !== 'production') {
+  var invariant = __webpack_require__(1);
+  var warning = __webpack_require__(2);
   var ReactPropTypesSecret = __webpack_require__(63);
   var loggedTypeFailures = {};
-
-  printWarning = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
 }
 
 /**
@@ -19432,29 +19407,12 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
         try {
           // This is intentionally an invariant that gets caught. It's the same
           // behavior as without this statement except with a better message.
-          if (typeof typeSpecs[typeSpecName] !== 'function') {
-            var err = Error(
-              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
-              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
-            );
-            err.name = 'Invariant Violation';
-            throw err;
-          }
+          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
           error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
         } catch (ex) {
           error = ex;
         }
-        if (error && !(error instanceof Error)) {
-          printWarning(
-            (componentName || 'React class') + ': type specification of ' +
-            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
-            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
-            'You may have forgotten to pass an argument to the type checker ' +
-            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
-            'shape all require an argument).'
-          )
-
-        }
+        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
         if (error instanceof Error && !(error.message in loggedTypeFailures)) {
           // Only monitor this failure once because there tends to be a lot of the
           // same error.
@@ -19462,9 +19420,7 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
 
           var stack = getStack ? getStack() : '';
 
-          printWarning(
-            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
-          );
+          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
         }
       }
     }
@@ -19795,27 +19751,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      */
     componentWillUnmount: 'DEFINE_MANY',
 
-    /**
-     * Replacement for (deprecated) `componentWillMount`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillMount: 'DEFINE_MANY',
-
-    /**
-     * Replacement for (deprecated) `componentWillReceiveProps`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillReceiveProps: 'DEFINE_MANY',
-
-    /**
-     * Replacement for (deprecated) `componentWillUpdate`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillUpdate: 'DEFINE_MANY',
-
     // ==== Advanced methods ====
 
     /**
@@ -19829,23 +19764,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      * @overridable
      */
     updateComponent: 'OVERRIDE_BASE'
-  };
-
-  /**
-   * Similar to ReactClassInterface but for static methods.
-   */
-  var ReactClassStaticInterface = {
-    /**
-     * This method is invoked after a component is instantiated and when it
-     * receives new props. Return an object to update state in response to
-     * prop changes. Return null to indicate no change to state.
-     *
-     * If an object is returned, its keys will be merged into the existing state.
-     *
-     * @return {object || null}
-     * @optional
-     */
-    getDerivedStateFromProps: 'DEFINE_MANY_MERGED'
   };
 
   /**
@@ -20082,7 +20000,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
     if (!statics) {
       return;
     }
-
     for (var name in statics) {
       var property = statics[name];
       if (!statics.hasOwnProperty(name)) {
@@ -20099,25 +20016,14 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         name
       );
 
-      var isAlreadyDefined = name in Constructor;
-      if (isAlreadyDefined) {
-        var specPolicy = ReactClassStaticInterface.hasOwnProperty(name)
-          ? ReactClassStaticInterface[name]
-          : null;
-
-        _invariant(
-          specPolicy === 'DEFINE_MANY_MERGED',
-          'ReactClass: You are attempting to define ' +
-            '`%s` on your component more than once. This conflict may be ' +
-            'due to a mixin.',
-          name
-        );
-
-        Constructor[name] = createMergedResultFunction(Constructor[name], property);
-
-        return;
-      }
-
+      var isInherited = name in Constructor;
+      _invariant(
+        !isInherited,
+        'ReactClass: You are attempting to define ' +
+          '`%s` on your component more than once. This conflict may be ' +
+          'due to a mixin.',
+        name
+      );
       Constructor[name] = property;
     }
   }
@@ -20425,12 +20331,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         !Constructor.prototype.componentWillRecieveProps,
         '%s has a method called ' +
           'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
-        spec.displayName || 'A component'
-      );
-      warning(
-        !Constructor.prototype.UNSAFE_componentWillRecieveProps,
-        '%s has a method called UNSAFE_componentWillRecieveProps(). ' +
-          'Did you mean UNSAFE_componentWillReceiveProps()?',
         spec.displayName || 'A component'
       );
     }
@@ -30751,7 +30651,7 @@ Object.defineProperty(exports, 'obj', {
   }
 });
 
-var _index2 = __webpack_require__(201);
+var _index2 = __webpack_require__(200);
 
 Object.defineProperty(exports, 'bmap', {
   enumerable: true,
@@ -30760,7 +30660,7 @@ Object.defineProperty(exports, 'bmap', {
   }
 });
 
-var _index3 = __webpack_require__(203);
+var _index3 = __webpack_require__(202);
 
 Object.defineProperty(exports, 'http', {
   enumerable: true,
@@ -30790,16 +30690,11 @@ var _merge = __webpack_require__(199);
 
 var _merge2 = _interopRequireDefault(_merge);
 
-var _diff = __webpack_require__(200);
-
-var _diff2 = _interopRequireDefault(_diff);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var extend = {
     deepClone: _deepClone2.default,
-    merge: _merge2.default,
-    diff: _diff2.default
+    merge: _merge2.default
 };
 exports.default = extend;
 
@@ -30813,42 +30708,10 @@ exports.default = extend;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-function isObj(obj) {
-    return ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' || typeof obj === 'function') && obj !== null;
-}
-
-// 深度克隆
-function deepClone(obj) {
-    var hash = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new WeakMap();
-
-    var cloneObj = void 0;
-    var Constructor = obj.constructor;
-    switch (Constructor) {
-        case RegExp:
-            cloneObj = new Constructor(obj);
-            break;
-        case Date:
-            cloneObj = new Constructor(obj.getTime());
-            break;
-        default:
-            if (hash.has(obj)) return hash.get(obj);
-            cloneObj = new Constructor();
-            hash.set(obj, cloneObj);
-    }
-    for (var key in obj) {
-        cloneObj[key] = isObj(obj[key]) ? deepClone(obj[key], hash) : obj[key];
-    }
-    return cloneObj;
-}
-
-// const deepClone = (obj) => {
-//     var proto = Object.getPrototypeOf(obj);
-//     return Object.assign({}, Object.create(proto), obj);
-
-// }
+var deepClone = function deepClone(obj) {
+    var proto = Object.getPrototypeOf(obj);
+    return Object.assign({}, Object.create(proto), obj);
+};
 exports.default = deepClone;
 
 /***/ }),
@@ -30867,7 +30730,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var merge = function merge(tar, source) {
     var merge = function merge(origin, modifys) {
         for (var k in modifys) {
-            if (Object.prototype.toString.call(modifys[k]) == '[object Object]') {
+            if (_typeof(modifys[k]) == 'object') {
                 if (_typeof(origin[k]) !== 'object') {
                     origin[k] = {};
                 }
@@ -30894,67 +30757,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-/**
- *方法说明
- * @method 找出src2与src1不同的部分      
- * @param {Object} src1 比较的基本对象
- * @param {Object} src2 被比较的对象
- * @return {Object} diffObj 返回一个新的Object对象diffObj
- *         src1有，src2没有的部分 diffObj[k]=undefined;
- *         src1没有，src2有的部分 diffObj[k]=src2[k];
- */
-var diff = function diff(src1, src2) {
-    var diffObj = {};
-    var _diff = function _diff(base, src, df) {
-        var ko = {};
-        base && Object.keys(base).map(function (k) {
-            ko[k] = true;
-        });
-        src && Object.keys(src).map(function (k) {
-            ko[k] = true;
-        });
-
-        for (var k in ko) {
-            if (base[k] && Object.prototype.toString.call(base[k]) == '[object Object]' && src[k] && Object.prototype.toString.call(src[k]) == '[object Object]') {
-                if (JSON.stringify(base[k]) !== JSON.stringify(src[k])) {
-                    if (!df[k]) {
-                        df[k] = {};
-                    }
-                    var _df = df[k];
-                    _diff(base[k], src[k], _df);
-                } else {
-                    df[k] = src[k];
-                }
-            } else {
-                df[k] = src[k];
-            }
-        }
-    };
-    _diff(src1, src2, diffObj);
-    if (Object.keys(diffObj).length == 0) {
-        diffObj = null;
-    }
-    return diffObj;
-};
-
-exports.default = diff;
-
-/***/ }),
-/* 201 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _createPoint = __webpack_require__(91);
 
 var _createPoint2 = _interopRequireDefault(_createPoint);
 
-var _getPoints = __webpack_require__(202);
+var _getPoints = __webpack_require__(201);
 
 var _getPoints2 = _interopRequireDefault(_getPoints);
 
@@ -30967,7 +30774,7 @@ var bmap = {
 exports.default = bmap;
 
 /***/ }),
-/* 202 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31022,7 +30829,7 @@ var getPoints = function getPoints(border) {
 exports.default = getPoints;
 
 /***/ }),
-/* 203 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31032,22 +30839,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _http = __webpack_require__(204);
+var _http = __webpack_require__(203);
 
 var _http2 = _interopRequireDefault(_http);
 
-var _download = __webpack_require__(205);
-
-var _download2 = _interopRequireDefault(_download);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_http2.default.download = _download2.default;
-
+// const http = {
+//     http: http
+// }
 exports.default = _http2.default;
 
 /***/ }),
-/* 204 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31213,80 +31017,16 @@ function jsonp(params) {
 var http = {
     fetch: fetch,
     ajax: ajax,
-    jsonp: jsonp
+    jsonp: jsonp,
+    test: function test() {
+        console.log('test kits-js http');
+    }
 };
 
 exports.default = http;
 
 /***/ }),
-/* 205 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-/* eslint-disable */
-/**
- * @file http
- */
-/* globals XMLHttpRequest window location document*/
-/**
- * get the data from url
- * auto use jsonp or ajax
- * @params 传入的参数
- * @params.url
- */
-function fetch(params) {
-    var fetchObj = null;
-    if (/^http(s{0,1}):\/\//.test(params.url)) {
-        var pageLoc = location.href.match(/^https{0,1}:\/\/(.+?)(?=\/|$)/);
-        var ajaxLoc = params.url.match(/^https{0,1}:\/\/(.+?)(?=\/|$)/);
-        if (pageLoc.length === 2 && ajaxLoc.length === 2 && ajaxLoc[1] === pageLoc[1]) {
-            fetchObj = this.ajax(params);
-        } else {
-            fetchObj = this.jsonp(params);
-        }
-    } else {
-        fetchObj = this.ajax(params);
-    }
-    return fetchObj;
-}
-
-/**
- * @params.method
- * @params.data
- * @params.url
- * @params.fail
- * @params.success
- */
-function download(url, fileName) {
-    var a = document.createElement('a');
-    a.style.display = 'none';
-    // 字符内容转变成blob地址
-    var blob = new Blob([url]);
-    a.href = URL.createObjectURL(blob);
-    a.href = url;
-    if (fileName) {
-        a.download = fileName;
-    }
-    document.body.appendChild(a);
-    // 触发点击
-    a.click();
-    // 然后移除
-    document.body.removeChild(a);
-    // var iframe  = document.createElement("iframe");
-    // document.body.appendChild(iframe); 		
-    // iframe.src = url;
-    // iframe.style.display = "none";
-}
-
-exports.default = download;
-
-/***/ }),
-/* 206 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31330,7 +31070,8 @@ CustomOverlay.prototype.initialize = function (map) {
     } else {
         div.appendChild(this.content);
     }
-    map.getPanes().labelPane.appendChild(div);
+    var pane = this.options.pane || 'labelPane';
+    map.getPanes()[pane].appendChild(div);
     return div;
 };
 
@@ -31345,7 +31086,7 @@ CustomOverlay.prototype.draw = function () {
 exports.default = CustomOverlay;
 
 /***/ }),
-/* 207 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31438,7 +31179,7 @@ var Infowindow = function (_Component) {
 exports.default = Infowindow;
 
 /***/ }),
-/* 208 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31492,7 +31233,7 @@ var NavigationControl = function (_Control) {
 exports.default = NavigationControl;
 
 /***/ }),
-/* 209 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31546,7 +31287,7 @@ var OverviewMapControl = function (_Control) {
 exports.default = OverviewMapControl;
 
 /***/ }),
-/* 210 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31600,7 +31341,7 @@ var ScaleControl = function (_Control) {
 exports.default = ScaleControl;
 
 /***/ }),
-/* 211 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31654,7 +31395,7 @@ var MapTypeControl = function (_Control) {
 exports.default = MapTypeControl;
 
 /***/ }),
-/* 212 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31707,7 +31448,7 @@ var PanoramaControl = function (_Control) {
 exports.default = PanoramaControl;
 
 /***/ }),
-/* 213 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31758,7 +31499,7 @@ var Circle = function (_Graphy) {
 exports.default = Circle;
 
 /***/ }),
-/* 214 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31814,7 +31555,7 @@ var App = function (_Graphy) {
 exports.default = App;
 
 /***/ }),
-/* 215 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31870,7 +31611,7 @@ var App = function (_Graphy) {
 exports.default = App;
 
 /***/ }),
-/* 216 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31888,11 +31629,11 @@ var _component2 = _interopRequireDefault(_component);
 
 var _mapv = __webpack_require__(17);
 
-var _mapLine = __webpack_require__(217);
+var _mapLine = __webpack_require__(215);
 
 var _mapLine2 = _interopRequireDefault(_mapLine);
 
-var _geoUtils = __webpack_require__(218);
+var _geoUtils = __webpack_require__(216);
 
 var _geoUtils2 = _interopRequireDefault(_geoUtils);
 
@@ -32140,7 +31881,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 217 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32343,7 +32084,7 @@ var mapLine = {
 exports.default = mapLine;
 
 /***/ }),
-/* 218 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32450,7 +32191,7 @@ var App = {
 exports.default = App;
 
 /***/ }),
-/* 219 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32633,7 +32374,7 @@ var Boundary = function (_Component) {
 exports.default = Boundary;
 
 /***/ }),
-/* 220 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32651,7 +32392,7 @@ var _component2 = _interopRequireDefault(_component);
 
 var _mapv = __webpack_require__(17);
 
-var _NumberMarker = __webpack_require__(221);
+var _NumberMarker = __webpack_require__(219);
 
 var _NumberMarker2 = _interopRequireDefault(_NumberMarker);
 
@@ -32892,7 +32633,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 221 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33000,7 +32741,7 @@ function colorRgb(color, opacity) {
 exports.default = Overlay;
 
 /***/ }),
-/* 222 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33342,7 +33083,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 223 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33432,7 +33173,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 224 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33609,7 +33350,7 @@ Polyline.prototype.isPointOnPolyline = function (point, polyline) {
 exports.default = App;
 
 /***/ }),
-/* 225 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33743,7 +33484,7 @@ var MapvLayer = function (_Component) {
 exports.default = MapvLayer;
 
 /***/ }),
-/* 226 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33854,7 +33595,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 227 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33876,7 +33617,7 @@ var _component = __webpack_require__(10);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _DraggingTip = __webpack_require__(228);
+var _DraggingTip = __webpack_require__(226);
 
 var _DraggingTip2 = _interopRequireDefault(_DraggingTip);
 
@@ -33984,7 +33725,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 228 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33994,7 +33735,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Tip = __webpack_require__(229);
+var _Tip = __webpack_require__(227);
 
 var _Tip2 = _interopRequireDefault(_Tip);
 
@@ -34055,7 +33796,7 @@ DraggingTip.prototype.hideNumber = function () {
 exports.default = DraggingTip;
 
 /***/ }),
-/* 229 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34216,7 +33957,7 @@ Tip.prototype.draw = function () {
 exports.default = Tip;
 
 /***/ }),
-/* 230 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34448,7 +34189,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 231 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34673,7 +34414,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 232 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34844,7 +34585,7 @@ var MapListener = function (_React$Component) {
 exports.default = MapListener;
 
 /***/ }),
-/* 233 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35007,7 +34748,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 234 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35138,7 +34879,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 235 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35286,7 +35027,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 236 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35340,7 +35081,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 237 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35399,7 +35140,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 238 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35468,7 +35209,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 239 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35609,7 +35350,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 240 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35701,7 +35442,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 241 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35789,7 +35530,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 242 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35858,7 +35599,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 243 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35956,7 +35697,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 244 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36058,7 +35799,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 245 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36153,7 +35894,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 246 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36216,7 +35957,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 247 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

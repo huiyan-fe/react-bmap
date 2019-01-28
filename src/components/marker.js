@@ -166,6 +166,7 @@ export default class App extends Component {
             render(<div>{child}</div>, this.contentDom)
             this.marker = new CustomOverlay(position, this.contentDom, {
                 zIndex: this.props.zIndex,
+                pane: this.props.pane,
                 offset: this.props.offset
             });
             map.addOverlay(this.marker);
