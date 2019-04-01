@@ -828,7 +828,7 @@ Object.defineProperty(exports, 'MarkerOrderTip', {
   }
 });
 
-var _infowindow = __webpack_require__(205);
+var _infowindow = __webpack_require__(207);
 
 Object.defineProperty(exports, 'InfoWindow', {
   enumerable: true,
@@ -837,7 +837,7 @@ Object.defineProperty(exports, 'InfoWindow', {
   }
 });
 
-var _navigationControl = __webpack_require__(206);
+var _navigationControl = __webpack_require__(208);
 
 Object.defineProperty(exports, 'NavigationControl', {
   enumerable: true,
@@ -846,7 +846,7 @@ Object.defineProperty(exports, 'NavigationControl', {
   }
 });
 
-var _overviewMapControl = __webpack_require__(207);
+var _overviewMapControl = __webpack_require__(209);
 
 Object.defineProperty(exports, 'OverviewMapControl', {
   enumerable: true,
@@ -855,7 +855,7 @@ Object.defineProperty(exports, 'OverviewMapControl', {
   }
 });
 
-var _scaleControl = __webpack_require__(208);
+var _scaleControl = __webpack_require__(210);
 
 Object.defineProperty(exports, 'ScaleControl', {
   enumerable: true,
@@ -864,7 +864,7 @@ Object.defineProperty(exports, 'ScaleControl', {
   }
 });
 
-var _mapTypeControl = __webpack_require__(209);
+var _mapTypeControl = __webpack_require__(211);
 
 Object.defineProperty(exports, 'MapTypeControl', {
   enumerable: true,
@@ -873,7 +873,7 @@ Object.defineProperty(exports, 'MapTypeControl', {
   }
 });
 
-var _panoramaControl = __webpack_require__(210);
+var _panoramaControl = __webpack_require__(212);
 
 Object.defineProperty(exports, 'PanoramaControl', {
   enumerable: true,
@@ -882,7 +882,7 @@ Object.defineProperty(exports, 'PanoramaControl', {
   }
 });
 
-var _circle = __webpack_require__(211);
+var _circle = __webpack_require__(213);
 
 Object.defineProperty(exports, 'Circle', {
   enumerable: true,
@@ -891,7 +891,7 @@ Object.defineProperty(exports, 'Circle', {
   }
 });
 
-var _polyline = __webpack_require__(212);
+var _polyline = __webpack_require__(214);
 
 Object.defineProperty(exports, 'Polyline', {
   enumerable: true,
@@ -900,7 +900,7 @@ Object.defineProperty(exports, 'Polyline', {
   }
 });
 
-var _polygon = __webpack_require__(213);
+var _polygon = __webpack_require__(215);
 
 Object.defineProperty(exports, 'Polygon', {
   enumerable: true,
@@ -909,7 +909,7 @@ Object.defineProperty(exports, 'Polygon', {
   }
 });
 
-var _road = __webpack_require__(214);
+var _road = __webpack_require__(216);
 
 Object.defineProperty(exports, 'Road', {
   enumerable: true,
@@ -918,7 +918,7 @@ Object.defineProperty(exports, 'Road', {
   }
 });
 
-var _boundary = __webpack_require__(217);
+var _boundary = __webpack_require__(219);
 
 Object.defineProperty(exports, 'Boundary', {
   enumerable: true,
@@ -927,7 +927,7 @@ Object.defineProperty(exports, 'Boundary', {
   }
 });
 
-var _markerList = __webpack_require__(218);
+var _markerList = __webpack_require__(220);
 
 Object.defineProperty(exports, 'MarkerList', {
   enumerable: true,
@@ -936,7 +936,7 @@ Object.defineProperty(exports, 'MarkerList', {
   }
 });
 
-var _mapvMarkerList = __webpack_require__(220);
+var _mapvMarkerList = __webpack_require__(222);
 
 Object.defineProperty(exports, 'MapvMarkerList', {
   enumerable: true,
@@ -945,7 +945,7 @@ Object.defineProperty(exports, 'MapvMarkerList', {
   }
 });
 
-var _trafficLayer = __webpack_require__(221);
+var _trafficLayer = __webpack_require__(223);
 
 Object.defineProperty(exports, 'TrafficLayer', {
   enumerable: true,
@@ -954,7 +954,7 @@ Object.defineProperty(exports, 'TrafficLayer', {
   }
 });
 
-var _merge = __webpack_require__(222);
+var _merge = __webpack_require__(224);
 
 Object.defineProperty(exports, 'Merge', {
   enumerable: true,
@@ -963,7 +963,7 @@ Object.defineProperty(exports, 'Merge', {
   }
 });
 
-var _mapvLayer = __webpack_require__(223);
+var _mapvLayer = __webpack_require__(225);
 
 Object.defineProperty(exports, 'MapvLayer', {
   enumerable: true,
@@ -972,7 +972,7 @@ Object.defineProperty(exports, 'MapvLayer', {
   }
 });
 
-var _drivingRoute = __webpack_require__(224);
+var _drivingRoute = __webpack_require__(226);
 
 Object.defineProperty(exports, 'DrivingRoute', {
   enumerable: true,
@@ -981,7 +981,7 @@ Object.defineProperty(exports, 'DrivingRoute', {
   }
 });
 
-var _pointLabel = __webpack_require__(225);
+var _pointLabel = __webpack_require__(227);
 
 Object.defineProperty(exports, 'PointLabel', {
   enumerable: true,
@@ -990,7 +990,7 @@ Object.defineProperty(exports, 'PointLabel', {
   }
 });
 
-var _arc = __webpack_require__(228);
+var _arc = __webpack_require__(230);
 
 Object.defineProperty(exports, 'Arc', {
   enumerable: true,
@@ -999,7 +999,7 @@ Object.defineProperty(exports, 'Arc', {
   }
 });
 
-var _thickRay = __webpack_require__(229);
+var _thickRay = __webpack_require__(231);
 
 Object.defineProperty(exports, 'ThickRay', {
   enumerable: true,
@@ -1008,7 +1008,7 @@ Object.defineProperty(exports, 'ThickRay', {
   }
 });
 
-var _mapListener = __webpack_require__(230);
+var _mapListener = __webpack_require__(232);
 
 Object.defineProperty(exports, 'MapListener', {
   enumerable: true,
@@ -2144,7 +2144,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 	(factory((global.mapv = global.mapv || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "2.0.33";
+var version = "2.0.34";
 
 /**
  * @author kyle / http://nikai.us/
@@ -2802,7 +2802,7 @@ var pathSimple = {
                 }
                 break;
             default:
-                console.log('type' + type + 'is not support now!');
+                console.error('type' + type + 'is not support now!');
                 break;
         }
     },
@@ -4431,7 +4431,6 @@ function getCurvePoints(points, options) {
  * @param Point 终点
  */
 function getCurveByTwoPoints(obj1, obj2, count) {
-  console.info(obj1, obj2);
   if (!obj1 || !obj2) {
     return null;
   }
@@ -14589,7 +14588,7 @@ var _markerOrderTip = __webpack_require__(90);
 
 var _markerOrderTip2 = _interopRequireDefault(_markerOrderTip);
 
-var _CustomOverlay = __webpack_require__(204);
+var _CustomOverlay = __webpack_require__(206);
 
 var _CustomOverlay2 = _interopRequireDefault(_CustomOverlay);
 
@@ -17590,63 +17589,63 @@ var _map = __webpack_require__(93);
 
 var _map2 = _interopRequireDefault(_map);
 
-var _marker = __webpack_require__(231);
+var _marker = __webpack_require__(233);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _markerOrderTip = __webpack_require__(232);
+var _markerOrderTip = __webpack_require__(234);
 
 var _markerOrderTip2 = _interopRequireDefault(_markerOrderTip);
 
-var _pointLabel = __webpack_require__(233);
+var _pointLabel = __webpack_require__(235);
 
 var _pointLabel2 = _interopRequireDefault(_pointLabel);
 
-var _trafficLayer = __webpack_require__(234);
+var _trafficLayer = __webpack_require__(236);
 
 var _trafficLayer2 = _interopRequireDefault(_trafficLayer);
 
-var _infowindow = __webpack_require__(235);
+var _infowindow = __webpack_require__(237);
 
 var _infowindow2 = _interopRequireDefault(_infowindow);
 
-var _graphy = __webpack_require__(236);
+var _graphy = __webpack_require__(238);
 
 var _graphy2 = _interopRequireDefault(_graphy);
 
-var _markerList = __webpack_require__(237);
+var _markerList = __webpack_require__(239);
 
 var _markerList2 = _interopRequireDefault(_markerList);
 
-var _mapvLayer = __webpack_require__(238);
+var _mapvLayer = __webpack_require__(240);
 
 var _mapvLayer2 = _interopRequireDefault(_mapvLayer);
 
-var _mapvMarkerList = __webpack_require__(239);
+var _mapvMarkerList = __webpack_require__(241);
 
 var _mapvMarkerList2 = _interopRequireDefault(_mapvMarkerList);
 
-var _road = __webpack_require__(240);
+var _road = __webpack_require__(242);
 
 var _road2 = _interopRequireDefault(_road);
 
-var _arc = __webpack_require__(241);
+var _arc = __webpack_require__(243);
 
 var _arc2 = _interopRequireDefault(_arc);
 
-var _thickRay = __webpack_require__(242);
+var _thickRay = __webpack_require__(244);
 
 var _thickRay2 = _interopRequireDefault(_thickRay);
 
-var _boundary = __webpack_require__(243);
+var _boundary = __webpack_require__(245);
 
 var _boundary2 = _interopRequireDefault(_boundary);
 
-var _control = __webpack_require__(244);
+var _control = __webpack_require__(246);
 
 var _control2 = _interopRequireDefault(_control);
 
-var _drivingRoute = __webpack_require__(245);
+var _drivingRoute = __webpack_require__(247);
 
 var _drivingRoute2 = _interopRequireDefault(_drivingRoute);
 
@@ -19751,6 +19750,27 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      */
     componentWillUnmount: 'DEFINE_MANY',
 
+    /**
+     * Replacement for (deprecated) `componentWillMount`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillMount: 'DEFINE_MANY',
+
+    /**
+     * Replacement for (deprecated) `componentWillReceiveProps`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillReceiveProps: 'DEFINE_MANY',
+
+    /**
+     * Replacement for (deprecated) `componentWillUpdate`.
+     *
+     * @optional
+     */
+    UNSAFE_componentWillUpdate: 'DEFINE_MANY',
+
     // ==== Advanced methods ====
 
     /**
@@ -19764,6 +19784,23 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      * @overridable
      */
     updateComponent: 'OVERRIDE_BASE'
+  };
+
+  /**
+   * Similar to ReactClassInterface but for static methods.
+   */
+  var ReactClassStaticInterface = {
+    /**
+     * This method is invoked after a component is instantiated and when it
+     * receives new props. Return an object to update state in response to
+     * prop changes. Return null to indicate no change to state.
+     *
+     * If an object is returned, its keys will be merged into the existing state.
+     *
+     * @return {object || null}
+     * @optional
+     */
+    getDerivedStateFromProps: 'DEFINE_MANY_MERGED'
   };
 
   /**
@@ -20000,6 +20037,7 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
     if (!statics) {
       return;
     }
+
     for (var name in statics) {
       var property = statics[name];
       if (!statics.hasOwnProperty(name)) {
@@ -20016,14 +20054,25 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         name
       );
 
-      var isInherited = name in Constructor;
-      _invariant(
-        !isInherited,
-        'ReactClass: You are attempting to define ' +
-          '`%s` on your component more than once. This conflict may be ' +
-          'due to a mixin.',
-        name
-      );
+      var isAlreadyDefined = name in Constructor;
+      if (isAlreadyDefined) {
+        var specPolicy = ReactClassStaticInterface.hasOwnProperty(name)
+          ? ReactClassStaticInterface[name]
+          : null;
+
+        _invariant(
+          specPolicy === 'DEFINE_MANY_MERGED',
+          'ReactClass: You are attempting to define ' +
+            '`%s` on your component more than once. This conflict may be ' +
+            'due to a mixin.',
+          name
+        );
+
+        Constructor[name] = createMergedResultFunction(Constructor[name], property);
+
+        return;
+      }
+
       Constructor[name] = property;
     }
   }
@@ -20331,6 +20380,12 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         !Constructor.prototype.componentWillRecieveProps,
         '%s has a method called ' +
           'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
+        spec.displayName || 'A component'
+      );
+      warning(
+        !Constructor.prototype.UNSAFE_componentWillRecieveProps,
+        '%s has a method called UNSAFE_componentWillRecieveProps(). ' +
+          'Did you mean UNSAFE_componentWillReceiveProps()?',
         spec.displayName || 'A component'
       );
     }
@@ -30651,7 +30706,7 @@ Object.defineProperty(exports, 'obj', {
   }
 });
 
-var _index2 = __webpack_require__(200);
+var _index2 = __webpack_require__(201);
 
 Object.defineProperty(exports, 'bmap', {
   enumerable: true,
@@ -30660,7 +30715,7 @@ Object.defineProperty(exports, 'bmap', {
   }
 });
 
-var _index3 = __webpack_require__(202);
+var _index3 = __webpack_require__(203);
 
 Object.defineProperty(exports, 'http', {
   enumerable: true,
@@ -30690,11 +30745,16 @@ var _merge = __webpack_require__(199);
 
 var _merge2 = _interopRequireDefault(_merge);
 
+var _diff = __webpack_require__(200);
+
+var _diff2 = _interopRequireDefault(_diff);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var extend = {
     deepClone: _deepClone2.default,
-    merge: _merge2.default
+    merge: _merge2.default,
+    diff: _diff2.default
 };
 exports.default = extend;
 
@@ -30708,10 +30768,42 @@ exports.default = extend;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var deepClone = function deepClone(obj) {
-    var proto = Object.getPrototypeOf(obj);
-    return Object.assign({}, Object.create(proto), obj);
-};
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function isObj(obj) {
+    return ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' || typeof obj === 'function') && obj !== null;
+}
+
+// 深度克隆
+function deepClone(obj) {
+    var hash = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new WeakMap();
+
+    var cloneObj = void 0;
+    var Constructor = obj.constructor;
+    switch (Constructor) {
+        case RegExp:
+            cloneObj = new Constructor(obj);
+            break;
+        case Date:
+            cloneObj = new Constructor(obj.getTime());
+            break;
+        default:
+            if (hash.has(obj)) return hash.get(obj);
+            cloneObj = new Constructor();
+            hash.set(obj, cloneObj);
+    }
+    for (var key in obj) {
+        cloneObj[key] = isObj(obj[key]) ? deepClone(obj[key], hash) : obj[key];
+    }
+    return cloneObj;
+}
+
+// const deepClone = (obj) => {
+//     var proto = Object.getPrototypeOf(obj);
+//     return Object.assign({}, Object.create(proto), obj);
+
+// }
 exports.default = deepClone;
 
 /***/ }),
@@ -30730,7 +30822,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var merge = function merge(tar, source) {
     var merge = function merge(origin, modifys) {
         for (var k in modifys) {
-            if (_typeof(modifys[k]) == 'object') {
+            if (Object.prototype.toString.call(modifys[k]) == '[object Object]') {
                 if (_typeof(origin[k]) !== 'object') {
                     origin[k] = {};
                 }
@@ -30757,11 +30849,67 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+/**
+ *方法说明
+ * @method 找出src2与src1不同的部分      
+ * @param {Object} src1 比较的基本对象
+ * @param {Object} src2 被比较的对象
+ * @return {Object} diffObj 返回一个新的Object对象diffObj
+ *         src1有，src2没有的部分 diffObj[k]=undefined;
+ *         src1没有，src2有的部分 diffObj[k]=src2[k];
+ */
+var diff = function diff(src1, src2) {
+    var diffObj = {};
+    var _diff = function _diff(base, src, df) {
+        var ko = {};
+        base && Object.keys(base).map(function (k) {
+            ko[k] = true;
+        });
+        src && Object.keys(src).map(function (k) {
+            ko[k] = true;
+        });
+
+        for (var k in ko) {
+            if (base[k] && Object.prototype.toString.call(base[k]) == '[object Object]' && src[k] && Object.prototype.toString.call(src[k]) == '[object Object]') {
+                if (JSON.stringify(base[k]) !== JSON.stringify(src[k])) {
+                    if (!df[k]) {
+                        df[k] = {};
+                    }
+                    var _df = df[k];
+                    _diff(base[k], src[k], _df);
+                } else {
+                    df[k] = src[k];
+                }
+            } else {
+                df[k] = src[k];
+            }
+        }
+    };
+    _diff(src1, src2, diffObj);
+    if (Object.keys(diffObj).length == 0) {
+        diffObj = null;
+    }
+    return diffObj;
+};
+
+exports.default = diff;
+
+/***/ }),
+/* 201 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createPoint = __webpack_require__(91);
 
 var _createPoint2 = _interopRequireDefault(_createPoint);
 
-var _getPoints = __webpack_require__(201);
+var _getPoints = __webpack_require__(202);
 
 var _getPoints2 = _interopRequireDefault(_getPoints);
 
@@ -30774,7 +30922,7 @@ var bmap = {
 exports.default = bmap;
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30829,7 +30977,7 @@ var getPoints = function getPoints(border) {
 exports.default = getPoints;
 
 /***/ }),
-/* 202 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30839,19 +30987,22 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _http = __webpack_require__(203);
+var _http = __webpack_require__(204);
 
 var _http2 = _interopRequireDefault(_http);
 
+var _download = __webpack_require__(205);
+
+var _download2 = _interopRequireDefault(_download);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const http = {
-//     http: http
-// }
+_http2.default.download = _download2.default;
+
 exports.default = _http2.default;
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31017,16 +31168,80 @@ function jsonp(params) {
 var http = {
     fetch: fetch,
     ajax: ajax,
-    jsonp: jsonp,
-    test: function test() {
-        console.log('test kits-js http');
-    }
+    jsonp: jsonp
 };
 
 exports.default = http;
 
 /***/ }),
-/* 204 */
+/* 205 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/* eslint-disable */
+/**
+ * @file http
+ */
+/* globals XMLHttpRequest window location document*/
+/**
+ * get the data from url
+ * auto use jsonp or ajax
+ * @params 传入的参数
+ * @params.url
+ */
+function fetch(params) {
+    var fetchObj = null;
+    if (/^http(s{0,1}):\/\//.test(params.url)) {
+        var pageLoc = location.href.match(/^https{0,1}:\/\/(.+?)(?=\/|$)/);
+        var ajaxLoc = params.url.match(/^https{0,1}:\/\/(.+?)(?=\/|$)/);
+        if (pageLoc.length === 2 && ajaxLoc.length === 2 && ajaxLoc[1] === pageLoc[1]) {
+            fetchObj = this.ajax(params);
+        } else {
+            fetchObj = this.jsonp(params);
+        }
+    } else {
+        fetchObj = this.ajax(params);
+    }
+    return fetchObj;
+}
+
+/**
+ * @params.method
+ * @params.data
+ * @params.url
+ * @params.fail
+ * @params.success
+ */
+function download(url, fileName) {
+    var a = document.createElement('a');
+    a.style.display = 'none';
+    // 字符内容转变成blob地址
+    var blob = new Blob([url]);
+    a.href = URL.createObjectURL(blob);
+    a.href = url;
+    if (fileName) {
+        a.download = fileName;
+    }
+    document.body.appendChild(a);
+    // 触发点击
+    a.click();
+    // 然后移除
+    document.body.removeChild(a);
+    // var iframe  = document.createElement("iframe");
+    // document.body.appendChild(iframe); 		
+    // iframe.src = url;
+    // iframe.style.display = "none";
+}
+
+exports.default = download;
+
+/***/ }),
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31086,7 +31301,7 @@ CustomOverlay.prototype.draw = function () {
 exports.default = CustomOverlay;
 
 /***/ }),
-/* 205 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31179,7 +31394,7 @@ var Infowindow = function (_Component) {
 exports.default = Infowindow;
 
 /***/ }),
-/* 206 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31233,7 +31448,7 @@ var NavigationControl = function (_Control) {
 exports.default = NavigationControl;
 
 /***/ }),
-/* 207 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31287,7 +31502,7 @@ var OverviewMapControl = function (_Control) {
 exports.default = OverviewMapControl;
 
 /***/ }),
-/* 208 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31341,7 +31556,7 @@ var ScaleControl = function (_Control) {
 exports.default = ScaleControl;
 
 /***/ }),
-/* 209 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31395,7 +31610,7 @@ var MapTypeControl = function (_Control) {
 exports.default = MapTypeControl;
 
 /***/ }),
-/* 210 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31448,7 +31663,7 @@ var PanoramaControl = function (_Control) {
 exports.default = PanoramaControl;
 
 /***/ }),
-/* 211 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31499,7 +31714,7 @@ var Circle = function (_Graphy) {
 exports.default = Circle;
 
 /***/ }),
-/* 212 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31555,7 +31770,7 @@ var App = function (_Graphy) {
 exports.default = App;
 
 /***/ }),
-/* 213 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31611,7 +31826,7 @@ var App = function (_Graphy) {
 exports.default = App;
 
 /***/ }),
-/* 214 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31629,11 +31844,11 @@ var _component2 = _interopRequireDefault(_component);
 
 var _mapv = __webpack_require__(17);
 
-var _mapLine = __webpack_require__(215);
+var _mapLine = __webpack_require__(217);
 
 var _mapLine2 = _interopRequireDefault(_mapLine);
 
-var _geoUtils = __webpack_require__(216);
+var _geoUtils = __webpack_require__(218);
 
 var _geoUtils2 = _interopRequireDefault(_geoUtils);
 
@@ -31881,7 +32096,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 215 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32084,7 +32299,7 @@ var mapLine = {
 exports.default = mapLine;
 
 /***/ }),
-/* 216 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32191,7 +32406,7 @@ var App = {
 exports.default = App;
 
 /***/ }),
-/* 217 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32374,7 +32589,7 @@ var Boundary = function (_Component) {
 exports.default = Boundary;
 
 /***/ }),
-/* 218 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32392,7 +32607,7 @@ var _component2 = _interopRequireDefault(_component);
 
 var _mapv = __webpack_require__(17);
 
-var _NumberMarker = __webpack_require__(219);
+var _NumberMarker = __webpack_require__(221);
 
 var _NumberMarker2 = _interopRequireDefault(_NumberMarker);
 
@@ -32633,7 +32848,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 219 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32741,7 +32956,7 @@ function colorRgb(color, opacity) {
 exports.default = Overlay;
 
 /***/ }),
-/* 220 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33083,7 +33298,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 221 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33173,7 +33388,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 222 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33350,7 +33565,7 @@ Polyline.prototype.isPointOnPolyline = function (point, polyline) {
 exports.default = App;
 
 /***/ }),
-/* 223 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33484,7 +33699,7 @@ var MapvLayer = function (_Component) {
 exports.default = MapvLayer;
 
 /***/ }),
-/* 224 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33595,7 +33810,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 225 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33617,7 +33832,7 @@ var _component = __webpack_require__(10);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _DraggingTip = __webpack_require__(226);
+var _DraggingTip = __webpack_require__(228);
 
 var _DraggingTip2 = _interopRequireDefault(_DraggingTip);
 
@@ -33725,7 +33940,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 226 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33735,7 +33950,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Tip = __webpack_require__(227);
+var _Tip = __webpack_require__(229);
 
 var _Tip2 = _interopRequireDefault(_Tip);
 
@@ -33796,7 +34011,7 @@ DraggingTip.prototype.hideNumber = function () {
 exports.default = DraggingTip;
 
 /***/ }),
-/* 227 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33957,7 +34172,7 @@ Tip.prototype.draw = function () {
 exports.default = Tip;
 
 /***/ }),
-/* 228 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34189,7 +34404,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 229 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34414,7 +34629,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 230 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34585,7 +34800,7 @@ var MapListener = function (_React$Component) {
 exports.default = MapListener;
 
 /***/ }),
-/* 231 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34748,7 +34963,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 232 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34879,7 +35094,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 233 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35027,7 +35242,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 234 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35081,7 +35296,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 235 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35140,7 +35355,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 236 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35209,7 +35424,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 237 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35350,7 +35565,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 238 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35442,7 +35657,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 239 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35530,7 +35745,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 240 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35599,7 +35814,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 241 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35697,7 +35912,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 242 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35799,7 +36014,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 243 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35894,7 +36109,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 244 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35957,7 +36172,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 245 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
