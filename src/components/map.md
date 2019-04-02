@@ -21,7 +21,7 @@
 * enableAutoResize={false}
 * events={事件options}
 
-### Map的事件options包含以下属性：
+### Map的事件options包含以下属性，可传回调函数：
 * click
 * dblclick
 * rightclick

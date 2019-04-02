@@ -14,7 +14,7 @@
 - message
 - events={事件options}
 
-### InfoWindow的事件options包含以下属性：
+### InfoWindow的事件options包含以下属性，可传回调函数：
 - close
 - open
 - maximize

@@ -18,7 +18,7 @@
 - viewportOptions={{zoomFactor: -2}}
 - events={事件options}
 
-### Marker的事件options包含以下属性：
+### Marker的事件options包含以下属性，可传回调函数：
 - click 
 - dblclick 
 - mousedown
