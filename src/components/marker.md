@@ -1,7 +1,7 @@
 # Marker
 标注组建，可在地图上打标注。对应的一些属性也可以查看官方文档对应的[Marker对象](http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference.html#a3b2)
 
-## 可配置属性
+### 可配置属性
 - position={{lng: 123, lat: 23}}
 - zIndex="10" 目前只对自定义覆盖物生效
 - offset={new BMap.Size(10, 10)}
@@ -16,8 +16,9 @@
 - enableDragging={false}
 - autoViewport={true}
 - viewportOptions={{zoomFactor: -2}}
+- events={事件options}
 
-### marker的事件options包含以下属性，可传回调函数：
+### Marker的事件options包含以下属性：
 - click 
 - dblclick 
 - mousedown
