@@ -22,8 +22,11 @@ export default class App extends Component {
     }
 
     componentWillUnmount() {
-        this.props.map.removeTileLayer(this.tileLayer);
-        this.tileLayer = null;
+        let map = this.props.map;
+        if (map && map.removeTileLayer && map.removeTileLayer instanceof Function && this.tileLayer) {
+            map.removeTileLayer(this.tileLayer);
+            this.tileLayer = null;
+        }
     }
 
     initialize() {
