@@ -33,7 +33,8 @@ CustomOverlay.prototype.initialize = function(map){
     } else {
         div.appendChild(this.content);
     }
-    map.getPanes().labelPane.appendChild(div);
+    var pane = this.options.pane || 'labelPane';
+    map.getPanes()[pane].appendChild(div);
     return div;
 }
 

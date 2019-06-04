@@ -14729,6 +14729,7 @@ var App = function (_Component) {
                 ), this.contentDom);
                 this.marker = new _CustomOverlay2.default(position, this.contentDom, {
                     zIndex: this.props.zIndex,
+                    pane: this.props.pane,
                     offset: this.props.offset
                 });
                 map.addOverlay(this.marker);
@@ -31330,7 +31331,8 @@ CustomOverlay.prototype.initialize = function (map) {
     } else {
         div.appendChild(this.content);
     }
-    map.getPanes().labelPane.appendChild(div);
+    var pane = this.options.pane || 'labelPane';
+    map.getPanes()[pane].appendChild(div);
     return div;
 };
 
@@ -33394,8 +33396,11 @@ var App = function (_Component) {
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            this.props.map.removeTileLayer(this.tileLayer);
-            this.tileLayer = null;
+            var map = this.props.map;
+            if (map && map.removeTileLayer && map.removeTileLayer instanceof Function && this.tileLayer) {
+                map.removeTileLayer(this.tileLayer);
+                this.tileLayer = null;
+            }
         }
     }, {
         key: 'initialize',
