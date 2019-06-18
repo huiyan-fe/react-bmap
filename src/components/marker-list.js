@@ -74,7 +74,7 @@ export default class App extends Component {
                 globalAlpha: '0.9',
                 textAlign: 'left',
                 offset: {
-                    x: 15,
+                    x: this.props.mini ? 10 : 15,
                     y: 0
                 },
                 coordType: this.props.coordType,
@@ -99,8 +99,8 @@ export default class App extends Component {
                 coordType: this.props.coordType,
                 splitList: splitList,
                 globalAlpha: 0.4,
-                size: this.props.multiple ? 20 : 26,
-                minSize: this.props.multiple ? 10 : 13,
+                size: (this.props.multiple || this.props.mini) ? 20 : 26,
+                minSize: (this.props.multiple || this.props.mini) ? 10 : 13,
                 draw: 'category'
             };
             this.animationLayer = new baiduMapAnimationLayer(map, this.dataSet, animationOptions);
@@ -134,16 +134,16 @@ export default class App extends Component {
                 var options = {
                     point: point,
                     fillStyle: fillStyle,
-                    isShowShadow: this.props.isShowShadow,
+                    isShowNumber: this.props.isShowNumber,
                     size: 26,
                     zIndex: data.length - i,
                     number: i + 1
                 }
 
-                if (this.props.multiple) {
+                if (this.props.multiple || this.props.mini) {
                     options.size = 20;
                     options.lineWidth = 0;
-                    if (i >= 10) {
+                    if (i >= 10 || this.props.mini) {
                         options.isShowNumber = false;
                         options.size = 10;
                         options.strokeStyle = fillStyle;
@@ -183,7 +183,11 @@ export default class App extends Component {
             map.addOverlay(this.markers[length]);
         }
 
-        this.dataSet.set(mapvData.splice(0, 10));
+        if (this.props.mini) {
+            this.dataSet.set(mapvData);
+        } else {
+            this.dataSet.set(mapvData.splice(0, 10));
+        }
 
         this.setViewport();
 

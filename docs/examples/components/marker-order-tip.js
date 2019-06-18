@@ -50,7 +50,6 @@ export default class App extends Component {
         var times = Math.pow(10, s)
         var des = num * times + 0.5
         des = parseInt(des, 10) / times
-        console.log(des);
         return des + ''
     }
     render() {

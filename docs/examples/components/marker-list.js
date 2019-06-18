@@ -68,7 +68,7 @@ export default class App extends Component {
                         1: '#80db69'
                     }} 
                     coordType="bd09mc" 
-                    isShowShadow={false} 
+                    isShowNumber={true} 
                     animation={true} 
                     multiple={true} 
                     autoViewport={true}
@@ -94,9 +94,9 @@ export default class App extends Component {
                     data={citylist} 
                     fillStyle="#ff3333" 
                     coordType="bd09mc" 
-                    animation={true} 
-                    isShowShadow={false} 
-                    multiple={true} 
+                    animation={false} 
+                    isShowNumber={false} 
+                    mini={true} 
                     autoViewport={false}
                 />
             </Map>

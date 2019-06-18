@@ -32696,7 +32696,7 @@ var App = function (_Component) {
                     globalAlpha: '0.9',
                     textAlign: 'left',
                     offset: {
-                        x: 15,
+                        x: this.props.mini ? 10 : 15,
                         y: 0
                     },
                     coordType: this.props.coordType,
@@ -32720,8 +32720,8 @@ var App = function (_Component) {
                     coordType: this.props.coordType,
                     splitList: splitList,
                     globalAlpha: 0.4,
-                    size: this.props.multiple ? 20 : 26,
-                    minSize: this.props.multiple ? 10 : 13,
+                    size: this.props.multiple || this.props.mini ? 20 : 26,
+                    minSize: this.props.multiple || this.props.mini ? 10 : 13,
                     draw: 'category'
                 };
                 this.animationLayer = new _mapv.baiduMapAnimationLayer(map, this.dataSet, animationOptions);
@@ -32755,16 +32755,16 @@ var App = function (_Component) {
                     var options = {
                         point: point,
                         fillStyle: fillStyle,
-                        isShowShadow: this.props.isShowShadow,
+                        isShowNumber: this.props.isShowNumber,
                         size: 26,
                         zIndex: data.length - i,
                         number: i + 1
                     };
 
-                    if (this.props.multiple) {
+                    if (this.props.multiple || this.props.mini) {
                         options.size = 20;
                         options.lineWidth = 0;
-                        if (i >= 10) {
+                        if (i >= 10 || this.props.mini) {
                             options.isShowNumber = false;
                             options.size = 10;
                             options.strokeStyle = fillStyle;
@@ -32804,7 +32804,11 @@ var App = function (_Component) {
                 map.addOverlay(this.markers[length]);
             }
 
-            this.dataSet.set(mapvData.splice(0, 10));
+            if (this.props.mini) {
+                this.dataSet.set(mapvData);
+            } else {
+                this.dataSet.set(mapvData.splice(0, 10));
+            }
 
             this.setViewport();
         }
@@ -32922,8 +32926,8 @@ Overlay.prototype.initialize = function (map) {
 Overlay.prototype.draw = function () {
     var map = this._map;
     var pixel = map.pointToOverlayPixel(this._point);
-    this._div.style.left = pixel.x - (this._size + this._lineWidth) / 2 + 1 + "px";
-    this._div.style.top = pixel.y - (this._size + this._lineWidth) / 2 + "px";
+    this._div.style.left = pixel.x - (this._size + this._lineWidth) / 2 - 1 + "px";
+    this._div.style.top = pixel.y - (this._size + this._lineWidth) / 2 - 2 + "px";
 };
 
 /*16进制颜色转为RGB格式*/
@@ -35042,7 +35046,6 @@ var App = function (_Component) {
             var times = Math.pow(10, s);
             var des = num * times + 0.5;
             des = parseInt(des, 10) / times;
-            console.log(des);
             return des + '';
         }
     }, {
@@ -35525,7 +35528,7 @@ var App = function (_Component) {
                             1: '#80db69'
                         },
                         coordType: 'bd09mc',
-                        isShowShadow: false,
+                        isShowNumber: true,
                         animation: true,
                         multiple: true,
                         autoViewport: true
@@ -35553,9 +35556,9 @@ var App = function (_Component) {
                         data: citylist,
                         fillStyle: '#ff3333',
                         coordType: 'bd09mc',
-                        animation: true,
-                        isShowShadow: false,
-                        multiple: true,
+                        animation: false,
+                        isShowNumber: false,
+                        mini: true,
                         autoViewport: false
                     })
                 )
