@@ -17888,7 +17888,7 @@ var App = function (_Component) {
         value: function getEvents() {
             return {
                 click: function click(e) {
-                    console.log('map click event', e, type);
+                    console.log('map click event', e.type);
                 }
             };
         }
@@ -20516,8 +20516,8 @@ var Map = function (_Component) {
                     this.map.centerAndZoom(center);
                 }
             } else {
-                var isCenterChanged = preCenter && center && preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate;
-                var isZoomChanged = prevProps.zoom !== this.props.zoom && this.props.zoom || this.props.forceUpdate;
+                var isCenterChanged = preCenter && center && (preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate);
+                var isZoomChanged = prevProps.zoom !== this.props.zoom && (this.props.zoom || this.props.forceUpdate);
                 var center = new BMap.Point(center.lng, center.lat);
                 if (isCenterChanged && isZoomChanged) {
                     this.map.centerAndZoom(center, this.props.zoom);
@@ -20619,7 +20619,7 @@ var Map = function (_Component) {
             }
             return _react2.default.createElement(
                 'div',
-                { style: style, key: this.props.key },
+                { style: style, key: this.props.keys },
                 _react2.default.createElement(
                     'div',
                     { ref: 'map', className: this.props.className, style: { height: '100%' } },

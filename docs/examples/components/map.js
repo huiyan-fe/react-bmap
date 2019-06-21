@@ -12,7 +12,7 @@ export default class App extends Component {
     getEvents() {
         return {
             click: (e) => {
-                console.log('map click event', e, type);
+                console.log('map click event', e.type);
             }
         }
     }

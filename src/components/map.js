@@ -108,8 +108,8 @@ export default class Map extends Component {
                 this.map.centerAndZoom(center);
             }
         } else {
-            var isCenterChanged = preCenter && center && preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate;
-            var isZoomChanged = prevProps.zoom !== this.props.zoom && this.props.zoom || this.props.forceUpdate;
+            var isCenterChanged = preCenter && center && (preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate);
+            var isZoomChanged = prevProps.zoom !== this.props.zoom && (this.props.zoom || this.props.forceUpdate);
             var center = new BMap.Point(center.lng, center.lat);
             if (isCenterChanged && isZoomChanged) {
                 this.map.centerAndZoom(center, this.props.zoom);
@@ -205,7 +205,7 @@ export default class Map extends Component {
             style[key] = this.props.style[key];
         }
         return (
-            <div style={style} key={this.props.key}>
+            <div style={style} key={this.props.keys}>
                 <div ref='map' className={this.props.className} style={{height: '100%'}}>
                  加载地图中...
                 </div>
