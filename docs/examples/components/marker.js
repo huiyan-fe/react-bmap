@@ -73,6 +73,7 @@ export default class App extends Component {
             <Marker position={{lng: 114.501011, lat: 33.920864}} icon="loc_red" />
             <Marker position={{lng: 109.210063, lat: 34.339622}} icon="start" />
             <Marker position={{lng: 109.430831, lat: 38.211366}} icon="end" />
+            <Marker position={{lng: 114.501011, lat: 29.920864}} icon="location" />
         </Map>
         <Map center = {{
                 lng: 105.403119,

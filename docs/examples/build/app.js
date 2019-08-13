@@ -14636,12 +14636,25 @@ var icons = {
         imageOffset: new BMap.Size(-450 / 2, -278 / 2),
         anchor: new BMap.Size(50 / 2 / 2, 80 / 2),
         imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
+    'location': new BMap.Icon(defaultIconUrl, new BMap.Size(28 / 2, 40 / 2), {
+        imageOffset: new BMap.Size(-248 / 2, -466 / 2),
+        anchor: new BMap.Size(50 / 2 / 2, 80 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
     })
 };
 
 for (var i = 1; i <= 10; i++) {
     icons['red' + i] = new BMap.Icon(defaultIconUrl, new BMap.Size(42 / 2, 66 / 2), {
         imageOffset: new BMap.Size(0 - 42 / 2 * (i - 1), 0),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    });
+}
+
+for (var i = 1; i <= 10; i++) {
+    icons['blue' + i] = new BMap.Icon(defaultIconUrl, new BMap.Size(42 / 2, 66 / 2), {
+        imageOffset: new BMap.Size(0 - 42 / 2 * (i - 1), -132 / 2),
         anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
         imageSize: new BMap.Size(600 / 2, 600 / 2)
     });
@@ -19751,27 +19764,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      */
     componentWillUnmount: 'DEFINE_MANY',
 
-    /**
-     * Replacement for (deprecated) `componentWillMount`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillMount: 'DEFINE_MANY',
-
-    /**
-     * Replacement for (deprecated) `componentWillReceiveProps`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillReceiveProps: 'DEFINE_MANY',
-
-    /**
-     * Replacement for (deprecated) `componentWillUpdate`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillUpdate: 'DEFINE_MANY',
-
     // ==== Advanced methods ====
 
     /**
@@ -19785,23 +19777,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      * @overridable
      */
     updateComponent: 'OVERRIDE_BASE'
-  };
-
-  /**
-   * Similar to ReactClassInterface but for static methods.
-   */
-  var ReactClassStaticInterface = {
-    /**
-     * This method is invoked after a component is instantiated and when it
-     * receives new props. Return an object to update state in response to
-     * prop changes. Return null to indicate no change to state.
-     *
-     * If an object is returned, its keys will be merged into the existing state.
-     *
-     * @return {object || null}
-     * @optional
-     */
-    getDerivedStateFromProps: 'DEFINE_MANY_MERGED'
   };
 
   /**
@@ -20038,7 +20013,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
     if (!statics) {
       return;
     }
-
     for (var name in statics) {
       var property = statics[name];
       if (!statics.hasOwnProperty(name)) {
@@ -20055,25 +20029,14 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         name
       );
 
-      var isAlreadyDefined = name in Constructor;
-      if (isAlreadyDefined) {
-        var specPolicy = ReactClassStaticInterface.hasOwnProperty(name)
-          ? ReactClassStaticInterface[name]
-          : null;
-
-        _invariant(
-          specPolicy === 'DEFINE_MANY_MERGED',
-          'ReactClass: You are attempting to define ' +
-            '`%s` on your component more than once. This conflict may be ' +
-            'due to a mixin.',
-          name
-        );
-
-        Constructor[name] = createMergedResultFunction(Constructor[name], property);
-
-        return;
-      }
-
+      var isInherited = name in Constructor;
+      _invariant(
+        !isInherited,
+        'ReactClass: You are attempting to define ' +
+          '`%s` on your component more than once. This conflict may be ' +
+          'due to a mixin.',
+        name
+      );
       Constructor[name] = property;
     }
   }
@@ -20381,12 +20344,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         !Constructor.prototype.componentWillRecieveProps,
         '%s has a method called ' +
           'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
-        spec.displayName || 'A component'
-      );
-      warning(
-        !Constructor.prototype.UNSAFE_componentWillRecieveProps,
-        '%s has a method called UNSAFE_componentWillRecieveProps(). ' +
-          'Did you mean UNSAFE_componentWillReceiveProps()?',
         spec.displayName || 'A component'
       );
     }
@@ -34919,7 +34876,8 @@ var App = function (_Component) {
                     _react2.default.createElement(_src.Marker, { position: { lng: 112.538537, lat: 37.874899 }, icon: 'loc_blue' }),
                     _react2.default.createElement(_src.Marker, { position: { lng: 114.501011, lat: 33.920864 }, icon: 'loc_red' }),
                     _react2.default.createElement(_src.Marker, { position: { lng: 109.210063, lat: 34.339622 }, icon: 'start' }),
-                    _react2.default.createElement(_src.Marker, { position: { lng: 109.430831, lat: 38.211366 }, icon: 'end' })
+                    _react2.default.createElement(_src.Marker, { position: { lng: 109.430831, lat: 38.211366 }, icon: 'end' }),
+                    _react2.default.createElement(_src.Marker, { position: { lng: 114.501011, lat: 29.920864 }, icon: 'location' })
                 ),
                 _react2.default.createElement(
                     _src.Map,

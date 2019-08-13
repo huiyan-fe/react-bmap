@@ -42,11 +42,24 @@ var icons = {
         anchor: new BMap.Size(50 / 2 / 2, 80 / 2),
         imageSize: new BMap.Size(600 / 2, 600 / 2)
     }),
+    'location': new BMap.Icon(defaultIconUrl , new BMap.Size(28 / 2, 40 / 2), {
+        imageOffset: new BMap.Size(-248 / 2, -466 / 2),
+        anchor: new BMap.Size(50 / 2 / 2, 80 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    }),
 }
 
 for (var i = 1; i <= 10; i++) {
     icons['red' + i] = new BMap.Icon(defaultIconUrl , new BMap.Size(42 / 2, 66 / 2), {
         imageOffset: new BMap.Size(0 - 42 / 2 * (i - 1), 0),
+        anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
+        imageSize: new BMap.Size(600 / 2, 600 / 2)
+    });
+}
+
+for (var i = 1; i <= 10; i++) {
+    icons['blue' + i] = new BMap.Icon(defaultIconUrl , new BMap.Size(42 / 2, 66 / 2), {
+        imageOffset: new BMap.Size(0 - 42 / 2 * (i - 1), - 132 / 2),
         anchor: new BMap.Size(42 / 2 / 2, 66 / 2 / 2),
         imageSize: new BMap.Size(600 / 2, 600 / 2)
     });
