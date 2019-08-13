@@ -44,7 +44,7 @@ var icons = {
     }),
     'location': new BMap.Icon(defaultIconUrl , new BMap.Size(28 / 2, 40 / 2), {
         imageOffset: new BMap.Size(-248 / 2, -466 / 2),
-        anchor: new BMap.Size(50 / 2 / 2, 80 / 2),
+        anchor: new BMap.Size(28 / 2 / 2, 40 / 2),
         imageSize: new BMap.Size(600 / 2, 600 / 2)
     }),
 }
