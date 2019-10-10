@@ -3,6 +3,7 @@
  * @author kyle(hinikai@gmail.com)
  */
 
+import { render } from 'react-dom';
 import Component from './component';
 
 export default class Infowindow extends Component {
@@ -62,10 +63,16 @@ export default class Infowindow extends Component {
         this.destroy();
 
         var opts = {};
-        this.infoWindow = new BMap.InfoWindow(this.props.text, this.getOptions(this.options));  // 创建信息窗口对象 
+        this.infoWindow = new BMap.InfoWindow(this.props.text || '', this.getOptions(this.options));  // 创建信息窗口对象 
         this.bindEvent(this.infoWindow, this.events);
         map.openInfoWindow(this.infoWindow, new BMap.Point(this.props.position.lng, this.props.position.lat)); //开启信息窗口
 
+        if ('children' in this.props) {
+            // render children to InfoWindow
+            const content = document.createElement('div');
+            render(this.props.children, content);
+            this.infoWindow.setContent(content);
+        }
     }
 
 }
