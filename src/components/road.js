@@ -10,7 +10,7 @@ import {
 import mapLine from '../utils/map-line';
 import geoUtils from '../utils/geo-utils';
 
-export default class App extends Component {
+export default class Road extends Component {
     constructor(args) {
         super(args);
         this.state = {};

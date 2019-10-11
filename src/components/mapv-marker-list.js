@@ -1,7 +1,7 @@
 import Component from './component';
 import {DataSet, baiduMapLayer, baiduMapAnimationLayer} from 'mapv';
 
-export default class App extends Component {
+export default class MapvMarkerList extends Component {
     constructor(args) {
         super(args);
         this.state = {

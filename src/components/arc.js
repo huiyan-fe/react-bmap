@@ -7,7 +7,7 @@ import React from 'react';
 import Component from './component';
 import {DataSet, utilCityCenter, utilCurve, baiduMapLayer, baiduMapAnimationLayer} from 'mapv';
 
-export default class App extends Component {
+export default class Arc extends Component {
 
     constructor(args) {
         super(args);

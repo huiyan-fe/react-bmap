@@ -8,7 +8,7 @@ import { render } from 'react-dom';
 import Component from './component';
 import DraggingTip from '../overlay/DraggingTip';
 
-export default class App extends Component {
+export default class PointLabel extends Component {
 
     constructor(args) {
         super(args);

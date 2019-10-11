@@ -1044,13 +1044,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var BaseComponent = function (_Component) {
+    _inherits(BaseComponent, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function BaseComponent(args) {
+        _classCallCheck(this, BaseComponent);
 
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        return _possibleConstructorReturn(this, (BaseComponent.__proto__ || Object.getPrototypeOf(BaseComponent)).call(this, args));
     }
 
     /**
@@ -1061,7 +1061,7 @@ var App = function (_Component) {
      */
 
 
-    _createClass(App, [{
+    _createClass(BaseComponent, [{
         key: 'bindEvent',
         value: function bindEvent(obj, events) {
             var self = this;
@@ -1114,10 +1114,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return BaseComponent;
 }(_react.Component);
 
-exports.default = App;
+exports.default = BaseComponent;
 
 /***/ }),
 /* 11 */
@@ -16450,13 +16450,13 @@ for (var i = 1; i <= 10; i++) {
     });
 }
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var Marker = function (_Component) {
+    _inherits(Marker, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Marker(args) {
+        _classCallCheck(this, Marker);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (Marker.__proto__ || Object.getPrototypeOf(Marker)).call(this, args));
 
         _this.state = {};
         return _this;
@@ -16467,7 +16467,7 @@ var App = function (_Component) {
      */
 
 
-    _createClass(App, [{
+    _createClass(Marker, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -16593,10 +16593,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return Marker;
 }(_component2.default);
 
-exports.default = App;
+exports.default = Marker;
 
 /***/ }),
 /* 65 */
@@ -33927,16 +33927,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Graphy) {
-    _inherits(App, _Graphy);
+var Polyline = function (_Graphy) {
+    _inherits(Polyline, _Graphy);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Polyline(args) {
+        _classCallCheck(this, Polyline);
 
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        return _possibleConstructorReturn(this, (Polyline.__proto__ || Object.getPrototypeOf(Polyline)).call(this, args));
     }
 
-    _createClass(App, [{
+    _createClass(Polyline, [{
         key: 'getOverlay',
         value: function getOverlay() {
 
@@ -33950,10 +33950,10 @@ var App = function (_Graphy) {
         }
     }]);
 
-    return App;
+    return Polyline;
 }(_graphy2.default);
 
-exports.default = App;
+exports.default = Polyline;
 
 /***/ }),
 /* 218 */
@@ -33983,16 +33983,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Graphy) {
-    _inherits(App, _Graphy);
+var Polygon = function (_Graphy) {
+    _inherits(Polygon, _Graphy);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Polygon(args) {
+        _classCallCheck(this, Polygon);
 
-        return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        return _possibleConstructorReturn(this, (Polygon.__proto__ || Object.getPrototypeOf(Polygon)).call(this, args));
     }
 
-    _createClass(App, [{
+    _createClass(Polygon, [{
         key: 'getOverlay',
         value: function getOverlay() {
 
@@ -34006,10 +34006,10 @@ var App = function (_Graphy) {
         }
     }]);
 
-    return App;
+    return Polygon;
 }(_graphy2.default);
 
-exports.default = App;
+exports.default = Polygon;
 
 /***/ }),
 /* 219 */
@@ -34049,19 +34049,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * nikai@baidu.com
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var Road = function (_Component) {
+    _inherits(Road, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Road(args) {
+        _classCallCheck(this, Road);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (Road.__proto__ || Object.getPrototypeOf(Road)).call(this, args));
 
         _this.state = {};
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(Road, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -34276,10 +34276,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return Road;
 }(_component2.default);
 
-exports.default = App;
+exports.default = Road;
 
 /***/ }),
 /* 220 */
@@ -34805,19 +34805,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var MarkerList = function (_Component) {
+    _inherits(MarkerList, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function MarkerList(args) {
+        _classCallCheck(this, MarkerList);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (MarkerList.__proto__ || Object.getPrototypeOf(MarkerList)).call(this, args));
 
         _this.state = {};
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(MarkerList, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             var preData = JSON.stringify(prevProps.data);
@@ -35032,10 +35032,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return MarkerList;
 }(_component2.default);
 
-exports.default = App;
+exports.default = MarkerList;
 
 /***/ }),
 /* 224 */
@@ -35172,19 +35172,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var MapvMarkerList = function (_Component) {
+    _inherits(MapvMarkerList, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function MapvMarkerList(args) {
+        _classCallCheck(this, MapvMarkerList);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (MapvMarkerList.__proto__ || Object.getPrototypeOf(MapvMarkerList)).call(this, args));
 
         _this.state = {};
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(MapvMarkerList, [{
         key: 'handleClick',
         value: function handleClick(id) {
             this.props.onClick && this.props.onClick(id);
@@ -35482,10 +35482,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return MapvMarkerList;
 }(_component2.default);
 
-exports.default = App;
+exports.default = MapvMarkerList;
 
 /***/ }),
 /* 226 */
@@ -35515,19 +35515,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var TrafficLayer = function (_Component) {
+    _inherits(TrafficLayer, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function TrafficLayer(args) {
+        _classCallCheck(this, TrafficLayer);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (TrafficLayer.__proto__ || Object.getPrototypeOf(TrafficLayer)).call(this, args));
 
         _this.state = {};
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(TrafficLayer, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -35575,10 +35575,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return TrafficLayer;
 }(_component2.default);
 
-exports.default = App;
+exports.default = TrafficLayer;
 
 /***/ }),
 /* 227 */
@@ -35919,13 +35919,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var DrivingRoute = function (_Component) {
+    _inherits(DrivingRoute, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function DrivingRoute(args) {
+        _classCallCheck(this, DrivingRoute);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (DrivingRoute.__proto__ || Object.getPrototypeOf(DrivingRoute)).call(this, args));
 
         _this.state = {};
         return _this;
@@ -35936,7 +35936,7 @@ var App = function (_Component) {
      */
 
 
-    _createClass(App, [{
+    _createClass(DrivingRoute, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -35997,10 +35997,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return DrivingRoute;
 }(_component2.default);
 
-exports.default = App;
+exports.default = DrivingRoute;
 
 /***/ }),
 /* 230 */
@@ -36040,13 +36040,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var PointLabel = function (_Component) {
+    _inherits(PointLabel, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function PointLabel(args) {
+        _classCallCheck(this, PointLabel);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (PointLabel.__proto__ || Object.getPrototypeOf(PointLabel)).call(this, args));
 
         _this.state = {};
         _this.tips = [];
@@ -36058,7 +36058,7 @@ var App = function (_Component) {
      */
 
 
-    _createClass(App, [{
+    _createClass(PointLabel, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -36127,10 +36127,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return PointLabel;
 }(_component2.default);
 
-exports.default = App;
+exports.default = PointLabel;
 
 /***/ }),
 /* 231 */
@@ -36398,13 +36398,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * @author kyle(hinikai@gmail.com)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var Arc = function (_Component) {
+    _inherits(Arc, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function Arc(args) {
+        _classCallCheck(this, Arc);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (Arc.__proto__ || Object.getPrototypeOf(Arc)).call(this, args));
 
         _this.state = {};
         return _this;
@@ -36415,7 +36415,7 @@ var App = function (_Component) {
      */
 
 
-    _createClass(App, [{
+    _createClass(Arc, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -36591,10 +36591,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return Arc;
 }(_component2.default);
 
-exports.default = App;
+exports.default = Arc;
 
 /***/ }),
 /* 234 */
@@ -36631,13 +36631,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
 
-var App = function (_Component) {
-    _inherits(App, _Component);
+var ThickRay = function (_Component) {
+    _inherits(ThickRay, _Component);
 
-    function App(args) {
-        _classCallCheck(this, App);
+    function ThickRay(args) {
+        _classCallCheck(this, ThickRay);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, args));
+        var _this = _possibleConstructorReturn(this, (ThickRay.__proto__ || Object.getPrototypeOf(ThickRay)).call(this, args));
 
         _this.state = {};
         return _this;
@@ -36648,7 +36648,7 @@ var App = function (_Component) {
      */
 
 
-    _createClass(App, [{
+    _createClass(ThickRay, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
             this.initialize();
@@ -36713,6 +36713,7 @@ var App = function (_Component) {
                 this.props.data.forEach(function (item, index) {
                     var fromCenter = item.from.point || _mapv.utilCityCenter.getCenterByCityName(item.from.city);
                     var toCenter = item.to.point || _mapv.utilCityCenter.getCenterByCityName(item.to.city);
+                    var curve = _mapv.utilCurve.getPoints([fromCenter, toCenter]);
 
                     if (_this2.props.coordType === 'bd09mc') {
                         points.push(projection.pointToLngLat(new BMap.Pixel(fromCenter.lng, fromCenter.lat)));
@@ -36734,7 +36735,7 @@ var App = function (_Component) {
                         strokeStyle: item.color,
                         geometry: {
                             type: 'LineString',
-                            coordinates: [[fromCenter.lng, fromCenter.lat], [toCenter.lng, toCenter.lat]]
+                            coordinates: curve
                         },
                         count: item.count,
                         lineWidth: lineWidth
@@ -36816,10 +36817,10 @@ var App = function (_Component) {
         }
     }]);
 
-    return App;
+    return ThickRay;
 }(_component2.default);
 
-exports.default = App;
+exports.default = ThickRay;
 
 /***/ }),
 /* 235 */
@@ -38167,6 +38168,14 @@ var App = function (_Component) {
                             city: '南京'
                         },
                         count: 10001
+                    }, {
+                        from: {
+                            city: '南京'
+                        },
+                        to: {
+                            city: '北京'
+                        },
+                        count: 401
                     }, {
                         from: {
                             city: '北京'

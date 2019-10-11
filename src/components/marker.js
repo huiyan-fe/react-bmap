@@ -65,7 +65,7 @@ for (var i = 1; i <= 10; i++) {
     });
 }
 
-export default class App extends Component {
+export default class Marker extends Component {
 
     constructor(args) {
         super(args);

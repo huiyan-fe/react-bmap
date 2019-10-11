@@ -4,7 +4,7 @@
  */
 import {Component} from 'react';
 
-export default class App extends Component {
+export default class BaseComponent extends Component {
     constructor(args) {
         super(args);
     }

@@ -4,9 +4,9 @@
  */
 import React from 'react';
 import Component from './component';
-import {DataSet, utilCityCenter, baiduMapLayer, utilDataRangeIntensity} from 'mapv';
+import {DataSet, utilCityCenter, utilCurve, baiduMapLayer, utilDataRangeIntensity} from 'mapv';
 
-export default class App extends Component {
+export default class ThickRay extends Component {
 
     constructor(args) {
         super(args);
@@ -80,6 +80,7 @@ export default class App extends Component {
             this.props.data.forEach((item, index) => {
                 var fromCenter = item.from.point || utilCityCenter.getCenterByCityName(item.from.city);
                 var toCenter = item.to.point || utilCityCenter.getCenterByCityName(item.to.city);
+                var curve = utilCurve.getPoints([fromCenter, toCenter]);
 
                 if (this.props.coordType === 'bd09mc') {
                     points.push(projection.pointToLngLat(new BMap.Pixel(fromCenter.lng, fromCenter.lat)));
@@ -101,7 +102,7 @@ export default class App extends Component {
                     strokeStyle: item.color,
                     geometry: {
                         type: 'LineString',
-                        coordinates: [[fromCenter.lng,fromCenter.lat],[toCenter.lng, toCenter.lat]],
+                        coordinates: curve
                     },
                     count: item.count,
                     lineWidth: lineWidth

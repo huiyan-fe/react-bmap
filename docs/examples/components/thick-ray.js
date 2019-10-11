@@ -27,6 +27,15 @@ export default class App extends Component {
                 },
                 {
                     from: {
+                        city: '南京'
+                    },
+                    to: {
+                        city: '北京'
+                    },
+                    count: 401
+                },
+                {
+                    from: {
                         city: '北京',
                     },
                     to: {
