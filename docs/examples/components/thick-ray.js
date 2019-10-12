@@ -14,6 +14,7 @@ export default class App extends Component {
             <ThickRay 
                 showFromPoint={false}
                 showToPoint={true}
+                type="curve"
                 data={[
                 {
                     color: 'red',

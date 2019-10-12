@@ -72,6 +72,7 @@ export default class ThickRay extends Component {
         var lineData = [];
         var pointData = [];
 
+        let isCurve = Boolean(this.props.type === 'curve');
 
         if (this.props.data) {
             var points = [];
@@ -102,7 +103,7 @@ export default class ThickRay extends Component {
                     strokeStyle: item.color,
                     geometry: {
                         type: 'LineString',
-                        coordinates: curve
+                        coordinates: isCurve ? curve : [[fromCenter.lng,fromCenter.lat],[toCenter.lng, toCenter.lat]]
                     },
                     count: item.count,
                     lineWidth: lineWidth

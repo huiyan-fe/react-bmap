@@ -36706,6 +36706,8 @@ var ThickRay = function (_Component) {
             var lineData = [];
             var pointData = [];
 
+            var isCurve = Boolean(this.props.type === 'curve');
+
             if (this.props.data) {
                 var points = [];
                 var projection = map.getMapType().getProjection();
@@ -36735,7 +36737,7 @@ var ThickRay = function (_Component) {
                         strokeStyle: item.color,
                         geometry: {
                             type: 'LineString',
-                            coordinates: curve
+                            coordinates: isCurve ? curve : [[fromCenter.lng, fromCenter.lat], [toCenter.lng, toCenter.lat]]
                         },
                         count: item.count,
                         lineWidth: lineWidth
@@ -38159,6 +38161,7 @@ var App = function (_Component) {
                 _react2.default.createElement(_src.ThickRay, {
                     showFromPoint: false,
                     showToPoint: true,
+                    type: 'curve',
                     data: [{
                         color: 'red',
                         from: {
