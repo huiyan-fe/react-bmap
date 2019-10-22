@@ -19126,8 +19126,6 @@ var _kitsJs = __webpack_require__(199);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -19241,7 +19239,7 @@ var MarkerOrderTip = function (_React$Component) {
             });
             var events = [];
             eventKeys.map(function (key) {
-                events.push(_defineProperty({}, key, self.props[key]));
+                events[key] = self.props[key];
             });
             if (visible) {
                 return _react2.default.createElement(

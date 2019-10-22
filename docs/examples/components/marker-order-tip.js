@@ -86,7 +86,7 @@ export default class App extends Component {
                     name={name} 
                     num={num} 
                     rate={rate} 
-                    order={order} 
+                    order={order}
                 />
             })}
         </Map>

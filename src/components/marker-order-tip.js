@@ -97,9 +97,7 @@ class MarkerOrderTip extends React.Component {
         })
         let events = [];
         eventKeys.map(key => {
-            events.push({
-                [key]: self.props[key]
-            });
+            events[key] = self.props[key]
         })
         if (visible) {
             return (
