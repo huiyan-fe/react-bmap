@@ -2144,7 +2144,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 	(factory((global.mapv = global.mapv || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "2.0.44";
+var version = "2.0.47";
 
 /**
  * @author kyle / http://nikai.us/
@@ -3314,7 +3314,7 @@ var drawGrid = {
 
         var size = options._size || options.size || 50;
 
-        // 后端传入数据为网格数据时，传入enableCluster为false，前端不进行删格化操作，直接画方格
+        // 后端传入数据为网格数据时，传入enableCluster为false，前端不进行删格化操作，直接画方格	
         var enableCluster = 'enableCluster' in options ? options.enableCluster : true;
 
         var offset = options.offset || {
@@ -3335,7 +3335,7 @@ var drawGrid = {
                 grids[gridKey] = ~~(data[i].count || 1);
             }
             for (var _gridKey in grids) {
-                _gridKey = _gridKey.split(",");
+                _gridKey = _gridKey.split(',');
 
                 context.beginPath();
                 context.rect(+_gridKey[0] - size / 2, +_gridKey[1] - size / 2, size, size);
@@ -3348,15 +3348,16 @@ var drawGrid = {
         } else {
             for (var _i = 0; _i < data.length; _i++) {
                 var coordinates = data[_i].geometry._coordinates || data[_i].geometry.coordinates;
-                var gridKey = Math.floor((coordinates[0] - offset.x) / size) + "," + Math.floor((coordinates[1] - offset.y) / size);
+                var gridKey = Math.floor((coordinates[0] - offset.x) / size) + ',' + Math.floor((coordinates[1] - offset.y) / size);
                 if (!grids[gridKey]) {
                     grids[gridKey] = 0;
                 }
+
                 grids[gridKey] += ~~(data[_i].count || 1);
             }
 
             for (var _gridKey2 in grids) {
-                _gridKey2 = _gridKey2.split(",");
+                _gridKey2 = _gridKey2.split(',');
 
                 context.beginPath();
                 context.rect(_gridKey2[0] * size + .5 + offset.x, _gridKey2[1] * size + .5 + offset.y, size, size);
@@ -3385,10 +3386,14 @@ var drawGrid = {
             }
 
             for (var gridKey in grids) {
-                gridKey = gridKey.split(",");
+                gridKey = gridKey.split(',');
                 var text = grids[gridKey];
                 var textWidth = context.measureText(text).width;
-                context.fillText(text, gridKey[0] * size + .5 + offset.x + size / 2 - textWidth / 2, gridKey[1] * size + .5 + offset.y + size / 2 + 5);
+                if (!enableCluster) {
+                    context.fillText(text, +gridKey[0] - textWidth / 2, +gridKey[1] + 5);
+                } else {
+                    context.fillText(text, gridKey[0] * size + .5 + offset.x + size / 2 - textWidth / 2, gridKey[1] * size + .5 + offset.y + size / 2 + 5);
+                }
             }
         }
 
