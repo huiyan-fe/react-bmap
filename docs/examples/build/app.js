@@ -35925,7 +35925,9 @@ var MapvLayer = function (_Component) {
                     }
                 });
 
-                map.setViewport(points, this.props.options.viewportOptions);
+                if (points.length > 0) {
+                    map.setViewport(points, this.props.options.viewportOptions);
+                }
             }
 
             this.dataSet.set(this.props.data);
