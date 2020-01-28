@@ -54,6 +54,18 @@ Overlay.prototype.initialize = function(map){
         self.dispatchEvent('click', self.options.number);
     });
 
+    div.addEventListener('touchstart', function (e) {
+        e.stopPropagation();
+    });
+
+    div.addEventListener('touchmove', function (e) {
+        e.stopPropagation();
+    });
+
+    div.addEventListener('touchend', function (e) {
+        e.stopPropagation();
+    });
+
     map.getPanes().markerPane.appendChild(div);
 
     return div;

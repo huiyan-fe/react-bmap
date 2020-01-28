@@ -153,6 +153,7 @@ export default class MarkerList extends Component {
                 }
 
                 var marker = new NumberMarker(options);
+
                 marker.addEventListener('click', function(e, number) {
                     self.props.onClick && self.props.onClick(number - 1);
                 });
