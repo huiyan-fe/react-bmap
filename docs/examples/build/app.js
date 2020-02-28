@@ -2144,7 +2144,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 	(factory((global.mapv = global.mapv || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "2.0.52";
+var version = "2.0.53";
 
 /**
  * @author kyle / http://nikai.us/
@@ -3320,8 +3320,8 @@ var drawGrid = {
 
         var size = options._size || options.size || 50;
 
-        // 后端传入数据为网格数据时，传入disableCluster为true，前端不进行删格化操作，直接画方格	
-        var disableCluster = options.disableCluster;
+        // 后端传入数据为网格数据时，传入enableCluster为false，前端不进行删格化操作，直接画方格	
+        var enableCluster = 'enableCluster' in options ? options.enableCluster : true;
 
         var offset = options.offset || {
             x: 0,
@@ -3334,7 +3334,7 @@ var drawGrid = {
             gradient: options.gradient
         });
 
-        if (disableCluster) {
+        if (!enableCluster) {
             for (var i = 0; i < data.length; i++) {
                 var coordinates = data[i].geometry._coordinates || data[i].geometry.coordinates;
                 var gridKey = coordinates.join(',');
@@ -3395,7 +3395,7 @@ var drawGrid = {
                 gridKey = gridKey.split(',');
                 var text = grids[gridKey];
                 var textWidth = context.measureText(text).width;
-                if (disableCluster) {
+                if (!enableCluster) {
                     context.fillText(text, +gridKey[0] - textWidth / 2, +gridKey[1] + 5);
                 } else {
                     context.fillText(text, gridKey[0] * size + .5 + offset.x + size / 2 - textWidth / 2, gridKey[1] * size + .5 + offset.y + size / 2 + 5);
