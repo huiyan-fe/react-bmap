@@ -801,7 +801,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _map = __webpack_require__(112);
+var _map = __webpack_require__(109);
 
 Object.defineProperty(exports, 'Map', {
   enumerable: true,
@@ -828,7 +828,7 @@ Object.defineProperty(exports, 'MarkerOrderTip', {
   }
 });
 
-var _infowindow = __webpack_require__(210);
+var _infowindow = __webpack_require__(207);
 
 Object.defineProperty(exports, 'InfoWindow', {
   enumerable: true,
@@ -837,7 +837,7 @@ Object.defineProperty(exports, 'InfoWindow', {
   }
 });
 
-var _navigationControl = __webpack_require__(211);
+var _navigationControl = __webpack_require__(208);
 
 Object.defineProperty(exports, 'NavigationControl', {
   enumerable: true,
@@ -846,7 +846,7 @@ Object.defineProperty(exports, 'NavigationControl', {
   }
 });
 
-var _overviewMapControl = __webpack_require__(212);
+var _overviewMapControl = __webpack_require__(209);
 
 Object.defineProperty(exports, 'OverviewMapControl', {
   enumerable: true,
@@ -855,7 +855,7 @@ Object.defineProperty(exports, 'OverviewMapControl', {
   }
 });
 
-var _scaleControl = __webpack_require__(213);
+var _scaleControl = __webpack_require__(210);
 
 Object.defineProperty(exports, 'ScaleControl', {
   enumerable: true,
@@ -864,7 +864,7 @@ Object.defineProperty(exports, 'ScaleControl', {
   }
 });
 
-var _mapTypeControl = __webpack_require__(214);
+var _mapTypeControl = __webpack_require__(211);
 
 Object.defineProperty(exports, 'MapTypeControl', {
   enumerable: true,
@@ -873,7 +873,7 @@ Object.defineProperty(exports, 'MapTypeControl', {
   }
 });
 
-var _panoramaControl = __webpack_require__(215);
+var _panoramaControl = __webpack_require__(212);
 
 Object.defineProperty(exports, 'PanoramaControl', {
   enumerable: true,
@@ -882,7 +882,7 @@ Object.defineProperty(exports, 'PanoramaControl', {
   }
 });
 
-var _circle = __webpack_require__(216);
+var _circle = __webpack_require__(213);
 
 Object.defineProperty(exports, 'Circle', {
   enumerable: true,
@@ -891,7 +891,7 @@ Object.defineProperty(exports, 'Circle', {
   }
 });
 
-var _polyline = __webpack_require__(217);
+var _polyline = __webpack_require__(214);
 
 Object.defineProperty(exports, 'Polyline', {
   enumerable: true,
@@ -900,7 +900,7 @@ Object.defineProperty(exports, 'Polyline', {
   }
 });
 
-var _polygon = __webpack_require__(218);
+var _polygon = __webpack_require__(215);
 
 Object.defineProperty(exports, 'Polygon', {
   enumerable: true,
@@ -909,7 +909,7 @@ Object.defineProperty(exports, 'Polygon', {
   }
 });
 
-var _road = __webpack_require__(219);
+var _road = __webpack_require__(216);
 
 Object.defineProperty(exports, 'Road', {
   enumerable: true,
@@ -918,7 +918,7 @@ Object.defineProperty(exports, 'Road', {
   }
 });
 
-var _boundary = __webpack_require__(222);
+var _boundary = __webpack_require__(219);
 
 Object.defineProperty(exports, 'Boundary', {
   enumerable: true,
@@ -927,7 +927,7 @@ Object.defineProperty(exports, 'Boundary', {
   }
 });
 
-var _markerList = __webpack_require__(223);
+var _markerList = __webpack_require__(220);
 
 Object.defineProperty(exports, 'MarkerList', {
   enumerable: true,
@@ -936,7 +936,7 @@ Object.defineProperty(exports, 'MarkerList', {
   }
 });
 
-var _mapvMarkerList = __webpack_require__(225);
+var _mapvMarkerList = __webpack_require__(222);
 
 Object.defineProperty(exports, 'MapvMarkerList', {
   enumerable: true,
@@ -945,7 +945,7 @@ Object.defineProperty(exports, 'MapvMarkerList', {
   }
 });
 
-var _trafficLayer = __webpack_require__(226);
+var _trafficLayer = __webpack_require__(223);
 
 Object.defineProperty(exports, 'TrafficLayer', {
   enumerable: true,
@@ -954,7 +954,7 @@ Object.defineProperty(exports, 'TrafficLayer', {
   }
 });
 
-var _merge = __webpack_require__(227);
+var _merge = __webpack_require__(224);
 
 Object.defineProperty(exports, 'Merge', {
   enumerable: true,
@@ -963,7 +963,7 @@ Object.defineProperty(exports, 'Merge', {
   }
 });
 
-var _mapvLayer = __webpack_require__(228);
+var _mapvLayer = __webpack_require__(225);
 
 Object.defineProperty(exports, 'MapvLayer', {
   enumerable: true,
@@ -972,7 +972,7 @@ Object.defineProperty(exports, 'MapvLayer', {
   }
 });
 
-var _drivingRoute = __webpack_require__(229);
+var _drivingRoute = __webpack_require__(226);
 
 Object.defineProperty(exports, 'DrivingRoute', {
   enumerable: true,
@@ -981,7 +981,7 @@ Object.defineProperty(exports, 'DrivingRoute', {
   }
 });
 
-var _pointLabel = __webpack_require__(230);
+var _pointLabel = __webpack_require__(227);
 
 Object.defineProperty(exports, 'PointLabel', {
   enumerable: true,
@@ -990,7 +990,7 @@ Object.defineProperty(exports, 'PointLabel', {
   }
 });
 
-var _arc = __webpack_require__(233);
+var _arc = __webpack_require__(230);
 
 Object.defineProperty(exports, 'Arc', {
   enumerable: true,
@@ -999,7 +999,7 @@ Object.defineProperty(exports, 'Arc', {
   }
 });
 
-var _thickRay = __webpack_require__(234);
+var _thickRay = __webpack_require__(231);
 
 Object.defineProperty(exports, 'ThickRay', {
   enumerable: true,
@@ -1008,7 +1008,7 @@ Object.defineProperty(exports, 'ThickRay', {
   }
 });
 
-var _mapListener = __webpack_require__(235);
+var _mapListener = __webpack_require__(232);
 
 Object.defineProperty(exports, 'MapListener', {
   enumerable: true,
@@ -1523,7 +1523,7 @@ module.exports = ReactComponentTreeHook;
 var debugTool = null;
 
 if (process.env.NODE_ENV !== 'production') {
-  var ReactDebugTool = __webpack_require__(124);
+  var ReactDebugTool = __webpack_require__(121);
   debugTool = ReactDebugTool;
 }
 
@@ -2144,7 +2144,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 	(factory((global.mapv = global.mapv || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "2.0.52";
+var version = "2.0.35";
 
 /**
  * @author kyle / http://nikai.us/
@@ -2443,13 +2443,11 @@ DataSet.prototype.add = function (data, senderId) {
     if (Array.isArray(data)) {
         // Array
         for (var i = 0, len = data.length; i < len; i++) {
-            if (data[i]) {
-                if (data[i].time && data[i].time.length == 14 && data[i].time.substr(0, 2) == '20') {
-                    var time = data[i].time;
-                    data[i].time = new Date(time.substr(0, 4) + '-' + time.substr(4, 2) + '-' + time.substr(6, 2) + ' ' + time.substr(8, 2) + ':' + time.substr(10, 2) + ':' + time.substr(12, 2)).getTime();
-                }
-                this._data.push(data[i]);
+            if (data[i].time && data[i].time.length == 14 && data[i].time.substr(0, 2) == '20') {
+                var time = data[i].time;
+                data[i].time = new Date(time.substr(0, 4) + '-' + time.substr(4, 2) + '-' + time.substr(6, 2) + ' ' + time.substr(8, 2) + ':' + time.substr(10, 2) + ':' + time.substr(12, 2)).getTime();
             }
+            this._data.push(data[i]);
         }
     } else if (data instanceof Object) {
         // Single item
@@ -2767,7 +2765,7 @@ var pathSimple = {
     draw: function draw$$1(context, data, options) {
         var type = data.geometry.type;
         var coordinates = data.geometry._coordinates || data.geometry.coordinates;
-        var symbol = data.symbol || options.symbol || 'circle';
+        var symbol = options.symbol || 'circle';
         switch (type) {
             case 'Point':
                 var size = data._size || data.size || options._size || options.size || 5;
@@ -2799,10 +2797,7 @@ var pathSimple = {
                     var polygon = coordinates[i];
                     this.drawPolygon(context, polygon);
                     if (options.multiPolygonDraw) {
-                        var flag = options.multiPolygonDraw();
-                        if (flag) {
-                            return flag;
-                        }
+                        options.multiPolygonDraw();
                     }
                 }
                 break;
@@ -2919,6 +2914,7 @@ var drawSimple = {
 
                 context.beginPath();
 
+                pathSimple.draw(context, item, options);
                 options.multiPolygonDraw = function () {
                     context.fill();
 
@@ -2926,7 +2922,6 @@ var drawSimple = {
                         context.stroke();
                     }
                 };
-                pathSimple.draw(context, item, options);
 
                 if (type == 'Point' || type == 'Polygon' || type == 'MultiPolygon') {
 
@@ -3087,11 +3082,7 @@ Intensity.prototype.getSize = function (value) {
         value = min;
     }
 
-    if (max > min) {
-        size = minSize + (value - min) / (max - min) * (maxSize - minSize);
-    } else {
-        return maxSize;
-    }
+    size = minSize + (value - min) / (max - min) * (maxSize - minSize);
 
     return size;
 };
@@ -3163,7 +3154,6 @@ function colorize(pixels, gradient, options) {
     }
 
     var maxOpacity = options.maxOpacity || 0.8;
-    var minOpacity = options.minOpacity || 0;
     var range = options.range;
 
     for (var i = 3, len = pixels.length, j; i < len; i += 4) {
@@ -3171,9 +3161,6 @@ function colorize(pixels, gradient, options) {
 
         if (pixels[i] / 256 > maxOpacity) {
             pixels[i] = 256 * maxOpacity;
-        }
-        if (pixels[i] / 256 < minOpacity) {
-            pixels[i] = 256 * minOpacity;
         }
 
         if (j && j >= jMin && j <= jMax) {
@@ -3320,13 +3307,19 @@ var drawGrid = {
 
         var size = options._size || options.size || 50;
 
-        // 后端传入数据为网格数据时，传入disableCluster为true，前端不进行删格化操作，直接画方格	
-        var disableCluster = options.disableCluster;
-
         var offset = options.offset || {
             x: 0,
             y: 0
         };
+
+        for (var i = 0; i < data.length; i++) {
+            var coordinates = data[i].geometry._coordinates || data[i].geometry.coordinates;
+            var gridKey = Math.floor((coordinates[0] - offset.x) / size) + "," + Math.floor((coordinates[1] - offset.y) / size);
+            if (!grids[gridKey]) {
+                grids[gridKey] = 0;
+            }
+            grids[gridKey] += ~~(data[i].count || 1);
+        }
 
         var intensity = new Intensity({
             min: options.min || 0,
@@ -3334,44 +3327,15 @@ var drawGrid = {
             gradient: options.gradient
         });
 
-        if (disableCluster) {
-            for (var i = 0; i < data.length; i++) {
-                var coordinates = data[i].geometry._coordinates || data[i].geometry.coordinates;
-                var gridKey = coordinates.join(',');
-                grids[gridKey] = data[i].count || 1;
-            }
-            for (var _gridKey in grids) {
-                _gridKey = _gridKey.split(',');
+        for (var gridKey in grids) {
+            gridKey = gridKey.split(",");
 
-                context.beginPath();
-                context.rect(+_gridKey[0] - size / 2, +_gridKey[1] - size / 2, size, size);
-                context.fillStyle = intensity.getColor(grids[_gridKey]);
-                context.fill();
-                if (options.strokeStyle && options.lineWidth) {
-                    context.stroke();
-                }
-            }
-        } else {
-            for (var _i = 0; _i < data.length; _i++) {
-                var coordinates = data[_i].geometry._coordinates || data[_i].geometry.coordinates;
-                var gridKey = Math.floor((coordinates[0] - offset.x) / size) + ',' + Math.floor((coordinates[1] - offset.y) / size);
-                if (!grids[gridKey]) {
-                    grids[gridKey] = 0;
-                }
-
-                grids[gridKey] += ~~(data[_i].count || 1);
-            }
-
-            for (var _gridKey2 in grids) {
-                _gridKey2 = _gridKey2.split(',');
-
-                context.beginPath();
-                context.rect(_gridKey2[0] * size + .5 + offset.x, _gridKey2[1] * size + .5 + offset.y, size, size);
-                context.fillStyle = intensity.getColor(grids[_gridKey2]);
-                context.fill();
-                if (options.strokeStyle && options.lineWidth) {
-                    context.stroke();
-                }
+            context.beginPath();
+            context.rect(gridKey[0] * size + .5 + offset.x, gridKey[1] * size + .5 + offset.y, size, size);
+            context.fillStyle = intensity.getColor(grids[gridKey]);
+            context.fill();
+            if (options.strokeStyle && options.lineWidth) {
+                context.stroke();
             }
         }
 
@@ -3392,14 +3356,10 @@ var drawGrid = {
             }
 
             for (var gridKey in grids) {
-                gridKey = gridKey.split(',');
+                gridKey = gridKey.split(",");
                 var text = grids[gridKey];
                 var textWidth = context.measureText(text).width;
-                if (disableCluster) {
-                    context.fillText(text, +gridKey[0] - textWidth / 2, +gridKey[1] + 5);
-                } else {
-                    context.fillText(text, gridKey[0] * size + .5 + offset.x + size / 2 - textWidth / 2, gridKey[1] * size + .5 + offset.y + size / 2 + 5);
-                }
+                context.fillText(text, gridKey[0] * size + .5 + offset.x + size / 2 - textWidth / 2, gridKey[1] * size + .5 + offset.y + size / 2 + 5);
             }
         }
 
@@ -5204,11 +5164,7 @@ if (global$3.BMap) {
         canvas.style.cssText = "position:absolute;" + "left:0;" + "top:0;" + "z-index:" + this.zIndex + ";user-select:none;";
         canvas.style.mixBlendMode = this.mixBlendMode;
         this.adjustSize();
-        var pane = map.getPanes()[this.paneName];
-        if (!pane) {
-            pane = map.getPanes().floatShadow;
-        }
-        pane.appendChild(canvas);
+        map.getPanes()[this.paneName].appendChild(canvas);
         var that = this;
         map.addEventListener('resize', function () {
             that.adjustSize();
@@ -6209,78 +6165,6 @@ var drawClip = {
 };
 
 /**
- * @author kyle / http://nikai.us/
- */
-
-var drawCluster = {
-    draw: function draw(context, dataSet, options) {
-        context.save();
-        var data = dataSet instanceof DataSet ? dataSet.get() : dataSet;
-
-        var pointCountMax;
-        var pointCountMin;
-        for (var i = 0; i < data.length; i++) {
-            var item = data[i];
-            if (item.properties && item.properties.cluster) {
-                if (pointCountMax === undefined) {
-                    pointCountMax = item.properties.point_count;
-                }
-                if (pointCountMin === undefined) {
-                    pointCountMin = item.properties.point_count;
-                }
-                pointCountMax = Math.max(pointCountMax, item.properties.point_count);
-                pointCountMin = Math.min(pointCountMin, item.properties.point_count);
-            }
-        }
-
-        var intensity = new Intensity({
-            min: pointCountMin,
-            max: pointCountMax,
-            minSize: options.minSize || 8,
-            maxSize: options.maxSize || 30,
-            gradient: options.gradient
-        });
-
-        for (var i = 0; i < data.length; i++) {
-            var item = data[i];
-            var coordinates = data[i].geometry._coordinates || data[i].geometry.coordinates;
-            context.beginPath();
-            if (item.properties && item.properties.cluster) {
-                context.arc(coordinates[0], coordinates[1], intensity.getSize(item.properties.point_count), 0, Math.PI * 2);
-                context.fillStyle = intensity.getColor(item.properties.point_count);
-                context.fill();
-
-                if (options.label && options.label.show !== false) {
-
-                    context.fillStyle = options.label.fillStyle || 'white';
-
-                    if (options.label.font) {
-                        context.font = options.label.font;
-                    }
-
-                    if (options.label.shadowColor) {
-                        context.shadowColor = options.label.shadowColor;
-                    }
-
-                    if (options.label.shadowBlur) {
-                        context.shadowBlur = options.label.shadowBlur;
-                    }
-
-                    var text = item.properties.point_count;
-                    var textWidth = context.measureText(text).width;
-                    context.fillText(text, coordinates[0] + .5 - textWidth / 2, coordinates[1] + .5 + 3);
-                }
-            } else {
-                context.arc(coordinates[0], coordinates[1], options.size || 5, 0, Math.PI * 2);
-                context.fillStyle = options.fillStyle || 'red';
-                context.fill();
-            }
-        }
-        context.restore();
-    }
-};
-
-/**
  * @author Mofei Zhu<mapv@zhuwenlong.com>
  * This file is to draw text
  */
@@ -6295,6 +6179,11 @@ var drawText = {
         for (var key in options) {
             context[key] = options[key];
         }
+
+        var offset = options.offset || {
+            x: 0,
+            y: 0
+        };
 
         var rects = [];
 
@@ -6318,12 +6207,6 @@ var drawText = {
         if (options.avoid) {
             // 标注避让
             for (var i = 0, len = data.length; i < len; i++) {
-
-                var offset = data[i].offset || options.offset || {
-                    x: 0,
-                    y: 0
-                };
-
                 var coordinates = data[i].geometry._coordinates || data[i].geometry.coordinates;
                 var x = coordinates[0] + offset.x;
                 var y = coordinates[1] + offset.y;
@@ -6354,10 +6237,6 @@ var drawText = {
             }
         } else {
             for (var i = 0, len = data.length; i < len; i++) {
-                var offset = data[i].offset || options.offset || {
-                    x: 0,
-                    y: 0
-                };
                 var coordinates = data[i].geometry._coordinates || data[i].geometry.coordinates;
                 var x = coordinates[0] + offset.x;
                 var y = coordinates[1] + offset.y;
@@ -6453,607 +6332,6 @@ var drawIcon = {
 };
 
 /**
- * from https://github.com/mapbox/supercluster
- */
-
-function sortKD(ids, coords, nodeSize, left, right, depth) {
-    if (right - left <= nodeSize) {
-        return;
-    }
-
-    var m = left + right >> 1;
-
-    select(ids, coords, m, left, right, depth % 2);
-
-    sortKD(ids, coords, nodeSize, left, m - 1, depth + 1);
-    sortKD(ids, coords, nodeSize, m + 1, right, depth + 1);
-}
-
-function select(ids, coords, k, left, right, inc) {
-
-    while (right > left) {
-        if (right - left > 600) {
-            var n = right - left + 1;
-            var m = k - left + 1;
-            var z = Math.log(n);
-            var s = 0.5 * Math.exp(2 * z / 3);
-            var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
-            var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
-            var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-            select(ids, coords, k, newLeft, newRight, inc);
-        }
-
-        var t = coords[2 * k + inc];
-        var i = left;
-        var j = right;
-
-        swapItem(ids, coords, left, k);
-        if (coords[2 * right + inc] > t) {
-            swapItem(ids, coords, left, right);
-        }
-
-        while (i < j) {
-            swapItem(ids, coords, i, j);
-            i++;
-            j--;
-            while (coords[2 * i + inc] < t) {
-                i++;
-            }
-            while (coords[2 * j + inc] > t) {
-                j--;
-            }
-        }
-
-        if (coords[2 * left + inc] === t) {
-            swapItem(ids, coords, left, j);
-        } else {
-            j++;
-            swapItem(ids, coords, j, right);
-        }
-
-        if (j <= k) {
-            left = j + 1;
-        }
-        if (k <= j) {
-            right = j - 1;
-        }
-    }
-}
-
-function swapItem(ids, coords, i, j) {
-    swap(ids, i, j);
-    swap(coords, 2 * i, 2 * j);
-    swap(coords, 2 * i + 1, 2 * j + 1);
-}
-
-function swap(arr, i, j) {
-    var tmp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
-}
-
-function range(ids, coords, minX, minY, maxX, maxY, nodeSize) {
-    var stack = [0, ids.length - 1, 0];
-    var result = [];
-    var x, y;
-
-    while (stack.length) {
-        var axis = stack.pop();
-        var right = stack.pop();
-        var left = stack.pop();
-
-        if (right - left <= nodeSize) {
-            for (var i = left; i <= right; i++) {
-                x = coords[2 * i];
-                y = coords[2 * i + 1];
-                if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
-                    result.push(ids[i]);
-                }
-            }
-            continue;
-        }
-
-        var m = Math.floor((left + right) / 2);
-
-        x = coords[2 * m];
-        y = coords[2 * m + 1];
-
-        if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
-            result.push(ids[m]);
-        }
-
-        var nextAxis = (axis + 1) % 2;
-
-        if (axis === 0 ? minX <= x : minY <= y) {
-            stack.push(left);
-            stack.push(m - 1);
-            stack.push(nextAxis);
-        }
-        if (axis === 0 ? maxX >= x : maxY >= y) {
-            stack.push(m + 1);
-            stack.push(right);
-            stack.push(nextAxis);
-        }
-    }
-
-    return result;
-}
-
-function within(ids, coords, qx, qy, r, nodeSize) {
-    var stack = [0, ids.length - 1, 0];
-    var result = [];
-    var r2 = r * r;
-
-    while (stack.length) {
-        var axis = stack.pop();
-        var right = stack.pop();
-        var left = stack.pop();
-
-        if (right - left <= nodeSize) {
-            for (var i = left; i <= right; i++) {
-                if (sqDist(coords[2 * i], coords[2 * i + 1], qx, qy) <= r2) {
-                    result.push(ids[i]);
-                }
-            }
-            continue;
-        }
-
-        var m = Math.floor((left + right) / 2);
-
-        var x = coords[2 * m];
-        var y = coords[2 * m + 1];
-
-        if (sqDist(x, y, qx, qy) <= r2) {
-            result.push(ids[m]);
-        }
-
-        var nextAxis = (axis + 1) % 2;
-
-        if (axis === 0 ? qx - r <= x : qy - r <= y) {
-            stack.push(left);
-            stack.push(m - 1);
-            stack.push(nextAxis);
-        }
-        if (axis === 0 ? qx + r >= x : qy + r >= y) {
-            stack.push(m + 1);
-            stack.push(right);
-            stack.push(nextAxis);
-        }
-    }
-
-    return result;
-}
-
-function sqDist(ax, ay, bx, by) {
-    var dx = ax - bx;
-    var dy = ay - by;
-    return dx * dx + dy * dy;
-}
-
-var defaultGetX = function defaultGetX(p) {
-    return p[0];
-};
-var defaultGetY = function defaultGetY(p) {
-    return p[1];
-};
-
-var KDBush = function KDBush(points, getX, getY, nodeSize, ArrayType) {
-    if (getX === void 0) getX = defaultGetX;
-    if (getY === void 0) getY = defaultGetY;
-    if (nodeSize === void 0) nodeSize = 64;
-    if (ArrayType === void 0) ArrayType = Float64Array;
-
-    this.nodeSize = nodeSize;
-    this.points = points;
-
-    var IndexArrayType = points.length < 65536 ? Uint16Array : Uint32Array;
-
-    var ids = this.ids = new IndexArrayType(points.length);
-    var coords = this.coords = new ArrayType(points.length * 2);
-
-    for (var i = 0; i < points.length; i++) {
-        ids[i] = i;
-        coords[2 * i] = getX(points[i]);
-        coords[2 * i + 1] = getY(points[i]);
-    }
-
-    sortKD(ids, coords, nodeSize, 0, ids.length - 1, 0);
-};
-
-KDBush.prototype.range = function range$1(minX, minY, maxX, maxY) {
-    return range(this.ids, this.coords, minX, minY, maxX, maxY, this.nodeSize);
-};
-
-KDBush.prototype.within = function within$1(x, y, r) {
-    return within(this.ids, this.coords, x, y, r, this.nodeSize);
-};
-
-var defaultOptions = {
-    minZoom: 0, // min zoom to generate clusters on
-    maxZoom: 16, // max zoom level to cluster the points on
-    radius: 40, // cluster radius in pixels
-    extent: 512, // tile extent (radius is calculated relative to it)
-    nodeSize: 64, // size of the KD-tree leaf node, affects performance
-    log: false, // whether to log timing info
-
-    // a reduce function for calculating custom cluster properties
-    reduce: null, // (accumulated, props) => { accumulated.sum += props.sum; }
-
-    // properties to use for individual points when running the reducer
-    map: function map(props) {
-        return props;
-    } // props => ({sum: props.my_value})
-};
-
-var Supercluster = function Supercluster(options) {
-    this.options = extend(Object.create(defaultOptions), options);
-    this.trees = new Array(this.options.maxZoom + 1);
-};
-
-Supercluster.prototype.load = function load(points) {
-    var ref = this.options;
-    var log = ref.log;
-    var minZoom = ref.minZoom;
-    var maxZoom = ref.maxZoom;
-    var nodeSize = ref.nodeSize;
-
-    if (log) {}
-
-    var timerId = "prepare " + points.length + " points";
-    if (log) {}
-
-    this.points = points;
-
-    // generate a cluster object for each point and index input points into a KD-tree
-    var clusters = [];
-    for (var i = 0; i < points.length; i++) {
-        if (!points[i].geometry) {
-            continue;
-        }
-        clusters.push(createPointCluster(points[i], i));
-    }
-    this.trees[maxZoom + 1] = new KDBush(clusters, getX, getY, nodeSize, Float32Array);
-
-    if (log) {}
-
-    // cluster points on max zoom, then cluster the results on previous zoom, etc.;
-    // results in a cluster hierarchy across zoom levels
-    for (var z = maxZoom; z >= minZoom; z--) {
-        var now = +Date.now();
-
-        // create a new set of clusters for the zoom and index them with a KD-tree
-        clusters = this._cluster(clusters, z);
-        this.trees[z] = new KDBush(clusters, getX, getY, nodeSize, Float32Array);
-
-        if (log) {}
-    }
-
-    if (log) {}
-
-    return this;
-};
-
-Supercluster.prototype.getClusters = function getClusters(bbox, zoom) {
-    var minLng = ((bbox[0] + 180) % 360 + 360) % 360 - 180;
-    var minLat = Math.max(-90, Math.min(90, bbox[1]));
-    var maxLng = bbox[2] === 180 ? 180 : ((bbox[2] + 180) % 360 + 360) % 360 - 180;
-    var maxLat = Math.max(-90, Math.min(90, bbox[3]));
-
-    if (bbox[2] - bbox[0] >= 360) {
-        minLng = -180;
-        maxLng = 180;
-    } else if (minLng > maxLng) {
-        var easternHem = this.getClusters([minLng, minLat, 180, maxLat], zoom);
-        var westernHem = this.getClusters([-180, minLat, maxLng, maxLat], zoom);
-        return easternHem.concat(westernHem);
-    }
-
-    var tree = this.trees[this._limitZoom(zoom)];
-    var ids = tree.range(lngX(minLng), latY(maxLat), lngX(maxLng), latY(minLat));
-    var clusters = [];
-    for (var i = 0, list = ids; i < list.length; i += 1) {
-        var id = list[i];
-
-        var c = tree.points[id];
-        clusters.push(c.numPoints ? getClusterJSON(c) : this.points[c.index]);
-    }
-    return clusters;
-};
-
-Supercluster.prototype.getChildren = function getChildren(clusterId) {
-    var originId = clusterId >> 5;
-    var originZoom = clusterId % 32;
-    var errorMsg = 'No cluster with the specified id.';
-
-    var index = this.trees[originZoom];
-    if (!index) {
-        throw new Error(errorMsg);
-    }
-
-    var origin = index.points[originId];
-    if (!origin) {
-        throw new Error(errorMsg);
-    }
-
-    var r = this.options.radius / (this.options.extent * Math.pow(2, originZoom - 1));
-    var ids = index.within(origin.x, origin.y, r);
-    var children = [];
-    for (var i = 0, list = ids; i < list.length; i += 1) {
-        var id = list[i];
-
-        var c = index.points[id];
-        if (c.parentId === clusterId) {
-            children.push(c.numPoints ? getClusterJSON(c) : this.points[c.index]);
-        }
-    }
-
-    if (children.length === 0) {
-        throw new Error(errorMsg);
-    }
-
-    return children;
-};
-
-Supercluster.prototype.getLeaves = function getLeaves(clusterId, limit, offset) {
-    limit = limit || 10;
-    offset = offset || 0;
-
-    var leaves = [];
-    this._appendLeaves(leaves, clusterId, limit, offset, 0);
-
-    return leaves;
-};
-
-Supercluster.prototype.getTile = function getTile(z, x, y) {
-    var tree = this.trees[this._limitZoom(z)];
-    var z2 = Math.pow(2, z);
-    var ref = this.options;
-    var extent = ref.extent;
-    var radius = ref.radius;
-    var p = radius / extent;
-    var top = (y - p) / z2;
-    var bottom = (y + 1 + p) / z2;
-
-    var tile = {
-        features: []
-    };
-
-    this._addTileFeatures(tree.range((x - p) / z2, top, (x + 1 + p) / z2, bottom), tree.points, x, y, z2, tile);
-
-    if (x === 0) {
-        this._addTileFeatures(tree.range(1 - p / z2, top, 1, bottom), tree.points, z2, y, z2, tile);
-    }
-    if (x === z2 - 1) {
-        this._addTileFeatures(tree.range(0, top, p / z2, bottom), tree.points, -1, y, z2, tile);
-    }
-
-    return tile.features.length ? tile : null;
-};
-
-Supercluster.prototype.getClusterExpansionZoom = function getClusterExpansionZoom(clusterId) {
-    var clusterZoom = clusterId % 32 - 1;
-    while (clusterZoom <= this.options.maxZoom) {
-        var children = this.getChildren(clusterId);
-        clusterZoom++;
-        if (children.length !== 1) {
-            break;
-        }
-        clusterId = children[0].properties.cluster_id;
-    }
-    return clusterZoom;
-};
-
-Supercluster.prototype._appendLeaves = function _appendLeaves(result, clusterId, limit, offset, skipped) {
-    var children = this.getChildren(clusterId);
-
-    for (var i = 0, list = children; i < list.length; i += 1) {
-        var child = list[i];
-
-        var props = child.properties;
-
-        if (props && props.cluster) {
-            if (skipped + props.point_count <= offset) {
-                // skip the whole cluster
-                skipped += props.point_count;
-            } else {
-                // enter the cluster
-                skipped = this._appendLeaves(result, props.cluster_id, limit, offset, skipped);
-                // exit the cluster
-            }
-        } else if (skipped < offset) {
-            // skip a single point
-            skipped++;
-        } else {
-            // add a single point
-            result.push(child);
-        }
-        if (result.length === limit) {
-            break;
-        }
-    }
-
-    return skipped;
-};
-
-Supercluster.prototype._addTileFeatures = function _addTileFeatures(ids, points, x, y, z2, tile) {
-    for (var i$1 = 0, list = ids; i$1 < list.length; i$1 += 1) {
-        var i = list[i$1];
-
-        var c = points[i];
-        var f = {
-            type: 1,
-            geometry: [[Math.round(this.options.extent * (c.x * z2 - x)), Math.round(this.options.extent * (c.y * z2 - y))]],
-            tags: c.numPoints ? getClusterProperties(c) : this.points[c.index].properties
-        };
-        var id = c.numPoints ? c.id : this.points[c.index].id;
-        if (id !== undefined) {
-            f.id = id;
-        }
-        tile.features.push(f);
-    }
-};
-
-Supercluster.prototype._limitZoom = function _limitZoom(z) {
-    return Math.max(this.options.minZoom, Math.min(z, this.options.maxZoom + 1));
-};
-
-Supercluster.prototype._cluster = function _cluster(points, zoom) {
-    var clusters = [];
-    var ref = this.options;
-    var radius = ref.radius;
-    var extent = ref.extent;
-    var reduce = ref.reduce;
-    var r = radius / (extent * Math.pow(2, zoom));
-
-    // loop through each point
-    for (var i = 0; i < points.length; i++) {
-        var p = points[i];
-        // if we've already visited the point at this zoom level, skip it
-        if (p.zoom <= zoom) {
-            continue;
-        }
-        p.zoom = zoom;
-
-        // find all nearby points
-        var tree = this.trees[zoom + 1];
-        var neighborIds = tree.within(p.x, p.y, r);
-
-        var numPoints = p.numPoints || 1;
-        var wx = p.x * numPoints;
-        var wy = p.y * numPoints;
-
-        var clusterProperties = reduce && numPoints > 1 ? this._map(p, true) : null;
-
-        // encode both zoom and point index on which the cluster originated
-        var id = (i << 5) + (zoom + 1);
-
-        for (var i$1 = 0, list = neighborIds; i$1 < list.length; i$1 += 1) {
-            var neighborId = list[i$1];
-
-            var b = tree.points[neighborId];
-            // filter out neighbors that are already processed
-            if (b.zoom <= zoom) {
-                continue;
-            }
-            b.zoom = zoom; // save the zoom (so it doesn't get processed twice)
-
-            var numPoints2 = b.numPoints || 1;
-            wx += b.x * numPoints2; // accumulate coordinates for calculating weighted center
-            wy += b.y * numPoints2;
-
-            numPoints += numPoints2;
-            b.parentId = id;
-
-            if (reduce) {
-                if (!clusterProperties) {
-                    clusterProperties = this._map(p, true);
-                }
-                reduce(clusterProperties, this._map(b));
-            }
-        }
-
-        if (numPoints === 1) {
-            clusters.push(p);
-        } else {
-            p.parentId = id;
-            clusters.push(createCluster(wx / numPoints, wy / numPoints, id, numPoints, clusterProperties));
-        }
-    }
-
-    return clusters;
-};
-
-Supercluster.prototype._map = function _map(point, clone) {
-    if (point.numPoints) {
-        return clone ? extend({}, point.properties) : point.properties;
-    }
-    var original = this.points[point.index].properties;
-    var result = this.options.map(original);
-    return clone && result === original ? extend({}, result) : result;
-};
-
-function createCluster(x, y, id, numPoints, properties) {
-    return {
-        x: x, // weighted cluster center
-        y: y,
-        zoom: Infinity, // the last zoom the cluster was processed at
-        id: id, // encodes index of the first child of the cluster and its zoom level
-        parentId: -1, // parent cluster id
-        numPoints: numPoints,
-        properties: properties
-    };
-}
-
-function createPointCluster(p, id) {
-    var ref = p.geometry.coordinates;
-    var x = ref[0];
-    var y = ref[1];
-    return {
-        x: lngX(x), // projected point coordinates
-        y: latY(y),
-        zoom: Infinity, // the last zoom the point was processed at
-        index: id, // index of the source feature in the original input array,
-        parentId: -1 // parent cluster id
-    };
-}
-
-function getClusterJSON(cluster) {
-    return {
-        type: 'Feature',
-        id: cluster.id,
-        properties: getClusterProperties(cluster),
-        geometry: {
-            type: 'Point',
-            coordinates: [xLng(cluster.x), yLat(cluster.y)]
-        }
-    };
-}
-
-function getClusterProperties(cluster) {
-    var count = cluster.numPoints;
-    var abbrev = count >= 10000 ? Math.round(count / 1000) + "k" : count >= 1000 ? Math.round(count / 100) / 10 + "k" : count;
-    return extend(extend({}, cluster.properties), {
-        cluster: true,
-        cluster_id: cluster.id,
-        point_count: count,
-        point_count_abbreviated: abbrev
-    });
-}
-
-// longitude/latitude to spherical mercator in [0..1] range
-function lngX(lng) {
-    return lng / 360 + 0.5;
-}
-function latY(lat) {
-    var sin = Math.sin(lat * Math.PI / 180);
-    var y = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
-    return y < 0 ? 0 : y > 1 ? 1 : y;
-}
-
-// spherical mercator to longitude/latitude
-function xLng(x) {
-    return (x - 0.5) * 360;
-}
-function yLat(y) {
-    var y2 = (180 - y * 360) * Math.PI / 180;
-    return 360 * Math.atan(Math.exp(y2)) / Math.PI - 90;
-}
-
-function extend(dest, src) {
-    for (var id in src) {
-        dest[id] = src[id];
-    }
-    return dest;
-}
-
-function getX(p) {
-    return p.x;
-}
-function getY(p) {
-    return p.y;
-}
-
-/**
  * @author kyle / http://nikai.us/
  */
 
@@ -7076,12 +6354,6 @@ var BaseLayer = function () {
 
         this.dataSet = dataSet;
         this.map = map;
-
-        if (options.draw === 'cluster' && !this.supercluster) {
-            this.supercluster = new Supercluster({ maxZoom: options.maxZoom || 19, radius: options.clusterRadius || 100 });
-            this.supercluster.load(dataSet.get());
-            this.clusterDataSet = new DataSet();
-        }
     }
 
     createClass(BaseLayer, [{
@@ -7200,16 +6472,13 @@ var BaseLayer = function () {
                     drawHeatmap.draw(context, dataSet, self.options);
                     break;
                 case 'grid':
-                case 'cluster':
                 case 'honeycomb':
                     self.options.offset = {
                         x: nwPixel.x,
                         y: nwPixel.y
                     };
-                    if (self.options.draw === 'grid') {
+                    if (self.options.draw == 'grid') {
                         drawGrid.draw(context, dataSet, self.options);
-                    } else if (self.options.draw === 'cluster') {
-                        drawCluster.draw(context, dataSet, self.options);
                     } else {
                         drawHoneycomb.draw(context, dataSet, self.options);
                     }
@@ -7239,25 +6508,12 @@ var BaseLayer = function () {
         key: "isPointInPath",
         value: function isPointInPath(context, pixel) {
             var context = this.canvasLayer.canvas.getContext(this.context);
-            var data;
-            if (this.options.draw === 'cluster') {
-                data = this.clusterDataSet.get();
-            } else {
-                data = this.dataSet.get();
-            }
+            var data = this.dataSet.get();
             for (var i = 0; i < data.length; i++) {
                 context.beginPath();
-                var options = this.options;
+                pathSimple.draw(context, data[i], this.options);
                 var x = pixel.x * this.canvasLayer.devicePixelRatio;
                 var y = pixel.y * this.canvasLayer.devicePixelRatio;
-
-                options.multiPolygonDraw = function () {
-                    if (context.isPointInPath(x, y)) {
-                        return data[i];
-                    }
-                };
-
-                pathSimple.draw(context, data[i], options);
 
                 var geoType = data[i].geometry && data[i].geometry.type;
                 if (geoType.indexOf('LineString') > -1) {
@@ -7265,7 +6521,6 @@ var BaseLayer = function () {
                         return data[i];
                     }
                 } else {
-
                     if (context.isPointInPath(x, y)) {
                         return data[i];
                     }
@@ -7297,19 +6552,6 @@ var BaseLayer = function () {
                 this.options.methods.mousemove(dataItem, e);
             } else {
                 this.options.methods.mousemove(null, e);
-            }
-        }
-    }, {
-        key: "tapEvent",
-        value: function tapEvent(pixel, e) {
-            if (!this.options.methods) {
-                return;
-            }
-            var dataItem = this.isPointInPath(this.getContext(), pixel);
-            if (dataItem) {
-                this.options.methods.tap(dataItem, e);
-            } else {
-                this.options.methods.tap(null, e);
             }
         }
 
@@ -7502,13 +6744,8 @@ var AnimationLayer = function (_BaseLayer) {
             }
             //clear(ctx);
             var map = this.map;
-            var zoomUnit;
+            var zoomUnit = Math.pow(2, 18 - map.getZoom());
             var projection = map.getMapType().getProjection();
-            if (projection.getZoomUnits) {
-                zoomUnit = projection.getZoomUnits(map.getZoom());
-            } else {
-                zoomUnit = Math.pow(2, 18 - map.getZoom());
-            }
 
             var mcCenter = projection.lngLatToPoint(map.getCenter());
             var nwMc = new BMap.Pixel(mcCenter.x - map.getSize().width / 2 * zoomUnit, mcCenter.y + map.getSize().height / 2 * zoomUnit); //左上角墨卡托坐标
@@ -7652,23 +6889,6 @@ var AnimationLayer = function (_BaseLayer) {
         value: function show() {
             this.start();
         }
-    }, {
-        key: "clearData",
-        value: function clearData() {
-            this.dataSet && this.dataSet.clear();
-            this.update({
-                options: null
-            });
-        }
-    }, {
-        key: "destroy",
-        value: function destroy() {
-            this.stop();
-            this.unbindEvent();
-            this.clearData();
-            this.map.removeOverlay(this.canvasLayer);
-            this.canvasLayer = null;
-        }
     }]);
     return AnimationLayer;
 }(BaseLayer);
@@ -7691,7 +6911,6 @@ var Layer = function (_BaseLayer) {
 
         _this.clickEvent = _this.clickEvent.bind(_this);
         _this.mousemoveEvent = _this.mousemoveEvent.bind(_this);
-        _this.tapEvent = _this.tapEvent.bind(_this);
 
         self.init(options);
         self.argCheck(options);
@@ -7730,18 +6949,10 @@ var Layer = function (_BaseLayer) {
             get(Layer.prototype.__proto__ || Object.getPrototypeOf(Layer.prototype), "mousemoveEvent", this).call(this, pixel, e);
         }
     }, {
-        key: "tapEvent",
-        value: function tapEvent(e) {
-            var pixel = e.pixel;
-            get(Layer.prototype.__proto__ || Object.getPrototypeOf(Layer.prototype), "tapEvent", this).call(this, pixel, e);
-        }
-    }, {
         key: "bindEvent",
         value: function bindEvent(e) {
             this.unbindEvent();
             var map = this.map;
-            var timer = 0;
-            var that = this;
 
             if (this.options.methods) {
                 if (this.options.methods.click) {
@@ -7750,17 +6961,6 @@ var Layer = function (_BaseLayer) {
                 }
                 if (this.options.methods.mousemove) {
                     map.addEventListener('mousemove', this.mousemoveEvent);
-                }
-
-                if ("ontouchend" in window.document && this.options.methods.tap) {
-                    map.addEventListener('touchstart', function (e) {
-                        timer = new Date();
-                    });
-                    map.addEventListener('touchend', function (e) {
-                        if (new Date() - timer < 300) {
-                            that.tapEvent(e);
-                        }
-                    });
                 }
             }
         }
@@ -7783,32 +6983,12 @@ var Layer = function (_BaseLayer) {
 
     }, {
         key: "transferToMercator",
-        value: function transferToMercator(dataSet) {
-            if (!dataSet) {
-                dataSet = this.dataSet;
-            }
-
-            var map = this.map;
-
-            var mapType = map.getMapType();
-            var projection;
-            if (mapType.getProjection) {
-                projection = mapType.getProjection();
-            } else {
-                projection = {
-                    lngLatToPoint: function lngLatToPoint(point) {
-                        var mc = map.lnglatToMercator(point.lng, point.lat);
-                        return {
-                            x: mc[0],
-                            y: mc[1]
-                        };
-                    }
-                };
-            }
+        value: function transferToMercator() {
+            var projection = this.map.getMapType().getProjection();
 
             if (this.options.coordType !== 'bd09mc') {
-                var data = dataSet.get();
-                data = dataSet.transferCoordinate(data, function (coordinates) {
+                var data = this.dataSet.get();
+                data = this.dataSet.transferCoordinate(data, function (coordinates) {
                     if (coordinates[0] < -180 || coordinates[0] > 180 || coordinates[1] < -90 || coordinates[1] > 90) {
                         return coordinates;
                     } else {
@@ -7819,7 +6999,7 @@ var Layer = function (_BaseLayer) {
                         return [pixel.x, pixel.y];
                     }
                 }, 'coordinates', 'coordinates_mercator');
-                dataSet._set(data);
+                this.dataSet._set(data);
             }
         }
     }, {
@@ -7840,33 +7020,10 @@ var Layer = function (_BaseLayer) {
 
             var map = this.canvasLayer._map;
 
-            var projection;
-            var mcCenter;
-            if (map.getMapType().getProjection) {
-                projection = map.getMapType().getProjection();
-                mcCenter = projection.lngLatToPoint(map.getCenter());
-            } else {
-                mcCenter = {
-                    x: map.getCenter().lng,
-                    y: map.getCenter().lat
-                };
-                projection = {
-                    lngLatToPoint: function lngLatToPoint(point) {
-                        var mc = map.lnglatToMercator(point.lng, point.lat);
-                        return {
-                            x: mc[0],
-                            y: mc[1]
-                        };
-                    }
-                };
-            }
-            var zoomUnit;
-            if (projection.getZoomUnits) {
-                zoomUnit = projection.getZoomUnits(map.getZoom());
-            } else {
-                zoomUnit = Math.pow(2, 18 - map.getZoom());
-            }
+            var zoomUnit = Math.pow(2, 18 - map.getZoom());
+            var projection = map.getMapType().getProjection();
 
+            var mcCenter = projection.lngLatToPoint(map.getCenter());
             var nwMc = new BMap.Pixel(mcCenter.x - map.getSize().width / 2 * zoomUnit, mcCenter.y + map.getSize().height / 2 * zoomUnit); //左上角墨卡托坐标
 
             var context = this.getContext();
@@ -7925,19 +7082,7 @@ var Layer = function (_BaseLayer) {
             }
 
             // get data from data set
-            var data;
-
-            if (self.options.draw === 'cluster') {
-                var bounds = this.map.getBounds();
-                var ne = bounds.getNorthEast();
-                var sw = bounds.getSouthWest();
-                var clusterData = this.supercluster.getClusters([sw.lng, sw.lat, ne.lng, ne.lat], this.getZoom());
-                this.clusterDataSet.set(clusterData);
-                this.transferToMercator(this.clusterDataSet);
-                data = this.clusterDataSet.get(dataGetOptions);
-            } else {
-                data = self.dataSet.get(dataGetOptions);
-            }
+            var data = self.dataSet.get(dataGetOptions);
 
             this.processData(data);
 
@@ -7991,11 +7136,6 @@ var Layer = function (_BaseLayer) {
             this.bindEvent();
         }
     }, {
-        key: "getZoom",
-        value: function getZoom() {
-            return this.map.getZoom();
-        }
-    }, {
         key: "addAnimatorEvent",
         value: function addAnimatorEvent() {
             this.map.addEventListener('movestart', this.animatorMovestartEvent.bind(this));
@@ -8014,23 +7154,7 @@ var Layer = function (_BaseLayer) {
     }, {
         key: "draw",
         value: function draw() {
-            this.canvasLayer && this.canvasLayer.draw();
-        }
-    }, {
-        key: "clearData",
-        value: function clearData() {
-            this.dataSet && this.dataSet.clear();
-            this.update({
-                options: null
-            });
-        }
-    }, {
-        key: "destroy",
-        value: function destroy() {
-            this.unbindEvent();
-            this.clearData();
-            this.map.removeOverlay(this.canvasLayer);
-            this.canvasLayer = null;
+            this.canvasLayer.draw();
         }
     }]);
     return Layer;
@@ -9772,1050 +8896,6 @@ var Layer$8 = function (_BaseLayer) {
   return Layer;
 }(BaseLayer);
 
-// https://github.com/SuperMap/iClient-JavaScript
-/**
- * @class MapVRenderer
- * @classdesc 地图渲染类。
- * @category Visualization MapV
- * @private
- * @extends mapv.BaseLayer
- * @param {L.Map} map - 待渲染的地图。
- * @param {L.Layer} layer - 待渲染的图层。
- * @param {DataSet} dataSet - 待渲染的数据集。
- * @param {Object} options - 渲染的参数。
- */
-var MapVRenderer = function (_BaseLayer) {
-    inherits(MapVRenderer, _BaseLayer);
-
-    function MapVRenderer(map, layer, dataSet, options) {
-        classCallCheck(this, MapVRenderer);
-
-        var _this = possibleConstructorReturn(this, (MapVRenderer.__proto__ || Object.getPrototypeOf(MapVRenderer)).call(this, map, dataSet, options));
-
-        if (!BaseLayer) {
-            return possibleConstructorReturn(_this);
-        }
-
-        var self = _this;
-        options = options || {};
-
-        self.init(options);
-        self.argCheck(options);
-        _this.canvasLayer = layer;
-        _this.clickEvent = _this.clickEvent.bind(_this);
-        _this.mousemoveEvent = _this.mousemoveEvent.bind(_this);
-        _this._moveStartEvent = _this.moveStartEvent.bind(_this);
-        _this._moveEndEvent = _this.moveEndEvent.bind(_this);
-        _this._zoomStartEvent = _this.zoomStartEvent.bind(_this);
-        _this.bindEvent();
-        return _this;
-    }
-
-    /**
-     * @function MapVRenderer.prototype.clickEvent
-     * @description 点击事件。
-     * @param {Object} e - 触发对象。
-     */
-
-
-    createClass(MapVRenderer, [{
-        key: 'clickEvent',
-        value: function clickEvent(e) {
-            var offset = this.map.containerPointToLayerPoint([0, 0]);
-            var devicePixelRatio = this.devicePixelRatio = this.canvasLayer.devicePixelRatio = window.devicePixelRatio;
-            var pixel = e.layerPoint;
-            get(MapVRenderer.prototype.__proto__ || Object.getPrototypeOf(MapVRenderer.prototype), 'clickEvent', this).call(this, L.point((pixel.x - offset.x) / devicePixelRatio, (pixel.y - offset.y) / devicePixelRatio), e);
-        }
-
-        /**
-         * @function MapVRenderer.prototype.mousemoveEvent
-         * @description 鼠标移动事件。
-         * @param {Object} e - 触发对象。
-         */
-
-    }, {
-        key: 'mousemoveEvent',
-        value: function mousemoveEvent(e) {
-            var pixel = e.layerPoint;
-            get(MapVRenderer.prototype.__proto__ || Object.getPrototypeOf(MapVRenderer.prototype), 'mousemoveEvent', this).call(this, pixel, e);
-        }
-
-        /**
-         * @function MapVRenderer.prototype.bindEvent
-         * @description 绑定鼠标移动和鼠标点击事件。
-         * @param {Object} e - 触发对象。
-         */
-
-    }, {
-        key: 'bindEvent',
-        value: function bindEvent() {
-            var map = this.map;
-
-            if (this.options.methods) {
-                if (this.options.methods.click) {
-                    map.on('click', this.clickEvent);
-                }
-                if (this.options.methods.mousemove) {
-                    map.on('mousemove', this.mousemoveEvent);
-                }
-            }
-            this.map.on('movestart', this._moveStartEvent);
-            this.map.on('moveend', this._moveEndEvent);
-            this.map.on('zoomstart', this._zoomStartEvent);
-        }
-        /**
-         * @function MapVRenderer.prototype.destroy
-         * @description 释放资源。
-         */
-
-    }, {
-        key: 'destroy',
-        value: function destroy() {
-            this.unbindEvent();
-            this.clearData();
-            this.animator && this.animator.stop();
-            this.animator = null;
-            this.canvasLayer = null;
-        }
-        /**
-         * @function MapVRenderer.prototype.unbindEvent
-         * @description 解绑鼠标移动和鼠标滑动触发的事件。
-         * @param {Object} e - 触发对象。
-         */
-
-    }, {
-        key: 'unbindEvent',
-        value: function unbindEvent() {
-            var map = this.map;
-
-            if (this.options.methods) {
-                if (this.options.methods.click) {
-                    map.off('click', this.clickEvent);
-                }
-                if (this.options.methods.mousemove) {
-                    map.off('mousemove', this.mousemoveEvent);
-                }
-            }
-            this.map.off('movestart', this._moveStartEvent);
-            this.map.off('moveend', this._moveEndEvent);
-            this.map.off('zoomstart', this._zoomStartEvent);
-        }
-
-        /**
-         * @function MapVRenderer.prototype.getContext
-         * @description 获取信息。
-         */
-
-    }, {
-        key: 'getContext',
-        value: function getContext() {
-            return this.canvasLayer.getCanvas().getContext(this.context);
-        }
-
-        /**
-         * @function MapVRenderer.prototype.addData
-         * @description 添加数据。
-         * @param {Object} data - 待添加的数据。
-         * @param  {Object} options - 待添加的数据信息。
-         */
-
-    }, {
-        key: 'addData',
-        value: function addData(data, options) {
-            var _data = data;
-            if (data && data.get) {
-                _data = data.get();
-            }
-            this.dataSet.add(_data);
-            this.update({
-                options: options
-            });
-        }
-
-        /**
-         * @function MapVRenderer.prototype.update
-         * @description 更新图层。
-         * @param {Object} opt - 待更新的数据。
-         * @param {Object} opt.data - mapv数据集。
-         * @param {Object} opt.options - mapv绘制参数。
-         */
-
-    }, {
-        key: 'update',
-        value: function update(opt) {
-            var update = opt || {};
-            var _data = update.data;
-            if (_data && _data.get) {
-                _data = _data.get();
-            }
-            if (_data != undefined) {
-                this.dataSet.set(_data);
-            }
-            get(MapVRenderer.prototype.__proto__ || Object.getPrototypeOf(MapVRenderer.prototype), 'update', this).call(this, {
-                options: update.options
-            });
-        }
-
-        /**
-         * @function MapVRenderer.prototype.getData
-         * @description 获取数据
-         */
-
-    }, {
-        key: 'getData',
-        value: function getData() {
-            return this.dataSet;
-        }
-
-        /**
-         * @function MapVRenderer.prototype.removeData
-         * @description 删除符合过滤条件的数据。
-         * @param {Function} filter - 过滤条件。条件参数为数据项，返回值为 true，表示删除该元素；否则表示不删除。
-         */
-
-    }, {
-        key: 'removeData',
-        value: function removeData(_filter) {
-            if (!this.dataSet) {
-                return;
-            }
-            var newData = this.dataSet.get({
-                filter: function filter(data) {
-                    return _filter != null && typeof _filter === "function" ? !_filter(data) : true;
-                }
-            });
-            this.dataSet.set(newData);
-            this.update({
-                options: null
-            });
-        }
-
-        /**
-         * @function MapVRenderer.prototype.clearData
-         * @description 清除数据
-         */
-
-    }, {
-        key: 'clearData',
-        value: function clearData() {
-            this.dataSet && this.dataSet.clear();
-            this.update({
-                options: null
-            });
-        }
-    }, {
-        key: '_canvasUpdate',
-        value: function _canvasUpdate(time) {
-            if (!this.canvasLayer) {
-                return;
-            }
-
-            var self = this;
-
-            var animationOptions = self.options.animation;
-
-            var context = this.getContext();
-            var map = this.map;
-            if (self.isEnabledTime()) {
-                if (time === undefined) {
-                    this.clear(context);
-                    return;
-                }
-                if (this.context === '2d') {
-                    context.save();
-                    context.globalCompositeOperation = 'destination-out';
-                    context.fillStyle = 'rgba(0, 0, 0, .1)';
-                    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-                    context.restore();
-                }
-            } else {
-                this.clear(context);
-            }
-
-            if (this.context === '2d') {
-                for (var key in self.options) {
-                    context[key] = self.options[key];
-                }
-            } else {
-                context.clear(context.COLOR_BUFFER_BIT);
-            }
-
-            if (self.options.minZoom && map.getZoom() < self.options.minZoom || self.options.maxZoom && map.getZoom() > self.options.maxZoom) {
-                return;
-            }
-
-            var bounds = map.getBounds();
-            //获取当前像素下的地理范围
-            var dw = bounds.getEast() - bounds.getWest();
-            var dh = bounds.getNorth() - bounds.getSouth();
-            var mapCanvas = map.getSize();
-
-            var resolutionX = dw / mapCanvas.x,
-                resolutionY = dh / mapCanvas.y;
-            //var centerPx = map.latLngToLayerPoint(map.getCenter());
-
-            //获取屏幕左上角的地理坐标坐标
-            //左上角屏幕坐标为0,0
-            var topLeft = this.canvasLayer.getTopLeft();
-
-            var topLeftPX = map.latLngToContainerPoint(topLeft);
-            // 获取精确的像素坐标. https://github.com/SuperMap/iClient-JavaScript/blob/eacc26952b8915bba0122db751d766056c5fb24d/src/leaflet/core/Base.js
-            // var topLeftPX = map.latLngToAccurateContainerPoint(topLeft);
-            // var lopLeft = map.containerPointToLatLng([0, 0]);
-            var dataGetOptions = {
-                transferCoordinate: function transferCoordinate(coordinate) {
-                    var offset;
-                    if (self.context === '2d') {
-                        offset = map.latLngToContainerPoint(L.latLng(coordinate[1], coordinate[0]));
-                        // offset = map.latLngToAccurateContainerPoint(L.latLng(coordinate[1], coordinate[0]));
-                    } else {
-                        offset = {
-                            'x': (coordinate[0] - topLeft.lng) / resolutionX,
-                            'y': (topLeft.lat - coordinate[1]) / resolutionY
-                        };
-                    }
-                    var pixel = {
-                        x: offset.x - topLeftPX.x,
-                        y: offset.y - topLeftPX.y
-                    };
-                    return [pixel.x, pixel.y];
-                }
-            };
-
-            if (time !== undefined) {
-                dataGetOptions.filter = function (item) {
-                    var trails = animationOptions.trails || 10;
-                    return time && item.time > time - trails && item.time < time;
-                };
-            }
-
-            var data = self.dataSet.get(dataGetOptions);
-
-            this.processData(data);
-
-            self.options._size = self.options.size;
-
-            var worldPoint = map.latLngToContainerPoint(L.latLng(0, 0));
-            var pixel = {
-                x: worldPoint.x - topLeftPX.x,
-                y: worldPoint.y - topLeftPX.y
-            };
-            this.drawContext(context, data, self.options, pixel);
-
-            self.options.updateCallback && self.options.updateCallback(time);
-        }
-    }, {
-        key: 'init',
-        value: function init(options) {
-
-            var self = this;
-
-            self.options = options;
-
-            this.initDataRange(options);
-
-            this.context = self.options.context || '2d';
-
-            if (self.options.zIndex) {
-                this.canvasLayer && this.canvasLayer.setZIndex(self.options.zIndex);
-            }
-
-            this.initAnimator();
-        }
-    }, {
-        key: 'addAnimatorEvent',
-        value: function addAnimatorEvent() {}
-
-        /**
-         * @function MapVRenderer.prototype.moveStartEvent
-         * @description 开始移动事件。
-         */
-
-    }, {
-        key: 'moveStartEvent',
-        value: function moveStartEvent() {
-            var animationOptions = this.options.animation;
-            if (this.isEnabledTime() && this.animator) {
-                this.steps.step = animationOptions.stepsRange.start;
-                this._hide();
-            }
-        }
-
-        /**
-         * @function MapVRenderer.prototype.moveEndEvent
-         * @description 结束移动事件。
-         */
-
-    }, {
-        key: 'moveEndEvent',
-        value: function moveEndEvent() {
-            this.canvasLayer.draw();
-            this._show();
-        }
-
-        /**
-         * @function MapVRenderer.prototype.zoomStartEvent
-         * @description 隐藏渲染样式。
-         */
-
-    }, {
-        key: 'zoomStartEvent',
-        value: function zoomStartEvent() {
-            this._hide();
-        }
-
-        /**
-         * @function MapVRenderer.prototype.clear
-         * @description 清除信息。
-         * @param {string} context - 指定要清除的信息。
-         */
-
-    }, {
-        key: 'clear',
-        value: function clear(context) {
-            context && context.clearRect && context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        }
-    }, {
-        key: '_hide',
-        value: function _hide() {
-            this.canvasLayer.canvas.style.display = 'none';
-        }
-    }, {
-        key: '_show',
-        value: function _show() {
-            this.canvasLayer.canvas.style.display = 'block';
-        }
-
-        /**
-         * @function MapVRenderer.prototype.draw
-         * @description 绘制渲染
-         */
-
-    }, {
-        key: 'draw',
-        value: function draw() {
-            this.canvasLayer.draw();
-        }
-    }]);
-    return MapVRenderer;
-}(BaseLayer);
-
-var mapVLayer;
-if (typeof L !== 'undefined') {
-    /**
-     * @class mapVLayer
-     * @classdesc MapV 图层。
-     * @category Visualization MapV
-     * @extends {L.Layer}
-     * @param {mapv.DataSet} dataSet - MapV 图层数据集。
-     * @param {Object} mapVOptions - MapV 图层参数。
-     * @param {Object} options - 参数。
-     * @param {string} [options.attributionPrefix] - 版权信息前缀。
-     * @param {string} [options.attribution='© 2018 百度 MapV'] - 版权信息。
-     * @fires mapVLayer#loaded
-     */
-    var MapVLayer = L.Layer.extend({
-
-        options: {
-            attributionPrefix: null,
-            attribution: ''
-        },
-
-        initialize: function initialize(dataSet, mapVOptions, options) {
-            options = options || {};
-            this.dataSet = dataSet || {};
-            this.mapVOptions = mapVOptions || {};
-            this.render = this.render.bind(this);
-            L.Util.setOptions(this, options);
-            if (this.options.attributionPrefix) {
-                this.options.attribution = this.options.attributionPrefix + this.options.attribution;
-            }
-
-            this.canvas = this._createCanvas();
-            L.stamp(this);
-        },
-
-        /**
-         * @private
-         * @function mapVLayer.prototype.onAdd
-         * @description 添加地图图层。
-         * @param {L.Map} map - 要添加的地图。
-         */
-        onAdd: function onAdd(map) {
-            this._map = map;
-            var overlayPane = this.getPane();
-            var container = this.container = L.DomUtil.create("div", "leaflet-layer leaflet-zoom-animated", overlayPane);
-            container.appendChild(this.canvas);
-            var size = map.getSize();
-            container.style.width = size.x + "px";
-            container.style.height = size.y + "px";
-            this.renderer = new MapVRenderer(map, this, this.dataSet, this.mapVOptions);
-            this.draw();
-            /**
-             * @event mapVLayer#loaded
-             * @description 图层添加完成之后触发。
-             */
-            this.fire("loaded");
-        },
-
-        // _hide: function () {
-        //     this.canvas.style.display = 'none';
-        // },
-
-        // _show: function () {
-        //     this.canvas.style.display = 'block';
-        // },
-
-        /**
-         * @private
-         * @function mapVLayer.prototype.onRemove
-         * @description 删除地图图层。
-         */
-        onRemove: function onRemove() {
-            L.DomUtil.remove(this.container);
-            this.renderer.destroy();
-        },
-
-        /**
-         * @function mapVLayer.prototype.addData
-         * @description 追加数据。
-         * @param {Object} data - 要追加的数据。
-         * @param {Object} options - 要追加的值。
-         */
-        addData: function addData(data, options) {
-            this.renderer.addData(data, options);
-        },
-
-        /**
-         * @function mapVLayer.prototype.update
-         * @description 更新图层。
-         * @param {Object} opt - 待更新的数据。
-         * @param {Object} data - mapv 数据集。
-         * @param {Object} options - mapv 绘制参数。
-         */
-        update: function update(opt) {
-            this.renderer.update(opt);
-        },
-
-        /**
-         * @function mapVLayer.prototype.getData
-         * @description 获取数据。
-         * @returns {mapv.DataSet} mapv 数据集。
-         */
-        getData: function getData() {
-            if (this.renderer) {
-                this.dataSet = this.renderer.getData();
-            }
-            return this.dataSet;
-        },
-
-        /**
-         * @function mapVLayer.prototype.removeData
-         * @description 删除符合过滤条件的数据。
-         * @param {Function} filter - 过滤条件。条件参数为数据项，返回值为 true，表示删除该元素；否则表示不删除。
-         * @example
-         *  filter=function(data){
-         *    if(data.id=="1"){
-         *      return true
-         *    }
-         *    return false;
-         *  }
-         */
-        removeData: function removeData(filter) {
-            this.renderer && this.renderer.removeData(filter);
-        },
-
-        /**
-         * @function mapVLayer.prototype.clearData
-         * @description 清除数据。
-         */
-        clearData: function clearData() {
-            this.renderer.clearData();
-        },
-
-        /**
-         * @function mapVLayer.prototype.draw
-         * @description 绘制图层。
-         */
-        draw: function draw() {
-            return this._reset();
-        },
-
-        /**
-         * @function mapVLayer.prototype.setZIndex
-         * @description 设置 canvas 层级。
-         * @param {number} zIndex - canvas 层级。
-         */
-        setZIndex: function setZIndex(zIndex) {
-            this.canvas.style.zIndex = zIndex;
-        },
-
-        /**
-         * @function mapVLayer.prototype.render
-         * @description 渲染。
-         */
-        render: function render() {
-            this.renderer._canvasUpdate();
-        },
-
-        /**
-         * @function mapVLayer.prototype.getCanvas
-         * @description 获取 canvas。
-         * @returns {HTMLElement} 返回 mapV 图层包含的 canvas 对象。
-         */
-        getCanvas: function getCanvas() {
-            return this.canvas;
-        },
-
-        /**
-         * @function mapVLayer.prototype.getContainer
-         * @description 获取容器。
-         * @returns {HTMLElement} 返回包含 mapV 图层的 dom 对象。
-         */
-        getContainer: function getContainer() {
-            return this.container;
-        },
-
-        /**
-         * @function mapVLayer.prototype.getTopLeft
-         * @description 获取左上角坐标。
-         * @returns {L.Bounds} 返回左上角坐标。
-         */
-        getTopLeft: function getTopLeft() {
-            var map = this._map;
-            var topLeft;
-            if (map) {
-                var bounds = map.getBounds();
-                topLeft = bounds.getNorthWest();
-            }
-            return topLeft;
-        },
-
-        _createCanvas: function _createCanvas() {
-            var canvas = document.createElement('canvas');
-            canvas.style.position = 'absolute';
-            canvas.style.top = 0 + "px";
-            canvas.style.left = 0 + "px";
-            canvas.style.pointerEvents = "none";
-            canvas.style.zIndex = this.options.zIndex || 600;
-            var global$2 = typeof window === 'undefined' ? {} : window;
-            var devicePixelRatio = this.devicePixelRatio = global$2.devicePixelRatio;
-            if (!this.mapVOptions.context || this.mapVOptions.context === '2d') {
-                canvas.getContext('2d').scale(devicePixelRatio, devicePixelRatio);
-            }
-            return canvas;
-        },
-
-        _resize: function _resize() {
-            var canvas = this.canvas;
-            if (!canvas) {
-                return;
-            }
-
-            var map = this._map;
-            var size = map.getSize();
-            canvas.width = size.x;
-            canvas.height = size.y;
-            canvas.style.width = size.x + 'px';
-            canvas.style.height = size.y + 'px';
-            var bounds = map.getBounds();
-            var topLeft = map.latLngToLayerPoint(bounds.getNorthWest());
-            L.DomUtil.setPosition(canvas, topLeft);
-        },
-
-        _reset: function _reset() {
-            this._resize();
-            this._render();
-        },
-        redraw: function redraw() {
-            this._resize();
-            this._render();
-        },
-        _render: function _render() {
-            this.render();
-        }
-
-    });
-
-    mapVLayer = function mapVLayer(dataSet, mapVOptions, options) {
-        return new MapVLayer(dataSet, mapVOptions, options);
-    };
-}
-var mapVLayer$1 = mapVLayer;
-
-var MapVRenderer$1 = function (_BaseLayer) {
-    inherits(MapVRenderer, _BaseLayer);
-
-    /**
-     * Creates an instance of MapVRenderer.
-     * @param {*} viewer cesium viewer
-     * @param {*} dataset mapv dataset
-     * @param {*} option mapvOptions
-     * @param {*} mapVLayer
-     * @memberof MapVRenderer
-     */
-    function MapVRenderer(viewer, dataset, option, mapVLayer) {
-        classCallCheck(this, MapVRenderer);
-
-        var _this = possibleConstructorReturn(this, (MapVRenderer.__proto__ || Object.getPrototypeOf(MapVRenderer)).call(this, viewer, dataset, option));
-
-        if (!BaseLayer) {
-            return possibleConstructorReturn(_this);
-        }
-        _this.map = viewer, _this.scene = viewer.scene, _this.dataSet = dataset;
-        option = option || {}, _this.init(option), _this.argCheck(option), _this.initDevicePixelRatio(), _this.canvasLayer = mapVLayer, _this.stopAniamation = !1, _this.animation = option.animation, _this.clickEvent = _this.clickEvent.bind(_this), _this.mousemoveEvent = _this.mousemoveEvent.bind(_this), _this.bindEvent();
-        return _this;
-    }
-
-    createClass(MapVRenderer, [{
-        key: "initDevicePixelRatio",
-        value: function initDevicePixelRatio() {
-            this.devicePixelRatio = window.devicePixelRatio || 1;
-        }
-    }, {
-        key: "clickEvent",
-        value: function clickEvent(t) {
-            var e = t.point;
-            get(MapVRenderer.prototype.__proto__ || Object.getPrototypeOf(MapVRenderer.prototype), "clickEvent", this).call(this, e, t);
-        }
-    }, {
-        key: "mousemoveEvent",
-        value: function mousemoveEvent(t) {
-            var e = t.point;
-            get(MapVRenderer.prototype.__proto__ || Object.getPrototypeOf(MapVRenderer.prototype), "mousemoveEvent", this).call(this, e, t);
-        }
-    }, {
-        key: "addAnimatorEvent",
-        value: function addAnimatorEvent() {}
-    }, {
-        key: "animatorMovestartEvent",
-        value: function animatorMovestartEvent() {
-            var t = this.options.animation;
-            this.isEnabledTime() && this.animator && (this.steps.step = t.stepsRange.start);
-        }
-    }, {
-        key: "animatorMoveendEvent",
-        value: function animatorMoveendEvent() {
-            this.isEnabledTime() && this.animator;
-        }
-    }, {
-        key: "bindEvent",
-        value: function bindEvent() {
-            this.map;
-            this.options.methods && (this.options.methods.click, this.options.methods.mousemove);
-        }
-    }, {
-        key: "unbindEvent",
-        value: function unbindEvent() {
-            var t = this.map;
-            this.options.methods && (this.options.methods.click && t.off("click", this.clickEvent), this.options.methods.mousemove && t.off("mousemove", this.mousemoveEvent));
-        }
-    }, {
-        key: "getContext",
-        value: function getContext() {
-            return this.canvasLayer.canvas.getContext(this.context);
-        }
-    }, {
-        key: "init",
-        value: function init(t) {
-            this.options = t, this.initDataRange(t), this.context = this.options.context || "2d", this.options.zIndex && this.canvasLayer && this.canvasLayer.setZIndex(this.options.zIndex), this.initAnimator();
-        }
-    }, {
-        key: "_canvasUpdate",
-        value: function _canvasUpdate(t) {
-            this.map;
-            var e = this.scene;
-            if (this.canvasLayer && !this.stopAniamation) {
-                var i = this.options.animation,
-                    n = this.getContext();
-                if (this.isEnabledTime()) {
-                    if (void 0 === t) return void this.clear(n);
-                    "2d" === this.context && (n.save(), n.globalCompositeOperation = "destination-out", n.fillStyle = "rgba(0, 0, 0, .1)", n.fillRect(0, 0, n.canvas.width, n.canvas.height), n.restore());
-                } else this.clear(n);
-                if ("2d" === this.context) for (var o in this.options) {
-                    n[o] = this.options[o];
-                } else n.clear(n.COLOR_BUFFER_BIT);
-                var a = {
-                    transferCoordinate: function transferCoordinate(t) {
-                        var i = Cesium.Cartesian3.fromDegrees(t[0], t[1]),
-                            n = Cesium.SceneTransforms.wgs84ToWindowCoordinates(e, i);
-                        return void 0 == n ? [-1, -1] : [n.x, n.y];
-                    }
-                };
-                void 0 !== t && (a.filter = function (e) {
-                    var n = i.trails || 10;
-                    return !!(t && e.time > t - n && e.time < t);
-                });
-                var c = this.dataSet.get(a);
-                this.processData(c), "m" == this.options.unit && this.options.size, this.options._size = this.options.size;
-                var h = Cesium.SceneTransforms.wgs84ToWindowCoordinates(e, Cesium.Cartesian3.fromDegrees(0, 0));
-                this.drawContext(n, new DataSet(c), this.options, h), this.options.updateCallback && this.options.updateCallback(t);
-            }
-        }
-    }, {
-        key: "updateData",
-        value: function updateData(t, e) {
-            var i = t;
-            i && i.get && (i = i.get()), void 0 != i && this.dataSet.set(i), get(MapVRenderer.prototype.__proto__ || Object.getPrototypeOf(MapVRenderer.prototype), "update", this).call(this, {
-                options: e
-            });
-        }
-    }, {
-        key: "addData",
-        value: function addData(t, e) {
-            var i = t;
-            t && t.get && (i = t.get()), this.dataSet.add(i), this.update({
-                options: e
-            });
-        }
-    }, {
-        key: "getData",
-        value: function getData() {
-            return this.dataSet;
-        }
-    }, {
-        key: "removeData",
-        value: function removeData(t) {
-            if (this.dataSet) {
-                var e = this.dataSet.get({
-                    filter: function filter(e) {
-                        return null == t || "function" != typeof t || !t(e);
-                    }
-                });
-                this.dataSet.set(e), this.update({
-                    options: null
-                });
-            }
-        }
-    }, {
-        key: "clearData",
-        value: function clearData() {
-            this.dataSet && this.dataSet.clear(), this.update({
-                options: null
-            });
-        }
-    }, {
-        key: "draw",
-        value: function draw() {
-            this.canvasLayer.draw();
-        }
-    }, {
-        key: "clear",
-        value: function clear(t) {
-            t && t.clearRect && t.clearRect(0, 0, t.canvas.width, t.canvas.height);
-        }
-    }]);
-    return MapVRenderer;
-}(BaseLayer);
-
-var mapVLayer$2;
-if (typeof Cesium !== 'undefined') {
-    var defIndex = 0;
-    var r = Cesium;
-
-    var MapVLayer$1 = function () {
-        /**
-         *Creates an instance of MapVLayer.
-         * @param {*} viewer
-         * @param {*} dataset
-         * @param {*} options
-         * @param {*} container default viewer.container
-         * @memberof MapVLayer
-         */
-        function MapVLayer(viewer, dataset, options, container) {
-            classCallCheck(this, MapVLayer);
-
-            this.map = viewer, this.scene = viewer.scene, this.mapvBaseLayer = new MapVRenderer$1(viewer, dataset, options, this), this.mapVOptions = options, this.initDevicePixelRatio(), this.canvas = this._createCanvas(), this.render = this.render.bind(this);
-            if (container) {
-                this.container = container;
-            } else {
-                var inner = viewer.container.querySelector('.cesium-viewer-cesiumWidgetContainer');
-                this.container = inner ? inner : viewer.container;
-            }
-            this.addInnerContainer();
-
-            // void 0 != container ? (this.container = container,
-            //     container.appendChild(this.canvas)) : (this.container = viewer.container,
-            //         this.addInnerContainer()),
-            this.bindEvent();
-            this._reset();
-        }
-
-        createClass(MapVLayer, [{
-            key: 'initDevicePixelRatio',
-            value: function initDevicePixelRatio() {
-                this.devicePixelRatio = window.devicePixelRatio || 1;
-            }
-        }, {
-            key: 'addInnerContainer',
-            value: function addInnerContainer() {
-                this.container.appendChild(this.canvas);
-            }
-        }, {
-            key: 'bindEvent',
-            value: function bindEvent() {
-                var that = this;
-
-                this.innerMoveStart = this.moveStartEvent.bind(this);
-                this.innerMoveEnd = this.moveEndEvent.bind(this);
-                this.scene.camera.moveStart.addEventListener(this.innerMoveStart, this);
-                this.scene.camera.moveEnd.addEventListener(this.innerMoveEnd, this);
-
-                var t = new Cesium.ScreenSpaceEventHandler(this.scene.canvas);
-
-                t.setInputAction(function (t) {
-                    that.innerMoveEnd();
-                }, Cesium.ScreenSpaceEventType.LEFT_UP);
-                t.setInputAction(function (t) {
-                    that.innerMoveEnd();
-                }, Cesium.ScreenSpaceEventType.MIDDLE_UP);
-                this.handler = t;
-            }
-        }, {
-            key: 'unbindEvent',
-            value: function unbindEvent() {
-                this.scene.camera.moveStart.removeEventListener(this.innerMoveStart, this);
-                this.scene.camera.moveEnd.removeEventListener(this.innerMoveEnd, this);
-                this.scene.postRender.removeEventListener(this._reset, this);
-                this.handler && (this.handler.destroy(), this.handler = null);
-            }
-        }, {
-            key: 'moveStartEvent',
-            value: function moveStartEvent() {
-                if (this.mapvBaseLayer) {
-                    this.mapvBaseLayer.animatorMovestartEvent();
-                    this.scene.postRender.addEventListener(this._reset, this);
-                }
-            }
-        }, {
-            key: 'moveEndEvent',
-            value: function moveEndEvent() {
-                if (this.mapvBaseLayer) {
-                    this.scene.postRender.removeEventListener(this._reset, this), this.mapvBaseLayer.animatorMoveendEvent();
-                    this._reset();
-                }
-            }
-        }, {
-            key: 'zoomStartEvent',
-            value: function zoomStartEvent() {
-                this._unvisiable();
-            }
-        }, {
-            key: 'zoomEndEvent',
-            value: function zoomEndEvent() {
-                this._unvisiable();
-            }
-        }, {
-            key: 'addData',
-            value: function addData(t, e) {
-                void 0 != this.mapvBaseLayer && this.mapvBaseLayer.addData(t, e);
-            }
-        }, {
-            key: 'updateData',
-            value: function updateData(t, e) {
-                void 0 != this.mapvBaseLayer && this.mapvBaseLayer.updateData(t, e);
-            }
-        }, {
-            key: 'getData',
-            value: function getData() {
-                return this.mapvBaseLayer && (this.dataSet = this.mapvBaseLayer.getData()), this.dataSet;
-            }
-        }, {
-            key: 'removeData',
-            value: function removeData(t) {
-                void 0 != this.mapvBaseLayer && this.mapvBaseLayer && this.mapvBaseLayer.removeData(t);
-            }
-        }, {
-            key: 'removeAllData',
-            value: function removeAllData() {
-                void 0 != this.mapvBaseLayer && this.mapvBaseLayer.clearData();
-            }
-        }, {
-            key: '_visiable',
-            value: function _visiable() {
-                return this.canvas.style.display = "block", this;
-            }
-        }, {
-            key: '_unvisiable',
-            value: function _unvisiable() {
-                return this.canvas.style.display = "none", this;
-            }
-        }, {
-            key: '_createCanvas',
-            value: function _createCanvas() {
-                var t = document.createElement("canvas");
-                t.id = this.mapVOptions.layerid || "mapv" + defIndex++, t.style.position = "absolute", t.style.top = "0px", t.style.left = "0px", t.style.pointerEvents = "none", t.style.zIndex = this.mapVOptions.zIndex || 0, t.width = parseInt(this.map.canvas.width), t.height = parseInt(this.map.canvas.height), t.style.width = this.map.canvas.style.width, t.style.height = this.map.canvas.style.height;
-                var e = this.devicePixelRatio;
-                return "2d" == this.mapVOptions.context && t.getContext(this.mapVOptions.context).scale(e, e), t;
-            }
-        }, {
-            key: '_reset',
-            value: function _reset() {
-                this.resizeCanvas();
-                this.fixPosition();
-                this.onResize();
-                this.render();
-            }
-        }, {
-            key: 'draw',
-            value: function draw() {
-                this._reset();
-            }
-        }, {
-            key: 'show',
-            value: function show() {
-                this._visiable();
-            }
-        }, {
-            key: 'hide',
-            value: function hide() {
-                this._unvisiable();
-            }
-        }, {
-            key: 'destroy',
-            value: function destroy() {
-                this.remove();
-            }
-        }, {
-            key: 'remove',
-            value: function remove() {
-                void 0 != this.mapvBaseLayer && (this.removeAllData(), this.mapvBaseLayer.clear(this.mapvBaseLayer.getContext()), this.mapvBaseLayer = void 0, this.canvas.parentElement.removeChild(this.canvas));
-            }
-        }, {
-            key: 'update',
-            value: function update(t) {
-                void 0 != t && this.updateData(t.data, t.options);
-            }
-        }, {
-            key: 'resizeCanvas',
-            value: function resizeCanvas() {
-                if (void 0 != this.canvas && null != this.canvas) {
-                    var t = this.canvas;
-                    t.style.position = "absolute", t.style.top = "0px", t.style.left = "0px", t.width = parseInt(this.map.canvas.width), t.height = parseInt(this.map.canvas.height), t.style.width = this.map.canvas.style.width, t.style.height = this.map.canvas.style.height;
-                }
-            }
-        }, {
-            key: 'fixPosition',
-            value: function fixPosition() {}
-        }, {
-            key: 'onResize',
-            value: function onResize() {}
-        }, {
-            key: 'render',
-            value: function render() {
-                void 0 != this.mapvBaseLayer && this.mapvBaseLayer._canvasUpdate();
-            }
-        }]);
-        return MapVLayer;
-    }();
-
-    mapVLayer$2 = function mapVLayer(viewer, dataSet, mapVOptions, container) {
-        return new MapVLayer$1(viewer, dataSet, mapVOptions, container);
-    };
-}
-
-var mapVLayer$3 = mapVLayer$2;
-
 /**
  * @author kyle / http://nikai.us/
  */
@@ -10965,8 +9045,6 @@ exports.googleMapLayer = Layer$2;
 exports.MaptalksLayer = Layer$5;
 exports.AMapLayer = Layer$6;
 exports.OpenlayersLayer = Layer$8;
-exports.leafletMapLayer = mapVLayer$1;
-exports.cesiumMapLayer = mapVLayer$3;
 exports.DataSet = DataSet;
 exports.geojson = geojson;
 exports.csv = csv;
@@ -11673,10 +9751,10 @@ var ReactChildren = __webpack_require__(94);
 var ReactDOMFactories = __webpack_require__(98);
 var ReactElement = __webpack_require__(19);
 var ReactPropTypes = __webpack_require__(102);
-var ReactVersion = __webpack_require__(108);
+var ReactVersion = __webpack_require__(105);
 
-var createReactClass = __webpack_require__(109);
-var onlyChild = __webpack_require__(111);
+var createReactClass = __webpack_require__(106);
+var onlyChild = __webpack_require__(108);
 
 var createElement = ReactElement.createElement;
 var createFactory = ReactElement.createFactory;
@@ -11844,7 +9922,7 @@ module.exports = reactProdInvariant;
 
 
 
-var ReactRef = __webpack_require__(122);
+var ReactRef = __webpack_require__(119);
 var ReactInstrumentation = __webpack_require__(12);
 
 var warning = __webpack_require__(2);
@@ -12793,7 +10871,7 @@ module.exports = emptyObject;
 "use strict";
 
 
-module.exports = __webpack_require__(114);
+module.exports = __webpack_require__(111);
 
 
 /***/ }),
@@ -13604,10 +11682,10 @@ module.exports = escapeTextContentForBrowser;
 var _assign = __webpack_require__(5);
 
 var EventPluginRegistry = __webpack_require__(33);
-var ReactEventEmitterMixin = __webpack_require__(148);
+var ReactEventEmitterMixin = __webpack_require__(145);
 var ViewportMetrics = __webpack_require__(73);
 
-var getVendorPrefixedEventName = __webpack_require__(149);
+var getVendorPrefixedEventName = __webpack_require__(146);
 var isEventSupported = __webpack_require__(43);
 
 /**
@@ -14457,7 +12535,7 @@ module.exports = getEventModifierState;
 
 
 var DOMLazyTree = __webpack_require__(24);
-var Danger = __webpack_require__(133);
+var Danger = __webpack_require__(130);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(12);
 
@@ -16511,7 +14589,7 @@ var _markerOrderTip = __webpack_require__(90);
 
 var _markerOrderTip2 = _interopRequireDefault(_markerOrderTip);
 
-var _CustomOverlay = __webpack_require__(209);
+var _CustomOverlay = __webpack_require__(206);
 
 var _CustomOverlay2 = _interopRequireDefault(_CustomOverlay);
 
@@ -17501,7 +15579,7 @@ var DOMProperty = __webpack_require__(18);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(12);
 
-var quoteAttributeValueForBrowser = __webpack_require__(147);
+var quoteAttributeValueForBrowser = __webpack_require__(144);
 var warning = __webpack_require__(2);
 
 var VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + DOMProperty.ATTRIBUTE_NAME_START_CHAR + '][' + DOMProperty.ATTRIBUTE_NAME_CHAR + ']*$');
@@ -17963,11 +16041,11 @@ module.exports = ReactDOMSelect;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
-var ReactCompositeComponent = __webpack_require__(155);
+var ReactCompositeComponent = __webpack_require__(152);
 var ReactEmptyComponent = __webpack_require__(82);
 var ReactHostComponent = __webpack_require__(83);
 
-var getNextDebugID = __webpack_require__(158);
+var getNextDebugID = __webpack_require__(155);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
@@ -18245,9 +16323,9 @@ module.exports = ReactHostComponent;
 var _prodInvariant = __webpack_require__(3);
 
 var ReactCurrentOwner = __webpack_require__(14);
-var REACT_ELEMENT_TYPE = __webpack_require__(159);
+var REACT_ELEMENT_TYPE = __webpack_require__(156);
 
-var getIteratorFn = __webpack_require__(160);
+var getIteratorFn = __webpack_require__(157);
 var invariant = __webpack_require__(1);
 var KeyEscapeUtils = __webpack_require__(52);
 var warning = __webpack_require__(2);
@@ -18503,9 +16581,9 @@ module.exports = EventListener;
 
 
 
-var ReactDOMSelection = __webpack_require__(172);
+var ReactDOMSelection = __webpack_require__(169);
 
-var containsNode = __webpack_require__(174);
+var containsNode = __webpack_require__(171);
 var focusNode = __webpack_require__(75);
 var getActiveElement = __webpack_require__(87);
 
@@ -18679,12 +16757,12 @@ var React = __webpack_require__(21);
 var ReactBrowserEventEmitter = __webpack_require__(38);
 var ReactCurrentOwner = __webpack_require__(14);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMContainerInfo = __webpack_require__(189);
-var ReactDOMFeatureFlags = __webpack_require__(190);
+var ReactDOMContainerInfo = __webpack_require__(186);
+var ReactDOMFeatureFlags = __webpack_require__(187);
 var ReactFeatureFlags = __webpack_require__(70);
 var ReactInstanceMap = __webpack_require__(28);
 var ReactInstrumentation = __webpack_require__(12);
-var ReactMarkupChecksum = __webpack_require__(191);
+var ReactMarkupChecksum = __webpack_require__(188);
 var ReactReconciler = __webpack_require__(23);
 var ReactUpdateQueue = __webpack_require__(53);
 var ReactUpdates = __webpack_require__(15);
@@ -19254,7 +17332,7 @@ var _marker = __webpack_require__(64);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _kitsJs = __webpack_require__(199);
+var _kitsJs = __webpack_require__(196);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19523,63 +17601,63 @@ var _map = __webpack_require__(93);
 
 var _map2 = _interopRequireDefault(_map);
 
-var _marker = __webpack_require__(236);
+var _marker = __webpack_require__(233);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _markerOrderTip = __webpack_require__(237);
+var _markerOrderTip = __webpack_require__(234);
 
 var _markerOrderTip2 = _interopRequireDefault(_markerOrderTip);
 
-var _pointLabel = __webpack_require__(238);
+var _pointLabel = __webpack_require__(235);
 
 var _pointLabel2 = _interopRequireDefault(_pointLabel);
 
-var _trafficLayer = __webpack_require__(239);
+var _trafficLayer = __webpack_require__(236);
 
 var _trafficLayer2 = _interopRequireDefault(_trafficLayer);
 
-var _infowindow = __webpack_require__(240);
+var _infowindow = __webpack_require__(237);
 
 var _infowindow2 = _interopRequireDefault(_infowindow);
 
-var _graphy = __webpack_require__(241);
+var _graphy = __webpack_require__(238);
 
 var _graphy2 = _interopRequireDefault(_graphy);
 
-var _markerList = __webpack_require__(242);
+var _markerList = __webpack_require__(239);
 
 var _markerList2 = _interopRequireDefault(_markerList);
 
-var _mapvLayer = __webpack_require__(243);
+var _mapvLayer = __webpack_require__(240);
 
 var _mapvLayer2 = _interopRequireDefault(_mapvLayer);
 
-var _mapvMarkerList = __webpack_require__(244);
+var _mapvMarkerList = __webpack_require__(241);
 
 var _mapvMarkerList2 = _interopRequireDefault(_mapvMarkerList);
 
-var _road = __webpack_require__(245);
+var _road = __webpack_require__(242);
 
 var _road2 = _interopRequireDefault(_road);
 
-var _arc = __webpack_require__(246);
+var _arc = __webpack_require__(243);
 
 var _arc2 = _interopRequireDefault(_arc);
 
-var _thickRay = __webpack_require__(247);
+var _thickRay = __webpack_require__(244);
 
 var _thickRay2 = _interopRequireDefault(_thickRay);
 
-var _boundary = __webpack_require__(248);
+var _boundary = __webpack_require__(245);
 
 var _boundary2 = _interopRequireDefault(_boundary);
 
-var _control = __webpack_require__(249);
+var _control = __webpack_require__(246);
 
 var _control2 = _interopRequireDefault(_control);
 
-var _drivingRoute = __webpack_require__(250);
+var _drivingRoute = __webpack_require__(247);
 
 var _drivingRoute2 = _interopRequireDefault(_drivingRoute);
 
@@ -20761,33 +18839,13 @@ module.exports = factory(isValidElement);
 
 
 
-var ReactIs = __webpack_require__(104);
+var emptyFunction = __webpack_require__(13);
+var invariant = __webpack_require__(1);
+var warning = __webpack_require__(2);
 var assign = __webpack_require__(5);
 
 var ReactPropTypesSecret = __webpack_require__(63);
-var checkPropTypes = __webpack_require__(107);
-
-var has = Function.call.bind(Object.prototype.hasOwnProperty);
-var printWarning = function() {};
-
-if (process.env.NODE_ENV !== 'production') {
-  printWarning = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-}
-
-function emptyFunctionThatReturnsNull() {
-  return null;
-}
+var checkPropTypes = __webpack_require__(104);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -20878,7 +18936,6 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
     any: createAnyTypeChecker(),
     arrayOf: createArrayOfTypeChecker,
     element: createElementTypeChecker(),
-    elementType: createElementTypeTypeChecker(),
     instanceOf: createInstanceTypeChecker,
     node: createNodeChecker(),
     objectOf: createObjectOfTypeChecker,
@@ -20932,13 +18989,12 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
       if (secret !== ReactPropTypesSecret) {
         if (throwOnDirectAccess) {
           // New behavior only for users of `prop-types` package
-          var err = new Error(
+          invariant(
+            false,
             'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
             'Use `PropTypes.checkPropTypes()` to call them. ' +
             'Read more at http://fb.me/use-check-prop-types'
           );
-          err.name = 'Invariant Violation';
-          throw err;
         } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
           // Old behavior for people using React.PropTypes
           var cacheKey = componentName + ':' + propName;
@@ -20947,12 +19003,15 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
             // Avoid spamming the console because they are often not actionable except for lib authors
             manualPropTypeWarningCount < 3
           ) {
-            printWarning(
+            warning(
+              false,
               'You are manually calling a React.PropTypes validation ' +
-              'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
+              'function for the `%s` prop on `%s`. This is deprecated ' +
               'and will throw in the standalone `prop-types` package. ' +
               'You may be seeing this warning due to a third-party PropTypes ' +
-              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
+              propFullName,
+              componentName
             );
             manualPropTypeCallCache[cacheKey] = true;
             manualPropTypeWarningCount++;
@@ -20996,7 +19055,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
   }
 
   function createAnyTypeChecker() {
-    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
   }
 
   function createArrayOfTypeChecker(typeChecker) {
@@ -21032,18 +19091,6 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
     return createChainableTypeChecker(validate);
   }
 
-  function createElementTypeTypeChecker() {
-    function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
-      if (!ReactIs.isValidElementType(propValue)) {
-        var propType = getPropType(propValue);
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
-      }
-      return null;
-    }
-    return createChainableTypeChecker(validate);
-  }
-
   function createInstanceTypeChecker(expectedClass) {
     function validate(props, propName, componentName, location, propFullName) {
       if (!(props[propName] instanceof expectedClass)) {
@@ -21058,17 +19105,8 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
   function createEnumTypeChecker(expectedValues) {
     if (!Array.isArray(expectedValues)) {
-      if (process.env.NODE_ENV !== 'production') {
-        if (arguments.length > 1) {
-          printWarning(
-            'Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' +
-            'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).'
-          );
-        } else {
-          printWarning('Invalid argument supplied to oneOf, expected an array.');
-        }
-      }
-      return emptyFunctionThatReturnsNull;
+      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+      return emptyFunction.thatReturnsNull;
     }
 
     function validate(props, propName, componentName, location, propFullName) {
@@ -21079,14 +19117,8 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
         }
       }
 
-      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
-        var type = getPreciseType(value);
-        if (type === 'symbol') {
-          return String(value);
-        }
-        return value;
-      });
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+      var valuesString = JSON.stringify(expectedValues);
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
     }
     return createChainableTypeChecker(validate);
   }
@@ -21102,7 +19134,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
         return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
       }
       for (var key in propValue) {
-        if (has(propValue, key)) {
+        if (propValue.hasOwnProperty(key)) {
           var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
           if (error instanceof Error) {
             return error;
@@ -21116,18 +19148,21 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
   function createUnionTypeChecker(arrayOfTypeCheckers) {
     if (!Array.isArray(arrayOfTypeCheckers)) {
-      process.env.NODE_ENV !== 'production' ? printWarning('Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
-      return emptyFunctionThatReturnsNull;
+      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunction.thatReturnsNull;
     }
 
     for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
       var checker = arrayOfTypeCheckers[i];
       if (typeof checker !== 'function') {
-        printWarning(
+        warning(
+          false,
           'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
-          'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
+          'received %s at index %s.',
+          getPostfixForTypeWarning(checker),
+          i
         );
-        return emptyFunctionThatReturnsNull;
+        return emptyFunction.thatReturnsNull;
       }
     }
 
@@ -21259,11 +19294,6 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
       return true;
     }
 
-    // falsy value can't be a Symbol
-    if (!propValue) {
-      return false;
-    }
-
     // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
     if (propValue['@@toStringTag'] === 'Symbol') {
       return true;
@@ -21338,7 +19368,6 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
   }
 
   ReactPropTypes.checkPropTypes = checkPropTypes;
-  ReactPropTypes.resetWarningCache = checkPropTypes.resetWarningCache;
   ReactPropTypes.PropTypes = ReactPropTypes;
 
   return ReactPropTypes;
@@ -21351,287 +19380,6 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(105);
-} else {
-  module.exports = __webpack_require__(106);
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/** @license React v16.10.2
- * react-is.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-Object.defineProperty(exports,"__esModule",{value:!0});
-var b="function"===typeof Symbol&&Symbol.for,c=b?Symbol.for("react.element"):60103,d=b?Symbol.for("react.portal"):60106,e=b?Symbol.for("react.fragment"):60107,f=b?Symbol.for("react.strict_mode"):60108,g=b?Symbol.for("react.profiler"):60114,h=b?Symbol.for("react.provider"):60109,k=b?Symbol.for("react.context"):60110,l=b?Symbol.for("react.async_mode"):60111,m=b?Symbol.for("react.concurrent_mode"):60111,n=b?Symbol.for("react.forward_ref"):60112,p=b?Symbol.for("react.suspense"):60113,q=b?Symbol.for("react.suspense_list"):
-60120,r=b?Symbol.for("react.memo"):60115,t=b?Symbol.for("react.lazy"):60116,v=b?Symbol.for("react.fundamental"):60117,w=b?Symbol.for("react.responder"):60118,x=b?Symbol.for("react.scope"):60119;function y(a){if("object"===typeof a&&null!==a){var u=a.$$typeof;switch(u){case c:switch(a=a.type,a){case l:case m:case e:case g:case f:case p:return a;default:switch(a=a&&a.$$typeof,a){case k:case n:case h:return a;default:return u}}case t:case r:case d:return u}}}function z(a){return y(a)===m}
-exports.typeOf=y;exports.AsyncMode=l;exports.ConcurrentMode=m;exports.ContextConsumer=k;exports.ContextProvider=h;exports.Element=c;exports.ForwardRef=n;exports.Fragment=e;exports.Lazy=t;exports.Memo=r;exports.Portal=d;exports.Profiler=g;exports.StrictMode=f;exports.Suspense=p;
-exports.isValidElementType=function(a){return"string"===typeof a||"function"===typeof a||a===e||a===m||a===g||a===f||a===p||a===q||"object"===typeof a&&null!==a&&(a.$$typeof===t||a.$$typeof===r||a.$$typeof===h||a.$$typeof===k||a.$$typeof===n||a.$$typeof===v||a.$$typeof===w||a.$$typeof===x)};exports.isAsyncMode=function(a){return z(a)||y(a)===l};exports.isConcurrentMode=z;exports.isContextConsumer=function(a){return y(a)===k};exports.isContextProvider=function(a){return y(a)===h};
-exports.isElement=function(a){return"object"===typeof a&&null!==a&&a.$$typeof===c};exports.isForwardRef=function(a){return y(a)===n};exports.isFragment=function(a){return y(a)===e};exports.isLazy=function(a){return y(a)===t};exports.isMemo=function(a){return y(a)===r};exports.isPortal=function(a){return y(a)===d};exports.isProfiler=function(a){return y(a)===g};exports.isStrictMode=function(a){return y(a)===f};exports.isSuspense=function(a){return y(a)===p};
-
-
-/***/ }),
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/** @license React v16.10.2
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-
-
-
-
-if (process.env.NODE_ENV !== "production") {
-  (function() {
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
-// nor polyfill, then a plain number is used for performance.
-var hasSymbol = typeof Symbol === 'function' && Symbol.for;
-var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
-var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
-var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
-var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
-var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
-var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
-var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
-// (unstable) APIs that have been removed. Can we remove the symbols?
-
-var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
-var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
-var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
-var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
-var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
-var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
-var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
-var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
-var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
-var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
-
-function isValidElementType(type) {
-  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE);
-}
-
-/**
- * Forked from fbjs/warning:
- * https://github.com/facebook/fbjs/blob/e66ba20ad5be433eb54423f2b097d829324d9de6/packages/fbjs/src/__forks__/warning.js
- *
- * Only change is we use console.warn instead of console.error,
- * and do nothing when 'console' is not supported.
- * This really simplifies the code.
- * ---
- * Similar to invariant but only logs a warning if the condition is not met.
- * This can be used to log issues in development environments in critical
- * paths. Removing the logging code for production environments will keep the
- * same logic and follow the same code paths.
- */
-var lowPriorityWarningWithoutStack = function () {};
-
-{
-  var printWarning = function (format) {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    var argIndex = 0;
-    var message = 'Warning: ' + format.replace(/%s/g, function () {
-      return args[argIndex++];
-    });
-
-    if (typeof console !== 'undefined') {
-      console.warn(message);
-    }
-
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-
-  lowPriorityWarningWithoutStack = function (condition, format) {
-    if (format === undefined) {
-      throw new Error('`lowPriorityWarningWithoutStack(condition, format, ...args)` requires a warning ' + 'message argument');
-    }
-
-    if (!condition) {
-      for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        args[_key2 - 2] = arguments[_key2];
-      }
-
-      printWarning.apply(void 0, [format].concat(args));
-    }
-  };
-}
-
-var lowPriorityWarningWithoutStack$1 = lowPriorityWarningWithoutStack;
-
-function typeOf(object) {
-  if (typeof object === 'object' && object !== null) {
-    var $$typeof = object.$$typeof;
-
-    switch ($$typeof) {
-      case REACT_ELEMENT_TYPE:
-        var type = object.type;
-
-        switch (type) {
-          case REACT_ASYNC_MODE_TYPE:
-          case REACT_CONCURRENT_MODE_TYPE:
-          case REACT_FRAGMENT_TYPE:
-          case REACT_PROFILER_TYPE:
-          case REACT_STRICT_MODE_TYPE:
-          case REACT_SUSPENSE_TYPE:
-            return type;
-
-          default:
-            var $$typeofType = type && type.$$typeof;
-
-            switch ($$typeofType) {
-              case REACT_CONTEXT_TYPE:
-              case REACT_FORWARD_REF_TYPE:
-              case REACT_PROVIDER_TYPE:
-                return $$typeofType;
-
-              default:
-                return $$typeof;
-            }
-
-        }
-
-      case REACT_LAZY_TYPE:
-      case REACT_MEMO_TYPE:
-      case REACT_PORTAL_TYPE:
-        return $$typeof;
-    }
-  }
-
-  return undefined;
-} // AsyncMode is deprecated along with isAsyncMode
-
-var AsyncMode = REACT_ASYNC_MODE_TYPE;
-var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
-var ContextConsumer = REACT_CONTEXT_TYPE;
-var ContextProvider = REACT_PROVIDER_TYPE;
-var Element = REACT_ELEMENT_TYPE;
-var ForwardRef = REACT_FORWARD_REF_TYPE;
-var Fragment = REACT_FRAGMENT_TYPE;
-var Lazy = REACT_LAZY_TYPE;
-var Memo = REACT_MEMO_TYPE;
-var Portal = REACT_PORTAL_TYPE;
-var Profiler = REACT_PROFILER_TYPE;
-var StrictMode = REACT_STRICT_MODE_TYPE;
-var Suspense = REACT_SUSPENSE_TYPE;
-var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
-
-function isAsyncMode(object) {
-  {
-    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-      hasWarnedAboutDeprecatedIsAsyncMode = true;
-      lowPriorityWarningWithoutStack$1(false, 'The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
-    }
-  }
-
-  return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
-}
-function isConcurrentMode(object) {
-  return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
-}
-function isContextConsumer(object) {
-  return typeOf(object) === REACT_CONTEXT_TYPE;
-}
-function isContextProvider(object) {
-  return typeOf(object) === REACT_PROVIDER_TYPE;
-}
-function isElement(object) {
-  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-}
-function isForwardRef(object) {
-  return typeOf(object) === REACT_FORWARD_REF_TYPE;
-}
-function isFragment(object) {
-  return typeOf(object) === REACT_FRAGMENT_TYPE;
-}
-function isLazy(object) {
-  return typeOf(object) === REACT_LAZY_TYPE;
-}
-function isMemo(object) {
-  return typeOf(object) === REACT_MEMO_TYPE;
-}
-function isPortal(object) {
-  return typeOf(object) === REACT_PORTAL_TYPE;
-}
-function isProfiler(object) {
-  return typeOf(object) === REACT_PROFILER_TYPE;
-}
-function isStrictMode(object) {
-  return typeOf(object) === REACT_STRICT_MODE_TYPE;
-}
-function isSuspense(object) {
-  return typeOf(object) === REACT_SUSPENSE_TYPE;
-}
-
-exports.typeOf = typeOf;
-exports.AsyncMode = AsyncMode;
-exports.ConcurrentMode = ConcurrentMode;
-exports.ContextConsumer = ContextConsumer;
-exports.ContextProvider = ContextProvider;
-exports.Element = Element;
-exports.ForwardRef = ForwardRef;
-exports.Fragment = Fragment;
-exports.Lazy = Lazy;
-exports.Memo = Memo;
-exports.Portal = Portal;
-exports.Profiler = Profiler;
-exports.StrictMode = StrictMode;
-exports.Suspense = Suspense;
-exports.isValidElementType = isValidElementType;
-exports.isAsyncMode = isAsyncMode;
-exports.isConcurrentMode = isConcurrentMode;
-exports.isContextConsumer = isContextConsumer;
-exports.isContextProvider = isContextProvider;
-exports.isElement = isElement;
-exports.isForwardRef = isForwardRef;
-exports.isFragment = isFragment;
-exports.isLazy = isLazy;
-exports.isMemo = isMemo;
-exports.isPortal = isPortal;
-exports.isProfiler = isProfiler;
-exports.isStrictMode = isStrictMode;
-exports.isSuspense = isSuspense;
-  })();
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 107 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -21641,25 +19389,11 @@ exports.isSuspense = isSuspense;
 
 
 
-var printWarning = function() {};
-
 if (process.env.NODE_ENV !== 'production') {
+  var invariant = __webpack_require__(1);
+  var warning = __webpack_require__(2);
   var ReactPropTypesSecret = __webpack_require__(63);
   var loggedTypeFailures = {};
-  var has = Function.call.bind(Object.prototype.hasOwnProperty);
-
-  printWarning = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
 }
 
 /**
@@ -21676,7 +19410,7 @@ if (process.env.NODE_ENV !== 'production') {
 function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
   if (process.env.NODE_ENV !== 'production') {
     for (var typeSpecName in typeSpecs) {
-      if (has(typeSpecs, typeSpecName)) {
+      if (typeSpecs.hasOwnProperty(typeSpecName)) {
         var error;
         // Prop type validation may throw. In case they do, we don't want to
         // fail the render phase where it didn't fail before. So we log it.
@@ -21684,28 +19418,12 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
         try {
           // This is intentionally an invariant that gets caught. It's the same
           // behavior as without this statement except with a better message.
-          if (typeof typeSpecs[typeSpecName] !== 'function') {
-            var err = Error(
-              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
-              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
-            );
-            err.name = 'Invariant Violation';
-            throw err;
-          }
+          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
           error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
         } catch (ex) {
           error = ex;
         }
-        if (error && !(error instanceof Error)) {
-          printWarning(
-            (componentName || 'React class') + ': type specification of ' +
-            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
-            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
-            'You may have forgotten to pass an argument to the type checker ' +
-            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
-            'shape all require an argument).'
-          );
-        }
+        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
         if (error instanceof Error && !(error.message in loggedTypeFailures)) {
           // Only monitor this failure once because there tends to be a lot of the
           // same error.
@@ -21713,23 +19431,10 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
 
           var stack = getStack ? getStack() : '';
 
-          printWarning(
-            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
-          );
+          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
         }
       }
     }
-  }
-}
-
-/**
- * Resets warning cache when testing.
- *
- * @private
- */
-checkPropTypes.resetWarningCache = function() {
-  if (process.env.NODE_ENV !== 'production') {
-    loggedTypeFailures = {};
   }
 }
 
@@ -21738,7 +19443,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 108 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21755,7 +19460,7 @@ module.exports = checkPropTypes;
 module.exports = '15.6.2';
 
 /***/ }),
-/* 109 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21776,12 +19481,12 @@ var _require2 = __webpack_require__(19),
     isValidElement = _require2.isValidElement;
 
 var ReactNoopUpdateQueue = __webpack_require__(58);
-var factory = __webpack_require__(110);
+var factory = __webpack_require__(107);
 
 module.exports = factory(Component, isValidElement, ReactNoopUpdateQueue);
 
 /***/ }),
-/* 110 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22057,27 +19762,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      */
     componentWillUnmount: 'DEFINE_MANY',
 
-    /**
-     * Replacement for (deprecated) `componentWillMount`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillMount: 'DEFINE_MANY',
-
-    /**
-     * Replacement for (deprecated) `componentWillReceiveProps`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillReceiveProps: 'DEFINE_MANY',
-
-    /**
-     * Replacement for (deprecated) `componentWillUpdate`.
-     *
-     * @optional
-     */
-    UNSAFE_componentWillUpdate: 'DEFINE_MANY',
-
     // ==== Advanced methods ====
 
     /**
@@ -22091,23 +19775,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
      * @overridable
      */
     updateComponent: 'OVERRIDE_BASE'
-  };
-
-  /**
-   * Similar to ReactClassInterface but for static methods.
-   */
-  var ReactClassStaticInterface = {
-    /**
-     * This method is invoked after a component is instantiated and when it
-     * receives new props. Return an object to update state in response to
-     * prop changes. Return null to indicate no change to state.
-     *
-     * If an object is returned, its keys will be merged into the existing state.
-     *
-     * @return {object || null}
-     * @optional
-     */
-    getDerivedStateFromProps: 'DEFINE_MANY_MERGED'
   };
 
   /**
@@ -22344,7 +20011,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
     if (!statics) {
       return;
     }
-
     for (var name in statics) {
       var property = statics[name];
       if (!statics.hasOwnProperty(name)) {
@@ -22361,25 +20027,14 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
         name
       );
 
-      var isAlreadyDefined = name in Constructor;
-      if (isAlreadyDefined) {
-        var specPolicy = ReactClassStaticInterface.hasOwnProperty(name)
-          ? ReactClassStaticInterface[name]
-          : null;
-
-        _invariant(
-          specPolicy === 'DEFINE_MANY_MERGED',
-          'ReactClass: You are attempting to define ' +
-            '`%s` on your component more than once. This conflict may be ' +
-            'due to a mixin.',
-          name
-        );
-
-        Constructor[name] = createMergedResultFunction(Constructor[name], property);
-
-        return;
-      }
-
+      var isInherited = name in Constructor;
+      _invariant(
+        !isInherited,
+        'ReactClass: You are attempting to define ' +
+          '`%s` on your component more than once. This conflict may be ' +
+          'due to a mixin.',
+        name
+      );
       Constructor[name] = property;
     }
   }
@@ -22689,12 +20344,6 @@ function factory(ReactComponent, isValidElement, ReactNoopUpdateQueue) {
           'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
         spec.displayName || 'A component'
       );
-      warning(
-        !Constructor.prototype.UNSAFE_componentWillRecieveProps,
-        '%s has a method called UNSAFE_componentWillRecieveProps(). ' +
-          'Did you mean UNSAFE_componentWillReceiveProps()?',
-        spec.displayName || 'A component'
-      );
     }
 
     // Reduce time spent doing lookups by setting these on the prototype.
@@ -22715,7 +20364,7 @@ module.exports = factory;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 111 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22757,7 +20406,7 @@ module.exports = onlyChild;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 112 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22777,7 +20426,7 @@ var _component = __webpack_require__(10);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _common = __webpack_require__(113);
+var _common = __webpack_require__(110);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22988,7 +20637,7 @@ var Map = function (_Component) {
 exports.default = Map;
 
 /***/ }),
-/* 113 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23008,7 +20657,7 @@ var isString = exports.isString = function isString(str) {
 };
 
 /***/ }),
-/* 114 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23025,15 +20674,15 @@ var isString = exports.isString = function isString(str) {
 
 
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDefaultInjection = __webpack_require__(115);
+var ReactDefaultInjection = __webpack_require__(112);
 var ReactMount = __webpack_require__(88);
 var ReactReconciler = __webpack_require__(23);
 var ReactUpdates = __webpack_require__(15);
-var ReactVersion = __webpack_require__(193);
+var ReactVersion = __webpack_require__(190);
 
-var findDOMNode = __webpack_require__(194);
+var findDOMNode = __webpack_require__(191);
 var getHostComponentFromComposite = __webpack_require__(89);
-var renderSubtreeIntoContainer = __webpack_require__(195);
+var renderSubtreeIntoContainer = __webpack_require__(192);
 var warning = __webpack_require__(2);
 
 ReactDefaultInjection.inject();
@@ -23110,9 +20759,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 if (process.env.NODE_ENV !== 'production') {
   var ReactInstrumentation = __webpack_require__(12);
-  var ReactDOMUnknownPropertyHook = __webpack_require__(196);
-  var ReactDOMNullInputValuePropHook = __webpack_require__(197);
-  var ReactDOMInvalidARIAHook = __webpack_require__(198);
+  var ReactDOMUnknownPropertyHook = __webpack_require__(193);
+  var ReactDOMNullInputValuePropHook = __webpack_require__(194);
+  var ReactDOMInvalidARIAHook = __webpack_require__(195);
 
   ReactInstrumentation.debugTool.addHook(ReactDOMUnknownPropertyHook);
   ReactInstrumentation.debugTool.addHook(ReactDOMNullInputValuePropHook);
@@ -23123,7 +20772,7 @@ module.exports = ReactDOM;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 115 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23137,25 +20786,25 @@ module.exports = ReactDOM;
 
 
 
-var ARIADOMPropertyConfig = __webpack_require__(116);
-var BeforeInputEventPlugin = __webpack_require__(117);
-var ChangeEventPlugin = __webpack_require__(121);
-var DefaultEventPluginOrder = __webpack_require__(129);
-var EnterLeaveEventPlugin = __webpack_require__(130);
-var HTMLDOMPropertyConfig = __webpack_require__(131);
-var ReactComponentBrowserEnvironment = __webpack_require__(132);
-var ReactDOMComponent = __webpack_require__(138);
+var ARIADOMPropertyConfig = __webpack_require__(113);
+var BeforeInputEventPlugin = __webpack_require__(114);
+var ChangeEventPlugin = __webpack_require__(118);
+var DefaultEventPluginOrder = __webpack_require__(126);
+var EnterLeaveEventPlugin = __webpack_require__(127);
+var HTMLDOMPropertyConfig = __webpack_require__(128);
+var ReactComponentBrowserEnvironment = __webpack_require__(129);
+var ReactDOMComponent = __webpack_require__(135);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMEmptyComponent = __webpack_require__(164);
-var ReactDOMTreeTraversal = __webpack_require__(165);
-var ReactDOMTextComponent = __webpack_require__(166);
-var ReactDefaultBatchingStrategy = __webpack_require__(167);
-var ReactEventListener = __webpack_require__(168);
-var ReactInjection = __webpack_require__(170);
-var ReactReconcileTransaction = __webpack_require__(171);
-var SVGDOMPropertyConfig = __webpack_require__(177);
-var SelectEventPlugin = __webpack_require__(178);
-var SimpleEventPlugin = __webpack_require__(179);
+var ReactDOMEmptyComponent = __webpack_require__(161);
+var ReactDOMTreeTraversal = __webpack_require__(162);
+var ReactDOMTextComponent = __webpack_require__(163);
+var ReactDefaultBatchingStrategy = __webpack_require__(164);
+var ReactEventListener = __webpack_require__(165);
+var ReactInjection = __webpack_require__(167);
+var ReactReconcileTransaction = __webpack_require__(168);
+var SVGDOMPropertyConfig = __webpack_require__(174);
+var SelectEventPlugin = __webpack_require__(175);
+var SimpleEventPlugin = __webpack_require__(176);
 
 var alreadyInjected = false;
 
@@ -23212,7 +20861,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 116 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23289,7 +20938,7 @@ var ARIADOMPropertyConfig = {
 module.exports = ARIADOMPropertyConfig;
 
 /***/ }),
-/* 117 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23305,9 +20954,9 @@ module.exports = ARIADOMPropertyConfig;
 
 var EventPropagators = __webpack_require__(25);
 var ExecutionEnvironment = __webpack_require__(7);
-var FallbackCompositionState = __webpack_require__(118);
-var SyntheticCompositionEvent = __webpack_require__(119);
-var SyntheticInputEvent = __webpack_require__(120);
+var FallbackCompositionState = __webpack_require__(115);
+var SyntheticCompositionEvent = __webpack_require__(116);
+var SyntheticInputEvent = __webpack_require__(117);
 
 var END_KEYCODES = [9, 13, 27, 32]; // Tab, Return, Esc, Space
 var START_KEYCODE = 229;
@@ -23676,7 +21325,7 @@ var BeforeInputEventPlugin = {
 module.exports = BeforeInputEventPlugin;
 
 /***/ }),
-/* 118 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23774,7 +21423,7 @@ PooledClass.addPoolingTo(FallbackCompositionState);
 module.exports = FallbackCompositionState;
 
 /***/ }),
-/* 119 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23813,7 +21462,7 @@ SyntheticEvent.augmentClass(SyntheticCompositionEvent, CompositionEventInterface
 module.exports = SyntheticCompositionEvent;
 
 /***/ }),
-/* 120 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23853,7 +21502,7 @@ SyntheticEvent.augmentClass(SyntheticInputEvent, InputEventInterface);
 module.exports = SyntheticInputEvent;
 
 /***/ }),
-/* 121 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24168,7 +21817,7 @@ var ChangeEventPlugin = {
 module.exports = ChangeEventPlugin;
 
 /***/ }),
-/* 122 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24183,7 +21832,7 @@ module.exports = ChangeEventPlugin;
 
 
 
-var ReactOwner = __webpack_require__(123);
+var ReactOwner = __webpack_require__(120);
 
 var ReactRef = {};
 
@@ -24260,7 +21909,7 @@ ReactRef.detachRefs = function (instance, element) {
 module.exports = ReactRef;
 
 /***/ }),
-/* 123 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24357,7 +22006,7 @@ module.exports = ReactOwner;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 124 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24372,12 +22021,12 @@ module.exports = ReactOwner;
 
 
 
-var ReactInvalidSetStateWarningHook = __webpack_require__(125);
-var ReactHostOperationHistoryHook = __webpack_require__(126);
+var ReactInvalidSetStateWarningHook = __webpack_require__(122);
+var ReactHostOperationHistoryHook = __webpack_require__(123);
 var ReactComponentTreeHook = __webpack_require__(11);
 var ExecutionEnvironment = __webpack_require__(7);
 
-var performanceNow = __webpack_require__(127);
+var performanceNow = __webpack_require__(124);
 var warning = __webpack_require__(2);
 
 var hooks = [];
@@ -24722,7 +22371,7 @@ module.exports = ReactDebugTool;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 125 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24763,7 +22412,7 @@ module.exports = ReactInvalidSetStateWarningHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 126 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24800,7 +22449,7 @@ var ReactHostOperationHistoryHook = {
 module.exports = ReactHostOperationHistoryHook;
 
 /***/ }),
-/* 127 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24815,7 +22464,7 @@ module.exports = ReactHostOperationHistoryHook;
  * @typechecks
  */
 
-var performance = __webpack_require__(128);
+var performance = __webpack_require__(125);
 
 var performanceNow;
 
@@ -24837,7 +22486,7 @@ if (performance.now) {
 module.exports = performanceNow;
 
 /***/ }),
-/* 128 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24863,7 +22512,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = performance || {};
 
 /***/ }),
-/* 129 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24892,7 +22541,7 @@ var DefaultEventPluginOrder = ['ResponderEventPlugin', 'SimpleEventPlugin', 'Tap
 module.exports = DefaultEventPluginOrder;
 
 /***/ }),
-/* 130 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24993,7 +22642,7 @@ var EnterLeaveEventPlugin = {
 module.exports = EnterLeaveEventPlugin;
 
 /***/ }),
-/* 131 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25233,7 +22882,7 @@ var HTMLDOMPropertyConfig = {
 module.exports = HTMLDOMPropertyConfig;
 
 /***/ }),
-/* 132 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25248,7 +22897,7 @@ module.exports = HTMLDOMPropertyConfig;
 
 
 var DOMChildrenOperations = __webpack_require__(45);
-var ReactDOMIDOperations = __webpack_require__(137);
+var ReactDOMIDOperations = __webpack_require__(134);
 
 /**
  * Abstracts away all functionality of the reconciler that requires knowledge of
@@ -25264,7 +22913,7 @@ var ReactComponentBrowserEnvironment = {
 module.exports = ReactComponentBrowserEnvironment;
 
 /***/ }),
-/* 133 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25283,7 +22932,7 @@ var _prodInvariant = __webpack_require__(3);
 var DOMLazyTree = __webpack_require__(24);
 var ExecutionEnvironment = __webpack_require__(7);
 
-var createNodesFromMarkup = __webpack_require__(134);
+var createNodesFromMarkup = __webpack_require__(131);
 var emptyFunction = __webpack_require__(13);
 var invariant = __webpack_require__(1);
 
@@ -25314,7 +22963,7 @@ module.exports = Danger;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 134 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25333,8 +22982,8 @@ module.exports = Danger;
 
 var ExecutionEnvironment = __webpack_require__(7);
 
-var createArrayFromMixed = __webpack_require__(135);
-var getMarkupWrap = __webpack_require__(136);
+var createArrayFromMixed = __webpack_require__(132);
+var getMarkupWrap = __webpack_require__(133);
 var invariant = __webpack_require__(1);
 
 /**
@@ -25402,7 +23051,7 @@ module.exports = createNodesFromMarkup;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 135 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25533,7 +23182,7 @@ module.exports = createArrayFromMixed;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 136 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25632,7 +23281,7 @@ module.exports = getMarkupWrap;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 137 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25668,7 +23317,7 @@ var ReactDOMIDOperations = {
 module.exports = ReactDOMIDOperations;
 
 /***/ }),
-/* 138 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25687,8 +23336,8 @@ module.exports = ReactDOMIDOperations;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
-var AutoFocusUtils = __webpack_require__(139);
-var CSSPropertyOperations = __webpack_require__(140);
+var AutoFocusUtils = __webpack_require__(136);
+var CSSPropertyOperations = __webpack_require__(137);
 var DOMLazyTree = __webpack_require__(24);
 var DOMNamespaces = __webpack_require__(46);
 var DOMProperty = __webpack_require__(18);
@@ -25698,13 +23347,13 @@ var EventPluginRegistry = __webpack_require__(33);
 var ReactBrowserEventEmitter = __webpack_require__(38);
 var ReactDOMComponentFlags = __webpack_require__(65);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMInput = __webpack_require__(150);
-var ReactDOMOption = __webpack_require__(151);
+var ReactDOMInput = __webpack_require__(147);
+var ReactDOMOption = __webpack_require__(148);
 var ReactDOMSelect = __webpack_require__(79);
-var ReactDOMTextarea = __webpack_require__(152);
+var ReactDOMTextarea = __webpack_require__(149);
 var ReactInstrumentation = __webpack_require__(12);
-var ReactMultiChild = __webpack_require__(153);
-var ReactServerRenderingTransaction = __webpack_require__(162);
+var ReactMultiChild = __webpack_require__(150);
+var ReactServerRenderingTransaction = __webpack_require__(159);
 
 var emptyFunction = __webpack_require__(13);
 var escapeTextContentForBrowser = __webpack_require__(37);
@@ -26686,7 +24335,7 @@ module.exports = ReactDOMComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 139 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26713,7 +24362,7 @@ var AutoFocusUtils = {
 module.exports = AutoFocusUtils;
 
 /***/ }),
-/* 140 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26731,10 +24380,10 @@ var CSSProperty = __webpack_require__(76);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactInstrumentation = __webpack_require__(12);
 
-var camelizeStyleName = __webpack_require__(141);
-var dangerousStyleValue = __webpack_require__(143);
-var hyphenateStyleName = __webpack_require__(144);
-var memoizeStringOnly = __webpack_require__(146);
+var camelizeStyleName = __webpack_require__(138);
+var dangerousStyleValue = __webpack_require__(140);
+var hyphenateStyleName = __webpack_require__(141);
+var memoizeStringOnly = __webpack_require__(143);
 var warning = __webpack_require__(2);
 
 var processStyleName = memoizeStringOnly(function (styleName) {
@@ -26932,7 +24581,7 @@ module.exports = CSSPropertyOperations;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 141 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26947,7 +24596,7 @@ module.exports = CSSPropertyOperations;
 
 
 
-var camelize = __webpack_require__(142);
+var camelize = __webpack_require__(139);
 
 var msPattern = /^-ms-/;
 
@@ -26975,7 +24624,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 142 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27010,7 +24659,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 143 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27093,7 +24742,7 @@ module.exports = dangerousStyleValue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 144 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27108,7 +24757,7 @@ module.exports = dangerousStyleValue;
 
 
 
-var hyphenate = __webpack_require__(145);
+var hyphenate = __webpack_require__(142);
 
 var msPattern = /^ms-/;
 
@@ -27135,7 +24784,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 145 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27171,7 +24820,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 146 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27204,7 +24853,7 @@ function memoizeStringOnly(callback) {
 module.exports = memoizeStringOnly;
 
 /***/ }),
-/* 147 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27233,7 +24882,7 @@ function quoteAttributeValueForBrowser(value) {
 module.exports = quoteAttributeValueForBrowser;
 
 /***/ }),
-/* 148 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27268,7 +24917,7 @@ var ReactEventEmitterMixin = {
 module.exports = ReactEventEmitterMixin;
 
 /***/ }),
-/* 149 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27372,7 +25021,7 @@ function getVendorPrefixedEventName(eventName) {
 module.exports = getVendorPrefixedEventName;
 
 /***/ }),
-/* 150 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27663,7 +25312,7 @@ module.exports = ReactDOMInput;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 151 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27789,7 +25438,7 @@ module.exports = ReactDOMOption;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 152 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27953,7 +25602,7 @@ module.exports = ReactDOMTextarea;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 153 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27975,10 +25624,10 @@ var ReactInstrumentation = __webpack_require__(12);
 
 var ReactCurrentOwner = __webpack_require__(14);
 var ReactReconciler = __webpack_require__(23);
-var ReactChildReconciler = __webpack_require__(154);
+var ReactChildReconciler = __webpack_require__(151);
 
 var emptyFunction = __webpack_require__(13);
-var flattenChildren = __webpack_require__(161);
+var flattenChildren = __webpack_require__(158);
 var invariant = __webpack_require__(1);
 
 /**
@@ -28403,7 +26052,7 @@ module.exports = ReactMultiChild;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 154 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28560,7 +26209,7 @@ module.exports = ReactChildReconciler;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 155 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28587,7 +26236,7 @@ var ReactNodeTypes = __webpack_require__(81);
 var ReactReconciler = __webpack_require__(23);
 
 if (process.env.NODE_ENV !== 'production') {
-  var checkReactTypeSpec = __webpack_require__(156);
+  var checkReactTypeSpec = __webpack_require__(153);
 }
 
 var emptyObject = __webpack_require__(31);
@@ -29464,7 +27113,7 @@ module.exports = ReactCompositeComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 156 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29480,7 +27129,7 @@ module.exports = ReactCompositeComponent;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactPropTypeLocationNames = __webpack_require__(157);
+var ReactPropTypeLocationNames = __webpack_require__(154);
 var ReactPropTypesSecret = __webpack_require__(78);
 
 var invariant = __webpack_require__(1);
@@ -29555,7 +27204,7 @@ module.exports = checkReactTypeSpec;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 157 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29584,7 +27233,7 @@ module.exports = ReactPropTypeLocationNames;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 158 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29608,7 +27257,7 @@ function getNextDebugID() {
 module.exports = getNextDebugID;
 
 /***/ }),
-/* 159 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29631,7 +27280,7 @@ var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol['for'] && Symbol
 module.exports = REACT_ELEMENT_TYPE;
 
 /***/ }),
-/* 160 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29675,7 +27324,7 @@ function getIteratorFn(maybeIterable) {
 module.exports = getIteratorFn;
 
 /***/ }),
-/* 161 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29755,7 +27404,7 @@ module.exports = flattenChildren;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 162 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29774,7 +27423,7 @@ var _assign = __webpack_require__(5);
 var PooledClass = __webpack_require__(20);
 var Transaction = __webpack_require__(34);
 var ReactInstrumentation = __webpack_require__(12);
-var ReactServerUpdateQueue = __webpack_require__(163);
+var ReactServerUpdateQueue = __webpack_require__(160);
 
 /**
  * Executed within the scope of the `Transaction` instance. Consider these as
@@ -29849,7 +27498,7 @@ module.exports = ReactServerRenderingTransaction;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 163 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29992,7 +27641,7 @@ module.exports = ReactServerUpdateQueue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 164 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30055,7 +27704,7 @@ _assign(ReactDOMEmptyComponent.prototype, {
 module.exports = ReactDOMEmptyComponent;
 
 /***/ }),
-/* 165 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30195,7 +27844,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 166 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30361,7 +28010,7 @@ module.exports = ReactDOMTextComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 167 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30432,7 +28081,7 @@ var ReactDefaultBatchingStrategy = {
 module.exports = ReactDefaultBatchingStrategy;
 
 /***/ }),
-/* 168 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30455,7 +28104,7 @@ var ReactDOMComponentTree = __webpack_require__(6);
 var ReactUpdates = __webpack_require__(15);
 
 var getEventTarget = __webpack_require__(42);
-var getUnboundedScrollPosition = __webpack_require__(169);
+var getUnboundedScrollPosition = __webpack_require__(166);
 
 /**
  * Find the deepest React component completely containing the root of the
@@ -30590,7 +28239,7 @@ var ReactEventListener = {
 module.exports = ReactEventListener;
 
 /***/ }),
-/* 169 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30632,7 +28281,7 @@ function getUnboundedScrollPosition(scrollable) {
 module.exports = getUnboundedScrollPosition;
 
 /***/ }),
-/* 170 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30669,7 +28318,7 @@ var ReactInjection = {
 module.exports = ReactInjection;
 
 /***/ }),
-/* 171 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30851,7 +28500,7 @@ module.exports = ReactReconcileTransaction;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 172 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30867,7 +28516,7 @@ module.exports = ReactReconcileTransaction;
 
 var ExecutionEnvironment = __webpack_require__(7);
 
-var getNodeForCharacterOffset = __webpack_require__(173);
+var getNodeForCharacterOffset = __webpack_require__(170);
 var getTextContentAccessor = __webpack_require__(68);
 
 /**
@@ -31066,7 +28715,7 @@ var ReactDOMSelection = {
 module.exports = ReactDOMSelection;
 
 /***/ }),
-/* 173 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31143,7 +28792,7 @@ function getNodeForCharacterOffset(root, offset) {
 module.exports = getNodeForCharacterOffset;
 
 /***/ }),
-/* 174 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31158,7 +28807,7 @@ module.exports = getNodeForCharacterOffset;
  * 
  */
 
-var isTextNode = __webpack_require__(175);
+var isTextNode = __webpack_require__(172);
 
 /*eslint-disable no-bitwise */
 
@@ -31186,7 +28835,7 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 /***/ }),
-/* 175 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31201,7 +28850,7 @@ module.exports = containsNode;
  * @typechecks
  */
 
-var isNode = __webpack_require__(176);
+var isNode = __webpack_require__(173);
 
 /**
  * @param {*} object The object to check.
@@ -31214,7 +28863,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 176 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31242,7 +28891,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 177 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31547,7 +29196,7 @@ Object.keys(ATTRS).forEach(function (key) {
 module.exports = SVGDOMPropertyConfig;
 
 /***/ }),
-/* 178 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31738,7 +29387,7 @@ var SelectEventPlugin = {
 module.exports = SelectEventPlugin;
 
 /***/ }),
-/* 179 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31758,17 +29407,17 @@ var _prodInvariant = __webpack_require__(3);
 var EventListener = __webpack_require__(85);
 var EventPropagators = __webpack_require__(25);
 var ReactDOMComponentTree = __webpack_require__(6);
-var SyntheticAnimationEvent = __webpack_require__(180);
-var SyntheticClipboardEvent = __webpack_require__(181);
+var SyntheticAnimationEvent = __webpack_require__(177);
+var SyntheticClipboardEvent = __webpack_require__(178);
 var SyntheticEvent = __webpack_require__(16);
-var SyntheticFocusEvent = __webpack_require__(182);
-var SyntheticKeyboardEvent = __webpack_require__(183);
+var SyntheticFocusEvent = __webpack_require__(179);
+var SyntheticKeyboardEvent = __webpack_require__(180);
 var SyntheticMouseEvent = __webpack_require__(35);
-var SyntheticDragEvent = __webpack_require__(185);
-var SyntheticTouchEvent = __webpack_require__(186);
-var SyntheticTransitionEvent = __webpack_require__(187);
+var SyntheticDragEvent = __webpack_require__(182);
+var SyntheticTouchEvent = __webpack_require__(183);
+var SyntheticTransitionEvent = __webpack_require__(184);
 var SyntheticUIEvent = __webpack_require__(27);
-var SyntheticWheelEvent = __webpack_require__(188);
+var SyntheticWheelEvent = __webpack_require__(185);
 
 var emptyFunction = __webpack_require__(13);
 var getEventCharCode = __webpack_require__(55);
@@ -31968,7 +29617,7 @@ module.exports = SimpleEventPlugin;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 180 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32010,7 +29659,7 @@ SyntheticEvent.augmentClass(SyntheticAnimationEvent, AnimationEventInterface);
 module.exports = SyntheticAnimationEvent;
 
 /***/ }),
-/* 181 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32051,7 +29700,7 @@ SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 module.exports = SyntheticClipboardEvent;
 
 /***/ }),
-/* 182 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32090,7 +29739,7 @@ SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 module.exports = SyntheticFocusEvent;
 
 /***/ }),
-/* 183 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32107,7 +29756,7 @@ module.exports = SyntheticFocusEvent;
 var SyntheticUIEvent = __webpack_require__(27);
 
 var getEventCharCode = __webpack_require__(55);
-var getEventKey = __webpack_require__(184);
+var getEventKey = __webpack_require__(181);
 var getEventModifierState = __webpack_require__(44);
 
 /**
@@ -32177,7 +29826,7 @@ SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 module.exports = SyntheticKeyboardEvent;
 
 /***/ }),
-/* 184 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32292,7 +29941,7 @@ function getEventKey(nativeEvent) {
 module.exports = getEventKey;
 
 /***/ }),
-/* 185 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32331,7 +29980,7 @@ SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 module.exports = SyntheticDragEvent;
 
 /***/ }),
-/* 186 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32379,7 +30028,7 @@ SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 module.exports = SyntheticTouchEvent;
 
 /***/ }),
-/* 187 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32421,7 +30070,7 @@ SyntheticEvent.augmentClass(SyntheticTransitionEvent, TransitionEventInterface);
 module.exports = SyntheticTransitionEvent;
 
 /***/ }),
-/* 188 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32475,7 +30124,7 @@ SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 module.exports = SyntheticWheelEvent;
 
 /***/ }),
-/* 189 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32512,7 +30161,7 @@ module.exports = ReactDOMContainerInfo;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 190 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32534,7 +30183,7 @@ var ReactDOMFeatureFlags = {
 module.exports = ReactDOMFeatureFlags;
 
 /***/ }),
-/* 191 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32548,7 +30197,7 @@ module.exports = ReactDOMFeatureFlags;
 
 
 
-var adler32 = __webpack_require__(192);
+var adler32 = __webpack_require__(189);
 
 var TAG_END = /\/?>/;
 var COMMENT_START = /^<\!\-\-/;
@@ -32587,7 +30236,7 @@ var ReactMarkupChecksum = {
 module.exports = ReactMarkupChecksum;
 
 /***/ }),
-/* 192 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32634,7 +30283,7 @@ function adler32(data) {
 module.exports = adler32;
 
 /***/ }),
-/* 193 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32651,7 +30300,7 @@ module.exports = adler32;
 module.exports = '15.6.2';
 
 /***/ }),
-/* 194 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32715,7 +30364,7 @@ module.exports = findDOMNode;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 195 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32734,7 +30383,7 @@ var ReactMount = __webpack_require__(88);
 module.exports = ReactMount.renderSubtreeIntoContainer;
 
 /***/ }),
-/* 196 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32850,7 +30499,7 @@ module.exports = ReactDOMUnknownPropertyHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 197 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32897,7 +30546,7 @@ module.exports = ReactDOMNullInputValuePropHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 198 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32994,7 +30643,7 @@ module.exports = ReactDOMInvalidARIAHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 199 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33004,7 +30653,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _index = __webpack_require__(200);
+var _index = __webpack_require__(197);
 
 Object.defineProperty(exports, 'obj', {
   enumerable: true,
@@ -33013,7 +30662,7 @@ Object.defineProperty(exports, 'obj', {
   }
 });
 
-var _index2 = __webpack_require__(204);
+var _index2 = __webpack_require__(201);
 
 Object.defineProperty(exports, 'bmap', {
   enumerable: true,
@@ -33022,7 +30671,7 @@ Object.defineProperty(exports, 'bmap', {
   }
 });
 
-var _index3 = __webpack_require__(206);
+var _index3 = __webpack_require__(203);
 
 Object.defineProperty(exports, 'http', {
   enumerable: true,
@@ -33034,7 +30683,7 @@ Object.defineProperty(exports, 'http', {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 200 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33044,15 +30693,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _deepClone = __webpack_require__(201);
+var _deepClone = __webpack_require__(198);
 
 var _deepClone2 = _interopRequireDefault(_deepClone);
 
-var _merge = __webpack_require__(202);
+var _merge = __webpack_require__(199);
 
 var _merge2 = _interopRequireDefault(_merge);
 
-var _diff = __webpack_require__(203);
+var _diff = __webpack_require__(200);
 
 var _diff2 = _interopRequireDefault(_diff);
 
@@ -33066,7 +30715,7 @@ var extend = {
 exports.default = extend;
 
 /***/ }),
-/* 201 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33114,7 +30763,7 @@ function deepClone(obj) {
 exports.default = deepClone;
 
 /***/ }),
-/* 202 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33146,7 +30795,7 @@ var merge = function merge(tar, source) {
 exports.default = merge;
 
 /***/ }),
-/* 203 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33202,7 +30851,7 @@ var diff = function diff(src1, src2) {
 exports.default = diff;
 
 /***/ }),
-/* 204 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33216,7 +30865,7 @@ var _createPoint = __webpack_require__(91);
 
 var _createPoint2 = _interopRequireDefault(_createPoint);
 
-var _getPoints = __webpack_require__(205);
+var _getPoints = __webpack_require__(202);
 
 var _getPoints2 = _interopRequireDefault(_getPoints);
 
@@ -33229,7 +30878,7 @@ var bmap = {
 exports.default = bmap;
 
 /***/ }),
-/* 205 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33284,7 +30933,7 @@ var getPoints = function getPoints(border) {
 exports.default = getPoints;
 
 /***/ }),
-/* 206 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33294,11 +30943,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _http = __webpack_require__(207);
+var _http = __webpack_require__(204);
 
 var _http2 = _interopRequireDefault(_http);
 
-var _download = __webpack_require__(208);
+var _download = __webpack_require__(205);
 
 var _download2 = _interopRequireDefault(_download);
 
@@ -33309,7 +30958,7 @@ _http2.default.download = _download2.default;
 exports.default = _http2.default;
 
 /***/ }),
-/* 207 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33481,7 +31130,7 @@ var http = {
 exports.default = http;
 
 /***/ }),
-/* 208 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33548,7 +31197,7 @@ function download(url, fileName) {
 exports.default = download;
 
 /***/ }),
-/* 209 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33608,7 +31257,7 @@ CustomOverlay.prototype.draw = function () {
 exports.default = CustomOverlay;
 
 /***/ }),
-/* 210 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33710,7 +31359,7 @@ var Infowindow = function (_Component) {
 exports.default = Infowindow;
 
 /***/ }),
-/* 211 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33764,7 +31413,7 @@ var NavigationControl = function (_Control) {
 exports.default = NavigationControl;
 
 /***/ }),
-/* 212 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33818,7 +31467,7 @@ var OverviewMapControl = function (_Control) {
 exports.default = OverviewMapControl;
 
 /***/ }),
-/* 213 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33872,7 +31521,7 @@ var ScaleControl = function (_Control) {
 exports.default = ScaleControl;
 
 /***/ }),
-/* 214 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33926,7 +31575,7 @@ var MapTypeControl = function (_Control) {
 exports.default = MapTypeControl;
 
 /***/ }),
-/* 215 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33979,7 +31628,7 @@ var PanoramaControl = function (_Control) {
 exports.default = PanoramaControl;
 
 /***/ }),
-/* 216 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34030,7 +31679,7 @@ var Circle = function (_Graphy) {
 exports.default = Circle;
 
 /***/ }),
-/* 217 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34086,7 +31735,7 @@ var Polyline = function (_Graphy) {
 exports.default = Polyline;
 
 /***/ }),
-/* 218 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34142,7 +31791,7 @@ var Polygon = function (_Graphy) {
 exports.default = Polygon;
 
 /***/ }),
-/* 219 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34160,11 +31809,11 @@ var _component2 = _interopRequireDefault(_component);
 
 var _mapv = __webpack_require__(17);
 
-var _mapLine = __webpack_require__(220);
+var _mapLine = __webpack_require__(217);
 
 var _mapLine2 = _interopRequireDefault(_mapLine);
 
-var _geoUtils = __webpack_require__(221);
+var _geoUtils = __webpack_require__(218);
 
 var _geoUtils2 = _interopRequireDefault(_geoUtils);
 
@@ -34412,7 +32061,7 @@ var Road = function (_Component) {
 exports.default = Road;
 
 /***/ }),
-/* 220 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34615,7 +32264,7 @@ var mapLine = {
 exports.default = mapLine;
 
 /***/ }),
-/* 221 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34722,7 +32371,7 @@ var App = {
 exports.default = App;
 
 /***/ }),
-/* 222 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34905,7 +32554,7 @@ var Boundary = function (_Component) {
 exports.default = Boundary;
 
 /***/ }),
-/* 223 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34923,7 +32572,7 @@ var _component2 = _interopRequireDefault(_component);
 
 var _mapv = __webpack_require__(17);
 
-var _NumberMarker = __webpack_require__(224);
+var _NumberMarker = __webpack_require__(221);
 
 var _NumberMarker2 = _interopRequireDefault(_NumberMarker);
 
@@ -35169,7 +32818,7 @@ var MarkerList = function (_Component) {
 exports.default = MarkerList;
 
 /***/ }),
-/* 224 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35289,7 +32938,7 @@ function colorRgb(color, opacity) {
 exports.default = Overlay;
 
 /***/ }),
-/* 225 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35631,7 +33280,7 @@ var MapvMarkerList = function (_Component) {
 exports.default = MapvMarkerList;
 
 /***/ }),
-/* 226 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35724,7 +33373,7 @@ var TrafficLayer = function (_Component) {
 exports.default = TrafficLayer;
 
 /***/ }),
-/* 227 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35901,7 +33550,7 @@ Polyline.prototype.isPointOnPolyline = function (point, polyline) {
 exports.default = App;
 
 /***/ }),
-/* 228 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36022,7 +33671,9 @@ var MapvLayer = function (_Component) {
 
             var self = this;
             var dataSet = this.dataSet = new _mapv.DataSet([]);
-            this.layer = new _mapv.baiduMapLayer(map, dataSet, {});
+            this.layer = new _mapv.baiduMapLayer(map, dataSet, {
+                enableMassClear: false
+            });
         }
     }], [{
         key: 'defaultProps',
@@ -36037,7 +33688,7 @@ var MapvLayer = function (_Component) {
 exports.default = MapvLayer;
 
 /***/ }),
-/* 229 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36148,7 +33799,7 @@ var DrivingRoute = function (_Component) {
 exports.default = DrivingRoute;
 
 /***/ }),
-/* 230 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36170,7 +33821,7 @@ var _component = __webpack_require__(10);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _DraggingTip = __webpack_require__(231);
+var _DraggingTip = __webpack_require__(228);
 
 var _DraggingTip2 = _interopRequireDefault(_DraggingTip);
 
@@ -36278,7 +33929,7 @@ var PointLabel = function (_Component) {
 exports.default = PointLabel;
 
 /***/ }),
-/* 231 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36288,7 +33939,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _Tip = __webpack_require__(232);
+var _Tip = __webpack_require__(229);
 
 var _Tip2 = _interopRequireDefault(_Tip);
 
@@ -36349,7 +34000,7 @@ DraggingTip.prototype.hideNumber = function () {
 exports.default = DraggingTip;
 
 /***/ }),
-/* 232 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36510,7 +34161,7 @@ Tip.prototype.draw = function () {
 exports.default = Tip;
 
 /***/ }),
-/* 233 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36742,7 +34393,7 @@ var Arc = function (_Component) {
 exports.default = Arc;
 
 /***/ }),
-/* 234 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36970,7 +34621,7 @@ var ThickRay = function (_Component) {
 exports.default = ThickRay;
 
 /***/ }),
-/* 235 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37141,7 +34792,7 @@ var MapListener = function (_React$Component) {
 exports.default = MapListener;
 
 /***/ }),
-/* 236 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37305,7 +34956,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 237 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37435,7 +35086,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 238 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37583,7 +35234,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 239 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37637,7 +35288,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 240 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37696,7 +35347,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 241 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37765,7 +35416,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 242 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37906,7 +35557,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 243 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37998,7 +35649,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 244 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38086,7 +35737,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 245 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38155,7 +35806,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 246 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38253,7 +35904,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 247 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38364,7 +36015,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 248 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38459,7 +36110,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 249 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38522,7 +36173,7 @@ var App = function (_Component) {
 exports.default = App;
 
 /***/ }),
-/* 250 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
