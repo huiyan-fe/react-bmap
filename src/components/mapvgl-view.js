@@ -89,9 +89,7 @@ export default class MapvLayer extends Component {
 
         let self = this;
         let dataSet = this.dataSet = new DataSet([]);
-        this.layer = new baiduMapLayer(map, dataSet, {
-            enableMassClear: false
-        });
+        this.layer = new baiduMapLayer(map, dataSet, {});
 
     }
 

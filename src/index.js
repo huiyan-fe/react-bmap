@@ -45,6 +45,8 @@ export {default as Merge} from './utils/merge';
  * mapv图层
  */
 export {default as MapvLayer} from './components/mapv-layer';
+export {default as MapvglLayer} from './components/mapvgl-layer';
+export {default as MapvglView} from './components/mapvgl-view';
 
 /**
  * 服务组件

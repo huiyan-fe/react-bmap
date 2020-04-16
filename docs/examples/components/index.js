@@ -7,6 +7,7 @@ import InfoWindow from './infowindow';
 import Graphy from './graphy';
 import MarkerList from './marker-list';
 import MapvLayer from './mapv-layer';
+import MapvglLayer from './mapvgl-layer';
 import MapvMarkerList from './mapv-marker-list';
 import Road from './road';
 import Arc from './arc';
@@ -34,6 +35,8 @@ const examples = (
     <Graphy />
     <h2>MapvLayer Mapv图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-layer.js">示例代码</a></h2>
     <MapvLayer/>
+    <h2>MapvglLayer MapvGL图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-layer.js">示例代码</a></h2>
+    <MapvglLayer/>
     <h2>MarkerList 标注列表 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker-list.js">示例代码</a></h2>
     <MarkerList />
     <h2>Road 道路 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/road.js">示例代码</a></h2>

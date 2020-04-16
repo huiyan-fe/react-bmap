@@ -36022,7 +36022,9 @@ var MapvLayer = function (_Component) {
 
             var self = this;
             var dataSet = this.dataSet = new _mapv.DataSet([]);
-            this.layer = new _mapv.baiduMapLayer(map, dataSet, {});
+            this.layer = new _mapv.baiduMapLayer(map, dataSet, {
+                enableMassClear: false
+            });
         }
     }], [{
         key: 'defaultProps',
