@@ -42,7 +42,7 @@ export {default as TrafficLayer} from './components/traffic-layer';
 export {default as Merge} from './utils/merge';
 
 /**
- * mapv图层
+ * mapv和mapvgl图层
  */
 export {default as MapvLayer} from './components/mapv-layer';
 export {default as MapvglLayer} from './components/mapvgl-layer';

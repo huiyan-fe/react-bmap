@@ -126,6 +126,20 @@ React-BMap只是利用了React组件的生命周期，来调用对应的百度�
 
     <MapvLayer data={[]} options={{}} />
 
+### MapvglLayer
+
+    <MapvglView effects={['bloom']}>
+        <MapvglLayer
+            type="LineLayer"
+            data={data}
+            options={{
+                blend: 'lighter',
+                width: 10,
+                color: 'rgb(255, 153, 0, 0.6)'
+            }}
+        />
+    </MapvglView>
+
 ### Road
 
     <Road roadPath={['116.330484,40.031406,116.33124,40.029496,116.33124,40.029496']}/>

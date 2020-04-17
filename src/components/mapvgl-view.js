@@ -1,96 +1,94 @@
+/**
+ * @file mapvgl的view图层管理类
+ * @author hedongran
+ * @email hdr01@126.com
+ */
+import React from 'react';
 import Component from './component';
-import {DataSet, baiduMapLayer} from 'mapv';
+import {View, BloomEffect, BrightEffect, BlurEffect} from 'mapvgl';
 
-export default class MapvLayer extends Component {
-    constructor(args) {
-        super(args);
-        this.state = {
-        };
+export default class MapvglView extends Component {
+
+    componentDidMount() {
+        this.initialize();
+        this.forceUpdate();
     }
 
-    static get defaultProps() {
-        return {
+    componentWillUnmount() {
+        if (this.mapvglView) {
+            this.mapvglView.destroy();
+            this.mapvglView = null;
         }
     }
 
-    handleClick(id) {
-        this.props.onClick && this.props.onClick(id);
-    }
-
     componentDidUpdate(prevProps) {
-        var preData = JSON.stringify(prevProps.data);
-        var data = JSON.stringify(this.props.data);
-        var preOptions = JSON.stringify(prevProps.options);
-        var options = JSON.stringify(this.props.options);
-        if (preData != data || !this.map || preOptions != options) {
+        if (!this.map || !this.mapvglView) {
             this.initialize();
         }
     }
 
     initialize() {
-
-        var self = this;
-        var map = this.props.map;
+        let map = this.props.map;
         if (!map) {
             return;
         }
         this.map = map;
 
-        if (!this._createLayer) {
-            this.createLayers();
-        }
-
-        if (this.props.options.autoViewport) {
-            var getPoint = (coordinate) => {
-                if (this.props.options.coordType === 'bd09mc') {
-                    return projection.pointToLngLat(new BMap.Pixel(coordinate[0], coordinate[1]));
-                } else {
-                    return new BMap.Point(coordinate[0], coordinate[1]);
-                }
+        if (!this.mapvglView) {
+            let effects = [];
+            let simpleEffects = this.props.effects;
+            if (simpleEffects && simpleEffects.length) {
+                simpleEffects.forEach(name => {
+                    if (name === 'bloom') {
+                        effects.push(new BloomEffect());
+                    } else if (name === 'bright') {
+                        effects.push(new BrightEffect());
+                    } else if (name === 'blur') {
+                        effects.push(new BlurEffect());
+                    }
+                });
             }
-
-            var projection = map.getMapType().getProjection();
-            var points = [];
-
-            this.props.data.map(item => {
-                if (item.geometry.type === 'Point') {
-                    points.push(getPoint(item.geometry.coordinates));
-                } else if (item.geometry.type === 'Polygon') {
-                    item.geometry.coordinates[0].map((item) => {
-                        points.push(getPoint(item));
-                    });
-                }
+            this.mapvglView = new View({
+                mapType: 'bmap',
+                effects,
+                map
             });
+        }
+    }
 
-            if (points.length > 0) {
-                map.setViewport(points, this.props.options.viewportOptions);
-            }
+    /**
+     * 在子元素props中附上view和map字段
+     * @return {string|Element} children with props
+     * @memberof MapvglView
+     */
+    renderChildren() {
+        const {children} = this.props;
+        if (!children || !this.map || !this.mapvglView) {
+            return;
         }
 
-        this.dataSet.set(this.props.data);
-        this.layer.update({
-            options: this.props.options
+        return React.Children.map(children, child => {
+            if (!child) {
+                return;
+            }
+
+            if (typeof child.type === 'string') {
+                return child;
+            } else {
+                return React.cloneElement(child, {
+                    map: this.map,
+                    view: this.mapvglView
+                });
+            }
         });
-
     }
 
-    componentDidMount() {
-        this.initialize();
-    }
-
-    componentWillUnmount() {
-        this.layer.destroy();
-        this.layer = null;
-    }
-
-    createLayers() {
-        this._createLayer = true;
-        var map = this.map;
-
-        let self = this;
-        let dataSet = this.dataSet = new DataSet([]);
-        this.layer = new baiduMapLayer(map, dataSet, {});
-
+    render() {
+        return (
+            <div title="mapvgl view">
+                {this.renderChildren()}
+            </div>
+        );
     }
 
 }

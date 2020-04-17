@@ -1,15 +1,32 @@
+/**
+ * @file mapvgl可视化图层
+ * @author hedongran
+ * @email hdr01@126.com
+ */
 import Component from './component';
-import {DataSet, baiduMapLayer} from 'mapv';
+import * as mapvgl from 'mapvgl';
 
-export default class MapvLayer extends Component {
-    constructor(args) {
-        super(args);
+export default class MapvglLayer extends Component {
+    constructor(props) {
+        super(props);
         this.state = {
         };
     }
 
     static get defaultProps() {
         return {
+        }
+    }
+
+    componentDidMount() {
+        this.initialize();
+    }
+
+    componentWillUnmount() {
+        if (this.layer) {
+            this.props.view.removeLayer(this.layer);
+            this.layer.destroy();
+            this.layer = null;
         }
     }
 
@@ -22,15 +39,14 @@ export default class MapvLayer extends Component {
         var data = JSON.stringify(this.props.data);
         var preOptions = JSON.stringify(prevProps.options);
         var options = JSON.stringify(this.props.options);
-        if (preData != data || !this.map || preOptions != options) {
+        if (!this.map || preData !== data || preOptions !== options) {
             this.initialize();
         }
     }
 
     initialize() {
 
-        var self = this;
-        var map = this.props.map;
+        let map = this.props.map;
         if (!map) {
             return;
         }
@@ -41,7 +57,8 @@ export default class MapvLayer extends Component {
         }
 
         if (this.props.options.autoViewport) {
-            var getPoint = (coordinate) => {
+            let projection = map.getMapType().getProjection();
+            let getPoint = coordinate => {
                 if (this.props.options.coordType === 'bd09mc') {
                     return projection.pointToLngLat(new BMap.Pixel(coordinate[0], coordinate[1]));
                 } else {
@@ -49,14 +66,17 @@ export default class MapvLayer extends Component {
                 }
             }
 
-            var projection = map.getMapType().getProjection();
-            var points = [];
+            let points = [];
 
             this.props.data.map(item => {
                 if (item.geometry.type === 'Point') {
                     points.push(getPoint(item.geometry.coordinates));
+                } else if (item.geometry.type === 'LineString') {
+                    item.geometry.coordinates.map(item => {
+                        points.push(getPoint(item));
+                    });
                 } else if (item.geometry.type === 'Polygon') {
-                    item.geometry.coordinates[0].map((item) => {
+                    item.geometry.coordinates[0].map(item => {
                         points.push(getPoint(item));
                     });
                 }
@@ -67,30 +87,19 @@ export default class MapvLayer extends Component {
             }
         }
 
-        this.dataSet.set(this.props.data);
-        this.layer.update({
-            options: this.props.options
-        });
-
+        this.layer.setData(this.props.data);
+        this.layer.setOptions(this.props.options)
     }
 
-    componentDidMount() {
-        this.initialize();
-    }
-
-    componentWillUnmount() {
-        this.layer.destroy();
-        this.layer = null;
-    }
 
     createLayers() {
-        this._createLayer = true;
-        var map = this.map;
-
-        let self = this;
-        let dataSet = this.dataSet = new DataSet([]);
-        this.layer = new baiduMapLayer(map, dataSet, {});
-
+        if (mapvgl[this.props.type]) {
+            this._createLayer = true;
+            this.layer = new mapvgl[this.props.type](this.props.options);
+            this.props.view.addLayer(this.layer);
+        } else {
+            console.error(`mapvgl doesn't have layer ${this.props.type}!`)
+        }
     }
 
 }

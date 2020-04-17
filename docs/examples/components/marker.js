@@ -97,7 +97,7 @@ export default class App extends Component {
             mapStyle={simpleMapStyle}>
             {markers.map((marker, index) => {
                 var icon = "red" + (index + 1);
-                return <Marker map={this.props.map} icon={icon} position={{lng: marker.lng, lat: marker.lat}} {...marker} />
+                return <Marker key={icon} map={this.props.map} icon={icon} position={{lng: marker.lng, lat: marker.lat}} {...marker} />
             })}
         </Map>
         </div>
