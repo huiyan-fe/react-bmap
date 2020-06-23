@@ -68,3 +68,8 @@ export {default as ThickRay} from './components/thick-ray';
  * 地图插件
  */
 export {default as MapListener} from './components/map-listener';
+
+/**
+ * 输入提示
+ */
+export {default as Autocomplete} from './components/autocomplete';
