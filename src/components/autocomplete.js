@@ -15,7 +15,7 @@ export default class Autocomplete extends Component {
 
   render() {
     return <div>
-      <input id={'suggestId'}/>
+      <input style={this.props.style} id={'suggestId'}/>
     </div>;
   }
 }
