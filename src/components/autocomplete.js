@@ -9,7 +9,7 @@ export default class Autocomplete extends Component {
     });
 
     ac.addEventListener('onconfirm', e => {
-      this.props.confirm && this.props.confirm(e);
+      this.props.onConfirm && this.props.onConfirm(e);
     });
   }
 
