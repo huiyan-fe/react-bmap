@@ -17,6 +17,7 @@ import Control from './control';
 import DrivingRoute from './driving-route';
 import React from 'react';
 import {render} from 'react-dom';
+import Autocomplete from './autocomplete';
 
 const examples = (
   <div>
@@ -53,6 +54,8 @@ const examples = (
     <Arc />
     <h2>ThickRay 迁徙射线 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/thick-ray.js">示例代码</a></h2>
     <ThickRay />
+    <h2>输入提示</h2>
+    <Autocomplete/>
   </div>
 )
 
