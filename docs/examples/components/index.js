@@ -36,7 +36,7 @@ const examples = (
     <Graphy />
     <h2>MapvLayer Mapv图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-layer.js">示例代码</a></h2>
     <MapvLayer/>
-    <h2>MapvglLayer MapVGL图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapv-layer.js">示例代码</a></h2>
+    <h2>MapvglLayer MapVGL图层 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/mapvgl-layer.js">示例代码</a></h2>
     <MapvglLayer/>
     <h2>MarkerList 标注列表 <a href="https://github.com/huiyan-fe/react-bmap/blob/master/docs/examples/components/marker-list.js">示例代码</a></h2>
     <MarkerList />
