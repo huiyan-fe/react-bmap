@@ -7,7 +7,7 @@
 React-BMap只是利用了React组件的生命周期，来调用对应的百度地图JavaScript Api的方法，比如在componentDidMount和componentDidUpdate的时候在地图上添加覆盖物，componentWillUnmount的时候移除覆盖物，React对应的render渲染函数模块返回的是null。所以这里面地图相关的dom并不是react渲染的，真正创建地图之类的还是使用百度地图JavaScript Api，React-BMap只是利用了React组件的写法来封装百度地图JavaScript Api，使我们在使用React的时候能更方便的使用百度地图JavaScript Api。
 
 ## 3D地图版本
-该组件库是针对2D版本地图的React组件库，如果想使用新版本的3D地图，请使用[React-BMapGL](https://github.com/huiyan-fe/react-bmapgl)。新的GL版地图支持无级缩放、地图倾斜、旋转等强大的功能，并且能更好的发挥[MapVGL]()炫酷的可视化效果。
+该组件库是针对2D版本地图的React组件库，如果想使用新版本的3D地图，请使用[React-BMapGL](https://github.com/huiyan-fe/react-bmapgl)。新的GL版地图支持无级缩放、地图倾斜、旋转等强大的功能，并且能更好的发挥[MapVGL](https://mapv.baidu.com/gl/docs/index.html)炫酷的可视化效果。
 PS：由于3D地图基于WebGL开发，部分功能与2D版体验可能有差别，如果您的设备不支持WebGL，或者更追求稳定性，依然可以选择本组件库。
 
 ## 示例
