@@ -17,10 +17,6 @@ module.exports = {
             options: {
                 presets: ['es2015', 'react']
             }
-        },{
-            test: /\.(png|jpg|gif)$/,
-            exclude: /(node_modules|bower_components)/,
-            loader: 'file-loader'
         }],
     },
     devServer: {
