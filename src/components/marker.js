@@ -9,7 +9,7 @@ import Component from './component';
 import MarkerOrderTip from './marker-order-tip';
 import CustomOverlay from '../overlay/CustomOverlay';
 
-const defaultIconUrl = '//huiyan.baidu.com/cms/react-bmap/markers_new2x_fbb9e99.png';
+const defaultIconUrl = window.Huiyan_Makers_IMG || '//huiyan.baidu.com/cms/react-bmap/markers_new2x_fbb9e99.png';
 
 var icons = {
     'simple_red': new BMap.Icon(defaultIconUrl , new BMap.Size(42 / 2, 66 / 2), {
