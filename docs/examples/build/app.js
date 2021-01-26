@@ -37059,7 +37059,7 @@ var MapvglLayer = function (_Component) {
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            if (this.layer) {
+            if (this.layer && this.props.view) {
                 this.props.view.removeLayer(this.layer);
                 this.layer.destroy();
                 this.layer = null;

@@ -23,7 +23,7 @@ export default class MapvglLayer extends Component {
     }
 
     componentWillUnmount() {
-        if (this.layer) {
+        if (this.layer && this.props.view) {
             this.props.view.removeLayer(this.layer);
             this.layer.destroy();
             this.layer = null;
