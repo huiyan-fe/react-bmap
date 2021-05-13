@@ -17,6 +17,9 @@ function Tip(options) {
     this._numberDirection = options.numberDirection || 'left';
     this._isShowNumber = options.isShowNumber !== undefined ? options.isShowNumber : true;
     this.color = options.color || '#ee5d5b';
+    this.tipStyle = options.tipStyle
+    this.textStyle = options.textStyle
+    this.numberStyle = options.numberStyle
 }
 
 Tip.prototype = new BMap.Overlay();
@@ -51,11 +54,20 @@ Tip.prototype.initialize = function(map){
     div.style.background = "#fff";
     div.style.borderRadius = '25px';
     div.style.paddingLeft = '30px';
+    if(this.tipStyle) {
+        for(var i in this.tipStyle) {
+            div.style[i] = this.tipStyle[i]
+        }
+    }
 
     var span = this._span = document.createElement("span");
     div.appendChild(span);
-    span.appendChild(document.createTextNode(this._text));      
-    var that = this;
+    span.appendChild(document.createTextNode(this._text));
+    if(this.textStyle) {
+        for(var i in this.textStyle) {
+            span.style[i] = this.textStyle[i]
+        }
+    }
 
     var arrow = this._arrow = document.createElement("div");
     arrow.style.backgroundPosition = positions[this.color];
@@ -78,7 +90,11 @@ Tip.prototype.initialize = function(map){
     number.style.width = "30px";
     number.style.lineHeight = "30px";
     number.style.borderRadius = "30px";
-
+    if(this.numberStyle) {
+        for(var i in this.numberStyle) {
+            number.style[i] = this.numberStyle[i]
+        }
+    }
     if (this._isShowNumber === false) {
         number.style.display = 'none';
     }
@@ -105,31 +121,35 @@ Tip.prototype.setNumberRight = function(){
 }
 
 Tip.prototype.renderDirection = function(){
+    var paddingLeft = this.tipStyle && this.tipStyle.paddingLeft;
+    var paddingRight = this.tipStyle && this.tipStyle.paddingRight;
+    var numLeft = this.numberStyle && this.numberStyle.left;
+    var numRight = this.numberStyle && this.numberStyle.right;
     if (this._numberDirection == 'left') {
         if (this._isShowNumber) {
-            this._div.style.paddingLeft = '38px';
+            this._div.style.paddingLeft = paddingLeft || '38px';
         } else {
-            this._div.style.paddingLeft = '8px';
+            this._div.style.paddingLeft = paddingLeft || '8px';
         }
-        this._div.style.paddingRight = '8px';
-        this._number.style.left = "5px";
-        this._number.style.right = "initial";
+        this._div.style.paddingRight = paddingRight || '8px';
+        this._number.style.left = numLeft || "5px";
+        this._number.style.right = this.numberStyle && this.numberStyle.right || "initial";
     } else {
-        this._div.style.paddingLeft = '8px';
+        this._div.style.paddingLeft = paddingLeft || '8px';
         if (this._isShowNumber) {
-            this._div.style.paddingRight = '38px';
+            this._div.style.paddingRight = paddingRight || '38px';
         } else {
-            this._div.style.paddingRight = '8px';
+            this._div.style.paddingRight = paddingRight || '8px';
         }
-        this._number.style.left = "initial";
-        this._number.style.right = "5px";
+        this._number.style.left = numLeft || "initial";
+        this._number.style.right = numRight || "5px";
     }
 }
 
 
 Tip.prototype.hideNumber = function(){
     this._isShowNumber = false;
-    this._number.style.display = "none";
+    this._number.style.display = this.numberStyle.display || "none";
     this.renderDirection();
 }
 

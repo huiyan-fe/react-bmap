@@ -5,8 +5,8 @@ import {simpleMapStyle} from './mapstyle'
 export default class App extends Component {
     render() {
         return <Map center = {{
-                lng: 116.404556,
-                lat: 39.91582
+                lng: 106.404556,
+                lat: 19.91582
             }} 
             style={{
                 height: '500px'
@@ -23,7 +23,11 @@ export default class App extends Component {
                     point: {
                         lng: 116.35629191343,
                         lat: 39.923656708429
-                    }
+                    },
+                    tipStyle:{border: '1px solid #f00', backgroundColor: 'red'},
+                    textStyle:{color: '#fff'},
+                    numberStyle:{color: 'red', backgroundColor: '#fff'},
+                    draggable: true
                 },
                 {
                     name: '东大桥',
@@ -68,7 +72,11 @@ export default class App extends Component {
                     point: {
                         lng: 116.4283725021,
                         lat: 39.84602609593
-                    }
+                    },
+                    tipStyle:{border: '1px solid #f00', backgroundColor: 'red'},
+                    textStyle:{color: '#fff'},
+                    numberStyle:{color: 'red', backgroundColor: '#fff'},
+                    draggable: false
                 },
                 {
                     name: '西直门',
@@ -110,6 +118,7 @@ export default class App extends Component {
             changePosition={(point, index) => {
                 console.log(point, index);
             }}
+            autoViewport={true}
             />
         </Map>
     }

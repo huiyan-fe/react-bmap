@@ -68,6 +68,10 @@ export default class PointLabel extends Component {
                     name: item.name,
                     index: item.index !== undefined ? item.index : index + 1, 
                     color: item.color,
+                    tipStyle: item.tipStyle,
+                    textStyle: item.textStyle,
+                    numberStyle: item.numberStyle,
+                    draggable: item.draggable,
                     change: function() {}
                 });
                 points.push(item.point);

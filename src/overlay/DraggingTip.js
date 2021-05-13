@@ -5,8 +5,7 @@ function DraggingTip(options) {
     var map = options.map;
     var point = options.point;
     this.point = point;
-    var name = options.name;
-
+    var draggable = typeof(options.draggable) == 'undefined' ? true : options.draggable;
     this.map = map;
     var tip = this.tip = new Tip(options);
     var icon = new BMap.Icon("//huiyan.baidu.com/github/tools/gis-drawing/static/images/drag.png", new BMap.Size(25, 25), {
@@ -16,15 +15,17 @@ function DraggingTip(options) {
     marker.setIcon(icon);
     marker.setShadow(icon);
     var self = this;
-    marker.addEventListener('dragging', function () {
-        self.point = marker.point;
-        tip.setPosition(marker.point)
-        options.change && options.change();
-    });
-    marker.addEventListener('dragend', function () {
-        options.changePosition && options.changePosition(self.point);
-    });
-    marker.enableDragging();
+    if(draggable) {
+        marker.addEventListener('dragging', function () {
+            self.point = marker.point;
+            tip.setPosition(marker.point)
+            options.change && options.change();
+        });
+        marker.addEventListener('dragend', function () {
+            options.changePosition && options.changePosition(self.point);
+        });
+        marker.enableDragging();
+    }
 }
 
 DraggingTip.prototype.show = function () {
