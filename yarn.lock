@@ -1023,7 +1023,7 @@ compressible@~2.0.13:
 
 compression@^1.5.2:
   version "1.7.2"
-  resolved "http://registry.npmjs.org/compression/-/compression-1.7.2.tgz#aaffbcd6aaf854b44ebb280353d5ad1651f59a69"
+  resolved "https://registry.npmjs.org/compression/-/compression-1.7.2.tgz#aaffbcd6aaf854b44ebb280353d5ad1651f59a69"
   dependencies:
     accepts "~1.3.4"
     bytes "3.0.0"
@@ -2026,8 +2026,8 @@ inherits@2.0.1:
   resolved "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz#b17d08d326b4423e568eff719f91b0b1cbdf69f1"
 
 ini@~1.3.0:
-  version "1.3.5"
-  resolved "https://registry.npmjs.org/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.7.tgz#a09363e1911972ea16d7a8851005d84cf09a9a84"
 
 internal-ip@1.2.0:
   version "1.2.0"
@@ -2450,11 +2450,15 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mapv@^2.0.33:
-  version "2.0.33"
-  resolved "http://registry.npm.taobao.org/mapv/download/mapv-2.0.33.tgz#6f3d50d61e47098f1ed70264d901bfe6b39c3f2a"
+mapv@^2.0.56:
+  version "2.0.59"
+  resolved "https://registry.yarnpkg.com/mapv/-/mapv-2.0.59.tgz#35bac9e30f05030b195d4b0960bf57706cedba28"
   dependencies:
     babel-plugin-external-helpers "^6.22.0"
+
+mapvgl@^1.0.0-beta.62:
+  version "1.0.0-beta.93"
+  resolved "https://registry.yarnpkg.com/mapvgl/-/mapvgl-1.0.0-beta.93.tgz#d18a304e4587db436e3c221b9e113c173c8a9eda"
 
 md5.js@^1.3.4:
   version "1.3.4"
