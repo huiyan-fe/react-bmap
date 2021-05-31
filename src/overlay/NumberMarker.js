@@ -25,7 +25,7 @@ Overlay.prototype.initialize = function(map){
     }
     style.border = this._lineWidth + "px solid " + this._strokeStyle;
     style.color = "white";
-    style.textShadow = "0px 0px 5px #fff";
+    style.textShadow = this.options.textShadow || "0px 0px 5px #fff";
     style.width = this._size + "px";
     style.boxSizing = "content-box";
     style.borderRadius = "30px";

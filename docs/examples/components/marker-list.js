@@ -96,7 +96,13 @@ export default class App extends Component {
                     coordType="bd09mc" 
                     animation={false} 
                     isShowNumber={false} 
-                    mini={true} 
+                    mini={true}
+                    miniStyle={{
+                        strokeStyle: '#fff',
+                        isShowShadow: false,
+                        lineWidth: 2,
+                        textShadow: "0px 0px 0px"
+                    }}
                     autoViewport={false}
                 />
             </Map>

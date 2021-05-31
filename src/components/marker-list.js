@@ -149,6 +149,11 @@ export default class MarkerList extends Component {
                         options.strokeStyle = fillStyle;
                         options.lineWidth = 3;
                         options.strokeOpacity = 0.4;
+                        if(this.props.miniStyle) {
+                            for(let i in this.props.miniStyle) {
+                                options[i] = this.props.miniStyle[i]
+                            }
+                        }
                     }
                 }
 

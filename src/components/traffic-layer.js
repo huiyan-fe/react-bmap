@@ -31,7 +31,7 @@ export default class TrafficLayer extends Component {
 
     initialize() {
         var map = this.props.map;
-        const defaultTilesUrl = 'http://its.map.baidu.com:8002/traffic/TrafficTileService';
+        const defaultTilesUrl = 'http://its.map.baidu.com/traffic/TrafficTileService';
         const tilesUrl = this.props.tilesUrl ? this.props.tilesUrl : defaultTilesUrl;
 
         if (!map) {

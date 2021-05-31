@@ -36462,6 +36462,11 @@ var MarkerList = function (_Component) {
                             options.strokeStyle = fillStyle;
                             options.lineWidth = 3;
                             options.strokeOpacity = 0.4;
+                            if (this.props.miniStyle) {
+                                for (var _i in this.props.miniStyle) {
+                                    options[_i] = this.props.miniStyle[_i];
+                                }
+                            }
                         }
                     }
 
@@ -36582,7 +36587,7 @@ Overlay.prototype.initialize = function (map) {
     }
     style.border = this._lineWidth + "px solid " + this._strokeStyle;
     style.color = "white";
-    style.textShadow = "0px 0px 5px #fff";
+    style.textShadow = this.options.textShadow || "0px 0px 5px #fff";
     style.width = this._size + "px";
     style.boxSizing = "content-box";
     style.borderRadius = "30px";
@@ -37070,7 +37075,7 @@ var TrafficLayer = function (_Component) {
         key: 'initialize',
         value: function initialize() {
             var map = this.props.map;
-            var defaultTilesUrl = 'http://its.map.baidu.com:8002/traffic/TrafficTileService';
+            var defaultTilesUrl = 'http://its.map.baidu.com/traffic/TrafficTileService';
             var tilesUrl = this.props.tilesUrl ? this.props.tilesUrl : defaultTilesUrl;
 
             if (!map) {
@@ -39695,6 +39700,12 @@ var App = function (_Component) {
                         animation: false,
                         isShowNumber: false,
                         mini: true,
+                        miniStyle: {
+                            strokeStyle: '#fff',
+                            isShowShadow: false,
+                            lineWidth: 2,
+                            textShadow: "0px 0px 0px"
+                        },
                         autoViewport: false
                     })
                 )
