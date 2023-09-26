@@ -79,8 +79,11 @@ export default class MapvLayer extends Component {
     }
 
     componentWillUnmount() {
-        this.layer.destroy();
-        this.layer = null;
+        if(this.layer) {
+            this.layer.destroy();
+            this.layer = null;
+            this._createLayer = false;
+        }
     }
 
     createLayers() {
