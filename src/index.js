@@ -52,6 +52,7 @@ export {default as MapvglView} from './components/mapvgl-view';
  * 服务组件
  */
 export {default as DrivingRoute} from './components/driving-route';
+export {default as WalkingRoute} from './components/walking-route';
 
 /**
  * PointLabel组件
