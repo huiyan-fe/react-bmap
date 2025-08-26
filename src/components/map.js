@@ -102,21 +102,22 @@ export default class Map extends Component {
     componentDidUpdate(prevProps) {
         var preCenter = prevProps.center;
         var center = this.props.center;
+        var zoom = this.props.zoom;
 
         if (isString(center)) { // 可以传入城市名
             if (preCenter != center) {
-                this.map.centerAndZoom(center);
+                this.map.centerAndZoom(center, zoom > 3 ? zoom : undefined);
             }
         } else {
             var isCenterChanged = preCenter && center && (preCenter.lng != center.lng || preCenter.lat != center.lat || this.props.forceUpdate);
-            var isZoomChanged = prevProps.zoom !== this.props.zoom && (this.props.zoom || this.props.forceUpdate);
+            var isZoomChanged = prevProps.zoom !== zoom && (zoom || this.props.forceUpdate);
             var center = new BMap.Point(center.lng, center.lat);
             if (isCenterChanged && isZoomChanged) {
-                this.map.centerAndZoom(center, this.props.zoom);
+                this.map.centerAndZoom(center, zoom);
             } else if (isCenterChanged) {
                 this.map.setCenter(center);
             } else if (isZoomChanged) {
-                this.map.zoomTo(this.props.zoom);
+                this.map.zoomTo(zoom);
             }
         }
 
@@ -140,7 +141,7 @@ export default class Map extends Component {
         this.bindEvent(map, this.events);
 
         if (isString(this.props.center)) { // 可以传入城市名
-            map.centerAndZoom(this.props.center);
+            map.centerAndZoom(this.props.center, zoom > 3 ? zoom : undefined);
         } else { // 正常传入经纬度坐标
             var center = new BMap.Point(this.props.center.lng, this.props.center.lat);
             map.centerAndZoom(center, zoom);  // 初始化地图,设置中心点坐标和地图级别
