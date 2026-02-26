@@ -1,0 +1,291 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* App layout */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.app-main {
+  flex: 1;
+  padding: 24px;
+  overflow: auto;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 24px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.app-header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1890ff;
+  text-decoration: none;
+}
+
+.app-header-title:hover {
+  color: #40a9ff;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.app-header-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-header-select-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.app-header-select {
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.app-header-select:focus {
+  border-color: #1890ff;
+  outline: none;
+}
+
+.app-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.app-header-icon:hover {
+  color: #1890ff;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: #1890ff;
+}
+
+a:hover {
+  color: #40a9ff;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+h2 {
+  margin: 24px 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* HomePage */
+.home-page {
+  width: 100%;
+}
+
+.home-hero {
+  padding: 40px 0 32px;
+  border-bottom: 1px solid #eee;
+}
+
+.home-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.home-subtitle {
+  font-size: 18px;
+  color: #1890ff;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.home-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #555;
+}
+
+.home-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 32px 0;
+}
+
+.home-feature-card {
+  padding: 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.home-feature-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1e293b;
+}
+
+.home-feature-card p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.home-section {
+  padding: 32px 0;
+}
+
+.home-section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.home-section-desc {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.home-code-block {
+  margin-bottom: 16px;
+  background: #1e293b;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.home-code-label {
+  padding: 8px 14px;
+  font-size: 12px;
+  color: #94a3b8;
+  border-bottom: 1px solid #334155;
+}
+
+.home-code-block pre {
+  margin: 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+}
+
+.home-code-block code {
+  font-family: 'SF Mono', 'Fira Code', 'Monaco', monospace;
+  font-size: 13px;
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+
+.home-note {
+  font-size: 14px;
+  color: #64748b;
+  margin: 16px 0;
+}
+
+.home-components {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.home-category {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #eee;
+}
+
+.home-category-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+}
+
+.home-component-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.home-component-link {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  background: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid #e5e7eb;
+  transition: all 0.15s ease;
+}
+
+.home-component-link:hover {
+  border-color: #1890ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+}
+
+.home-component-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1890ff;
+  margin-bottom: 4px;
+}
+
+.home-component-desc {
+  font-size: 12px;
+  color: #888;
+}
+
+.home-footer {
+  padding: 32px 0 48px;
+  border-top: 1px solid #eee;
+  font-size: 14px;
+  color: #888;
+}
+
+.home-footer a {
+  color: #64748b;
+}
