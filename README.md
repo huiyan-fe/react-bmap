@@ -23,46 +23,83 @@ npm install react react-dom
 
 ## 使用前准备
 
-在 HTML 中引入百度地图 API（二选一）：
+无需在 HTML 中手动引入百度地图 script。通过 `BMapProvider` 在应用顶层提供 `ak` / `version` / `serviceHost`，框架内部会使用 `@baidumap/jsapi-loader` 自动加载 JSAPI。
 
-```html
-<!-- BMap 2D/3.0 -->
-<script src="//api.map.baidu.com/api?v=3.0&ak=您的密钥"></script>
+```tsx
+import { BMapProvider } from 'react-bmap';
 
-<!-- BMapGL WebGL -->
-<script src="//api.map.baidu.com/api?v=1.0&type=webgl&ak=您的密钥"></script>
+function App() {
+  return (
+    <BMapProvider ak="您的密钥" version="gl">
+      <YourApp />
+    </BMapProvider>
+  );
+}
 ```
+
+### BMapProvider Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `ak` | `string` | - | 开发者密钥，非代理模式必填 |
+| `version` | `'3.0' \| 'gl' \| '4.0'` | `'4.0'` | JSAPI 版本。`'3.0'`/`'4.0'` → BMap 2D；`'gl'` → BMapGL WebGL |
+| `serviceHost` | `string` | - | 代理模式服务地址（末尾需带 `/`），设置后启用代理且 URL 不携带 ak |
+| `protocol` | `'https' \| 'http'` | `'https'` | 协议 |
+| `timeout` | `number` | `0` | 加载超时（毫秒），0 表示不超时 |
+| `globalConfig` | `{ apiVersion?, uiVersion?, coordType? }` | - | 创建地图前需全局声明的配置 |
+| `fallback` | `ReactNode` | - | 加载中展示内容 |
+| `errorFallback` | `ReactNode` | - | 加载失败展示内容 |
+
+> 注意：`@baidumap/jsapi-loader` 同一页面仅支持加载一个 version。`version` 变化时会自动 `reset` 并重新加载。
+
+### 代理模式
+
+使用代理模式时，通过 `serviceHost` 指定代理服务地址，无需 `ak`：
+
+```tsx
+<BMapProvider serviceHost="https://your-proxy.example.com/" version="gl">
+  <YourApp />
+</BMapProvider>
+```
+
+### 向后兼容
+
+若未使用 `BMapProvider` 包裹，`<Map>` 会回退到从 `window.BMap` / `window.BMapGL` 读取（即旧的 `<script>` 引入方式仍可用），但推荐使用 `BMapProvider`。
 
 密钥申请： [百度地图开放平台](http://lbsyun.baidu.com/apiconsole/key)
 
 ## Hello World
 
 ```tsx
-import { Map, Marker, NavigationControl, InfoWindow } from 'react-bmap';
+import { BMapProvider, Map, Marker, NavigationControl, InfoWindow } from 'react-bmap';
 
 function App() {
   return (
-    <Map center={{ lng: 116.402544, lat: 39.928216 }} zoom={11}>
-      <Marker position={{ lng: 116.402544, lat: 39.928216 }} />
-      <NavigationControl />
-      <InfoWindow
-        position={{ lng: 116.402544, lat: 39.928216 }}
-        text="内容"
-        title="标题"
-      />
-    </Map>
+    <BMapProvider ak="您的密钥" version="gl">
+      <Map center={{ lng: 116.402544, lat: 39.928216 }} zoom={11}>
+        <Marker position={{ lng: 116.402544, lat: 39.928216 }} />
+        <NavigationControl />
+        <InfoWindow
+          position={{ lng: 116.402544, lat: 39.928216 }}
+          text="内容"
+          title="标题"
+        />
+      </Map>
+    </BMapProvider>
   );
 }
 ```
 
 ## BMapGL 支持
 
-使用 GL 版本时，在 Map 上设置 `apiType="gl"`：
+`version="gl"` 时加载 BMapGL，`<Map>` 会自动推断 `apiType`。也可显式指定：
 
 ```tsx
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} apiType="gl">
-  <Marker position={{ lng: 116.404, lat: 39.915 }} />
-</Map>
+<BMapProvider ak="您的密钥" version="gl">
+  <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} apiType="gl">
+    <Marker position={{ lng: 116.404, lat: 39.915 }} />
+  </Map>
+</BMapProvider>
 ```
 
 ## 示例

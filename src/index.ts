@@ -32,9 +32,23 @@ export { Arc, ArcPropsSchema } from './components/Custom/Arc';
 export { ThickRay, ThickRayPropsSchema } from './components/Custom/ThickRay';
 export { MapListener, MapListenerPropsSchema } from './components/Custom/MapListener';
 
-export { useBMap, useBMapOptional, BMapProvider } from './context/BMapContext';
+export { useBMap, useBMapOptional } from './context/BMapContext';
+export {
+  BMapProvider,
+  useBMapLoader,
+  BMapLoaderContext,
+} from './context/BMapProvider';
 export { mergeRoadPath } from './utils/merge';
 export { default as Merge } from './utils/merge';
 
-export type { PointLike, MapApiType, MapEvents } from './types';
+export type {
+  PointLike,
+  MapApiType,
+  MapEvents,
+  BMapProviderProps,
+  BMapLoaderContextValue,
+  BMapLoaderStatus,
+  BMapVersion,
+  BMapLoaderGlobalConfig,
+} from './types';
 export { PointLikeSchema, SizeLikeSchema, MapApiTypeSchema } from './schemas';

@@ -15,5 +15,9 @@ export function useBMapOptional(): BMapContextValue | null {
   return useContext(BMapContext);
 }
 
-export const BMapProvider = BMapContext.Provider;
+/**
+ * 内部使用的 Map 级 Context.Provider，由 <Map> 组件设置。
+ * 顶层加载器 Provider 请使用 BMapProvider。
+ */
+export const BMapMapContextProvider = BMapContext.Provider;
 export { BMapContext };

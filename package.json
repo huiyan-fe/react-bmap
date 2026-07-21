@@ -27,6 +27,7 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
+    "@baidumap/jsapi-loader": "^1.0.0",
     "mapv": "^2.0.56",
     "mapvgl": "^1.0.0-beta.117",
     "zod": "^4.3.6"

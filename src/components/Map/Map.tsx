@@ -7,10 +7,11 @@ import React, {
   useMemo,
 } from 'react';
 import { z } from 'zod';
-import { BMapProvider } from '../../context/BMapContext';
+import { BMapMapContextProvider } from '../../context/BMapContext';
+import { useBMapLoader } from '../../context/BMapProvider';
 import { getOptions } from '../../hooks/useGetOptions';
 import { isString } from '../../utils/common';
-import type { MapEvents, MapApiType } from '../../types';
+import type { MapApiType, BMapApi, BMapGLApi } from '../../types';
 import { PointLikeSchema, MapApiTypeSchema } from '../../schemas';
 
 const MAP_EVENTS = [
@@ -74,13 +75,18 @@ export type MapProps = z.infer<typeof MapPropsSchema> & {
 /**
  * Resolve map API type:
  * 1. Manual apiType has highest priority
- * 2. When not specified: infer from global namespace
+ * 2. Otherwise infer from loader context (apiType from loaded version)
+ * 3. Finally infer from global namespace (backward compat with <script> loading)
  *    - BMapGL exists → gl
  *    - BMap exists → 2d
  *    - Both exist → default gl
  */
-function resolveApiType(apiType?: MapApiType): MapApiType {
+function resolveApiType(
+  apiType: MapApiType | undefined,
+  loaderApiType: MapApiType | undefined
+): MapApiType {
   if (apiType === 'gl' || apiType === '2d') return apiType;
+  if (loaderApiType === 'gl' || loaderApiType === '2d') return loaderApiType;
   const hasGL = typeof BMapGL !== 'undefined';
   const has2d = typeof BMap !== 'undefined';
   if (hasGL) return 'gl';
@@ -88,7 +94,8 @@ function resolveApiType(apiType?: MapApiType): MapApiType {
   return '2d'; // fallback when neither loaded
 }
 
-function getBMapApi(apiType: MapApiType): typeof BMap {
+function getBMapApi(apiType: MapApiType, loaderApi?: BMapApi | BMapGLApi): BMapApi | BMapGLApi {
+  if (loaderApi) return loaderApi;
   if (apiType === 'gl' && typeof BMapGL !== 'undefined') return BMapGL;
   return BMap;
 }
@@ -98,8 +105,9 @@ const MapInner = forwardRef<any, MapProps & { children?: React.ReactNode }>(
     const mapRef = useRef<HTMLDivElement>(null);
     const mapInstanceRef = useRef<any>(null);
     const [mapReady, setMapReady] = useState(false);
-    const apiType = resolveApiType(props.apiType);
-    const B = getBMapApi(apiType);
+    const loaderCtx = useBMapLoader();
+    const apiType = resolveApiType(props.apiType, loaderCtx?.apiType);
+    const B = getBMapApi(apiType, loaderCtx?.api);
 
     useImperativeHandle(ref, () => ({
       get map() {
@@ -269,13 +277,13 @@ const MapInner = forwardRef<any, MapProps & { children?: React.ReactNode }>(
         )}
         <div ref={mapRef} className={props.className} style={{ height: '100%' }} />
         {mapReady && contextValue && (
-          <BMapProvider value={contextValue}>
+          <BMapMapContextProvider value={contextValue}>
             <MapChildren
               contextValue={contextValue}
               render={props.render}
               children={props.children}
             />
-          </BMapProvider>
+          </BMapMapContextProvider>
         )}
       </div>
     );
