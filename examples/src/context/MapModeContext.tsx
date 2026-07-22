@@ -2,33 +2,27 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import { BMapProvider } from 'react-bmap';
 import type { BMapVersion } from 'react-bmap';
 
-export type MapMode = '2d' | 'gl';
+export type MapVersion = BMapVersion; // '3.0' | 'gl' | '4.0'
 
 const MapModeContext = createContext<{
-  mode: MapMode;
-  setMode: (mode: MapMode) => void;
+  version: MapVersion;
+  setVersion: (version: MapVersion) => void;
 } | null>(null);
 
-const MODE_TO_VERSION: Record<MapMode, BMapVersion> = {
-  '2d': '4.0',
-  gl: 'gl',
-};
-
 /**
- * 同时承担两件事：
- * 1. 暴露 2d/gl 模式切换
- * 2. 根据当前模式驱动 BMapProvider 的 version（@baidumap/jsapi-loader
- *    同一页面仅支持一个 version，切换模式时 provider 内部会 reset 重新加载）
+ * 暴露 3.0 / gl / 4.0 版本切换，并驱动 BMapProvider 的 version
+ * （@baidumap/jsapi-loader 同一页面仅支持一个 version，切换时 provider
+ *  内部会 reset 重新加载）
  */
 export function MapModeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<MapMode>('2d');
-  const setMode = useCallback((m: MapMode) => setModeState(m), []);
+  const [version, setVersionState] = useState<MapVersion>('4.0');
+  const setVersion = useCallback((v: MapVersion) => setVersionState(v), []);
 
   return (
-    <MapModeContext.Provider value={{ mode, setMode }}>
+    <MapModeContext.Provider value={{ version, setVersion }}>
       <BMapProvider
         ak="mbKnRu5DQqM420lpbt7tbtm7WK6jiQln"
-        version={MODE_TO_VERSION[mode]}
+        version={version}
         fallback={<div style={{ padding: 24 }}>加载地图 API 中...</div>}
       >
         {children}
@@ -37,12 +31,12 @@ export function MapModeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useMapMode() {
+export function useMapVersion() {
   const ctx = useContext(MapModeContext);
-  return ctx?.mode ?? '2d';
+  return ctx?.version ?? '4.0';
 }
 
-export function useSetMapMode() {
+export function useSetMapVersion() {
   const ctx = useContext(MapModeContext);
-  return ctx?.setMode ?? (() => {});
+  return ctx?.setVersion ?? (() => {});
 }

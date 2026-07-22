@@ -56,7 +56,7 @@ export const MapPropsSchema = z.object({
   events: z.any().optional().describe('地图事件'),
   zoom_changed: z.function().optional().describe('缩放变化回调'),
   render: z.function().optional().describe('自定义渲染函数'),
-  apiType: MapApiTypeSchema.optional().describe('地图 API 类型：2d 或 gl'),
+  apiType: MapApiTypeSchema.optional().describe('地图 API 类型：default 或 gl'),
   enableScrollWheelZoom: z.boolean().optional(),
   enableDragging: z.boolean().optional(),
   enableDoubleClickZoom: z.boolean().optional(),
@@ -78,20 +78,20 @@ export type MapProps = z.infer<typeof MapPropsSchema> & {
  * 2. Otherwise infer from loader context (apiType from loaded version)
  * 3. Finally infer from global namespace (backward compat with <script> loading)
  *    - BMapGL exists → gl
- *    - BMap exists → 2d
+ *    - BMap exists → default
  *    - Both exist → default gl
  */
 function resolveApiType(
   apiType: MapApiType | undefined,
   loaderApiType: MapApiType | undefined
 ): MapApiType {
-  if (apiType === 'gl' || apiType === '2d') return apiType;
-  if (loaderApiType === 'gl' || loaderApiType === '2d') return loaderApiType;
+  if (apiType === 'gl' || apiType === 'default') return apiType;
+  if (loaderApiType === 'gl' || loaderApiType === 'default') return loaderApiType;
   const hasGL = typeof BMapGL !== 'undefined';
-  const has2d = typeof BMap !== 'undefined';
+  const hasDefault = typeof BMap !== 'undefined';
   if (hasGL) return 'gl';
-  if (has2d) return '2d';
-  return '2d'; // fallback when neither loaded
+  if (hasDefault) return 'default';
+  return 'default'; // fallback when neither loaded
 }
 
 function getBMapApi(apiType: MapApiType, loaderApi?: BMapApi | BMapGLApi): BMapApi | BMapGLApi {

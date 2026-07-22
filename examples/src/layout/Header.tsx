@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useMapMode, useSetMapMode } from '../context/MapModeContext';
+import { useMapVersion, useSetMapVersion } from '../context/MapModeContext';
 
 const GITHUB_ICON = (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -15,8 +15,8 @@ const NPM_ICON = (
 );
 
 export function Header() {
-  const mode = useMapMode();
-  const setMode = useSetMapMode();
+  const version = useMapVersion();
+  const setVersion = useSetMapVersion();
 
   return (
     <header className="app-header">
@@ -25,14 +25,15 @@ export function Header() {
       </Link>
       <div className="app-header-right">
         <div className="app-header-select-wrap">
-          <label className="app-header-select-label">地图模式</label>
+          <label className="app-header-select-label">地图版本</label>
           <select
             className="app-header-select"
-            value={mode}
-            onChange={(e) => setMode(e.target.value as '2d' | 'gl')}
+            value={version}
+            onChange={(e) => setVersion(e.target.value as '3.0' | 'gl' | '4.0')}
           >
-            <option value="2d">2D</option>
+            <option value="4.0">4.0</option>
             <option value="gl">GL</option>
+            <option value="3.0">3.0</option>
           </select>
         </div>
         <a

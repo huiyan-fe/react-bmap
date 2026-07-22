@@ -12,5 +12,5 @@ export const SizeLikeSchema = z.object({
   height: z.number(),
 });
 
-/** 地图 API 类型：2d 或 gl */
-export const MapApiTypeSchema = z.enum(['2d', 'gl']);
+/** 地图 API 类型：default 或 gl */
+export const MapApiTypeSchema = z.enum(['default', 'gl']);

@@ -8,8 +8,8 @@ const FEATURES = [
     desc: '采用 React 声明式写法，像使用普通组件一样操作地图',
   },
   {
-    title: '2D / GL 双引擎',
-    desc: '支持 BMap (2D/3.0) 与 BMapGL (WebGL)，按需切换',
+    title: '多版本 JSAPI',
+    desc: '兼容 JSAPI 3.0 / GL / 4.0，按需选择配置',
   },
   {
     title: 'TypeScript',
@@ -30,7 +30,7 @@ export function HomePage() {
           基于百度地图 JavaScript API 封装的 React 组件库
         </p>
         <p className="home-desc">
-          使用声明式组件方式开发百度地图应用，支持 BMap (JSAPI 2.0/3.0) 与 BMapGL (WebGL)。
+          使用声明式组件方式开发百度地图应用，兼容 BMap (JSAPI 3.0/4.0) 与 BMapGL (WebGL)，可按需选择配置。
           内置 28+ 组件，覆盖地图容器、覆盖物、控件、图层、路线规划、输入提示等常用场景。
         </p>
       </header>
@@ -51,23 +51,23 @@ export function HomePage() {
           <pre><code>npm install react-bmap</code></pre>
         </div>
         <p className="home-note">
-          使用前需在 HTML 中引入百度地图 API（
+          使用 BMapProvider 加载百度地图 JSAPI（无需在 HTML 中手动引入
+          <code>&lt;script&gt;</code>，
           <a href="http://lbsyun.baidu.com/apiconsole/key" target="_blank" rel="noopener noreferrer">
             申请密钥
           </a>
-          ）：
+          ），通过 <code>version</code> 按需选择 3.0 / GL / 4.0：
         </p>
         <div className="home-code-block">
-          <pre><code>{`<script src="//api.map.baidu.com/api?v=3.0&ak=您的密钥"></script>`}</code></pre>
-        </div>
-        <div className="home-code-block">
           <div className="home-code-label">Hello World</div>
-          <pre><code>{`import { Map, Marker, NavigationControl } from 'react-bmap';
+          <pre><code>{`import { BMapProvider, Map, Marker, NavigationControl } from 'react-bmap';
 
-<Map center={{ lng: 116.4, lat: 39.9 }} zoom={11}>
-  <Marker position={{ lng: 116.4, lat: 39.9 }} />
-  <NavigationControl />
-</Map>`}</code></pre>
+<BMapProvider ak="您的密钥" version="4.0">
+  <Map center={{ lng: 116.4, lat: 39.9 }} zoom={11}>
+    <Marker position={{ lng: 116.4, lat: 39.9 }} />
+    <NavigationControl />
+  </Map>
+</BMapProvider>`}</code></pre>
         </div>
       </section>
 

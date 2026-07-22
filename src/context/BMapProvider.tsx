@@ -16,11 +16,11 @@ const BMapLoaderContext = createContext<BMapLoaderContextValue | null>(null);
 
 /**
  * version → apiType 映射：
- *  - '3.0' / '4.0' → '2d'（命名空间 BMap）
+ *  - '3.0' / '4.0' → 'default'（命名空间 BMap）
  *  - 'gl'           → 'gl'（命名空间 BMapGL）
  */
 function versionToApiType(version: string): MapApiType {
-  return version === 'gl' ? 'gl' : '2d';
+  return version === 'gl' ? 'gl' : 'default';
 }
 
 /**

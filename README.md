@@ -30,7 +30,7 @@ import { BMapProvider } from 'react-bmap';
 
 function App() {
   return (
-    <BMapProvider ak="您的密钥" version="gl">
+    <BMapProvider ak="您的密钥" version="4.0">
       <YourApp />
     </BMapProvider>
   );
@@ -75,7 +75,7 @@ import { BMapProvider, Map, Marker, NavigationControl, InfoWindow } from 'react-
 
 function App() {
   return (
-    <BMapProvider ak="您的密钥" version="gl">
+    <BMapProvider ak="您的密钥" version="4.0">
       <Map center={{ lng: 116.402544, lat: 39.928216 }} zoom={11}>
         <Marker position={{ lng: 116.402544, lat: 39.928216 }} />
         <NavigationControl />
