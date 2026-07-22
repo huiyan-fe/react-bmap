@@ -51,6 +51,21 @@ export const BMapProvider: React.FC<BMapProviderProps> = (props) => {
 
   useEffect(() => {
     let cancelled = false;
+    let watchdog: number | undefined;
+    const targetNs = version === 'gl' ? 'BMapGL' : 'BMap';
+
+    const hasGlobal = () =>
+      typeof window !== 'undefined' &&
+      typeof (window as any)[targetNs] !== 'undefined';
+
+    // 统一的"加载完成"出口：幂等，防止 Promise 与 watchdog 重复触发
+    const finish = () => {
+      if (cancelled) return;
+      cancelled = true;
+      if (watchdog !== undefined) window.clearInterval(watchdog);
+      setLoadedVersion(version);
+      setStatus('loaded');
+    };
 
     setStatus('loading');
     setError(undefined);
@@ -68,19 +83,29 @@ export const BMapProvider: React.FC<BMapProviderProps> = (props) => {
       timeout,
       globalConfig,
     })
-      .then(() => {
-        if (cancelled) return;
-        setLoadedVersion(version);
-        setStatus('loaded');
-      })
+      .then(finish)
       .catch((err: unknown) => {
         if (cancelled) return;
+        // loader 可能因内部状态竞态而 reject，但脚本实际已加载成功 ——
+        // 只要全局对象可用就按成功处理
+        if (hasGlobal()) {
+          finish();
+          return;
+        }
         setError(err instanceof Error ? err : new Error(String(err)));
         setStatus('error');
       });
 
+    // 看门狗：loader 的 Promise 在 reset/Strict Mode 等 race 下可能既不
+    // resolve 也不 reject（JSONP 回调被孤立），但 JSAPI 脚本仍会挂到
+    // window 上。一旦检测到目标命名空间就立即转 loaded，避免永久 fallback。
+    watchdog = window.setInterval(() => {
+      if (hasGlobal()) finish();
+    }, 200);
+
     return () => {
       cancelled = true;
+      if (watchdog !== undefined) window.clearInterval(watchdog);
     };
   }, [
     ak,
