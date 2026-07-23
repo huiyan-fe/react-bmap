@@ -54,9 +54,15 @@ export const BMapProvider: React.FC<BMapProviderProps> = (props) => {
     let watchdog: number | undefined;
     const targetNs = version === 'gl' ? 'BMapGL' : 'BMap';
 
-    const hasGlobal = () =>
-      typeof window !== 'undefined' &&
-      typeof (window as any)[targetNs] !== 'undefined';
+    // 注意：BMap JSAPI 的 bootstrap 脚本会先执行 `window.BMap = {}` 占位，
+    // 然后异步加载 getscript 才真正填充 BMap.Map / BMapGL.Map 等构造器。
+    // 仅检测命名空间存在会过早触发，导致后续 new BMap.Map() 报
+    // "B.Map is not a constructor"。因此必须检测 Map 构造器可用。
+    const hasGlobal = () => {
+      if (typeof window === 'undefined') return false;
+      const ns = (window as any)[targetNs];
+      return !!(ns && typeof ns.Map === 'function');
+    };
 
     // 统一的"加载完成"出口：幂等，防止 Promise 与 watchdog 重复触发
     const finish = () => {
