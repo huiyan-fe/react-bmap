@@ -80,6 +80,12 @@ export const Polyline = createOverlayComponent<PolylineProps>({
     { sdk: 'mousemove', prop: 'onMouseMove' },
     { sdk: 'remove', prop: 'onRemove' },
     { sdk: 'lineupdate', prop: 'onLineUpdate' },
+    { sdk: 'editstart', prop: 'onEditStart' },
+    { sdk: 'editend', prop: 'onEditEnd' },
+    { sdk: 'linevertexdragstart', prop: 'onLineVertexDragStart' },
+    { sdk: 'linevertexdragging', prop: 'onLineVertexDragging' },
+    { sdk: 'linevertexdragend', prop: 'onLineVertexDragEnd' },
+    { sdk: 'linevertexdel', prop: 'onLineVertexDel' },
   ],
 });
 
@@ -88,7 +94,34 @@ export const Polygon = createOverlayComponent<PolygonProps>({
   displayName: 'Polygon',
   factory: (d, p) => d.createPolygon(p.path, p),
   pathProp: 'path',
-  optionProps: ['strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'enableEditing', 'enableClicking'],
+  optionProps: [
+    'strokeColor', 'fillColor', 'strokeWeight',
+    'strokeOpacity', 'fillOpacity', 'strokeStyle',
+    'enableEditing', 'enableMassClear', 'zIndex',
+  ],
+  ctorOnlyProps: [
+    'enableClicking', 'strokeLineCap', 'strokeLineJoin',
+    'linkRight', 'coordType', 'dashArray',
+  ],
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'rightdblclick', prop: 'onRightDoubleClick' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousemove', prop: 'onMouseMove' },
+    { sdk: 'remove', prop: 'onRemove' },
+    { sdk: 'lineupdate', prop: 'onLineUpdate' },
+    { sdk: 'editstart', prop: 'onEditStart' },
+    { sdk: 'editend', prop: 'onEditEnd' },
+    { sdk: 'linevertexdragstart', prop: 'onLineVertexDragStart' },
+    { sdk: 'linevertexdragging', prop: 'onLineVertexDragging' },
+    { sdk: 'linevertexdragend', prop: 'onLineVertexDragEnd' },
+    { sdk: 'linevertexdel', prop: 'onLineVertexDel' },
+  ],
 });
 
 // ─── 圆形 ───

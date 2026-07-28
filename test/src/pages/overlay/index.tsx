@@ -5,10 +5,11 @@
 export { MarkerPage } from './MarkerPage';
 export { LabelPage } from './LabelPage';
 export { PolylinePage } from './PolylinePage';
+export { PolygonPage } from './PolygonPage';
 
 import { makeOverlayTestPage } from '../templates';
 import {
-  Polygon, Circle, Rectangle, BezierCurve, Prism,
+  Circle, Rectangle, BezierCurve, Prism,
   GroundOverlay, GroundPoint, PointCollection, InfoWindow, Symbol,
   Icon, IconSequence, Hotspot, CustomOverlay,
 } from 'react-bmap';
@@ -18,7 +19,6 @@ const BEIJING = { lng: 116.404, lat: 39.915 };
 const PATH = [{ lng: 116.40, lat: 39.92 }, { lng: 116.42, lat: 39.91 }, { lng: 116.41, lat: 39.90 }];
 const BOUNDS = { sw: { lng: 116.38, lat: 39.88 }, ne: { lng: 116.43, lat: 39.93 } };
 
-export const PolygonPage = makeOverlayTestPage({ name: 'Polygon', Component: Polygon, defaultProps: { path: PATH, strokeColor: '#0000ff', fillColor: '#0000ff55', strokeWeight: 3 } });
 export const CirclePage = makeOverlayTestPage({ name: 'Circle', Component: Circle, defaultProps: { center: BEIJING, radius: 500, strokeColor: '#00aa00', fillColor: '#00aa0055' } });
 export const RectanglePage = makeOverlayTestPage({ name: 'Rectangle', Component: Rectangle, defaultProps: { bounds: BOUNDS, strokeColor: '#ff8800', fillColor: '#ff880055' } });
 export const BezierCurvePage = makeOverlayTestPage({ name: 'BezierCurve', Component: BezierCurve, defaultProps: { path: PATH, strokeColor: '#aa00ff', strokeWeight: 3 } });

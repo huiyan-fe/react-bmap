@@ -445,7 +445,23 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         hasOpts ? new rawSDK.Polyline(toRawPoints(rawSDK, p), ctorOpts) : new rawSDK.Polyline(toRawPoints(rawSDK, p)),
       'polyline');
     },
-    createPolygon: (p, o) => createOverlayFactory('Polygon', () => new rawSDK.Polygon(toRawPoints(rawSDK, p), o), 'polygon'),
+    createPolygon: (p, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      const fields = ['strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'strokeLineCap', 'strokeLineJoin'];
+      for (const f of fields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableEditing === 'boolean') ctorOpts.enableEditing = raw.enableEditing;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (typeof raw?.linkRight === 'boolean') ctorOpts.linkRight = raw.linkRight;
+      if (typeof raw?.coordType === 'string') ctorOpts.coordType = raw.coordType;
+      if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
+      if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('Polygon', () =>
+        hasOpts ? new rawSDK.Polygon(toRawPoints(rawSDK, p), ctorOpts) : new rawSDK.Polygon(toRawPoints(rawSDK, p)),
+      'polygon');
+    },
     createCircle: (c, r, o) => createOverlayFactory('Circle', () => new rawSDK.Circle(toRawPoint(rawSDK, c), r, o), 'circle'),
     createRectangle: (b, o) => createOverlayFactory('Rectangle', () => new rawSDK.Rectangle(toRawBounds(rawSDK, b), o), 'rectangle'),
     createBezierCurve: (p, o) => createOverlayFactory('BezierCurve', () => new rawSDK.BezierCurve(toRawPoints(rawSDK, p), o), 'bezierCurve'),
