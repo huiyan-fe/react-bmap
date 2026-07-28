@@ -1,333 +1,340 @@
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useImperativeHandle,
-  forwardRef,
-  useMemo,
-} from 'react';
-import { z } from 'zod';
-import { BMapMapContextProvider } from '../../context/BMapContext';
-import { useBMapLoader } from '../../context/BMapProvider';
-import { getOptions } from '../../hooks/useGetOptions';
-import { isString } from '../../utils/common';
-import type { MapApiType, BMapApi, BMapGLApi } from '../../types';
-import { PointLikeSchema, MapApiTypeSchema } from '../../schemas';
+import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useBMapContext } from '../../context/BMapContext';
+import { MapContext } from '../../context/MapContext';
+import type { MapHandle, Point } from '../../types';
+import { MapRefImpl } from './MapRef';
+import type { MapRef } from './MapRef';
+import { useLatest } from '../../utils/useLatest';
+import { pointEquals } from '../../utils/pointEquals';
 
-const MAP_EVENTS = [
-  'click', 'dblclick', 'rightclick', 'rightdblclick', 'maptypechange',
-  'mousemove', 'mouseover', 'mouseout', 'movestart', 'moving', 'moveend',
-  'zoomstart', 'zoomend', 'addoverlay', 'addcontrol', 'removecontrol',
-  'removeoverlay', 'clearoverlays', 'dragstart', 'dragging', 'dragend',
-  'addtilelayer', 'removetilelayer', 'load', 'resize', 'hotspotclick',
-  'hotspotover', 'hotspotout', 'tilesloaded', 'touchstart', 'touchmove',
-  'touchend', 'longpress',
-] as const;
-
-const TOGGLE_METHODS = {
-  enableScrollWheelZoom: ['enableScrollWheelZoom', 'disableScrollWheelZoom'],
-  enableDragging: ['enableDragging', 'disableDragging'],
-  enableDoubleClickZoom: ['enableDoubleClickZoom', 'disableDoubleClickZoom'],
-  enableKeyboard: ['enableKeyboard', 'disableKeyboard'],
-  enableInertialDragging: ['enableInertialDragging', 'disableInertialDragging'],
-  enableContinuousZoom: ['enableContinuousZoom', 'disableContinuousZoom'],
-  enablePinchToZoom: ['enablePinchToZoom', 'disablePinchToZoom'],
-  enableAutoResize: ['enableAutoResize', 'disableAutoResize'],
-};
-
-const MAP_OPTIONS = ['minZoom', 'maxZoom', 'mapType', 'enableMapClick'];
-
-export const MapPropsSchema = z.object({
-  center: z
-    .union([PointLikeSchema, z.string()])
-    .optional()
-    .describe('地图中心点，支持坐标对象或城市名'),
-  zoom: z.number().optional().describe('缩放级别'),
-  style: z.record(z.string(), z.any()).optional().describe('容器样式'),
-  className: z.string().optional().describe('容器类名'),
-  keys: z.union([z.string(), z.number()]).optional(),
-  forceUpdate: z.boolean().optional(),
-  enableMapClick: z.boolean().optional().describe('是否启用地图点击'),
-  minZoom: z.number().optional(),
-  maxZoom: z.number().optional(),
-  mapType: z.any().optional(),
-  mapStyle: z.any().optional().describe('地图样式'),
-  mapStyleV2: z.any().optional().describe('地图样式 V2'),
-  events: z.any().optional().describe('地图事件'),
-  zoom_changed: z.function().optional().describe('缩放变化回调'),
-  render: z.function().optional().describe('自定义渲染函数'),
-  apiType: MapApiTypeSchema.optional().describe('地图 API 类型：default 或 gl'),
-  enableScrollWheelZoom: z.boolean().optional(),
-  enableDragging: z.boolean().optional(),
-  enableDoubleClickZoom: z.boolean().optional(),
-  enableKeyboard: z.boolean().optional(),
-  enableInertialDragging: z.boolean().optional(),
-  enableContinuousZoom: z.boolean().optional(),
-  enablePinchToZoom: z.boolean().optional(),
-  enableAutoResize: z.boolean().optional(),
-});
-
-export type MapProps = z.infer<typeof MapPropsSchema> & {
-  children?: React.ReactNode;
-  [key: string]: any;
-};
+export interface MapProps {
+  // 受控
+  center?: Point;
+  zoom?: number;
+  heading?: number;
+  tilt?: number;
+  // 非受控
+  defaultCenter?: Point;
+  defaultZoom?: number;
+  defaultHeading?: number;
+  defaultTilt?: number;
+  // SDK MapOptions 透传（除受控字段）
+  options?: Record<string, unknown>;
+  // 样式（按版本选；不存在的版本会 throw/warn）
+  mapStyle?: unknown;
+  mapStyleV2?: unknown;
+  // 交互开关（受控；undefined 表示不主动控制，由 SDK 默认值决定）
+  enableDragging?: boolean;
+  enableInertialDragging?: boolean;
+  enableScrollWheelZoom?: boolean;
+  enableContinuousZoom?: boolean;
+  enableResizeOnCenter?: boolean;
+  enableDoubleClickZoom?: boolean;
+  enableKeyboard?: boolean;
+  enablePinchToZoom?: boolean;
+  enableRotate?: boolean;
+  enableRotateGestures?: boolean;
+  enableTilt?: boolean;
+  enableTiltGestures?: boolean;
+  enableAutoResize?: boolean;
+  // 缩放范围
+  minZoom?: number;
+  maxZoom?: number;
+  // 地图类型
+  mapType?: string;
+  // 光标
+  defaultCursor?: string;
+  draggingCursor?: string;
+  // 主题
+  theme?: string;
+  // 回调
+  onReady?: (map: MapHandle) => void;
+  onCenterChange?: (point: Point) => void;
+  onZoomChange?: (zoom: number) => void;
+  onHeadingChange?: (heading: number) => void;
+  onTiltChange?: (tilt: number) => void;
+  // DOM
+  className?: string;
+  style?: CSSProperties;
+  errorFallback?: ReactNode;
+  children?: ReactNode;
+}
 
 /**
- * Resolve map API type:
- * 1. Manual apiType has highest priority
- * 2. Otherwise infer from loader context (apiType from loaded version)
- * 3. Finally infer from global namespace (backward compat with <script> loading)
- *    - BMapGL exists → gl
- *    - BMap exists → default
- *    - Both exist → default gl
+ * Map 容器组件（DESIGN.md §5）。
+ *
+ * - useLayoutEffect 创建地图，避免首帧空白。
+ * - 完整 cleanup：clearOverlays、destroy 或清空 container。
+ * - StrictMode 安全。
+ * - 受控循环抑制：internalUpdateRef + pointEquals(1e-7)。
  */
-function resolveApiType(
-  apiType: MapApiType | undefined,
-  loaderApiType: MapApiType | undefined
-): MapApiType {
-  if (apiType === 'gl' || apiType === 'default') return apiType;
-  if (loaderApiType === 'gl' || loaderApiType === 'default') return loaderApiType;
-  const hasGL = typeof BMapGL !== 'undefined';
-  const hasDefault = typeof BMap !== 'undefined';
-  if (hasGL) return 'gl';
-  if (hasDefault) return 'default';
-  return 'default'; // fallback when neither loaded
-}
+export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
+  const {
+    center, zoom, heading, tilt,
+    defaultCenter, defaultZoom, defaultHeading, defaultTilt,
+    options, mapStyle, mapStyleV2,
+    enableDragging, enableInertialDragging, enableScrollWheelZoom, enableContinuousZoom,
+    enableResizeOnCenter, enableDoubleClickZoom, enableKeyboard, enablePinchToZoom,
+    enableRotate, enableRotateGestures, enableTilt: enableTiltProp, enableTiltGestures,
+    enableAutoResize,
+    minZoom, maxZoom, mapType, defaultCursor, draggingCursor, theme,
+    onReady, onCenterChange, onZoomChange, onHeadingChange, onTiltChange,
+    className, style, errorFallback = null, children,
+  } = props;
 
-function getBMapApi(apiType: MapApiType, loaderApi?: BMapApi | BMapGLApi): BMapApi | BMapGLApi {
-  if (loaderApi) return loaderApi;
-  if (apiType === 'gl' && typeof BMapGL !== 'undefined') return BMapGL;
-  return BMap;
-}
+  const { driver, status } = useBMapContext();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [map, setMap] = useState<MapHandle | null>(null);
 
-const MapInner = forwardRef<any, MapProps & { children?: React.ReactNode }>(
-  (props, ref) => {
-    const mapRef = useRef<HTMLDivElement>(null);
-    const mapInstanceRef = useRef<any>(null);
-    const [mapReady, setMapReady] = useState(false);
-    const loaderCtx = useBMapLoader();
-    const apiType = resolveApiType(props.apiType, loaderCtx?.apiType);
-    const B = getBMapApi(apiType, loaderCtx?.api);
+  const onReadyRef = useLatest(onReady);
+  const onCenterChangeRef = useLatest(onCenterChange);
+  const onZoomChangeRef = useLatest(onZoomChange);
+  const onHeadingChangeRef = useLatest(onHeadingChange);
+  const onTiltChangeRef = useLatest(onTiltChange);
+  const internalUpdateRef = useRef(false);
 
-    useImperativeHandle(ref, () => ({
-      get map() {
-        return mapInstanceRef.current;
-      },
-    }), []);
+  // 把 ref 同步为最新 MapRefImpl（支持 ref 对象与 callback ref）
+  useEffect(() => {
+    if (!ref) return;
+    const instance = map && driver ? new MapRefImpl(map, driver) : null;
+    if (typeof ref === 'function') {
+      ref(instance);
+    } else {
+      (ref as React.MutableRefObject<MapRef | null>).current = instance;
+    }
+  }, [map, driver, ref]);
 
-    useEffect(() => {
-      const wrapper = mapRef.current;
-      if (!wrapper) return;
+  // ─── 创建地图（useLayoutEffect + 完整 cleanup） ───
+  useLayoutEffect(() => {
+    if (status !== 'ready' || !driver || !containerRef.current) return;
 
-      // 每次 mount 创建全新容器，避免 BMapGL 在 destroy 后无法在同一容器上重新初始化
-      // React 18 Strict Mode 会 mount -> unmount -> mount，必须使用新容器才能正确显示
-      const container = document.createElement('div');
-      container.className = props.className || '';
-      container.style.height = '100%';
-      wrapper.appendChild(container);
-
-      const mapOptions = getOptions(props, MAP_OPTIONS) as any;
-      if (props.enableMapClick !== true) {
-        mapOptions.enableMapClick = false;
+    // SDK GL bug 抑制器：
+    // v4 GL 渲染器在 marker 图标 image.onload 时调用 getVertexInfoForGL → _buildVertexForEachRender，
+    // 此时纹理管线可能还没就绪 → "Cannot read properties of undefined (reading 'width')"。
+    // marker 最终能正常渲染，此 error 不影响功能。精准抑制只此一类错误。
+    const glErrorHandler = (event: ErrorEvent) => {
+      const msg = event.message || '';
+      const stack = (event.error as Error)?.stack || '';
+      if (msg.includes("'width'") && (stack.includes('getVertexInfoForGL') || stack.includes('_buildVertexForEachRender'))) {
+        event.preventDefault();
+        event.stopPropagation();
       }
-
-      let cancelled = false;
-      let map: any = null;
-      let eventsObj: Record<string, (e: any) => void> = {};
-      let zoomHandler: (() => void) | null = null;
-
-      const doCleanup = () => {
-        if (map) {
-          if (zoomHandler) map.removeEventListener?.('zoomend', zoomHandler);
-          Object.keys(eventsObj).forEach((evt) => {
-            map.removeEventListener?.(evt, eventsObj[evt]);
-          });
-          mapInstanceRef.current = null;
-          (map as { destroy?: () => void }).destroy?.();
-        }
-        if (container.parentNode) container.remove();
-        setMapReady(false);
-      };
-
-      const doInit = () => {
-        if (cancelled) return;
-        map = new B.Map(container, mapOptions);
-        mapInstanceRef.current = map;
-
-        eventsObj = {};
-        if (props.events) {
-          MAP_EVENTS.forEach((evt) => {
-            const handler = (props.events as any)[evt];
-            if (handler) eventsObj[evt] = handler;
-          });
-        }
-        Object.keys(eventsObj).forEach((evt) => {
-          map.addEventListener(evt, eventsObj[evt]);
-        });
-
-        const zoom = props.zoom;
-        if (isString(props.center)) {
-          map.centerAndZoom(props.center, zoom && zoom > 3 ? zoom : undefined);
-        } else if (props.center) {
-          const pt = new B.Point(props.center.lng, props.center.lat);
-          map.centerAndZoom(pt, zoom ?? 5);
-        }
-
-        if (props.mapStyleV2) {
-          map.setMapStyleV2?.(props.mapStyleV2);
-        } else if (props.mapStyle) {
-          map.setMapStyle?.(props.mapStyle);
-        }
-
-        Object.entries(TOGGLE_METHODS).forEach(([key, [enable, disable]]) => {
-          if (props[key] !== undefined) {
-            map[props[key] ? enable : disable]?.();
-          }
-        });
-
-        let lastZoom = zoom;
-        zoomHandler = () => {
-          const z = map.getZoom();
-          props.zoom_changed?.(z, lastZoom);
-          lastZoom = z;
-        };
-        map.addEventListener('zoomend', zoomHandler);
-
-        if (cancelled) {
-          doCleanup();
-          return;
-        }
-        setMapReady(true);
-      };
-
-      // BMapGL 需延迟初始化：destroy() 后 WebGL 上下文释放是异步的，
-      // Strict Mode 快速 remount 时立即创建会失败，需等待下一帧让上下文释放
-      if (apiType === 'gl') {
-        const rafId = requestAnimationFrame(() => {
-          requestAnimationFrame(doInit);
-        });
-        return () => {
-          cancelled = true;
-          cancelAnimationFrame(rafId);
-          doCleanup();
-        };
-      }
-
-      doInit();
-
-      return () => {
-        cancelled = true;
-        doCleanup();
-      };
-    }, []);
-
-    useEffect(() => {
-      const map = mapInstanceRef.current;
-      if (!map || !mapReady) return;
-
-      const center = props.center;
-      const zoom = props.zoom;
-
-      if (isString(center)) {
-        map.centerAndZoom(center, zoom && zoom > 3 ? zoom : undefined);
-      } else if (center && typeof center === 'object') {
-        const pt = new B.Point(center.lng, center.lat);
-        if (props.forceUpdate || true) {
-          map.centerAndZoom(pt, zoom ?? map.getZoom());
-        } else {
-          map.setCenter(pt);
-          if (zoom !== undefined) map.zoomTo(zoom);
-        }
-      }
-    }, [mapReady, props.center, props.zoom, props.forceUpdate]);
-
-    const contextValue = useMemo(
-      () =>
-        mapInstanceRef.current
-          ? {
-              map: mapInstanceRef.current,
-              api: B,
-              apiType,
-            }
-          : null,
-      [mapReady, apiType]
-    );
-
-    const style: React.CSSProperties = {
-      height: '100%',
-      position: 'relative',
-      ...props.style,
     };
+    window.addEventListener('error', glErrorHandler, true);
 
-    return (
-      <div style={style} key={props.keys}>
-        {!mapReady && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: '#f5f5f5',
-            }}
-          >
-            加载地图中...
-          </div>
-        )}
-        <div ref={mapRef} className={props.className} style={{ height: '100%' }} />
-        {mapReady && contextValue && (
-          <BMapMapContextProvider value={contextValue}>
-            <MapChildren
-              contextValue={contextValue}
-              render={props.render}
-              children={props.children}
-            />
-          </BMapMapContextProvider>
-        )}
-      </div>
-    );
-  }
-);
+    // 构造 SDK 选项时**不带** center/zoom/heading/tilt
+    const initial: Record<string, unknown> = { ...options };
+    Object.keys(initial).forEach(k => initial[k] === undefined && delete initial[k]);
 
-function MapChildren({
-  children,
-  render,
-  contextValue,
-}: {
-  children?: React.ReactNode;
-  render?: (map: any) => React.ReactNode;
-  contextValue: { map: any };
-}) {
-  const map = contextValue.map;
-  const rendered = React.Children.map(children, (child) => {
-    if (!child || typeof (child as any)?.type === 'string') return child;
-    return React.cloneElement(child as React.ReactElement<any>, { map });
-  });
+    const handle = driver.createMap(containerRef.current, initial);
+
+    // ★ 必须 centerAndZoom 初始化后地图才能用（dts 明确要求）
+    const initCenter = defaultCenter ?? center;
+    const initZoom = defaultZoom ?? zoom ?? 11;
+    if (initCenter) {
+      try {
+        driver.centerAndZoom(handle, initCenter, initZoom);
+      } catch (e) {
+        console.warn('[react-bmap] centerAndZoom failed, map may be uninitialized', e);
+      }
+    }
+    // heading/tilt 初始值（仅 4.0+ 生效，低版本 noop+warn）
+    const initHeading = defaultHeading ?? heading;
+    const initTilt = defaultTilt ?? tilt;
+    if (initHeading != null) {
+      try { driver.setHeading(handle, initHeading); } catch { /* ignore */ }
+    }
+    if (initTilt != null) {
+      try { driver.setTilt(handle, initTilt); } catch { /* ignore */ }
+    }
+
+    // 延迟暴露 map 实例：
+    // v4 GL 的 WebGL 渲染器需要完成首帧瓦片渲染后，纹理/顶点管线才就绪。
+    // 如果在 tilesloaded 之前添加 overlay，marker 默认图标的 image onload 触发时，
+    // GL 顶点构建器访问未初始化的纹理尺寸 → "Cannot read properties of undefined (reading 'width')"。
+    // 等 tilesloaded 事件（GL 首帧渲染完成），再 setMap 让子组件挂载。
+    // v3 无 GL 渲染，tilesloaded 几乎立即触发；加 500ms fallback 防止事件丢失卡死。
+    const unsubs: Array<() => void> = [];
+    let mapReady = false;
+    const markReady = () => {
+      if (mapReady) return;
+      mapReady = true;
+      setMap(handle);
+      onReadyRef.current?.(handle);
+    };
+    unsubs.push(driver.addEventListener(handle, 'tilesloaded', markReady));
+    const fallbackId = setTimeout(markReady, 500);
+    unsubs.push(() => clearTimeout(fallbackId));
+
+    unsubs.push(driver.addEventListener(handle, 'moveend', () => {
+      if (internalUpdateRef.current) return;
+      const c = driver.getCenter(handle);
+      onCenterChangeRef.current?.(c);
+    }));
+    unsubs.push(driver.addEventListener(handle, 'zoomend', () => {
+      if (internalUpdateRef.current) return;
+      const z = driver.getZoom(handle);
+      onZoomChangeRef.current?.(z);
+    }));
+    unsubs.push(driver.addEventListener(handle, 'headingchange', () => {
+      if (internalUpdateRef.current) return;
+      try {
+        const h = driver.getHeading(handle);
+        if (typeof h === 'number' && !Number.isNaN(h)) onHeadingChangeRef.current?.(h);
+      } catch { /* v3 不支持 */ }
+    }));
+    unsubs.push(driver.addEventListener(handle, 'tiltchange', () => {
+      if (internalUpdateRef.current) return;
+      try {
+        const t = driver.getTilt(handle);
+        if (typeof t === 'number' && !Number.isNaN(t)) onTiltChangeRef.current?.(t);
+      } catch { /* v3 不支持 */ }
+    }));
+
+    return () => {
+      window.removeEventListener('error', glErrorHandler, true);
+      unsubs.forEach(u => u());
+      driver.destroyMap(handle);
+      setMap(null);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [driver, status]);
+
+  // ─── 受控同步：center（独立 effect + 循环抑制） ───
+  useLayoutEffect(() => {
+    if (!map || !driver || !center) return;
+    const current = driver.getCenter(map);
+    if (!pointEquals(current, center)) {
+      internalUpdateRef.current = true;
+      // 用 setCenter 而非 centerAndZoom：centerAndZoom 在已初始化的地图上行为更接近「重置视野」，副作用大
+      try { driver.setCenter(map, center); } catch (e) {
+        console.warn('[react-bmap] setCenter failed', e);
+      }
+      requestAnimationFrame(() => { internalUpdateRef.current = false; });
+    }
+  }, [map, driver, center]);
+
+  // ─── 受控同步：zoom ───
+  useLayoutEffect(() => {
+    if (!map || !driver || zoom == null) return;
+    let currentZoom: number | undefined;
+    try { currentZoom = driver.getZoom(map); } catch { /* 地图未就绪 */ }
+    if (currentZoom !== undefined && currentZoom !== zoom) {
+      internalUpdateRef.current = true;
+      try { driver.setZoom(map, zoom); } catch (e) {
+        console.warn('[react-bmap] setZoom failed', e);
+      }
+      requestAnimationFrame(() => { internalUpdateRef.current = false; });
+    }
+  }, [map, driver, zoom]);
+
+  // ─── 受控同步：heading（仅 4.0+ 生效；v3 走 unsupported） ───
+  useLayoutEffect(() => {
+    if (!map || !driver || heading == null) return;
+    let currentHeading: number | undefined;
+    try { currentHeading = driver.getHeading(map); } catch { return; }
+    if (typeof currentHeading !== 'number' || Number.isNaN(currentHeading)) return;  // 版本不支持
+    if (Math.abs(currentHeading - heading) > 0.01) {
+      internalUpdateRef.current = true;
+      try { driver.setHeading(map, heading); } catch (e) {
+        console.warn('[react-bmap] setHeading failed', e);
+      }
+      requestAnimationFrame(() => { internalUpdateRef.current = false; });
+    }
+  }, [map, driver, heading]);
+
+  // ─── 受控同步：tilt（仅 4.0+ 生效；v3 走 unsupported） ───
+  useLayoutEffect(() => {
+    if (!map || !driver || tilt == null) return;
+    let currentTilt: number | undefined;
+    try { currentTilt = driver.getTilt(map); } catch { return; }
+    if (typeof currentTilt !== 'number' || Number.isNaN(currentTilt)) return;
+    if (Math.abs(currentTilt - tilt) > 0.01) {
+      internalUpdateRef.current = true;
+      try { driver.setTilt(map, tilt); } catch (e) {
+        console.warn('[react-bmap] setTilt failed', e);
+      }
+      requestAnimationFrame(() => { internalUpdateRef.current = false; });
+    }
+  }, [map, driver, tilt]);
+
+  // ─── 交互开关（受控切换） ───
+  const toggleEffect = (prop: boolean | undefined, enable: () => void, disable: () => void) => {
+    useLayoutEffect(() => {
+      if (!map || !driver || prop === undefined) return;
+      try { prop ? enable() : disable(); } catch { /* ignore */ }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [map, driver, prop]);
+  };
+  toggleEffect(enableDragging, () => driver!.enableDragging(map!), () => driver!.disableDragging(map!));
+  toggleEffect(enableInertialDragging, () => driver!.enableInertialDragging(map!), () => driver!.disableInertialDragging(map!));
+  toggleEffect(enableScrollWheelZoom, () => driver!.enableScrollWheelZoom(map!), () => driver!.disableScrollWheelZoom(map!));
+  toggleEffect(enableContinuousZoom, () => driver!.enableContinuousZoom(map!), () => driver!.disableContinuousZoom(map!));
+  toggleEffect(enableResizeOnCenter, () => driver!.enableResizeOnCenter(map!), () => driver!.disableResizeOnCenter(map!));
+  toggleEffect(enableDoubleClickZoom, () => driver!.enableDoubleClickZoom(map!), () => driver!.disableDoubleClickZoom(map!));
+  toggleEffect(enableKeyboard, () => driver!.enableKeyboard(map!), () => driver!.disableKeyboard(map!));
+  toggleEffect(enablePinchToZoom, () => driver!.enablePinchToZoom(map!), () => driver!.disablePinchToZoom(map!));
+  toggleEffect(enableRotate, () => driver!.enableRotate(map!), () => driver!.disableRotate(map!));
+  toggleEffect(enableRotateGestures, () => driver!.enableRotateGestures(map!), () => driver!.disableRotateGestures(map!));
+  toggleEffect(enableTiltProp, () => driver!.enableTilt(map!), () => driver!.disableTilt(map!));
+  toggleEffect(enableTiltGestures, () => driver!.enableTiltGestures(map!), () => driver!.disableTiltGestures(map!));
+  toggleEffect(enableAutoResize, () => driver!.enableAutoResize(map!), () => driver!.disableAutoResize(map!));
+
+  // ─── 缩放范围 ───
+  useLayoutEffect(() => {
+    if (!map || !driver || minZoom === undefined) return;
+    try { driver.setMinZoom(map, minZoom); } catch { /* ignore */ }
+  }, [map, driver, minZoom]);
+
+  useLayoutEffect(() => {
+    if (!map || !driver || maxZoom === undefined) return;
+    try { driver.setMaxZoom(map, maxZoom); } catch { /* ignore */ }
+  }, [map, driver, maxZoom]);
+
+  // ─── 地图类型 ───
+  useLayoutEffect(() => {
+    if (!map || !driver || mapType === undefined) return;
+    try { driver.setMapType(map, mapType); } catch { /* ignore */ }
+  }, [map, driver, mapType]);
+
+  // ─── 光标 ───
+  useLayoutEffect(() => {
+    if (!map || !driver || defaultCursor === undefined) return;
+    try { driver.setDefaultCursor(map, defaultCursor); } catch { /* ignore */ }
+  }, [map, driver, defaultCursor]);
+
+  useLayoutEffect(() => {
+    if (!map || !driver || draggingCursor === undefined) return;
+    try { driver.setDraggingCursor(map, draggingCursor); } catch { /* ignore */ }
+  }, [map, driver, draggingCursor]);
+
+  // ─── 主题 ───
+  useLayoutEffect(() => {
+    if (!map || !driver || theme === undefined) return;
+    try { driver.setTheme(map, theme); } catch { /* ignore */ }
+  }, [map, driver, theme]);
+
+  // ─── 样式 ───
+  useEffect(() => {
+    if (!map || !driver || mapStyle === undefined) return;
+    driver.setMapStyle(map, mapStyle);
+  }, [map, driver, mapStyle]);
+
+  useEffect(() => {
+    if (!map || !driver || mapStyleV2 === undefined) return;
+    driver.setMapStyleV2(map, mapStyleV2);
+  }, [map, driver, mapStyleV2]);
+
+  const ctxValue = useMemo(() => (map && driver ? { map, driver } : null), [map, driver]);
+
+  if (status === 'error') return <>{errorFallback}</>;
 
   return (
-    <>
-      {rendered}
-      {render?.(map)}
-    </>
+    <div ref={containerRef} className={className} style={style}>
+      {ctxValue && (
+        <MapContext.Provider value={ctxValue}>{children}</MapContext.Provider>
+      )}
+    </div>
   );
-}
-
-MapInner.displayName = 'Map';
-
-export const Map = forwardRef<any, MapProps & { children?: React.ReactNode }>(
-  (props, ref) => {
-    const defaultStyle = { height: '350px' };
-    return (
-      <MapInner
-        ref={ref}
-        {...props}
-        style={{ ...defaultStyle, ...props.style }}
-      />
-    );
-  }
-);
-
-Map.displayName = 'Map';
-
-export default Map;
+});

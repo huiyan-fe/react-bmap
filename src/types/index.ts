@@ -1,98 +1,110 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * 核心类型定义。
+ *
+ * 类型来源：bmap-jsapi-dts（src 目录下的 .d.ts 文件）。
+ * 本文件只重新组织「库内部需要」的类型形态，不重复 dts 的完整 API 描述。
+ * 具体 SDK 类（Map/Marker/...）的成员在 dts 中查阅，库内部用 brand handle 包装。
+ */
 
-import type React from 'react';
-import type { z } from 'zod';
-import type { BMapVersion, BMapLoaderGlobalConfig } from '@baidumap/jsapi-loader';
-import {
-  PointLikeSchema,
-  SizeLikeSchema,
-  MapApiTypeSchema,
-} from '../schemas';
+// ─────────────── 基础几何类型（不可变 plain object 形态） ───────────────
 
-export type BMapApi = typeof BMap;
-export type BMapGLApi = typeof BMapGL;
-
-export type MapApiType = z.infer<typeof MapApiTypeSchema>;
-export type PointLike = z.infer<typeof PointLikeSchema>;
-export type SizeLike = z.infer<typeof SizeLikeSchema>;
-
-export { PointLikeSchema, SizeLikeSchema, MapApiTypeSchema };
-
-export type { BMapVersion, BMapLoaderGlobalConfig };
-
-export interface BMapContextValue {
-  map: any;
-  api: BMapApi | BMapGLApi;
-  apiType: MapApiType;
+export interface Point {
+  lng: number;
+  lat: number;
 }
 
-export type BMapLoaderStatus = 'loading' | 'loaded' | 'error';
+export interface Pixel {
+  x: number;
+  y: number;
+}
 
-export interface BMapLoaderContextValue {
-  /** 已加载的命名空间（BMap 或 BMapGL） */
-  api: BMapApi | BMapGLApi | undefined;
-  /** 由 version 推断出的 API 类型 */
-  apiType: MapApiType;
-  /** 加载器使用的版本 */
+export interface Size {
+  width: number;
+  height: number;
+}
+
+export interface Bounds {
+  sw: Point;
+  ne: Point;
+}
+
+// ─────────────── Brand Handle（避免裸用 SDK 实例） ───────────────
+
+export interface MapHandle {
+  readonly __brand: 'MapHandle';
+  readonly raw: unknown;
+}
+
+export interface OverlayHandle {
+  readonly __brand: 'OverlayHandle';
+  readonly raw: unknown;
+  readonly type: string;
+}
+
+export interface ControlHandle {
+  readonly __brand: 'ControlHandle';
+  readonly raw: unknown;
+  readonly type: string;
+}
+
+export interface LayerHandle {
+  readonly __brand: 'LayerHandle';
+  readonly raw: unknown;
+  readonly kind: LayerKind;
+}
+
+export interface ServiceHandle {
+  readonly __brand: 'ServiceHandle';
+  readonly raw: unknown;
+  readonly isNull: boolean;
+}
+
+export type LayerKind = 'tile' | 'normal' | 'geojson' | 'district' | 'traffic' | 'custom' | 'canvas';
+
+// ─────────────── 版本与能力 ───────────────
+
+/**
+ * JSAPI 版本。
+ *
+ * 框架显式支持 '3.0' 与 '4.0'，但允许传入任意字符串（如未来的 '4.1'、'5.0'）。
+ * - '3.0'：使用 v3Driver
+ * - 其它任何值（'4.0' / '4.1' / '5.0' / ...）：使用 v4Driver，按 4.0 baseline 处理
+ * - jsapi-loader 始终按用户传入的 version 加载
+ *
+ * `(string & {})` 是 TS 的常见技巧：既允许任意字符串，又能在 IDE 里给出 '3.0' / '4.0' 的补全提示。
+ */
+export type BMapVersion = '3.0' | '4.0' | (string & {});
+
+export type UnsupportedBehavior = 'throw' | 'warn' | 'ignore';
+
+/**
+ * 能力标识。
+ *
+ * 完整清单由 scripts/gen-capability-matrix.ts 从 bmap-jsapi-dts 的
+ * @since / @removed 自动生成。此处仅手写常见项作为种子。
+ * 真正的能力矩阵见 src/drivers/capabilityMatrix.ts。
+ */
+export type Capability = string;
+
+// ─────────────── 事件 ───────────────
+
+export interface BMapEvent<T = unknown> {
+  type: string;
+  target: MapHandle | OverlayHandle | ControlHandle | null;
+  point?: Point;
+  pixel?: Pixel;
+  overlay?: OverlayHandle;
+  raw: T;
+}
+
+// ─────────────── 加载状态 ───────────────
+
+export type LoaderStatus = 'loading' | 'ready' | 'error';
+
+export interface LoadKeyComponents {
   version: BMapVersion;
-  /** 加载状态 */
-  status: BMapLoaderStatus;
-  /** 加载错误 */
-  error?: Error;
-}
-
-export interface BMapProviderProps {
-  /** 开发者密钥。非代理模式必填 */
-  ak?: string;
-  /** JSAPI 版本，默认 'gl' */
-  version?: BMapVersion;
-  /** 代理模式服务地址（末尾需带 "/"） */
+  ak: string;
   serviceHost?: string;
-  /** 协议，默认 'https' */
-  protocol?: 'https' | 'http';
-  /** 加载超时（毫秒），0 表示不超时 */
-  timeout?: number;
-  /** 创建地图前需全局声明的配置 */
-  globalConfig?: BMapLoaderGlobalConfig;
-  /** 加载中展示内容 */
-  fallback?: React.ReactNode;
-  /** 加载失败展示内容 */
-  errorFallback?: React.ReactNode;
-  children?: React.ReactNode;
-}
-
-export interface MapEvents {
-  click?: (e: any) => void;
-  dblclick?: (e: any) => void;
-  rightclick?: (e: any) => void;
-  rightdblclick?: (e: any) => void;
-  maptypechange?: (e: any) => void;
-  mousemove?: (e: any) => void;
-  mouseover?: (e: any) => void;
-  mouseout?: (e: any) => void;
-  movestart?: (e: any) => void;
-  moving?: (e: any) => void;
-  moveend?: (e: any) => void;
-  zoomstart?: (e: any) => void;
-  zoomend?: (e: any) => void;
-  addoverlay?: (e: any) => void;
-  addcontrol?: (e: any) => void;
-  removecontrol?: (e: any) => void;
-  removeoverlay?: (e: any) => void;
-  clearoverlays?: (e: any) => void;
-  dragstart?: (e: any) => void;
-  dragging?: (e: any) => void;
-  dragend?: (e: any) => void;
-  addtilelayer?: (e: any) => void;
-  removetilelayer?: (e: any) => void;
-  load?: (e: any) => void;
-  resize?: (e: any) => void;
-  hotspotclick?: (e: any) => void;
-  hotspotover?: (e: any) => void;
-  hotspotout?: (e: any) => void;
-  tilesloaded?: (e: any) => void;
-  touchstart?: (e: any) => void;
-  touchmove?: (e: any) => void;
-  touchend?: (e: any) => void;
-  longpress?: (e: any) => void;
+  language?: string;
+  plugins?: string[];
 }

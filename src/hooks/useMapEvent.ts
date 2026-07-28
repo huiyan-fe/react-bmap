@@ -1,21 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useMapContext } from '../context/MapContext';
+import { useLatest } from '../utils/useLatest';
 
+/**
+ * 订阅 Map 或 Overlay 事件。
+ *
+ * - handler 通过 ref 持有最新值，订阅仅一次（用户传内联函数不会重订阅）。
+ * - SSR/null map 安全。
+ */
 export function useMapEvent(
-  map: any,
-  events: Record<string, ((...args: any[]) => void) | undefined> | undefined
-) {
+  type: string,
+  handler: (raw: unknown) => void,
+): void {
+  const { map, driver } = useMapContext();
+  const handlerRef = useLatest(handler);
+
   useEffect(() => {
-    if (!map || !events) return;
-    const listeners: Array<{ event: string; handler: (...args: any[]) => void }> = [];
-    for (const [event, handler] of Object.entries(events)) {
-      if (handler && typeof handler === 'function') {
-        const wrapped = (...args: any[]) => handler(...args);
-        map.addEventListener(event, wrapped);
-        listeners.push({ event, handler: wrapped });
-      }
-    }
-    return () => {
-      listeners.forEach(({ event, handler }) => map.removeEventListener?.(event, handler));
-    };
-  }, [map, events]);
+    if (!map || !driver) return;
+    return driver.addEventListener(map, type, (raw) => handlerRef.current(raw));
+  }, [map, driver, type, handlerRef]);
 }

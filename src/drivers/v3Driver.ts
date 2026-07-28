@@ -1,0 +1,175 @@
+import type { UnsupportedBehavior } from '../types';
+import type { BMapDriver } from './types';
+import { CAPABILITY_MATRIX } from './capabilityMatrix';
+import { createV4Driver } from './v4Driver';
+import { reportUnsupported, unsupportedValue } from './unsupported';
+
+/**
+ * v3 Driver — 3.0 适配。
+ * - 复用 v4 driver 的通用骨架
+ * - 3.0-only 方法真实实现
+ * - 4.0-only 方法走 unsupported
+ * - capabilities 用 v3 矩阵（与 v4 区分）
+ */
+export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: UnsupportedBehavior }): BMapDriver {
+  const behavior = opts.unsupportedBehavior;
+  const version = '3.0' as const;
+
+  const base = createV4Driver(rawSDK, opts);
+
+  const v3Only: Partial<BMapDriver> = {
+    // 3.0-only Map 命令真实实现
+    enableMapClick: (map) => { (map.raw as any).enableMapClick?.(); },
+    disableMapClick: (map) => { (map.raw as any).disableMapClick?.(); },
+    enable3DBuilding: (map) => { (map.raw as any).enable3DBuilding?.(); },
+    disable3DBuilding: (map) => { (map.raw as any).disable3DBuilding?.(); },
+    setPanorama: (map, pano) => { (map.raw as any).setPanorama?.(pano); },
+    getPanorama: (map) => (map.raw as any).getPanorama?.() ?? null,
+    setCurrentCity: (map, city) => { (map.raw as any).setCurrentCity?.(city); },
+    highResolutionEnabled: (map) => (map.raw as any).highResolutionEnabled?.() ?? false,
+    addHotspot: (map, h) => { (map.raw as any).addHotspot?.(h.raw); },
+    removeHotspot: (map, h) => { (map.raw as any).removeHotspot?.(h.raw); },
+    clearHotspots: (map) => { (map.raw as any).clearHotspots?.(); },
+
+    // 3.0 用 setMapStyle（v1），setMapStyleV2 不支持
+    setMapStyle: (map, options) => { (map.raw as any).setMapStyle?.(options); },
+    setMapStyleV2: () => reportUnsupported('Map.setMapStyleV2', version, behavior),
+
+    // 3.0 信息窗口通过 map.openInfoWindow
+    openInfoWindow: (target, iw, point) => {
+      const t = (target as any).raw;
+      if (typeof t.openInfoWindow === 'function') {
+        const SDK = (globalThis as any).BMap;
+        const pt = point && new SDK.Point(point.lng, point.lat);
+        t.openInfoWindow((iw as any).raw, pt);
+      }
+    },
+
+    // 4.0+ 全部走 unsupported（命令 noop，getter 返回兜底）
+    flyTo: () => reportUnsupported('Map.flyTo', version, behavior),
+    setHeading: () => reportUnsupported('Map.setHeading', version, behavior),
+    getHeading: () => unsupportedValue('Map.getHeading', version, behavior, NaN),
+    setTilt: () => reportUnsupported('Map.setTilt', version, behavior),
+    getTilt: () => unsupportedValue('Map.getTilt', version, behavior, NaN),
+    getCurrentMaxTilt: () => unsupportedValue('Map.getCurrentMaxTilt', version, behavior, NaN),
+    startViewAnimation: () => unsupportedValue('Map.startViewAnimation', version, behavior, 0),
+    pauseViewAnimation: () => reportUnsupported('Map.pauseViewAnimation', version, behavior),
+    continueViewAnimation: () => reportUnsupported('Map.continueViewAnimation', version, behavior),
+    cancelViewAnimation: () => reportUnsupported('Map.cancelViewAnimation', version, behavior),
+    setDisplayOptions: () => reportUnsupported('Map.setDisplayOptions', version, behavior),
+    setOptions: () => reportUnsupported('Map.setOptions', version, behavior),
+    restrictBounds: () => reportUnsupported('Map.restrictBounds', version, behavior),
+    enableRotate: () => reportUnsupported('Map.enableRotate', version, behavior),
+    disableRotate: () => reportUnsupported('Map.disableRotate', version, behavior),
+    enableRotateGestures: () => reportUnsupported('Map.enableRotateGestures', version, behavior),
+    disableRotateGestures: () => reportUnsupported('Map.disableRotateGestures', version, behavior),
+    enableTilt: () => reportUnsupported('Map.enableTilt', version, behavior),
+    disableTilt: () => reportUnsupported('Map.disableTilt', version, behavior),
+    enableTiltGestures: () => reportUnsupported('Map.enableTiltGestures', version, behavior),
+    disableTiltGestures: () => reportUnsupported('Map.disableTiltGestures', version, behavior),
+    enableResizeOnCenter: () => reportUnsupported('Map.enableResizeOnCenter', version, behavior),
+    disableResizeOnCenter: () => reportUnsupported('Map.disableResizeOnCenter', version, behavior),
+    setTheme: () => reportUnsupported('Map.setTheme', version, behavior),
+    getMapTypeId: () => unsupportedValue('Map.getMapTypeId', version, behavior, ''),
+    getMapCoordType: () => unsupportedValue('Map.getMapCoordType', version, behavior, ''),
+    getMapStyleId: () => unsupportedValue('Map.getMapStyleId', version, behavior, ''),
+    getAreaStyleId: () => unsupportedValue('Map.getAreaStyleId', version, behavior, ''),
+    getRenderType: () => unsupportedValue('Map.getRenderType', version, behavior, ''),
+    isCanvasMap: () => unsupportedValue('Map.isCanvasMap', version, behavior, false),
+    getContainerSize: (map) => (map.raw as any).getContainerSize?.() ?? (map.raw as any).getSize(),
+    getZoomUnits: () => unsupportedValue('Map.getZoomUnits', version, behavior, NaN),
+    isLoaded: (map) => (typeof (map.raw as any).isLoaded === 'function' ? (map.raw as any).isLoaded() : true),
+    getCoordType: (map) => (typeof (map.raw as any).getCoordType === 'function' ? (map.raw as any).getCoordType() : ''),
+    getProjection: (map) => (map.raw as any).getProjection?.() ?? null,
+    getExtendBounds: (map, b) => (map.raw as any).getExtendBounds?.(b) ?? b,
+    getSolarInfo: () => unsupportedValue('Map.getSolarInfo', version, behavior, null),
+    getTileId: () => unsupportedValue('Map.getTileId', version, behavior, ''),
+    getPoiByUid: () => reportUnsupported('Map.getPoiByUid', version, behavior),
+    setLock: () => reportUnsupported('Map.setLock', version, behavior),
+    setPrivateRegions: () => reportUnsupported('Map.setPrivateRegions', version, behavior),
+    getPrivateRegions: () => unsupportedValue('Map.getPrivateRegions', version, behavior, []),
+    setPrivateStatus: () => reportUnsupported('Map.setPrivateStatus', version, behavior),
+    getPrivateStatus: () => unsupportedValue('Map.getPrivateStatus', version, behavior, false),
+    setCustomArea: () => reportUnsupported('Map.setCustomArea', version, behavior),
+    addFocusMask: () => reportUnsupported('Map.addFocusMask', version, behavior),
+    removeFocusMask: () => reportUnsupported('Map.removeFocusMask', version, behavior),
+    clearFocusMasks: () => reportUnsupported('Map.clearFocusMasks', version, behavior),
+    addCustomHtmlLayer: () => reportUnsupported('Map.addCustomHtmlLayer', version, behavior),
+    removeCustomHtmlLayer: () => reportUnsupported('Map.removeCustomHtmlLayer', version, behavior),
+    addParkingSpot: () => reportUnsupported('Map.addParkingSpot', version, behavior),
+    removeParkingSpot: () => reportUnsupported('Map.removeParkingSpot', version, behavior),
+    isSupportEarth: () => unsupportedValue('Map.isSupportEarth', version, behavior, false),
+    getEarth: () => unsupportedValue('Map.getEarth', version, behavior, null),
+    showEarthBoundary: () => reportUnsupported('Map.showEarthBoundary', version, behavior),
+    hideEarthBoundary: () => reportUnsupported('Map.hideEarthBoundary', version, behavior),
+    setEarthMaxZoom: () => reportUnsupported('Map.setEarthMaxZoom', version, behavior),
+    setEarthMinZoom: () => reportUnsupported('Map.setEarthMinZoom', version, behavior),
+    showIndoor: () => reportUnsupported('Map.showIndoor', version, behavior),
+    setIndoor: () => reportUnsupported('Map.setIndoor', version, behavior),
+    getIndoorInfo: () => unsupportedValue('Map.getIndoorInfo', version, behavior, null),
+    showStreetLayer: () => reportUnsupported('Map.showStreetLayer', version, behavior),
+    hideStreetLayer: () => reportUnsupported('Map.hideStreetLayer', version, behavior),
+    isStreetLayerShow: () => unsupportedValue('Map.isStreetLayerShow', version, behavior, false),
+    showVectorStreetLayer: () => reportUnsupported('Map.showVectorStreetLayer', version, behavior),
+    hideVectorStreetLayer: () => reportUnsupported('Map.hideVectorStreetLayer', version, behavior),
+    getLanguage: () => unsupportedValue('Map.getLanguage', version, behavior, ''),
+    changeLanguage: () => reportUnsupported('Map.changeLanguage', version, behavior),
+    enablePreferredLanguage: () => reportUnsupported('Map.enablePreferredLanguage', version, behavior),
+    disablePreferredLanguage: () => reportUnsupported('Map.disablePreferredLanguage', version, behavior),
+    addSpots: () => unsupportedValue('Map.addSpots', version, behavior, ''),
+    getSpots: () => unsupportedValue('Map.getSpots', version, behavior, []),
+    removeSpots: () => reportUnsupported('Map.removeSpots', version, behavior),
+    clearSpots: () => reportUnsupported('Map.clearSpots', version, behavior),
+    resetSpotStatus: () => reportUnsupported('Map.resetSpotStatus', version, behavior),
+    hightlightSpotByUid: () => reportUnsupported('Map.hightlightSpotByUid', version, behavior),
+    addAreaSpot: () => unsupportedValue('Map.addAreaSpot', version, behavior, ''),
+    getAreaSpot: () => unsupportedValue('Map.getAreaSpot', version, behavior, []),
+    removeAreaSpot: () => reportUnsupported('Map.removeAreaSpot', version, behavior),
+    clearAreaSpots: () => reportUnsupported('Map.clearAreaSpots', version, behavior),
+    clearLabels: () => reportUnsupported('Map.clearLabels', version, behavior),
+    addMapLabels: () => unsupportedValue('Map.addMapLabels', version, behavior, []),
+    removeMapLabels: () => reportUnsupported('Map.removeMapLabels', version, behavior),
+    getIconByClickPosition: () => unsupportedValue('Map.getIconByClickPosition', version, behavior, null),
+    setBounds: () => reportUnsupported('Map.setBounds', version, behavior),
+    getScreenshot: () => unsupportedValue('Map.getScreenshot', version, behavior, ''),
+    setCopyrightOffset: () => reportUnsupported('Map.setCopyrightOffset', version, behavior),
+    setOverlayMoveCursor: () => reportUnsupported('Map.setOverlayMoveCursor', version, behavior),
+    addNormalLayer: () => reportUnsupported('Map.addNormalLayer', version, behavior),
+    removeNormalLayer: () => reportUnsupported('Map.removeNormalLayer', version, behavior),
+    addGeoJSONLayer: () => reportUnsupported('Map.addGeoJSONLayer', version, behavior),
+    removeGeoJSONLayer: () => reportUnsupported('Map.removeGeoJSONLayer', version, behavior),
+    addDistrictLayer: () => reportUnsupported('Map.addDistrictLayer', version, behavior),
+    removeDistrictLayer: () => reportUnsupported('Map.removeDistrictLayer', version, behavior),
+    addLayer: (map, l) => { (map.raw as any).addTileLayer?.((l as any).raw); },
+    removeLayer: (map, l) => { (map.raw as any).removeTileLayer?.((l as any).raw); },
+    showOverlayContainer: () => reportUnsupported('Map.showOverlayContainer', version, behavior),
+    hideOverlayContainer: () => reportUnsupported('Map.hideOverlayContainer', version, behavior),
+
+    // 4.0+ 服务在 v3 不支持（工厂返回 isNull: true）
+    createRidingRoute: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
+    createGeolocation: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
+    createLocalCity: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
+    createPlaceDetail: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
+
+    // 4.0+ 类不存在 → null
+    createNavigationControl3D: () => { reportUnsupported('NavigationControl3D', version, behavior); return null; },
+    createZoomControl: () => { reportUnsupported('ZoomControl', version, behavior); return null; },
+    createCityListControl: () => { reportUnsupported('CityListControl', version, behavior); return null; },
+    createLocationControl: () => { reportUnsupported('LocationControl', version, behavior); return null; },
+    createLogoControl: () => { reportUnsupported('LogoControl', version, behavior); return null; },
+    createRectangle: () => { reportUnsupported('Rectangle', version, behavior); return null; },
+    createBezierCurve: () => { reportUnsupported('BezierCurve', version, behavior); return null; },
+    createPrism: () => { reportUnsupported('Prism', version, behavior); return null; },
+    createGroundPoint: () => { reportUnsupported('GroundPoint', version, behavior); return null; },
+    createNormalLayer: () => { reportUnsupported('NormalLayer', version, behavior); return null; },
+    createGeoJSONLayer: () => { reportUnsupported('GeoJSONLayer', version, behavior); return null; },
+    createDistrictLayer: () => { reportUnsupported('DistrictLayer', version, behavior); return null; },
+  };
+
+  return {
+    ...base,
+    ...v3Only,
+    version,
+    capabilities: CAPABILITY_MATRIX['3.0'],
+  };
+}
