@@ -424,7 +424,27 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         hasOpts ? new rawSDK.Label(c, ctorOpts) : new rawSDK.Label(c),
       'label');
     },
-    createPolyline: (p, o) => createOverlayFactory('Polyline', () => new rawSDK.Polyline(toRawPoints(rawSDK, p), o), 'polyline'),
+    createPolyline: (p, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      const strokeFields = ['strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'strokeLineCap', 'strokeLineJoin'];
+      for (const f of strokeFields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableEditing === 'boolean') ctorOpts.enableEditing = raw.enableEditing;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (typeof raw?.geodesic === 'boolean') ctorOpts.geodesic = raw.geodesic;
+      if (typeof raw?.linkRight === 'boolean') ctorOpts.linkRight = raw.linkRight;
+      if (typeof raw?.clip === 'boolean') ctorOpts.clip = raw.clip;
+      if (typeof raw?.coordType === 'string') ctorOpts.coordType = raw.coordType;
+      if (raw?.icons) ctorOpts.icons = raw.icons;
+      if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
+      if (raw?.strokeTexture) ctorOpts.strokeTexture = raw.strokeTexture;
+      if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('Polyline', () =>
+        hasOpts ? new rawSDK.Polyline(toRawPoints(rawSDK, p), ctorOpts) : new rawSDK.Polyline(toRawPoints(rawSDK, p)),
+      'polyline');
+    },
     createPolygon: (p, o) => createOverlayFactory('Polygon', () => new rawSDK.Polygon(toRawPoints(rawSDK, p), o), 'polygon'),
     createCircle: (c, r, o) => createOverlayFactory('Circle', () => new rawSDK.Circle(toRawPoint(rawSDK, c), r, o), 'circle'),
     createRectangle: (b, o) => createOverlayFactory('Rectangle', () => new rawSDK.Rectangle(toRawBounds(rawSDK, b), o), 'rectangle'),
@@ -454,6 +474,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (typeof o.strokeColor === 'string') r.setStrokeColor?.(o.strokeColor);
         if (typeof o.strokeWeight === 'number') r.setStrokeWeight?.(o.strokeWeight);
         if (typeof o.strokeOpacity === 'number') r.setStrokeOpacity?.(o.strokeOpacity);
+        if (typeof o.strokeStyle === 'string') r.setStrokeStyle?.(o.strokeStyle);
+        if (o.enableEditing === true) r.enableEditing?.();
+        else if (o.enableEditing === false) r.disableEditing?.();
         if (typeof o.fillColor === 'string') r.setFillColor?.(o.fillColor);
         if (typeof o.fillOpacity === 'number') r.setFillOpacity?.(o.fillOpacity);
         if (typeof o.radius === 'number' && ov.type === 'circle') r.setRadius?.(o.radius);

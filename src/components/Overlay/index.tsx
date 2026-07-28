@@ -64,7 +64,23 @@ export const Polyline = createOverlayComponent<PolylineProps>({
   displayName: 'Polyline',
   factory: (d, p) => d.createPolyline(p.path, p),
   pathProp: 'path',
-  optionProps: ['strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'strokeLineCap', 'strokeLineJoin', 'enableMassClear', 'enableEditing', 'enableClicking', 'geodesic', 'linkRight', 'clip', 'dashArray', 'zIndex'],
+  // 有 setter 的字段
+  optionProps: ['strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'enableEditing', 'enableMassClear', 'zIndex'],
+  // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
+  ctorOnlyProps: ['enableClicking', 'strokeLineCap', 'strokeLineJoin', 'geodesic', 'linkRight', 'clip', 'coordType', 'icons', 'dashArray', 'strokeTexture'],
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'rightdblclick', prop: 'onRightDoubleClick' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousemove', prop: 'onMouseMove' },
+    { sdk: 'remove', prop: 'onRemove' },
+    { sdk: 'lineupdate', prop: 'onLineUpdate' },
+  ],
 });
 
 // ─── 多边形 ───

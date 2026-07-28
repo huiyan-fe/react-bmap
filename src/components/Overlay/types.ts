@@ -42,10 +42,26 @@ export interface LabelOptions {
 export interface PolylineOptions {
   strokeColor?: string; strokeWeight?: number; strokeOpacity?: number;
   strokeStyle?: 'solid' | 'dashed' | 'dotted';
+  /** 描边线端头类型 @since 4.0 */
   strokeLineCap?: 'round' | 'butt' | 'square';
+  /** 描边线连接处类型 @since 4.0 */
   strokeLineJoin?: 'round' | 'miter' | 'bevel';
   enableMassClear?: boolean; enableEditing?: boolean; enableClicking?: boolean;
-  geodesic?: boolean; linkRight?: boolean; clip?: boolean; icons?: unknown[]; dashArray?: number[]; zIndex?: number;
+  /** 大地线模式 */
+  geodesic?: boolean;
+  /** 跨180度经线最短路径 */
+  linkRight?: boolean;
+  /** 跨经度180度裁剪 @since 4.0 */
+  clip?: boolean;
+  /** 输入坐标类型 @since 4.0 */
+  coordType?: 'BMAP_COORD_BD09' | 'BMAP_COORD_GCJ02' | 'BMAP_COORD_WGS84';
+  /** 配置贴合折线的图标 */
+  icons?: unknown[];
+  /** 虚线样式 [实线长, 间隙长] @since 4.0 */
+  dashArray?: number[];
+  /** 线纹理配置 @since 4.0 */
+  strokeTexture?: { url: string; width?: number; height?: number };
+  zIndex?: number;
 }
 export interface PolygonOptions {
   strokeColor?: string; fillColor?: string; strokeWeight?: number;
@@ -124,7 +140,22 @@ export interface LabelProps extends LabelOptions, OverlayReactProps {
   onMouseUp?: (point: Point, raw: unknown) => void;
   onRemove?: (point: Point, raw: unknown) => void;
 }
-export interface PolylineProps extends PolylineOptions, OverlayReactProps { path: Point[]; }
+export interface PolylineProps extends PolylineOptions, OverlayReactProps {
+  path: Point[];
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  /** 右键双击 @since 4.0 */
+  onRightDoubleClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
+  onMouseMove?: (point: Point, raw: unknown) => void;
+  onRemove?: (point: Point, raw: unknown) => void;
+  /** 线更新 */
+  onLineUpdate?: (raw: unknown) => void;
+}
 export interface PolygonProps extends PolygonOptions, OverlayReactProps { path: Point[]; }
 export interface CircleProps extends CircleOptions, OverlayReactProps { center: Point; radius: number; }
 export interface RectangleProps extends RectangleOptions, OverlayReactProps { bounds: Bounds; }
