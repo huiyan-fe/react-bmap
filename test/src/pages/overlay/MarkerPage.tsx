@@ -131,7 +131,6 @@ export function MarkerPage() {
           <MapMarkerEventProbe enabledEvents={enabledMapEvents} onLog={log} />
 
           <Marker
-            key={`${iconMode}-${anchor ?? 'default'}-${clicking}-${raiseOnDrag}-${draggingCursor}`}
             position={position}
             rotation={rotation}
             title={title}

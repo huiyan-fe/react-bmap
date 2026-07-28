@@ -35,6 +35,11 @@ export interface OverlayComponentConfig<P> {
   pathProp?: keyof P & string;
   /** options 属性名列表（变化时调 setOverlayOptions） */
   optionProps?: Array<keyof P & string>;
+  /**
+   * 只能在 constructor 设置的 props（SDK 无对应 setter 方法）。
+   * 这些 props 变化时框架自动重建 overlay 实例（cleanup → create），用户无需手写 key。
+   */
+  ctorOnlyProps?: Array<keyof P & string>;
   /** 是否支持 children 嵌套（如 Marker 嵌 InfoWindow） */
   supportsChildren?: boolean;
   /** overlay 级事件订阅（SDK 事件 → prop 回调） */
@@ -69,6 +74,11 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       getTarget: () => targetRef.current,
     }), []);
     const notify = () => listenersRef.current.forEach(cb => cb());
+
+    // ─── ctorOnlyProps: 计算 ctorKey，变化时触发创建 effect 重建 overlay ───
+    const ctorKey = config.ctorOnlyProps
+      ? stableStringify(config.ctorOnlyProps.map(k => (props as any)[k]))
+      : '';
 
     // ─── 创建 ───
     useLayoutEffect(() => {
@@ -105,6 +115,10 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
           driver.setOverlayOptions(handle, initOpts);
         }
       }
+      // 同步设置 visible（ctorOnlyProps 变化也会走这里，确保新实例可见性正确）
+      if (factoryProps.visible === false) {
+        driver.hideOverlay(handle);
+      }
       return () => {
         if (target?.removeOverlay) target.removeOverlay(handle);
         else if (map) driver.removeOverlay(map, handle);
@@ -113,7 +127,7 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
         notify();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, driver, target]);
+    }, [map, driver, target, ctorKey]);
 
     // ─── position 更新 ───
     const posVal = config.positionProp ? props[config.positionProp] : undefined;
@@ -179,7 +193,7 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       }
       return () => unsubs.forEach(u => u());
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [driver, eventKey]);
+    }, [driver, eventKey, ctorKey]);
 
     // ─── children 嵌套 ───
     if (!props.children) return null;

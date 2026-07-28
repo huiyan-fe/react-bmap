@@ -409,7 +409,21 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         hasOpts ? new rawSDK.Marker(point, ctorOpts) : new rawSDK.Marker(point),
       'marker');
     },
-    createLabel: (c, o) => createOverlayFactory('Label', () => new rawSDK.Label(c, o), 'label'),
+    createLabel: (c, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      if (raw?.offset) ctorOpts.offset = toRawSize(rawSDK, raw.offset);
+      if (raw?.position) ctorOpts.position = toRawPoint(rawSDK, raw.position as Point);
+      if (typeof raw?.anchor === 'number') ctorOpts.anchor = raw.anchor;
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (typeof raw?.width === 'number' && raw.width > 0) ctorOpts.width = raw.width;
+      if (raw?.styles) ctorOpts.styles = raw.styles;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('Label', () =>
+        hasOpts ? new rawSDK.Label(c, ctorOpts) : new rawSDK.Label(c),
+      'label');
+    },
     createPolyline: (p, o) => createOverlayFactory('Polyline', () => new rawSDK.Polyline(toRawPoints(rawSDK, p), o), 'polyline'),
     createPolygon: (p, o) => createOverlayFactory('Polygon', () => new rawSDK.Polygon(toRawPoints(rawSDK, p), o), 'polygon'),
     createCircle: (c, r, o) => createOverlayFactory('Circle', () => new rawSDK.Circle(toRawPoint(rawSDK, c), r, o), 'circle'),
@@ -448,6 +462,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (typeof o.rotation === 'number' && o.rotation !== 0) r.setRotation?.(o.rotation);
         if (typeof o.title === 'string') r.setTitle?.(o.title);
         if (typeof o.content === 'string') r.setContent?.(o.content);
+        // Label 专属
+        if (o.styles && typeof o.styles === 'object') r.setStyles?.(o.styles);
+        if (typeof o.opacity === 'number') r.setOpacity?.(o.opacity);
         if (o.icon !== undefined) r.setIcon?.(toRawIcon(rawSDK, o.icon));
         if (typeof o.anchor === 'number') r.setAnchor?.(o.anchor);
         // SDK Marker 默认不可拖拽，必须主动调 enable/disable 控制。

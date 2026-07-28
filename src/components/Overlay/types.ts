@@ -29,7 +29,15 @@ export interface MarkerOptions {
 }
 export interface LabelOptions {
   offset?: Size; position?: Point; anchor?: ControlAnchor;
-  enableMassClear?: boolean; enableClicking?: boolean; width?: number; styles?: unknown;
+  enableMassClear?: boolean; enableClicking?: boolean; width?: number;
+  /** CSS 样式键值对（如 { color: '#f00', fontSize: '14px' }） */
+  styles?: Record<string, string | number>;
+  /** 透明度 0-1（对应 SDK setOpacity，v4+） */
+  opacity?: number;
+  /** 鼠标悬停标题（对应 SDK setTitle） */
+  title?: string;
+  /** 层叠顺序（对应 SDK setZIndex） */
+  zIndex?: number;
 }
 export interface PolylineOptions {
   strokeColor?: string; strokeWeight?: number; strokeOpacity?: number;
@@ -105,7 +113,17 @@ export interface MarkerProps extends MarkerOptions, OverlayReactProps {
   onMouseUp?: (point: Point, raw: unknown) => void;
   onRemove?: (point: Point, raw: unknown) => void;
 }
-export interface LabelProps extends LabelOptions, OverlayReactProps { content: unknown; }
+export interface LabelProps extends LabelOptions, OverlayReactProps {
+  content: unknown;
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
+  onRemove?: (point: Point, raw: unknown) => void;
+}
 export interface PolylineProps extends PolylineOptions, OverlayReactProps { path: Point[]; }
 export interface PolygonProps extends PolygonOptions, OverlayReactProps { path: Point[]; }
 export interface CircleProps extends CircleOptions, OverlayReactProps { center: Point; radius: number; }

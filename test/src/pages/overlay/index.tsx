@@ -3,10 +3,11 @@
  * Marker 使用手写完整页，其余使用模板。
  */
 export { MarkerPage } from './MarkerPage';
+export { LabelPage } from './LabelPage';
 
 import { makeOverlayTestPage } from '../templates';
 import {
-  Label, Polyline, Polygon, Circle, Rectangle, BezierCurve, Prism,
+  Polyline, Polygon, Circle, Rectangle, BezierCurve, Prism,
   GroundOverlay, GroundPoint, PointCollection, InfoWindow, Symbol,
   Icon, IconSequence, Hotspot, CustomOverlay,
 } from 'react-bmap';
@@ -16,7 +17,6 @@ const BEIJING = { lng: 116.404, lat: 39.915 };
 const PATH = [{ lng: 116.40, lat: 39.92 }, { lng: 116.42, lat: 39.91 }, { lng: 116.41, lat: 39.90 }];
 const BOUNDS = { sw: { lng: 116.38, lat: 39.88 }, ne: { lng: 116.43, lat: 39.93 } };
 
-export const LabelPage = makeOverlayTestPage({ name: 'Label', Component: Label, defaultProps: { content: '标签文字', position: BEIJING } });
 export const PolylinePage = makeOverlayTestPage({ name: 'Polyline', Component: Polyline, defaultProps: { path: PATH, strokeColor: '#ff0000', strokeWeight: 4 } });
 export const PolygonPage = makeOverlayTestPage({ name: 'Polygon', Component: Polygon, defaultProps: { path: PATH, strokeColor: '#0000ff', fillColor: '#0000ff55', strokeWeight: 3 } });
 export const CirclePage = makeOverlayTestPage({ name: 'Circle', Component: Circle, defaultProps: { center: BEIJING, radius: 500, strokeColor: '#00aa00', fillColor: '#00aa0055' } });

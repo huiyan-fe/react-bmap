@@ -21,9 +21,9 @@ export const Marker = createOverlayComponent<MarkerProps>({
   displayName: 'Marker',
   factory: (d, p) => d.createMarker(p.position, p),
   positionProp: 'position',
-  // raiseOnDrag/draggingCursor/enableClicking/shadow 只能 constructor 设置（SDK 无 setter），不在 optionProps 里。
-  // 它们在 createMarker 内部从 factoryProps 提取，传给 constructor。
   optionProps: ['offset', 'icon', 'anchor', 'enableMassClear', 'enableDragging', 'rotation', 'title', 'zIndex'],
+  // SDK 无 setter，只能 constructor 设置；变化时框架自动重建。
+  ctorOnlyProps: ['enableClicking', 'raiseOnDrag', 'draggingCursor', 'shadow'],
   events: [
     { sdk: 'click', prop: 'onClick' },
     { sdk: 'dblclick', prop: 'onDoubleClick' },
@@ -45,7 +45,18 @@ export const Label = createOverlayComponent<LabelProps>({
   displayName: 'Label',
   factory: (d, p) => d.createLabel(p.content, p),
   positionProp: 'position',
-  optionProps: ['content', 'offset', 'anchor', 'enableMassClear', 'enableClicking', 'width', 'styles'],
+  optionProps: ['content', 'offset', 'anchor', 'enableMassClear', 'styles', 'opacity', 'title', 'zIndex'],
+  ctorOnlyProps: ['enableClicking', 'width'],
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'remove', prop: 'onRemove' },
+  ],
 });
 
 // ─── 折线 ───
