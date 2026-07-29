@@ -186,12 +186,29 @@ export const Rectangle = createOverlayComponent<RectangleProps>({
   ],
 });
 
-// ─── 贝塞尔曲线 ───
+// ─── 贝塞尔曲线（v4+） ───
 export const BezierCurve = createOverlayComponent<BezierCurveProps>({
   displayName: 'BezierCurve',
-  factory: (d, p) => d.createBezierCurve(p.path, p),
+  factory: (d, p) => d.createBezierCurve(p.path, p.controlPoints, p),
   pathProp: 'path',
-  optionProps: ['strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'enableMassClear'],
+  // controlPoints 走 setControlPoints（在 setOverlayOptions 内按 type 分发）
+  optionProps: ['controlPoints', 'strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'enableMassClear'],
+  // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
+  ctorOnlyProps: ['enableClicking', 'dashArray'],
+  // BezierCurveEventMap 不含编辑相关事件（SDK 无 enableEditing）
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'rightdblclick', prop: 'onRightDoubleClick' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousemove', prop: 'onMouseMove' },
+    { sdk: 'remove', prop: 'onRemove' },
+    { sdk: 'lineupdate', prop: 'onLineUpdate' },
+  ],
 });
 
 // ─── 3D 棱柱 ───

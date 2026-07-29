@@ -52,6 +52,10 @@ function toRawSize(SDK: any, s: any): any {
 function toRawPoints(SDK: any, path: Point[] | null | undefined): any[] {
   return Array.isArray(path) ? path.map(p => toRawPoint(SDK, p)) : (path as any);
 }
+/** BezierCurve 的控制点是二维数组：每组对应一段路径的 1~2 个控制点 */
+function toRawPointGroups(SDK: any, groups: Point[][] | null | undefined): any[] {
+  return Array.isArray(groups) ? groups.map(g => toRawPoints(SDK, g)) : (groups as any);
+}
 function toRawPixel(SDK: any, p: Pixel | null | undefined): any {
   if (!p) return p;
   if (p instanceof SDK.Pixel) return p;
@@ -523,7 +527,23 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         return inst;
       }, 'rectangle');
     },
-    createBezierCurve: (p, o) => createOverlayFactory('BezierCurve', () => new rawSDK.BezierCurve(toRawPoints(rawSDK, p), o), 'bezierCurve'),
+    createBezierCurve: (p, cp, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      const fields = ['strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle'];
+      for (const f of fields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
+      if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      // controlPoints 是第 2 个位置参数，opts 是第 3 个，顺序不能省
+      return createOverlayFactory('BezierCurve', () =>
+        hasOpts
+          ? new rawSDK.BezierCurve(toRawPoints(rawSDK, p), toRawPointGroups(rawSDK, cp), ctorOpts)
+          : new rawSDK.BezierCurve(toRawPoints(rawSDK, p), toRawPointGroups(rawSDK, cp)),
+      'bezierCurve');
+    },
     createPrism: (p, o) => createOverlayFactory('Prism', () => new rawSDK.Prism(toRawPoints(rawSDK, p), o), 'prism'),
     createGroundOverlay: (b, o) => createOverlayFactory('GroundOverlay', () => new rawSDK.GroundOverlay(toRawBounds(rawSDK, b), o), 'groundOverlay'),
     createGroundPoint: (p, o) => createOverlayFactory('GroundPoint', () => new rawSDK.GroundPoint(toRawPoint(rawSDK, p), o), 'groundPoint'),
@@ -563,6 +583,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (typeof o.fillOpacity === 'number') r.setFillOpacity?.(o.fillOpacity);
         if (typeof o.radius === 'number' && ov.type === 'circle') r.setRadius?.(o.radius);
         if (o.bounds && ov.type === 'rectangle') r.setBounds?.(toRawBounds(rawSDK, o.bounds as Bounds));
+        if (o.controlPoints && ov.type === 'bezierCurve') r.setControlPoints?.(toRawPointGroups(rawSDK, o.controlPoints as Point[][]));
         // rotation=0 是 SDK 默认值，主动调 setRotation(0) 会让 v3.0 默认 marker 进入 rotation 模式，
         // 导致命中区域塌缩成锚点。只在非 0 时才调用。
         if (typeof o.rotation === 'number' && o.rotation !== 0) r.setRotation?.(o.rotation);

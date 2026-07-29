@@ -7,6 +7,11 @@ const P1 = BEIJING;
 const P2: Point = { lng: 116.42, lat: 39.92 };
 const P3: Point = { lng: 116.41, lat: 39.90 };
 const PATH: Point[] = [P1, P2, P3];
+/** BezierCurve 控制点：组数必须 = PATH.length - 1，每组 1~2 个点 */
+const CURVE_CPS: Point[][] = [
+  [{ lng: 116.412, lat: 39.925 }],
+  [{ lng: 116.424, lat: 39.910 }],
+];
 const RECT_BOUNDS = { sw: { lng: 116.38, lat: 39.88 }, ne: { lng: 116.43, lat: 39.93 } };
 
 export function OverlaysTestPage() {
@@ -31,7 +36,7 @@ export function OverlaysTestPage() {
     ['prism', `Prism (v4+) ${capTag('Prism')}`, show.prism && <Prism path={PATH} topFillColor="#1890ff" sideFillColor="#1890ff55" />],
     ['pointCollection', `PointCollection ${capTag('PointCollection')}`, show.pointCollection && <PointCollection points={Array.from({ length: 20 }, (_, i) => ({ lng: 116.40 + i * 0.001, lat: 39.91 + i * 0.001 }))} color="#ff0000" size={1} />],
     ['groundOverlay', `GroundOverlay ${capTag('GroundOverlay')}`, show.groundOverlay && <GroundOverlay bounds={RECT_BOUNDS} imageURL="https://lbsyun.baidu.com/jsdemo/demo/images/logo.png" opacity={0.8} />],
-    ['bezierCurve', `BezierCurve (v4+) ${capTag('BezierCurve')}`, show.bezierCurve && <BezierCurve path={PATH} strokeColor="#a0f" strokeWeight={3} />],
+    ['bezierCurve', `BezierCurve (v4+) ${capTag('BezierCurve')}`, show.bezierCurve && <BezierCurve path={PATH} controlPoints={CURVE_CPS} strokeColor="#a0f" strokeWeight={3} />],
   ];
 
   return (

@@ -294,7 +294,8 @@ export interface BMapDriver {
   createPolygon(path: Point[], options?: unknown): OverlayHandle | null;
   createCircle(center: Point, radius: number, options?: unknown): OverlayHandle | null;
   createRectangle(bounds: Bounds, options?: unknown): OverlayHandle | null;
-  createBezierCurve(path: Point[], options?: unknown): OverlayHandle | null;
+  /** controlPoints 为 SDK 必填位置参数：每两个路径点之间 1~2 个控制点，组数 = path.length - 1 */
+  createBezierCurve(path: Point[], controlPoints: Point[][], options?: unknown): OverlayHandle | null;
   createPrism(path: Point[], options?: unknown): OverlayHandle | null;
   createGroundOverlay(bounds: Bounds, options?: unknown): OverlayHandle | null;
   createGroundPoint(point: Point, options?: unknown): OverlayHandle | null;

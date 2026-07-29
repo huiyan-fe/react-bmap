@@ -8,10 +8,11 @@ export { PolylinePage } from './PolylinePage';
 export { PolygonPage } from './PolygonPage';
 export { CirclePage } from './CirclePage';
 export { RectanglePage } from './RectanglePage';
+export { BezierCurvePage } from './BezierCurvePage';
 
 import { makeOverlayTestPage } from '../templates';
 import {
-  BezierCurve, Prism,
+  Prism,
   GroundOverlay, GroundPoint, PointCollection, InfoWindow, Symbol,
   Icon, IconSequence, Hotspot, CustomOverlay,
 } from 'react-bmap';
@@ -21,7 +22,6 @@ const BEIJING = { lng: 116.404, lat: 39.915 };
 const PATH = [{ lng: 116.40, lat: 39.92 }, { lng: 116.42, lat: 39.91 }, { lng: 116.41, lat: 39.90 }];
 const BOUNDS = { sw: { lng: 116.38, lat: 39.88 }, ne: { lng: 116.43, lat: 39.93 } };
 
-export const BezierCurvePage = makeOverlayTestPage({ name: 'BezierCurve', Component: BezierCurve, defaultProps: { path: PATH, strokeColor: '#aa00ff', strokeWeight: 3 } });
 export const PrismPage = makeOverlayTestPage({ name: 'Prism', Component: Prism, defaultProps: { path: PATH, topFillColor: '#1890ff' } });
 export const GroundOverlayPage = makeOverlayTestPage({ name: 'GroundOverlay', Component: GroundOverlay, defaultProps: { bounds: BOUNDS, imageURL: 'https://lbsyun.baidu.com/jsdemo/demo/images/logo.png', opacity: 0.8 } });
 export const GroundPointPage = makeOverlayTestPage({ name: 'GroundPoint', Component: GroundPoint, defaultProps: { point: BEIJING, url: 'https://lbsyun.baidu.com/jsdemo/demo/images/logo.png' } });

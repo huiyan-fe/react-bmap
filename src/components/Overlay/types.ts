@@ -107,7 +107,18 @@ export interface RectangleOptions {
   dashArray?: number[];
   zIndex?: number;
 }
-export type BezierCurveOptions = Pick<PolylineOptions, 'strokeColor' | 'strokeWeight' | 'strokeOpacity' | 'strokeStyle' | 'enableMassClear'>;
+/**
+ * BezierCurve 只有描边、没有填充，也不支持编辑 / strokeLineCap / strokeLineJoin / coordType。
+ * 整个 BezierCurve 类 @since 4.0（v3 不存在，driver 返回 null）。
+ */
+export interface BezierCurveOptions {
+  strokeColor?: string; strokeWeight?: number; strokeOpacity?: number;
+  strokeStyle?: 'solid' | 'dashed' | 'dotted';
+  enableMassClear?: boolean; enableClicking?: boolean;
+  /** 虚线样式 [实线长, 间隙长]，默认实线与空隙均为线宽的 2 倍 */
+  dashArray?: number[];
+  zIndex?: number;
+}
 export interface PrismOptions {
   topFillColor?: string; topFillOpacity?: number;
   sideFillColor?: string; sideFillOpacity?: number; enableMassClear?: boolean;
@@ -290,7 +301,29 @@ export interface RectangleProps extends RectangleOptions, OverlayReactProps {
   /** 删除编辑节点 */
   onLineVertexDel?: (raw: unknown) => void;
 }
-export interface BezierCurveProps extends BezierCurveOptions, OverlayReactProps { path: Point[]; }
+/**
+ * BezierCurve 事件对照 BezierCurveEventMap
+ * = Omit<GraphEventMap<BezierCurve>, editstart|editend|linevertex*>（整体 @since 4.0）。
+ * 即：无编辑相关事件。
+ */
+export interface BezierCurveProps extends BezierCurveOptions, OverlayReactProps {
+  /** 路径点数组，至少两个点 */
+  path: Point[];
+  /** 控制点数组，每两个路径点之间 1~2 个控制点，组数应为 path.length - 1，如 [[cp1, cp2], [cp3]] */
+  controlPoints: Point[][];
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  onRightDoubleClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
+  onMouseMove?: (point: Point, raw: unknown) => void;
+  onRemove?: (point: Point, raw: unknown) => void;
+  /** 节点数据变化 */
+  onLineUpdate?: (raw: unknown) => void;
+}
 export interface PrismProps extends PrismOptions, OverlayReactProps { path: Point[]; }
 export interface GroundOverlayProps extends GroundOverlayOptions, OverlayReactProps { bounds: Bounds; }
 export interface GroundPointProps extends GroundPointOptions, OverlayReactProps { point: Point; }
