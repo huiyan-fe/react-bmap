@@ -296,7 +296,11 @@ export interface BMapDriver {
   createRectangle(bounds: Bounds, options?: unknown): OverlayHandle | null;
   /** controlPoints 为 SDK 必填位置参数：每两个路径点之间 1~2 个控制点，组数 = path.length - 1 */
   createBezierCurve(path: Point[], controlPoints: Point[][], options?: unknown): OverlayHandle | null;
-  createPrism(path: Point[], options?: unknown): OverlayHandle | null;
+  /**
+   * altitude 为 SDK 必填位置参数（棱柱高度，米）。
+   * path 支持单坐标串 Point[] 或多坐标串 Point[][]（后者仅 constructor 支持，setPath 只接受单串）。
+   */
+  createPrism(path: Point[] | Point[][], altitude: number, options?: unknown): OverlayHandle | null;
   createGroundOverlay(bounds: Bounds, options?: unknown): OverlayHandle | null;
   createGroundPoint(point: Point, options?: unknown): OverlayHandle | null;
   createPointCollection(points: Point[], options?: unknown): OverlayHandle | null;

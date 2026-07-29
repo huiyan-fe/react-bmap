@@ -119,9 +119,15 @@ export interface BezierCurveOptions {
   dashArray?: number[];
   zIndex?: number;
 }
+/**
+ * Prism 只有顶面/侧面填充，没有任何 stroke 系列配置，也不支持编辑。
+ * 整个 Prism 类 @since 4.0（v3 不存在，driver 返回 null）。
+ */
 export interface PrismOptions {
   topFillColor?: string; topFillOpacity?: number;
-  sideFillColor?: string; sideFillOpacity?: number; enableMassClear?: boolean;
+  sideFillColor?: string; sideFillOpacity?: number;
+  enableMassClear?: boolean; enableClicking?: boolean;
+  zIndex?: number;
 }
 export interface GroundOverlayOptions {
   opacity?: number; url?: string | HTMLCanvasElement;
@@ -324,7 +330,33 @@ export interface BezierCurveProps extends BezierCurveOptions, OverlayReactProps 
   /** 节点数据变化 */
   onLineUpdate?: (raw: unknown) => void;
 }
-export interface PrismProps extends PrismOptions, OverlayReactProps { path: Point[]; }
+/**
+ * Prism 事件对照 PrismEventMap
+ * = Omit<GraphEventMap<Prism>, editstart|editend|linevertex*>（整体 @since 4.0）。
+ * 即：无编辑相关事件。
+ */
+export interface PrismProps extends PrismOptions, OverlayReactProps {
+  /**
+   * 底面多边形坐标点。单坐标串 Point[]，或多坐标串 Point[][]。
+   * 注意：SDK 的 setPath() 只接受单坐标串，多坐标串仅 constructor 支持，
+   * 因此传 Point[][] 时后续修改需要通过 key 重新挂载组件才能生效。
+   */
+  path: Point[] | Point[][];
+  /** 棱柱高度，单位米（SDK 必填参数） */
+  altitude: number;
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  onRightDoubleClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
+  onMouseMove?: (point: Point, raw: unknown) => void;
+  onRemove?: (point: Point, raw: unknown) => void;
+  /** 节点数据变化 */
+  onLineUpdate?: (raw: unknown) => void;
+}
 export interface GroundOverlayProps extends GroundOverlayOptions, OverlayReactProps { bounds: Bounds; }
 export interface GroundPointProps extends GroundPointOptions, OverlayReactProps { point: Point; }
 export interface PointCollectionProps extends PointCollectionOptions, OverlayReactProps { points: Point[]; }

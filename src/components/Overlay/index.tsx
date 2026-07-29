@@ -129,7 +129,7 @@ export const Circle = createOverlayComponent<CircleProps>({
   displayName: 'Circle',
   factory: (d, p) => d.createCircle(p.center, p.radius, p),
   positionProp: 'center',
-  optionProps: ['radius', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear'],
+  optionProps: ['radius', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
   // enableEditing 也放这里：Circle 的 enableEditing() 有 SDK bug（内部 path 为 null），
   // 用重建替代运行时 enable/disable 调用，由 driver 的 rAF 延迟逻辑处理。
@@ -160,7 +160,7 @@ export const Rectangle = createOverlayComponent<RectangleProps>({
   displayName: 'Rectangle',
   factory: (d, p) => d.createRectangle(p.bounds, p),
   // bounds 走 setBounds（在 setOverlayOptions 内按 type 分发），没有 positionProp/pathProp
-  optionProps: ['bounds', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear'],
+  optionProps: ['bounds', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建。
   // enableEditing 同 Circle：SDK 的 enableEditing() 对 bounds 驱动的覆盖物有 null 访问问题，
   // 用重建 + driver 内 rAF 延迟开启替代运行时 enable/disable 调用。
@@ -192,7 +192,7 @@ export const BezierCurve = createOverlayComponent<BezierCurveProps>({
   factory: (d, p) => d.createBezierCurve(p.path, p.controlPoints, p),
   pathProp: 'path',
   // controlPoints 走 setControlPoints（在 setOverlayOptions 内按 type 分发）
-  optionProps: ['controlPoints', 'strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'enableMassClear'],
+  optionProps: ['controlPoints', 'strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
   ctorOnlyProps: ['enableClicking', 'dashArray'],
   // BezierCurveEventMap 不含编辑相关事件（SDK 无 enableEditing）
@@ -211,12 +211,29 @@ export const BezierCurve = createOverlayComponent<BezierCurveProps>({
   ],
 });
 
-// ─── 3D 棱柱 ───
+// ─── 3D 棱柱（v4+） ───
 export const Prism = createOverlayComponent<PrismProps>({
   displayName: 'Prism',
-  factory: (d, p) => d.createPrism(p.path, p),
+  factory: (d, p) => d.createPrism(p.path, p.altitude, p),
   pathProp: 'path',
-  optionProps: ['topFillColor', 'topFillOpacity', 'sideFillColor', 'sideFillOpacity', 'enableMassClear'],
+  // altitude 走 setAltitude（在 setOverlayOptions 内按 type 分发）
+  optionProps: ['altitude', 'topFillColor', 'topFillOpacity', 'sideFillColor', 'sideFillOpacity', 'enableMassClear', 'zIndex'],
+  // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
+  ctorOnlyProps: ['enableClicking'],
+  // PrismEventMap 不含编辑相关事件（SDK 无 enableEditing）
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'rightdblclick', prop: 'onRightDoubleClick' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousemove', prop: 'onMouseMove' },
+    { sdk: 'remove', prop: 'onRemove' },
+    { sdk: 'lineupdate', prop: 'onLineUpdate' },
+  ],
 });
 
 // ─── 地面叠加图 ───

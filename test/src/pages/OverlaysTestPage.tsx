@@ -33,7 +33,7 @@ export function OverlaysTestPage() {
     ['polygon', `Polygon ${capTag('Polygon')}`, show.polygon && <Polygon path={PATH} strokeColor="#00f" fillColor="#00f5" strokeWeight={3} fillOpacity={0.3} />],
     ['circle', `Circle ${capTag('Circle')}`, show.circle && <Circle center={P1} radius={500} strokeColor="#0a0" fillColor="#0a05" strokeWeight={2} />],
     ['rectangle', `Rectangle ${capTag('Rectangle')}`, show.rectangle && <Rectangle bounds={RECT_BOUNDS} strokeColor="#f80" fillColor="#f805" strokeWeight={2} />],
-    ['prism', `Prism (v4+) ${capTag('Prism')}`, show.prism && <Prism path={PATH} topFillColor="#1890ff" sideFillColor="#1890ff55" />],
+    ['prism', `Prism (v4+) ${capTag('Prism')}`, show.prism && <Prism path={PATH} altitude={500} topFillColor="#1890ff" sideFillColor="#1890ff55" />],
     ['pointCollection', `PointCollection ${capTag('PointCollection')}`, show.pointCollection && <PointCollection points={Array.from({ length: 20 }, (_, i) => ({ lng: 116.40 + i * 0.001, lat: 39.91 + i * 0.001 }))} color="#ff0000" size={1} />],
     ['groundOverlay', `GroundOverlay ${capTag('GroundOverlay')}`, show.groundOverlay && <GroundOverlay bounds={RECT_BOUNDS} imageURL="https://lbsyun.baidu.com/jsdemo/demo/images/logo.png" opacity={0.8} />],
     ['bezierCurve', `BezierCurve (v4+) ${capTag('BezierCurve')}`, show.bezierCurve && <BezierCurve path={PATH} controlPoints={CURVE_CPS} strokeColor="#a0f" strokeWeight={3} />],

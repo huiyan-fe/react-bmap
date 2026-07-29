@@ -56,6 +56,14 @@ function toRawPoints(SDK: any, path: Point[] | null | undefined): any[] {
 function toRawPointGroups(SDK: any, groups: Point[][] | null | undefined): any[] {
   return Array.isArray(groups) ? groups.map(g => toRawPoints(SDK, g)) : (groups as any);
 }
+/** 判断是否为多坐标串（Point[][]），Prism 的 constructor 同时接受两种形式 */
+function isNestedPath(path: unknown): path is Point[][] {
+  return Array.isArray(path) && Array.isArray(path[0]);
+}
+/** Prism 路径：单坐标串走 toRawPoints，多坐标串逐串转换 */
+function toRawPathOrPaths(SDK: any, path: Point[] | Point[][] | null | undefined): any {
+  return isNestedPath(path) ? toRawPointGroups(SDK, path) : toRawPoints(SDK, path as Point[]);
+}
 function toRawPixel(SDK: any, p: Pixel | null | undefined): any {
   if (!p) return p;
   if (p instanceof SDK.Pixel) return p;
@@ -85,6 +93,48 @@ function toPlainSize(s: any): Size | null {
 function toPlainPixel(p: any): Pixel | null {
   if (!p) return null;
   return { x: p.x ?? 0, y: p.y ?? 0 };
+}
+
+/**
+ * setOverlayOptions 里实际有 SDK setter 分支的属性名。
+ * 组件的 optionProps 声明了但这里没有的属性，运行时修改不会生效（静默失效），
+ * 由 warnUnhandledOverlayOptions 在 dev 下提示。新增分支时记得同步这个集合。
+ */
+const HANDLED_OVERLAY_OPTION_KEYS = new Set([
+  'strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle',
+  'fillColor', 'fillOpacity',
+  'topFillColor', 'topFillOpacity', 'sideFillColor', 'sideFillOpacity',
+  'enableEditing', 'enableDragging', 'enableMassClear',
+  'radius', 'bounds', 'controlPoints', 'altitude',
+  'rotation', 'title', 'content', 'styles', 'opacity',
+  'icon', 'anchor', 'zIndex', 'offset',
+  // visible 不走 setOverlayOptions，由 showOverlay/hideOverlay 单独处理
+  'visible',
+]);
+
+const warnedOverlayOptionKeys = new Set<string>();
+
+/**
+ * dev 下提示 optionProps 声明了但 driver 未实现的属性。
+ * 这类问题类型检查发现不了（optionProps 只是字符串数组），
+ * 只会表现为「改了 prop 没反应」，很难排查。每个 type.key 只警告一次，避免刷屏。
+ */
+function warnUnhandledOverlayOptions(type: string, o: Record<string, unknown>): void {
+  // 不依赖 @types/node：从 globalThis 上安全读取，浏览器里 process 不存在时按 dev 处理
+  const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env;
+  if (env?.NODE_ENV === 'production') return;
+  if (typeof console === 'undefined') return;
+  for (const k of Object.keys(o)) {
+    if (HANDLED_OVERLAY_OPTION_KEYS.has(k)) continue;
+    const seen = `${type}.${k}`;
+    if (warnedOverlayOptionKeys.has(seen)) continue;
+    warnedOverlayOptionKeys.add(seen);
+    console.warn(
+      `[react-bmap] ${type} 的 "${k}" 声明在 optionProps 里，`
+      + '但 v4Driver.setOverlayOptions 没有对应的 SDK setter 分支，运行时修改该 prop 不会生效。'
+      + '要么补上分支，要么把它移到 ctorOnlyProps（改动时重建覆盖物）。',
+    );
+  }
 }
 
 /**
@@ -544,7 +594,22 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           : new rawSDK.BezierCurve(toRawPoints(rawSDK, p), toRawPointGroups(rawSDK, cp)),
       'bezierCurve');
     },
-    createPrism: (p, o) => createOverlayFactory('Prism', () => new rawSDK.Prism(toRawPoints(rawSDK, p), o), 'prism'),
+    createPrism: (p, altitude, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      const fields = ['topFillColor', 'topFillOpacity', 'sideFillColor', 'sideFillOpacity'];
+      for (const f of fields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      // altitude 是第 2 个位置参数，opts 是第 3 个，顺序不能省
+      return createOverlayFactory('Prism', () =>
+        hasOpts
+          ? new rawSDK.Prism(toRawPathOrPaths(rawSDK, p), altitude, ctorOpts)
+          : new rawSDK.Prism(toRawPathOrPaths(rawSDK, p), altitude),
+      'prism');
+    },
     createGroundOverlay: (b, o) => createOverlayFactory('GroundOverlay', () => new rawSDK.GroundOverlay(toRawBounds(rawSDK, b), o), 'groundOverlay'),
     createGroundPoint: (p, o) => createOverlayFactory('GroundPoint', () => new rawSDK.GroundPoint(toRawPoint(rawSDK, p), o), 'groundPoint'),
     createPointCollection: (p, o) => createOverlayFactory('PointCollection', () => new rawSDK.PointCollection(toRawPoints(rawSDK, p), o), 'pointCollection'),
@@ -568,10 +633,18 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         else r.setPosition?.(toRawPoint(rawSDK, p));
       } catch { /* ignore */ }
     },
-    setOverlayPath: (ov, path) => { try { rawOf(ov).setPath?.(toRawPoints(rawSDK, path)); } catch { /* ignore */ } },
+    setOverlayPath: (ov, path) => {
+      try {
+        // SDK 的 setPath() 只接受单坐标串。Prism 支持用多坐标串（Point[][]）构造，
+        // 这种形式无法通过 setPath 更新，交由 ctorOnlyProps/key 重建处理。
+        if (isNestedPath(path)) return;
+        rawOf(ov).setPath?.(toRawPoints(rawSDK, path));
+      } catch { /* ignore */ }
+    },
     setOverlayOptions: (ov, options) => {
       const r = rawOf(ov);
       const o = options as Record<string, unknown>;
+      warnUnhandledOverlayOptions(ov.type, o);
       try {
         if (typeof o.strokeColor === 'string') r.setStrokeColor?.(o.strokeColor);
         if (typeof o.strokeWeight === 'number') r.setStrokeWeight?.(o.strokeWeight);
@@ -581,9 +654,15 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         else if (o.enableEditing === false && ov.type !== 'circle' && ov.type !== 'rectangle') r.disableEditing?.();
         if (typeof o.fillColor === 'string') r.setFillColor?.(o.fillColor);
         if (typeof o.fillOpacity === 'number') r.setFillOpacity?.(o.fillOpacity);
+        // Prism 专属：顶面/侧面填充分开设置，空字符串表示无填充，所以用 typeof 判断而非真值判断
+        if (typeof o.topFillColor === 'string') r.setTopFillColor?.(o.topFillColor);
+        if (typeof o.topFillOpacity === 'number') r.setTopFillOpacity?.(o.topFillOpacity);
+        if (typeof o.sideFillColor === 'string') r.setSideFillColor?.(o.sideFillColor);
+        if (typeof o.sideFillOpacity === 'number') r.setSideFillOpacity?.(o.sideFillOpacity);
         if (typeof o.radius === 'number' && ov.type === 'circle') r.setRadius?.(o.radius);
         if (o.bounds && ov.type === 'rectangle') r.setBounds?.(toRawBounds(rawSDK, o.bounds as Bounds));
         if (o.controlPoints && ov.type === 'bezierCurve') r.setControlPoints?.(toRawPointGroups(rawSDK, o.controlPoints as Point[][]));
+        if (typeof o.altitude === 'number' && ov.type === 'prism') r.setAltitude?.(o.altitude);
         // rotation=0 是 SDK 默认值，主动调 setRotation(0) 会让 v3.0 默认 marker 进入 rotation 模式，
         // 导致命中区域塌缩成锚点。只在非 0 时才调用。
         if (typeof o.rotation === 'number' && o.rotation !== 0) r.setRotation?.(o.rotation);
