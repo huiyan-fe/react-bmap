@@ -189,7 +189,21 @@ export interface GroundPointOptions extends GroundOverlayOptions {
   /** 尺寸参考的缩放级别 @default 18 */
   level?: number;
 }
-export interface PointCollectionOptions { shape?: number; color?: string; size?: number; }
+/**
+ * PointCollection 构造函数的可选参数。
+ * @removed 4.0 — PointCollection 整体在 v4 移除，仅 v3 可用。
+ */
+export interface PointCollectionOptions {
+  /** 海量点的预设形状（ShapeType 枚举，见 BMAP_POINT_SHAPE_* 常量） */
+  shape?: number;
+  /**
+   * 海量点的颜色，支持颜色字符串、十六进制、RGB、RGBA、HSL、HSLA 格式
+   * @default '#fa937e'
+   */
+  color?: string;
+  /** 海量点的预设尺寸（SizeType 枚举，见 BMAP_POINT_SIZE_* 常量） */
+  size?: number;
+}
 export interface InfoWindowOptions {
   width?: number; height?: number; maxWidth?: number; offset?: Size;
   title?: string; enableAutoPan?: boolean; enableCloseOnClick?: boolean;
@@ -458,7 +472,19 @@ export interface GroundPointProps extends GroundPointOptions, OverlayReactProps 
   /** 渲染数据发生变化 */
   onLineUpdate?: (raw: unknown) => void;
 }
-export interface PointCollectionProps extends PointCollectionOptions, OverlayReactProps { points: Point[]; }
+/**
+ * PointCollection 事件对照 PointCollectionEventMap。
+ * 整体 @removed 4.0，仅 v3 可用；事件对象只有 { type, target, point }。
+ */
+export interface PointCollectionProps extends PointCollectionOptions, OverlayReactProps {
+  /** 点的坐标集合 */
+  points: Point[];
+  /** 继承自 Overlay 类（SDK 的 PointCollectionOptions 未列出，但类上有 enable/disableMassClear） */
+  enableMassClear?: boolean;
+  onClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+}
 export interface InfoWindowProps extends InfoWindowOptions, OverlayReactProps {
   content: unknown;
   /** 受控：true=打开, false=关闭。不传则 mount 时自动打开。 */

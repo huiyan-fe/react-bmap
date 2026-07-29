@@ -662,7 +662,17 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         hasOpts ? new rawSDK.GroundPoint(toRawPoint(rawSDK, p), ctorOpts) : new rawSDK.GroundPoint(toRawPoint(rawSDK, p)),
       'groundPoint');
     },
-    createPointCollection: (p, o) => createOverlayFactory('PointCollection', () => new rawSDK.PointCollection(toRawPoints(rawSDK, p), o), 'pointCollection'),
+    createPointCollection: (p, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      if (raw?.shape !== undefined) ctorOpts.shape = raw.shape;
+      if (typeof raw?.color === 'string') ctorOpts.color = raw.color;
+      if (raw?.size !== undefined) ctorOpts.size = raw.size;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('PointCollection', () =>
+        hasOpts ? new rawSDK.PointCollection(toRawPoints(rawSDK, p), ctorOpts) : new rawSDK.PointCollection(toRawPoints(rawSDK, p)),
+      'pointCollection');
+    },
     createInfoWindow: (c, o) => createOverlayFactory('InfoWindow', () => new rawSDK.InfoWindow(c, o), 'infoWindow'),
     createSymbol: (path, o) => createOverlayFactory('Symbol', () => new rawSDK.Symbol(path, o), 'symbol'),
     createIcon: (url, size, o) => createOverlayFactory('Icon', () => new rawSDK.Icon(url, new rawSDK.Size(size.width, size.height), o), 'icon'),
@@ -689,7 +699,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         // SDK 的 setPath() 只接受单坐标串。Prism 支持用多坐标串（Point[][]）构造，
         // 这种形式无法通过 setPath 更新，交由 ctorOnlyProps/key 重建处理。
         if (isNestedPath(path)) return;
-        rawOf(ov).setPath?.(toRawPoints(rawSDK, path));
+        // PointCollection 用 setPoints 而非 setPath
+        if (ov.type === 'pointCollection') rawOf(ov).setPoints?.(toRawPoints(rawSDK, path as Point[]));
+        else rawOf(ov).setPath?.(toRawPoints(rawSDK, path));
       } catch { /* ignore */ }
     },
     setOverlayOptions: (ov, options) => {

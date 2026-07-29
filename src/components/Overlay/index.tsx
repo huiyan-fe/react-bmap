@@ -297,7 +297,14 @@ export const GroundPoint = createOverlayComponent<GroundPointProps>({
 export const PointCollection = createOverlayComponent<PointCollectionProps>({
   displayName: 'PointCollection',
   factory: (d, p) => d.createPointCollection(p.points, p),
+  pathProp: 'points',
   optionProps: ['shape', 'color', 'size'],
+  // PointCollectionEventMap：整体 @removed 4.0（仅 v3）
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+  ],
 });
 
 // ─── 信息窗口（独立组件，见 InfoWindow.tsx） ───
