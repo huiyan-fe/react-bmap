@@ -337,11 +337,16 @@ export const IconSequence = createOverlayComponent<IconSequenceProps>({
 });
 
 // ─── 热区 ───
+// ─── 热区 ───
+// Hotspot 是值对象（非 Overlay），@removed 4.0（仅 v3）。
+// 通过 map.addHotspot/removeHotspot 管理，不走 addOverlay。无事件。
 export const Hotspot = createOverlayComponent<HotspotProps>({
   displayName: 'Hotspot',
   factory: (d, p) => d.createHotspot(p.position, p),
   positionProp: 'position',
-  optionProps: ['text', 'offsets', 'userData', 'minZoom', 'maxZoom'],
+  optionProps: ['text', 'userData'],
+  // 无 setter：offsets / minZoom / maxZoom
+  ctorOnlyProps: ['offsets', 'minZoom', 'maxZoom'],
 });
 
 // ─── 自定义覆盖物 ───

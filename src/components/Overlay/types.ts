@@ -274,7 +274,22 @@ export interface IconOptions {
   /** 高分辨率屏幕图片资源集 @since 4.0 @hide */
   srcset?: { '2x': string };
 }
-export interface HotspotOptions { text?: string; offsets?: number[]; userData?: unknown; minZoom?: number; maxZoom?: number; }
+/**
+ * Hotspot 构造函数的可选参数。
+ * @removed 4.0 — Hotspot 整体在 v4 移除，仅 v3 可用。
+ */
+export interface HotspotOptions {
+  /** 提示文本 */
+  text?: string;
+  /** 扩展偏移 [top, right, bottom, left]，默认 [5, 5, 5, 5] */
+  offsets?: number[];
+  /** 自定义数据 */
+  userData?: unknown;
+  /** 最小缩放级别 */
+  minZoom?: number;
+  /** 最大缩放级别 */
+  maxZoom?: number;
+}
 export interface CustomOverlayOptions {
   point?: Point; anchors?: [number, number]; offsetX?: number; offsetY?: number;
   rotation?: number; rotationInit?: number; minZoom?: number; maxZoom?: number;
@@ -593,5 +608,10 @@ export interface IconSequenceProps extends OverlayReactProps {
   /** 图标旋转角度是否与线走向一致 */
   fixedRotation?: boolean;
 }
+/**
+ * Hotspot 是值对象（非 Overlay），@removed 4.0，仅 v3 可用。
+ * 通过 map.addHotspot/removeHotspot 管理，不走 addOverlay。
+ * 无事件（SDK 未定义 HotspotEventMap）。
+ */
 export interface HotspotProps extends HotspotOptions, OverlayReactProps { position: Point; }
 export interface CustomOverlayProps extends CustomOverlayOptions { children?: React.ReactNode; }

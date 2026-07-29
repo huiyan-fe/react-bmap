@@ -6,7 +6,7 @@
  * 全部 4 个参数都是位置参数，无 setter — 变化时重建 IconSequence + Polyline。
  * 无事件（值对象）。
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Map, useMapContext } from 'react-bmap';
 import type { OverlayHandle, Point } from 'react-bmap';
 import {
@@ -49,47 +49,31 @@ function IconSequenceLayer(props: {
   // 任意参数变化都重建 Symbol + IconSequence + Polyline（无 setter）
   const paramKey = `${shape}|${fillColor}|${scale}|${offset}|${repeat}|${fixedRotation}`;
 
-  // 用 useEffect + rAF 代替 useLayoutEffect：给 SDK 一帧时间清理旧 IconSequence 的视觉元素
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!driver || !map) return;
-    let cancelled = false;
+    // 1. 创建 Symbol
+    const sym = driver.createSymbol(shape, { fillColor, scale });
+    if (!sym) { onLog('❌ Symbol 创建失败'); return; }
 
-    const raf = requestAnimationFrame(() => {
-      if (cancelled || !driver || !map) return;
-      // 1. 创建 Symbol
-      const sym = driver.createSymbol(shape, { fillColor, scale });
-      if (!sym) { onLog('❌ Symbol 创建失败'); return; }
+    // 2. 创建 IconSequence
+    const seq = driver.createIconSequence(sym, offset, repeat, fixedRotation);
+    if (!seq) { onLog('❌ IconSequence 创建失败'); return; }
 
-      // 2. 创建 IconSequence
-      const seq = driver.createIconSequence(sym, offset, repeat, fixedRotation);
-      if (!seq) { onLog('❌ IconSequence 创建失败'); return; }
-
-      // 3. 创建 Polyline，icons 数组传入 IconSequence
-      const pl = driver.createPolyline(PATH, {
-        strokeColor: '#1890ff',
-        strokeWeight: 4,
-        icons: [seq],
-      });
-      if (!pl) { onLog('❌ Polyline 创建失败'); return; }
-      polylineRef.current = pl;
-      driver.addOverlay(map, pl);
-      onLog(`✅ 重建 scale=${scale}`);
+    // 3. 创建 Polyline，icons 数组传入 IconSequence
+    const pl = driver.createPolyline(PATH, {
+      strokeColor: '#1890ff',
+      strokeWeight: 4,
+      icons: [seq],
     });
+    if (!pl) { onLog('❌ Polyline 创建失败'); return; }
+    polylineRef.current = pl;
+    driver.addOverlay(map, pl);
+    onLog(`✅ 重建 scale=${scale}`);
 
     return () => {
-      cancelled = true;
-      cancelAnimationFrame(raf);
       if (polylineRef.current && map) {
-        // SDK 的 map.removeOverlay 不清理 IconSequence 视觉元素，
-        // 尝试 hide + setPath([]) + clearOverlays 三重清理
-        try {
-          const raw = (polylineRef.current as any).raw;
-          raw?.hide?.();
-          raw?.setPath?.([]);
-        } catch { /* ignore */ }
+        try { (polylineRef.current as any).raw?.hide?.(); } catch { /* ignore */ }
         driver.removeOverlay(map, polylineRef.current);
-        // 终极手段：clearOverlays 确保画面上没有残留
-        try { (map as any).raw?.clearOverlays?.(); } catch { /* ignore */ }
       }
       polylineRef.current = null;
     };

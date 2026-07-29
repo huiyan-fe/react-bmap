@@ -111,6 +111,7 @@ const HANDLED_OVERLAY_OPTION_KEYS = new Set([
   'icon', 'anchor', 'zIndex', 'offset',
   'size', 'scale', 'shape', 'color', 'path',
   'imageOffset', 'imageSize', 'infoWindowAnchor', 'printImageUrl', 'srcset',
+  'text', 'userData',
   // visible 不走 setOverlayOptions，由 showOverlay/hideOverlay 单独处理
   'visible',
 ]);
@@ -728,7 +729,19 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       'icon');
     },
     createIconSequence: (sym, offset, repeat, fr) => createOverlayFactory('IconSequence', () => new rawSDK.IconSequence(sym ? rawOf(sym) : undefined, offset, repeat, fr), 'iconSequence'),
-    createHotspot: (p, o) => createOverlayFactory('Hotspot', () => new rawSDK.Hotspot(toRawPoint(rawSDK, p), o), 'hotspot'),
+    createHotspot: (p, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      if (typeof raw?.text === 'string') ctorOpts.text = raw.text;
+      if (Array.isArray(raw?.offsets)) ctorOpts.offsets = raw.offsets;
+      if (raw?.userData !== undefined) ctorOpts.userData = raw.userData;
+      if (typeof raw?.minZoom === 'number') ctorOpts.minZoom = raw.minZoom;
+      if (typeof raw?.maxZoom === 'number') ctorOpts.maxZoom = raw.maxZoom;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('Hotspot', () =>
+        hasOpts ? new rawSDK.Hotspot(toRawPoint(rawSDK, p), ctorOpts) : new rawSDK.Hotspot(toRawPoint(rawSDK, p)),
+      'hotspot');
+    },
     createCustomOverlay: (o) => createOverlayFactory('CustomOverlay', () => {
       const inst = new rawSDK.Overlay();
       Object.assign(inst, o);
@@ -820,6 +833,11 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (typeof o.rotation === 'number' && (ov.type === 'groundPoint' || ov.type === 'symbol' || o.rotation !== 0)) r.setRotation?.(o.rotation);
         if (typeof o.title === 'string') r.setTitle?.(o.title);
         if (typeof o.content === 'string') r.setContent?.(o.content);
+        // Hotspot 专属：setText / setUserData（@removed 4.0，仅 v3）
+        if (ov.type === 'hotspot') {
+          if (typeof o.text === 'string') r.setText?.(o.text);
+          if (o.userData !== undefined) r.setUserData?.(o.userData);
+        }
         // Label 专属
         if (o.styles && typeof o.styles === 'object') r.setStyles?.(o.styles);
         if (typeof o.opacity === 'number') r.setOpacity?.(o.opacity);

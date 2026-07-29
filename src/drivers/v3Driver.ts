@@ -1,5 +1,7 @@
 import type { UnsupportedBehavior } from '../types';
+import type { OverlayHandle } from '../types';
 import type { BMapDriver } from './types';
+import type { Point } from '../types';
 import { CAPABILITY_MATRIX } from './capabilityMatrix';
 import { createV4Driver } from './v4Driver';
 import { reportUnsupported, unsupportedValue } from './unsupported';
@@ -30,6 +32,24 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     addHotspot: (map, h) => { (map.raw as any).addHotspot?.(h.raw); },
     removeHotspot: (map, h) => { (map.raw as any).removeHotspot?.(h.raw); },
     clearHotspots: (map) => { (map.raw as any).clearHotspots?.(); },
+
+    // Hotspot 是 v3-only，v4Driver 的 createOverlayFactory 闭包捕获了 v4 能力矩阵
+    // （Hotspot 不在 v4 矩阵中），所以必须在这里直接创建，绕过能力检查
+    createHotspot: (p, o) => {
+      try {
+        const raw = o as Record<string, unknown>;
+        const ctorOpts: Record<string, unknown> = {};
+        if (typeof raw?.text === 'string') ctorOpts.text = raw.text;
+        if (Array.isArray(raw?.offsets)) ctorOpts.offsets = raw.offsets;
+        if (raw?.userData !== undefined) ctorOpts.userData = raw.userData;
+        if (typeof raw?.minZoom === 'number') ctorOpts.minZoom = raw.minZoom;
+        if (typeof raw?.maxZoom === 'number') ctorOpts.maxZoom = raw.maxZoom;
+        const hasOpts = Object.keys(ctorOpts).length > 0;
+        const point = new rawSDK.Point((p as Point).lng, (p as Point).lat);
+        const inst = hasOpts ? new rawSDK.Hotspot(point, ctorOpts) : new rawSDK.Hotspot(point);
+        return { __brand: 'OverlayHandle', raw: inst, type: 'hotspot' } as OverlayHandle;
+      } catch (e) { reportUnsupported('Hotspot', version, behavior, e); return null; }
+    },
 
     // 3.0 用 setMapStyle（v1），setMapStyleV2 不支持
     setMapStyle: (map, options) => { (map.raw as any).setMapStyle?.(options); },
