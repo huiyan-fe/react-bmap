@@ -673,7 +673,25 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         hasOpts ? new rawSDK.PointCollection(toRawPoints(rawSDK, p), ctorOpts) : new rawSDK.PointCollection(toRawPoints(rawSDK, p)),
       'pointCollection');
     },
-    createInfoWindow: (c, o) => createOverlayFactory('InfoWindow', () => new rawSDK.InfoWindow(c, o), 'infoWindow'),
+    createInfoWindow: (c, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      if (typeof raw?.width === 'number') ctorOpts.width = raw.width;
+      if (typeof raw?.height === 'number') ctorOpts.height = raw.height;
+      if (typeof raw?.maxWidth === 'number') ctorOpts.maxWidth = raw.maxWidth;
+      if (raw?.offset) ctorOpts.offset = toRawSize(rawSDK, raw.offset as Size);
+      if (typeof raw?.title === 'string') ctorOpts.title = raw.title;
+      if (typeof raw?.enableAutoPan === 'boolean') ctorOpts.enableAutoPan = raw.enableAutoPan;
+      if (typeof raw?.enableCloseOnClick === 'boolean') ctorOpts.enableCloseOnClick = raw.enableCloseOnClick;
+      if (typeof raw?.enableMessage === 'boolean') ctorOpts.enableMessage = raw.enableMessage;
+      if (typeof raw?.message === 'string') ctorOpts.message = raw.message;
+      if (typeof raw?.maxContent === 'string') ctorOpts.maxContent = raw.maxContent;
+      if (typeof raw?.enableMaximize === 'boolean') ctorOpts.enableMaximize = raw.enableMaximize;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('InfoWindow', () =>
+        hasOpts ? new rawSDK.InfoWindow(c, ctorOpts) : new rawSDK.InfoWindow(c),
+      'infoWindow');
+    },
     createSymbol: (path, o) => createOverlayFactory('Symbol', () => new rawSDK.Symbol(path, o), 'symbol'),
     createIcon: (url, size, o) => createOverlayFactory('Icon', () => new rawSDK.Icon(url, new rawSDK.Size(size.width, size.height), o), 'icon'),
     createIconSequence: (sym, offset, repeat, fr) => createOverlayFactory('IconSequence', () => new rawSDK.IconSequence(sym ? rawOf(sym) : undefined, offset, repeat, fr), 'iconSequence'),

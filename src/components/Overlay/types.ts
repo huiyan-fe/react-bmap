@@ -204,10 +204,33 @@ export interface PointCollectionOptions {
   /** 海量点的预设尺寸（SizeType 枚举，见 BMAP_POINT_SIZE_* 常量） */
   size?: number;
 }
+/**
+ * InfoWindow 构造函数的可选参数。
+ * enableMessage / message 在 v4 已移除（仅 v3 有效）。
+ */
 export interface InfoWindowOptions {
-  width?: number; height?: number; maxWidth?: number; offset?: Size;
-  title?: string; enableAutoPan?: boolean; enableCloseOnClick?: boolean;
-  enableMessage?: boolean; message?: string; maxContent?: string; enableMaximize?: boolean;
+  /** 信息窗宽度（px），范围 220-730，0 = 自适应 @default 0 */
+  width?: number;
+  /** 信息窗高度（px），范围 60-650，0 = 自适应 @default 0 */
+  height?: number;
+  /** 最大化时宽度（px），范围 220-730 @default 730 */
+  maxWidth?: number;
+  /** 位置偏移值，底端尖角相对于地理坐标的偏移量 */
+  offset?: Size;
+  /** 标题文字，支持 HTML */
+  title?: string;
+  /** 打开时地图自动平移 @default true */
+  enableAutoPan?: boolean;
+  /** 点击地图时关闭信息窗口 @default true */
+  enableCloseOnClick?: boolean;
+  /** 显示短信发送按钮 @removed 4.0 */
+  enableMessage?: boolean;
+  /** 自定义短信内容（完整短信 = 自定义内容 + 位置链接，最长 140 字） @removed 4.0 */
+  message?: string;
+  /** 最大化时显示的内容，支持 HTML */
+  maxContent?: string;
+  /** 开启最大化功能 @default false */
+  enableMaximize?: boolean;
 }
 export interface SymbolOptions {
   anchor?: Size; fillColor?: string; fillOpacity?: number; scale?: number;
@@ -485,14 +508,29 @@ export interface PointCollectionProps extends PointCollectionOptions, OverlayRea
   onMouseOver?: (point: Point, raw: unknown) => void;
   onMouseOut?: (point: Point, raw: unknown) => void;
 }
+/**
+ * InfoWindow 事件对照 InfoWindowEventMap。
+ * 全部 6 个事件都是 OverlayBaseEvent（仅含 type/target/currentTarget，无 point/pixel）。
+ */
 export interface InfoWindowProps extends InfoWindowOptions, OverlayReactProps {
+  /** 窗口内容，支持 HTML 字符串或 DOM 节点 */
   content: unknown;
   /** 受控：true=打开, false=关闭。不传则 mount 时自动打开。 */
   open?: boolean;
   /** 地图级打开位置（不在 Marker 内嵌时必传） */
   position?: Point;
-  /** SDK InfoWindow 被 X 按钮关闭时回调 */
-  onClose?: () => void;
+  /** 信息窗口打开时触发 */
+  onOpen?: (raw: unknown) => void;
+  /** 信息窗口关闭时触发（含 X 按钮关闭） */
+  onClose?: (raw: unknown) => void;
+  /** 点击信息窗口关闭按钮时触发 */
+  onClickClose?: (raw: unknown) => void;
+  /** 信息窗口最大化时触发，需开启 enableMaximize */
+  onMaximize?: (raw: unknown) => void;
+  /** 信息窗口从最大化恢复时触发 */
+  onRestore?: (raw: unknown) => void;
+  /** 信息窗口尺寸变化时触发 */
+  onResize?: (raw: unknown) => void;
 }
 export interface SymbolProps extends SymbolOptions, OverlayReactProps { path: unknown; }
 export interface IconProps extends IconOptions, OverlayReactProps { url: string; size: Size; }

@@ -29,15 +29,26 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
   const target = useOverlayTarget();
 
   const {
-    content, open = true, position, onClose,
+    content, open = true, position,
+    onOpen, onClose, onClickClose, onMaximize, onRestore, onResize,
     width, height, maxWidth, offset, title,
     enableAutoPan, enableCloseOnClick, enableMessage, message, maxContent, enableMaximize,
   } = props;
 
   const iwRef = useRef<OverlayHandle | null>(null);
   const [created, setCreated] = useState(false);
-  const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+
+  // 用 ref 存所有事件回调，SDK 监听器只注册一次、不随 render 重新绑定
+  const cbRefs = {
+    open: useRef(onOpen), close: useRef(onClose), clickclose: useRef(onClickClose),
+    maximize: useRef(onMaximize), restore: useRef(onRestore), resize: useRef(onResize),
+  };
+  cbRefs.open.current = onOpen;
+  cbRefs.close.current = onClose;
+  cbRefs.clickclose.current = onClickClose;
+  cbRefs.maximize.current = onMaximize;
+  cbRefs.restore.current = onRestore;
+  cbRefs.resize.current = onResize;
 
   // 1. 创建 InfoWindow 实例（mount 时创建一次）
   const contentKey = stableStringify(content);
@@ -55,8 +66,23 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
     iwRef.current = iw;
     setCreated(true);
 
+    // 注册全部 6 个 InfoWindowEventMap 事件，通过 ref 调用最新回调
+    const rawIW = (iw as any).raw;
+    const handlers: { event: string; fn: (e: unknown) => void }[] = [];
+    for (const [event, refKey] of [
+      ['open', 'open'], ['close', 'close'], ['clickclose', 'clickclose'],
+      ['maximize', 'maximize'], ['restore', 'restore'], ['resize', 'resize'],
+    ] as const) {
+      const fn = (e: unknown) => (cbRefs as any)[refKey].current?.(e);
+      rawIW?.addEventListener?.(event, fn);
+      handlers.push({ event, fn });
+    }
+
     return () => {
-      // cleanup: close if open
+      // cleanup: 注销事件 + 关闭窗口
+      for (const { event, fn } of handlers) {
+        rawIW?.removeEventListener?.(event, fn);
+      }
       const openTarget = target?.target ?? map;
       if (openTarget) {
         try { driver.closeInfoWindow(openTarget as any); } catch { /* ignore */ }
@@ -89,11 +115,6 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
           const pt = new SDK.Point(position.lng, position.lat);
           rawTarget?.openInfoWindow?.(rawIW, pt);
         }
-
-        // 监听 SDK close 事件（用户点 X 关闭时同步 state）
-        rawIW?.addEventListener?.('close', () => onCloseRef.current?.());
-        const rawMap = (map as any).raw;
-        rawMap?.addEventListener?.('infowindowclose', () => onCloseRef.current?.());
       } catch (e) {
         console.warn('[InfoWindow] open failed:', e);
       }
@@ -104,8 +125,10 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
         else (map as any).raw?.closeInfoWindow?.();
       } catch { /* ignore */ }
     }
+    // contentKey/optsKey 变化时 InfoWindow 会被 useLayoutEffect 重建，
+    // 必须在这里重新打开，否则重建后窗口处于关闭状态。
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, map, target, created, open, position?.lng, position?.lat]);
+  }, [driver, map, target, created, open, position?.lng, position?.lat, contentKey, optsKey]);
 
   // InfoWindow 不渲染 React children 到 DOM（内容通过 SDK content 参数传入）
   // children 仅用于逻辑组合（如嵌套在 Marker 内时提供 OverlayTargetContext）

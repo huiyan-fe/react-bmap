@@ -13,17 +13,17 @@ export { PrismPage } from './PrismPage';
 export { GroundOverlayPage } from './GroundOverlayPage';
 export { GroundPointPage } from './GroundPointPage';
 export { PointCollectionPage } from './PointCollectionPage';
+export { InfoWindowPage } from './InfoWindowPage';
 
 import { makeOverlayTestPage } from '../templates';
 import {
-  InfoWindow, Symbol,
+  Symbol,
   Icon, IconSequence, Hotspot, CustomOverlay,
 } from 'react-bmap';
 import { BMap_Symbol_SHAPE_CIRCLE } from 'react-bmap';
 
 const BEIJING = { lng: 116.404, lat: 39.915 };
 
-export const InfoWindowPage = makeOverlayTestPage({ name: 'InfoWindow', Component: InfoWindow, defaultProps: { content: '<div>Hello</div>', title: '信息窗口' } });
 export const SymbolPage = makeOverlayTestPage({ name: 'Symbol', Component: Symbol, defaultProps: { path: BMap_Symbol_SHAPE_CIRCLE, fillColor: '#ff0000', scale: 2 } });
 export const IconPage = makeOverlayTestPage({ name: 'Icon', Component: Icon, defaultProps: { url: 'https://lbsyun.baidu.com/jsdemo/demo/images/logo.png', size: { width: 30, height: 30 } } });
 export const IconSequencePage = makeOverlayTestPage({ name: 'IconSequence', Component: IconSequence, defaultProps: {} });
