@@ -129,7 +129,30 @@ export const Circle = createOverlayComponent<CircleProps>({
   displayName: 'Circle',
   factory: (d, p) => d.createCircle(p.center, p.radius, p),
   positionProp: 'center',
-  optionProps: ['strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'enableEditing', 'enableClicking'],
+  optionProps: ['radius', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear'],
+  // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
+  // enableEditing 也放这里：Circle 的 enableEditing() 有 SDK bug（内部 path 为 null），
+  // 用重建替代运行时 enable/disable 调用，由 driver 的 rAF 延迟逻辑处理。
+  ctorOnlyProps: ['enableEditing', 'enableClicking', 'coordType', 'dashArray'],
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'rightdblclick', prop: 'onRightDoubleClick' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousemove', prop: 'onMouseMove' },
+    { sdk: 'remove', prop: 'onRemove' },
+    { sdk: 'lineupdate', prop: 'onLineUpdate' },
+    { sdk: 'editstart', prop: 'onEditStart' },
+    { sdk: 'editend', prop: 'onEditEnd' },
+    { sdk: 'linevertexdragstart', prop: 'onLineVertexDragStart' },
+    { sdk: 'linevertexdragging', prop: 'onLineVertexDragging' },
+    { sdk: 'linevertexdragend', prop: 'onLineVertexDragEnd' },
+    { sdk: 'linevertexdel', prop: 'onLineVertexDel' },
+  ],
 });
 
 // ─── 矩形 ───

@@ -279,7 +279,12 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
 
     // ─────────────── 14. 覆盖物 ───────────────
     addOverlay: (map, o) => callRaw('Map.addOverlay', () => rawMap(map).addOverlay(rawOf(o))),
-    removeOverlay: (map, o) => callRaw('Map.removeOverlay', () => rawMap(map).removeOverlay(rawOf(o))),
+    removeOverlay: (map, o) => {
+      // 在 removeOverlay 前先关闭编辑：Circle/Polyline/Polygon 的编辑句柄
+      // 在 overlay 被移除时若仍激活，会触发 "Cannot read properties of null"。
+      try { rawOf(o).disableEditing?.(); } catch { /* ignore */ }
+      callRaw('Map.removeOverlay', () => rawMap(map).removeOverlay(rawOf(o)));
+    },
     clearOverlays: (map) => callRaw('Map.clearOverlays', () => rawMap(map).clearOverlays()),
     getOverlays: (map) => getRaw('Map.getOverlays', () => (rawMap(map).getOverlays() ?? []).map((o: any) => overlayHandle(o, inferOverlayType(o))), []),
 
@@ -462,7 +467,35 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         hasOpts ? new rawSDK.Polygon(toRawPoints(rawSDK, p), ctorOpts) : new rawSDK.Polygon(toRawPoints(rawSDK, p)),
       'polygon');
     },
-    createCircle: (c, r, o) => createOverlayFactory('Circle', () => new rawSDK.Circle(toRawPoint(rawSDK, c), r, o), 'circle'),
+    createCircle: (c, r, o) => {
+      const raw = o as Record<string, unknown>;
+      // enableEditing 不传给 constructor：SDK 在 constructor 阶段初始化编辑句柄时
+      // 会访问内部 path 数组（Circle 没有 path，只有 center+radius），
+      // 导致 "Cannot read properties of null (reading '0')"。
+      // 改为创建后用 rAF 延迟调用 enableEditing()，此时 overlay 已 addOverlay 到地图。
+      const wantEditing = raw?.enableEditing === true;
+      const ctorOpts: Record<string, unknown> = {};
+      const fields = ['strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle'];
+      for (const f of fields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (typeof raw?.coordType === 'string') ctorOpts.coordType = raw.coordType;
+      if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
+      if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('Circle', () => {
+        const inst = hasOpts
+          ? new rawSDK.Circle(toRawPoint(rawSDK, c), r, ctorOpts)
+          : new rawSDK.Circle(toRawPoint(rawSDK, c), r);
+        if (wantEditing) {
+          // 延迟到下一帧：编辑系统需要 overlay 已渲染到地图上才能初始化句柄。
+          requestAnimationFrame(() => {
+            try { inst.enableEditing?.(); } catch { /* ignore */ }
+          });
+        }
+        return inst;
+      }, 'circle');
+    },
     createRectangle: (b, o) => createOverlayFactory('Rectangle', () => new rawSDK.Rectangle(toRawBounds(rawSDK, b), o), 'rectangle'),
     createBezierCurve: (p, o) => createOverlayFactory('BezierCurve', () => new rawSDK.BezierCurve(toRawPoints(rawSDK, p), o), 'bezierCurve'),
     createPrism: (p, o) => createOverlayFactory('Prism', () => new rawSDK.Prism(toRawPoints(rawSDK, p), o), 'prism'),
@@ -481,7 +514,14 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     }, 'customOverlay'),
 
     // ─────────────── 27. Overlay 属性 setter ───────────────
-    setOverlayPosition: (ov, p) => { try { rawOf(ov).setPosition?.(toRawPoint(rawSDK, p)); } catch { /* ignore */ } },
+    setOverlayPosition: (ov, p) => {
+      try {
+        const r = rawOf(ov);
+        // Circle 用 setCenter 而非 setPosition
+        if (ov.type === 'circle') r.setCenter?.(toRawPoint(rawSDK, p));
+        else r.setPosition?.(toRawPoint(rawSDK, p));
+      } catch { /* ignore */ }
+    },
     setOverlayPath: (ov, path) => { try { rawOf(ov).setPath?.(toRawPoints(rawSDK, path)); } catch { /* ignore */ } },
     setOverlayOptions: (ov, options) => {
       const r = rawOf(ov);
@@ -492,7 +532,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (typeof o.strokeOpacity === 'number') r.setStrokeOpacity?.(o.strokeOpacity);
         if (typeof o.strokeStyle === 'string') r.setStrokeStyle?.(o.strokeStyle);
         if (o.enableEditing === true) r.enableEditing?.();
-        else if (o.enableEditing === false) r.disableEditing?.();
+        else if (o.enableEditing === false && ov.type !== 'circle') r.disableEditing?.();
         if (typeof o.fillColor === 'string') r.setFillColor?.(o.fillColor);
         if (typeof o.fillOpacity === 'number') r.setFillOpacity?.(o.fillOpacity);
         if (typeof o.radius === 'number' && ov.type === 'circle') r.setRadius?.(o.radius);

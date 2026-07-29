@@ -218,7 +218,35 @@ export interface PolygonProps extends PolygonOptions, OverlayReactProps {
   /** 删除编辑节点 @since 4.0 */
   onLineVertexDel?: (raw: unknown) => void;
 }
-export interface CircleProps extends CircleOptions, OverlayReactProps { center: Point; radius: number; }
+export interface CircleProps extends CircleOptions, OverlayReactProps {
+  center: Point;
+  radius: number;
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  /** 右键双击 @since 4.0 */
+  onRightDoubleClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
+  onMouseMove?: (point: Point, raw: unknown) => void;
+  onRemove?: (point: Point, raw: unknown) => void;
+  /** 线更新 */
+  onLineUpdate?: (raw: unknown) => void;
+  /** 开始编辑 @since 4.0 */
+  onEditStart?: (raw: unknown) => void;
+  /** 编辑结束 @since 4.0 */
+  onEditEnd?: (raw: unknown) => void;
+  /** 开始拖拽编辑节点 @since 4.0 */
+  onLineVertexDragStart?: (raw: unknown) => void;
+  /** 拖拽编辑节点中 @since 4.0 */
+  onLineVertexDragging?: (raw: unknown) => void;
+  /** 拖拽编辑节点结束 @since 4.0 */
+  onLineVertexDragEnd?: (raw: unknown) => void;
+  /** 删除编辑节点 @since 4.0 */
+  onLineVertexDel?: (raw: unknown) => void;
+}
 export interface RectangleProps extends RectangleOptions, OverlayReactProps { bounds: Bounds; }
 export interface BezierCurveProps extends BezierCurveOptions, OverlayReactProps { path: Point[]; }
 export interface PrismProps extends PrismOptions, OverlayReactProps { path: Point[]; }
