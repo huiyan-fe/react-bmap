@@ -500,7 +500,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       if (typeof raw?.linkRight === 'boolean') ctorOpts.linkRight = raw.linkRight;
       if (typeof raw?.clip === 'boolean') ctorOpts.clip = raw.clip;
       if (typeof raw?.coordType === 'string') ctorOpts.coordType = raw.coordType;
-      if (raw?.icons) ctorOpts.icons = raw.icons;
+      if (raw?.icons) ctorOpts.icons = (raw.icons as unknown[]).map(ic =>
+        ic && typeof ic === 'object' && 'raw' in ic ? rawOf(ic as any) : ic,
+      );
       if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
       if (raw?.strokeTexture) ctorOpts.strokeTexture = raw.strokeTexture;
       if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;

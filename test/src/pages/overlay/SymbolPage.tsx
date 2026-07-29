@@ -64,8 +64,10 @@ function SymbolMarkerLayer(props: {
   const symbolRef = useRef<OverlayHandle | null>(null);
   const markerRef = useRef<OverlayHandle | null>(null);
 
-  // ─── 创建 Symbol + Marker（path 变化时重建）───
-  const pathKey = String(path);
+  // ─── 重建 Symbol + Marker（path 或任意样式选项变化时）───
+  // Symbol 是值对象，marker.setIcon 无法可靠替换旧图标，
+  // 只能整体重建 Marker（移除旧的 + 创建新的）。
+  const rebuildKey = `${path}|${fillColor}|${fillOpacity}|${scale}|${rotation}|${strokeColor}|${strokeOpacity}|${strokeWeight}|${anchor.width},${anchor.height}`;
   useLayoutEffect(() => {
     if (!driver || !map) return;
     const sym = driver.createSymbol(path, {
@@ -75,7 +77,6 @@ function SymbolMarkerLayer(props: {
     if (!sym) { onLog('❌ Symbol 创建失败'); return; }
     symbolRef.current = sym;
 
-    // 用 Symbol 作为 Marker 的 icon：toRawIcon 识别 Handle.raw
     const mk = driver.createMarker(markerPosition, { icon: sym });
     if (!mk) { onLog('❌ Marker 创建失败'); return; }
     markerRef.current = mk;
@@ -88,20 +89,7 @@ function SymbolMarkerLayer(props: {
       markerRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, map, pathKey]);
-
-  // ─── 响应式更新 Symbol 选项（走 setOverlayOptions → 各 setter）───
-  // Symbol 是值对象，调 setter 后 SDK 的 Marker 不会自动刷新，
-  // 需要再调 marker.setIcon(symbol) 触发重渲染。
-  useEffect(() => {
-    if (!driver || !symbolRef.current || !markerRef.current) return;
-    driver.setOverlayOptions(symbolRef.current, {
-      fillColor, fillOpacity, scale, rotation,
-      strokeColor, strokeOpacity, strokeWeight, anchor,
-    });
-    driver.setOverlayOptions(markerRef.current, { icon: symbolRef.current });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, fillColor, fillOpacity, scale, rotation, strokeColor, strokeOpacity, strokeWeight, anchor]);
+  }, [driver, map, rebuildKey]);
 
   // ─── 更新 Marker 位置 ───
   useEffect(() => {

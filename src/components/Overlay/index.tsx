@@ -328,9 +328,12 @@ export const Icon = createOverlayComponent<IconProps>({
 });
 
 // ─── 图标序列（折线循环图标） ───
+// IconSequence 是值对象（非 Overlay），@deprecated 4.0。无 setter/无事件，
+// 全部 4 个参数都是 constructor 位置参数，变化时重建。
 export const IconSequence = createOverlayComponent<IconSequenceProps>({
   displayName: 'IconSequence',
   factory: (d, p) => d.createIconSequence(p.symbol as any, p.offset, p.repeat, p.fixedRotation),
+  ctorOnlyProps: ['symbol', 'offset', 'repeat', 'fixedRotation'],
 });
 
 // ─── 热区 ───

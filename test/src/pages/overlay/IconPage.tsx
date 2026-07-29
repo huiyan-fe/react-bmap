@@ -43,8 +43,10 @@ function IconMarkerLayer(props: {
   const iconRef = useRef<OverlayHandle | null>(null);
   const markerRef = useRef<OverlayHandle | null>(null);
 
-  // ─── 创建 Icon + Marker（url 变化时重建 — url 是 constructor 第一参数）───
-  const urlKey = url;
+  // ─── 重建 Icon + Marker（url 或任意样式选项变化时）───
+  // Icon 是值对象，marker.setIcon 无法可靠替换旧图标，
+  // 只能整体重建 Marker（移除旧的 + 创建新的）。
+  const rebuildKey = `${url}|${size.width},${size.height}|${anchor?.width ?? ''},${anchor?.height ?? ''}|${imageOffset?.width ?? ''},${imageOffset?.height ?? ''}|${imageSize?.width ?? ''},${imageSize?.height ?? ''}|${infoWindowAnchor?.width ?? ''},${infoWindowAnchor?.height ?? ''}|${printImageUrl ?? ''}|${srcset?.['2x'] ?? ''}`;
   useLayoutEffect(() => {
     if (!driver || !map) return;
     const icon = driver.createIcon(url, size, {
@@ -65,19 +67,7 @@ function IconMarkerLayer(props: {
       markerRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, map, urlKey]);
-
-  // ─── 响应式更新 Icon 选项（走 setOverlayOptions → 各 setter）───
-  // Icon 是值对象，调 setter 后 SDK 的 Marker 不会自动刷新，
-  // 需要再调 marker.setIcon(icon) 触发重渲染。
-  useEffect(() => {
-    if (!driver || !iconRef.current || !markerRef.current) return;
-    driver.setOverlayOptions(iconRef.current, {
-      size, anchor, imageOffset, imageSize, infoWindowAnchor, printImageUrl, srcset,
-    });
-    driver.setOverlayOptions(markerRef.current, { icon: iconRef.current });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, size, anchor, imageOffset, imageSize, infoWindowAnchor, printImageUrl, srcset]);
+  }, [driver, map, rebuildKey]);
 
   // ─── 更新 Marker 位置 ───
   useEffect(() => {

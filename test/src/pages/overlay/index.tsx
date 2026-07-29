@@ -16,14 +16,14 @@ export { PointCollectionPage } from './PointCollectionPage';
 export { InfoWindowPage } from './InfoWindowPage';
 export { SymbolPage } from './SymbolPage';
 export { IconPage } from './IconPage';
+export { IconSequencePage } from './IconSequencePage';
 
 import { makeOverlayTestPage } from '../templates';
 import {
-  IconSequence, Hotspot, CustomOverlay,
+  Hotspot, CustomOverlay,
 } from 'react-bmap';
 
 const BEIJING = { lng: 116.404, lat: 39.915 };
 
-export const IconSequencePage = makeOverlayTestPage({ name: 'IconSequence', Component: IconSequence, defaultProps: {} });
 export const HotspotPage = makeOverlayTestPage({ name: 'Hotspot', Component: Hotspot, defaultProps: { position: BEIJING, text: '热区' } });
 export const CustomOverlayPage = makeOverlayTestPage({ name: 'CustomOverlay', Component: CustomOverlay, defaultProps: { point: BEIJING } });

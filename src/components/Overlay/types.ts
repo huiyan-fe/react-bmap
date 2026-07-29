@@ -576,6 +576,22 @@ export interface SymbolProps extends SymbolOptions, OverlayReactProps { path: un
  * url 和 size 是 constructor 的前两个位置参数，但也有 setter（setImageUrl/setSize）可响应式更新。
  */
 export interface IconProps extends IconOptions, OverlayReactProps { url: string; size: Size; }
-export interface IconSequenceProps extends OverlayReactProps { symbol?: unknown; offset?: unknown; repeat?: string; fixedRotation?: boolean; }
+/**
+ * IconSequence 用于在 Polyline 上重复显示符号（如箭头）。
+ * @deprecated 4.0 已废弃，请使用 PolylineOptions#strokeTexture 替代。
+ * constructor: new BMap.IconSequence(symbol, offset, repeat, fixedRotation)。
+ * 全部参数都是 constructor 位置参数，无 setter — 变化时重建。
+ * 无事件（值对象，非 Overlay）。
+ */
+export interface IconSequenceProps extends OverlayReactProps {
+  /** 符号样式（Symbol Handle 或 SDK Symbol 实例） */
+  symbol?: unknown;
+  /** 符号相对于线起点的位置，百分比（如 '50%'）或像素值 */
+  offset?: string;
+  /** 符号在线上重复显示的间距，百分比或像素值；与 offset 同时设置时以 repeat 为准 */
+  repeat?: string;
+  /** 图标旋转角度是否与线走向一致 */
+  fixedRotation?: boolean;
+}
 export interface HotspotProps extends HotspotOptions, OverlayReactProps { position: Point; }
 export interface CustomOverlayProps extends CustomOverlayOptions { children?: React.ReactNode; }
