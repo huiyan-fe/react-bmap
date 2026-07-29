@@ -106,6 +106,7 @@ const HANDLED_OVERLAY_OPTION_KEYS = new Set([
   'topFillColor', 'topFillOpacity', 'sideFillColor', 'sideFillOpacity',
   'enableEditing', 'enableDragging', 'enableMassClear',
   'radius', 'bounds', 'controlPoints', 'altitude',
+  'url', 'imageURL', 'displayOnMinLevel', 'displayOnMaxLevel',
   'rotation', 'title', 'content', 'styles', 'opacity',
   'icon', 'anchor', 'zIndex', 'offset',
   // visible 不走 setOverlayOptions，由 showOverlay/hideOverlay 单独处理
@@ -150,7 +151,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
   const callRaw = (cap: Capability, fn: () => void) => {
     try { fn(); } catch (e: any) {
       if (e?.name === 'UnsupportedCapabilityError') throw e;
-      reportUnsupported(cap, version, behavior);
+      // 把原始错误透出去：这里既可能是方法不存在（真不支持），
+      // 也可能是方法存在但参数非法（如 GroundOverlay 的 url 为空），二者不能混为一谈。
+      reportUnsupported(cap, version, behavior, e);
     }
   };
   const getRaw = <T,>(cap: Capability, fn: () => T, fallback: T): T => {
@@ -163,7 +166,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
   const createOverlayFactory = <T>(cap: Capability, ctor: () => T, type: string): OverlayHandle | null => {
     if (!capabilities.has(cap)) { reportUnsupported(cap, version, behavior); return null; }
     try { return overlayHandle(ctor(), type); }
-    catch { reportUnsupported(cap, version, behavior); return null; }
+    catch (e) { reportUnsupported(cap, version, behavior, e); return null; }
   };
   const createControlFactory = <T>(cap: Capability, ctor: () => T, type: string): ControlHandle | null => {
     if (!capabilities.has(cap)) { reportUnsupported(cap, version, behavior); return null; }
@@ -610,7 +613,30 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           : new rawSDK.Prism(toRawPathOrPaths(rawSDK, p), altitude),
       'prism');
     },
-    createGroundOverlay: (b, o) => createOverlayFactory('GroundOverlay', () => new rawSDK.GroundOverlay(toRawBounds(rawSDK, b), o), 'groundOverlay'),
+    createGroundOverlay: (b, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      if (typeof raw?.opacity === 'number') ctorOpts.opacity = raw.opacity;
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      // url 可以是图片/视频地址，也可以是 canvas 元素（type='canvas'）
+      if (raw?.url !== undefined) ctorOpts.url = raw.url;
+      if (typeof raw?.displayOnMinLevel === 'number') ctorOpts.displayOnMinLevel = raw.displayOnMinLevel;
+      if (typeof raw?.displayOnMaxLevel === 'number') ctorOpts.displayOnMaxLevel = raw.displayOnMaxLevel;
+      if (typeof raw?.imageURL === 'string') ctorOpts.imageURL = raw.imageURL;
+      if (typeof raw?.stretch === 'boolean') ctorOpts.stretch = raw.stretch;
+      if (typeof raw?.type === 'string') ctorOpts.type = raw.type;
+      if (typeof raw?.top === 'boolean') ctorOpts.top = raw.top;
+      if (typeof raw?.isReDraw === 'boolean') ctorOpts.isReDraw = raw.isReDraw;
+      if (typeof raw?.drawHook === 'function') ctorOpts.drawHook = raw.drawHook;
+      // zIndex 不是 SDK 的 constructor 选项，只能通过 setZIndex 设置，故不放进 ctorOpts
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('GroundOverlay', () =>
+        hasOpts
+          ? new rawSDK.GroundOverlay(toRawBounds(rawSDK, b), ctorOpts)
+          : new rawSDK.GroundOverlay(toRawBounds(rawSDK, b)),
+      'groundOverlay');
+    },
     createGroundPoint: (p, o) => createOverlayFactory('GroundPoint', () => new rawSDK.GroundPoint(toRawPoint(rawSDK, p), o), 'groundPoint'),
     createPointCollection: (p, o) => createOverlayFactory('PointCollection', () => new rawSDK.PointCollection(toRawPoints(rawSDK, p), o), 'pointCollection'),
     createInfoWindow: (c, o) => createOverlayFactory('InfoWindow', () => new rawSDK.InfoWindow(c, o), 'infoWindow'),
@@ -660,9 +686,19 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (typeof o.sideFillColor === 'string') r.setSideFillColor?.(o.sideFillColor);
         if (typeof o.sideFillOpacity === 'number') r.setSideFillOpacity?.(o.sideFillOpacity);
         if (typeof o.radius === 'number' && ov.type === 'circle') r.setRadius?.(o.radius);
-        if (o.bounds && ov.type === 'rectangle') r.setBounds?.(toRawBounds(rawSDK, o.bounds as Bounds));
+        if (o.bounds && (ov.type === 'rectangle' || ov.type === 'groundOverlay')) r.setBounds?.(toRawBounds(rawSDK, o.bounds as Bounds));
         if (o.controlPoints && ov.type === 'bezierCurve') r.setControlPoints?.(toRawPointGroups(rawSDK, o.controlPoints as Point[][]));
         if (typeof o.altitude === 'number' && ov.type === 'prism') r.setAltitude?.(o.altitude);
+        // GroundOverlay 专属（按 type 收窄，避免命中 GroundPoint 等同名 url 属性）。
+        // url 为 canvas 元素时没有对应 setter（SDK 的 setImage 只接受地址），
+        // canvas 场景本来就应保持同一元素、靠 isReDraw + drawHook 每帧重采集内容，所以只处理字符串。
+        // setImage 是 @since 4.0；v3 上为 undefined，此时靠 imageURL → setImageURL 生效。
+        if (ov.type === 'groundOverlay') {
+          if (typeof o.url === 'string') r.setImage?.(o.url);
+          if (typeof o.imageURL === 'string') r.setImageURL?.(o.imageURL);
+          if (typeof o.displayOnMinLevel === 'number') r.setDisplayOnMinLevel?.(o.displayOnMinLevel);
+          if (typeof o.displayOnMaxLevel === 'number') r.setDisplayOnMaxLevel?.(o.displayOnMaxLevel);
+        }
         // rotation=0 是 SDK 默认值，主动调 setRotation(0) 会让 v3.0 默认 marker 进入 rotation 模式，
         // 导致命中区域塌缩成锚点。只在非 0 时才调用。
         if (typeof o.rotation === 'number' && o.rotation !== 0) r.setRotation?.(o.rotation);

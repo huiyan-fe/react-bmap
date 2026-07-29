@@ -130,9 +130,42 @@ export interface PrismOptions {
   zIndex?: number;
 }
 export interface GroundOverlayOptions {
-  opacity?: number; url?: string | HTMLCanvasElement;
-  displayOnMinLevel?: number; displayOnMaxLevel?: number; imageURL?: string;
-  type?: 'image' | 'video' | 'canvas'; isReDraw?: boolean; drawHook?: () => void;
+  /** 图层透明度 0~1，默认 1 */
+  opacity?: number;
+  /** 是否允许被 map.clearOverlays() 清除，默认 true */
+  enableMassClear?: boolean;
+  /** 是否响应鼠标事件，默认 true @since 4.0 */
+  enableClicking?: boolean;
+  /**
+   * 叠加内容来源。type='image' 传图片地址，'video' 传视频地址，'canvas' 直接传 canvas 元素。
+   * @since 4.0
+   */
+  url?: string | HTMLCanvasElement;
+  /** 最小缩放级别，v3 默认 1，v4 默认 3 */
+  displayOnMinLevel?: number;
+  /** 最大缩放级别，v3 默认 19，v4 默认 21 */
+  displayOnMaxLevel?: number;
+  /** @deprecated 4.0 请使用 url，SDK 仍兼容此配置 */
+  imageURL?: string;
+  /** 是否拉伸图片填满区域，默认 false @removed 4.0（仅 v3 有效） */
+  stretch?: boolean;
+  /** 叠加内容类型，默认 'image' @since 4.0 */
+  type?: 'image' | 'video' | 'canvas';
+  /** 是否绘制在普通覆盖物之上，默认 false @since 4.0 */
+  top?: boolean;
+  /**
+   * 是否开启循环重绘，仅 type='canvas' 生效。开启后每帧调用 drawHook 并重新采集 canvas 作为贴图。
+   * 默认 false @since 4.0
+   */
+  isReDraw?: boolean;
+  /** 自定义绘制回调，type='canvas' 且 isReDraw 开启时每帧渲染前调用 @since 4.0 */
+  drawHook?: () => void;
+  /**
+   * 层叠顺序。注意：SDK 的 GroundOverlayOptions 没有此字段（不能通过 constructor 传），
+   * 但类上有 setZIndex()，所以这里作为可响应式更新的属性暴露。
+   * v4 若需始终置于普通覆盖物之上请用 top。
+   */
+  zIndex?: number;
 }
 export interface GroundPointOptions {
   url?: string; size?: Size; anchor?: Size; scale?: number; rotation?: number; offset?: Size; level?: number;
@@ -357,7 +390,34 @@ export interface PrismProps extends PrismOptions, OverlayReactProps {
   /** 节点数据变化 */
   onLineUpdate?: (raw: unknown) => void;
 }
-export interface GroundOverlayProps extends GroundOverlayOptions, OverlayReactProps { bounds: Bounds; }
+/**
+ * GroundOverlay 事件对照 GroundOverlayEventMap。
+ * 只有 click / dblclick / remove 是 v3 起就有，其余均 @since 4.0。
+ * 注意它不是 GraphEventMap，没有编辑相关事件。
+ */
+export interface GroundOverlayProps extends GroundOverlayOptions, OverlayReactProps {
+  /** 叠加层显示的矩形区域 */
+  bounds: Bounds;
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  /** @since 4.0 */
+  onRightClick?: (point: Point, raw: unknown) => void;
+  /** @since 4.0 */
+  onRightDoubleClick?: (point: Point, raw: unknown) => void;
+  /** @since 4.0 */
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  /** @since 4.0 */
+  onMouseUp?: (point: Point, raw: unknown) => void;
+  /** @since 4.0 */
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  /** @since 4.0 */
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  /** @since 4.0 */
+  onMouseMove?: (point: Point, raw: unknown) => void;
+  onRemove?: (point: Point, raw: unknown) => void;
+  /** 渲染数据发生变化 @since 4.0 */
+  onLineUpdate?: (raw: unknown) => void;
+}
 export interface GroundPointProps extends GroundPointOptions, OverlayReactProps { point: Point; }
 export interface PointCollectionProps extends PointCollectionOptions, OverlayReactProps { points: Point[]; }
 export interface InfoWindowProps extends InfoWindowOptions, OverlayReactProps {

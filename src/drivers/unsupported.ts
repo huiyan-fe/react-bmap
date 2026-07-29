@@ -17,18 +17,27 @@ export class UnsupportedCapabilityError extends Error {
  * - 'warn'：dev console.warn，正常返回（调用方返回兜底值）
  * - 'ignore'：静默，正常返回（调用方返回兜底值）
  *
+ * @param cause 可选，原生方法执行时抛出的原始错误（用于区分“方法不存在”和“方法抛错”）
+ *
  * 用于命令（返回 void）：throw 抛错；warn/ignore noop。
  */
 export function reportUnsupported(
   capability: Capability,
   version: BMapVersion,
   behavior: UnsupportedBehavior,
+  cause?: unknown,
 ): void {
   if (behavior === 'throw') {
     throw new UnsupportedCapabilityError(capability, version);
   }
   if (behavior === 'warn' && typeof console !== 'undefined') {
-    console.warn(`[react-bmap] ${capability} not supported in JSAPI ${version} (noop)`);
+    // cause 存在说明原生方法是存在的、只是执行时抛了错（参数非法等），
+    // 不能笼统说“版本不支持”，把原始错误一起打出来才能定位。
+    if (cause !== undefined) {
+      console.warn(`[react-bmap] ${capability} 调用失败（可能是参数非法，也可能是 JSAPI ${version} 不支持）：`, cause);
+    } else {
+      console.warn(`[react-bmap] ${capability} not supported in JSAPI ${version} (noop)`);
+    }
   }
   // 'ignore' 或 'warn' 走到这里返回 undefined
 }

@@ -240,7 +240,29 @@ export const Prism = createOverlayComponent<PrismProps>({
 export const GroundOverlay = createOverlayComponent<GroundOverlayProps>({
   displayName: 'GroundOverlay',
   factory: (d, p) => d.createGroundOverlay(p.bounds, p),
-  optionProps: ['opacity', 'url', 'displayOnMinLevel', 'displayOnMaxLevel', 'imageURL', 'type', 'isReDraw', 'drawHook'],
+  // bounds 走 setBounds（在 setOverlayOptions 内按 type 分发），没有 positionProp/pathProp
+  optionProps: [
+    'bounds', 'opacity', 'url', 'imageURL',
+    'displayOnMinLevel', 'displayOnMaxLevel',
+    'enableMassClear', 'zIndex',
+  ],
+  // SDK 无 setter，只能 constructor 设置；变化时框架自动重建。
+  // type/top/isReDraw/drawHook 都只在构造时读取；stretch 仅 v3 有效（v4 已移除）。
+  ctorOnlyProps: ['enableClicking', 'type', 'top', 'isReDraw', 'drawHook', 'stretch'],
+  // GroundOverlayEventMap：click/dblclick/remove 为 v3+，其余 v4+；无编辑相关事件
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'rightdblclick', prop: 'onRightDoubleClick' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousemove', prop: 'onMouseMove' },
+    { sdk: 'remove', prop: 'onRemove' },
+    { sdk: 'lineupdate', prop: 'onLineUpdate' },
+  ],
 });
 
 // ─── 地面点 ───
