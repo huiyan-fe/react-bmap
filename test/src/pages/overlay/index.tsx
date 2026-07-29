@@ -11,17 +11,17 @@ export { RectanglePage } from './RectanglePage';
 export { BezierCurvePage } from './BezierCurvePage';
 export { PrismPage } from './PrismPage';
 export { GroundOverlayPage } from './GroundOverlayPage';
+export { GroundPointPage } from './GroundPointPage';
 
 import { makeOverlayTestPage } from '../templates';
 import {
-  GroundPoint, PointCollection, InfoWindow, Symbol,
+  PointCollection, InfoWindow, Symbol,
   Icon, IconSequence, Hotspot, CustomOverlay,
 } from 'react-bmap';
 import { BMap_Symbol_SHAPE_CIRCLE, BMAP_POINT_SIZE_NORMAL } from 'react-bmap';
 
 const BEIJING = { lng: 116.404, lat: 39.915 };
 
-export const GroundPointPage = makeOverlayTestPage({ name: 'GroundPoint', Component: GroundPoint, defaultProps: { point: BEIJING, url: 'https://lbsyun.baidu.com/jsdemo/demo/images/logo.png' } });
 export const PointCollectionPage = makeOverlayTestPage({ name: 'PointCollection', Component: PointCollection, defaultProps: { points: Array.from({ length: 50 }, (_, i) => ({ lng: 116.40 + i * 0.001, lat: 39.91 + (i % 7) * 0.001 })), color: '#ff0000', size: BMAP_POINT_SIZE_NORMAL } });
 export const InfoWindowPage = makeOverlayTestPage({ name: 'InfoWindow', Component: InfoWindow, defaultProps: { content: '<div>Hello</div>', title: '信息窗口' } });
 export const SymbolPage = makeOverlayTestPage({ name: 'Symbol', Component: Symbol, defaultProps: { path: BMap_Symbol_SHAPE_CIRCLE, fillColor: '#ff0000', scale: 2 } });

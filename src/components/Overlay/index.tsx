@@ -270,7 +270,27 @@ export const GroundPoint = createOverlayComponent<GroundPointProps>({
   displayName: 'GroundPoint',
   factory: (d, p) => d.createGroundPoint(p.point, p),
   positionProp: 'point',
-  optionProps: ['url', 'size', 'anchor', 'scale', 'rotation', 'offset', 'level'],
+  optionProps: [
+    'url', 'size', 'anchor', 'scale', 'rotation', 'offset',
+    'opacity', 'imageURL', 'displayOnMinLevel', 'displayOnMaxLevel',
+    'enableMassClear', 'zIndex',
+  ],
+  // SDK 无 setter：level（仅构造时读取）、enableClicking（GroundOverlay 继承，无 disable 方法）
+  ctorOnlyProps: ['level', 'enableClicking'],
+  // GroundOverlayEventMap：无 GroundPointEventMap，事件沿用 GroundOverlay 的一套；整体 @since 4.0
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'rightdblclick', prop: 'onRightDoubleClick' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousemove', prop: 'onMouseMove' },
+    { sdk: 'remove', prop: 'onRemove' },
+    { sdk: 'lineupdate', prop: 'onLineUpdate' },
+  ],
 });
 
 // ─── 海量点 ───

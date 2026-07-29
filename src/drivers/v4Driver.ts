@@ -109,6 +109,7 @@ const HANDLED_OVERLAY_OPTION_KEYS = new Set([
   'url', 'imageURL', 'displayOnMinLevel', 'displayOnMaxLevel',
   'rotation', 'title', 'content', 'styles', 'opacity',
   'icon', 'anchor', 'zIndex', 'offset',
+  'size', 'scale', 'shape', 'color',
   // visible 不走 setOverlayOptions，由 showOverlay/hideOverlay 单独处理
   'visible',
 ]);
@@ -637,7 +638,30 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           : new rawSDK.GroundOverlay(toRawBounds(rawSDK, b)),
       'groundOverlay');
     },
-    createGroundPoint: (p, o) => createOverlayFactory('GroundPoint', () => new rawSDK.GroundPoint(toRawPoint(rawSDK, p), o), 'groundPoint'),
+    createGroundPoint: (p, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      // GroundPointOptions 自身字段
+      if (typeof raw?.url === 'string') ctorOpts.url = raw.url;
+      if (raw?.size) ctorOpts.size = toRawSize(rawSDK, raw.size as Size);
+      if (raw?.anchor) ctorOpts.anchor = toRawSize(rawSDK, raw.anchor as Size);
+      if (typeof raw?.scale === 'number') ctorOpts.scale = raw.scale;
+      if (typeof raw?.rotation === 'number') ctorOpts.rotation = raw.rotation;
+      if (raw?.offset) ctorOpts.offset = toRawSize(rawSDK, raw.offset as Size);
+      if (typeof raw?.level === 'number') ctorOpts.level = raw.level;
+      // 继承自 GroundOverlayOptions 的字段
+      if (typeof raw?.opacity === 'number') ctorOpts.opacity = raw.opacity;
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (typeof raw?.displayOnMinLevel === 'number') ctorOpts.displayOnMinLevel = raw.displayOnMinLevel;
+      if (typeof raw?.displayOnMaxLevel === 'number') ctorOpts.displayOnMaxLevel = raw.displayOnMaxLevel;
+      if (typeof raw?.imageURL === 'string') ctorOpts.imageURL = raw.imageURL;
+      // zIndex 不是 constructor 选项（见 GroundOverlayOptions 注释），跳过
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('GroundPoint', () =>
+        hasOpts ? new rawSDK.GroundPoint(toRawPoint(rawSDK, p), ctorOpts) : new rawSDK.GroundPoint(toRawPoint(rawSDK, p)),
+      'groundPoint');
+    },
     createPointCollection: (p, o) => createOverlayFactory('PointCollection', () => new rawSDK.PointCollection(toRawPoints(rawSDK, p), o), 'pointCollection'),
     createInfoWindow: (c, o) => createOverlayFactory('InfoWindow', () => new rawSDK.InfoWindow(c, o), 'infoWindow'),
     createSymbol: (path, o) => createOverlayFactory('Symbol', () => new rawSDK.Symbol(path, o), 'symbol'),
@@ -654,8 +678,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     setOverlayPosition: (ov, p) => {
       try {
         const r = rawOf(ov);
-        // Circle 用 setCenter 而非 setPosition
+        // Circle 用 setCenter，GroundPoint 用 setPoint，其余用 setPosition
         if (ov.type === 'circle') r.setCenter?.(toRawPoint(rawSDK, p));
+        else if (ov.type === 'groundPoint') r.setPoint?.(toRawPoint(rawSDK, p));
         else r.setPosition?.(toRawPoint(rawSDK, p));
       } catch { /* ignore */ }
     },
@@ -689,26 +714,42 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (o.bounds && (ov.type === 'rectangle' || ov.type === 'groundOverlay')) r.setBounds?.(toRawBounds(rawSDK, o.bounds as Bounds));
         if (o.controlPoints && ov.type === 'bezierCurve') r.setControlPoints?.(toRawPointGroups(rawSDK, o.controlPoints as Point[][]));
         if (typeof o.altitude === 'number' && ov.type === 'prism') r.setAltitude?.(o.altitude);
-        // GroundOverlay 专属（按 type 收窄，避免命中 GroundPoint 等同名 url 属性）。
+        // GroundOverlay / GroundPoint 共有（按 type 收窄，避免命中其他同名属性）。
         // url 为 canvas 元素时没有对应 setter（SDK 的 setImage 只接受地址），
         // canvas 场景本来就应保持同一元素、靠 isReDraw + drawHook 每帧重采集内容，所以只处理字符串。
         // setImage 是 @since 4.0；v3 上为 undefined，此时靠 imageURL → setImageURL 生效。
-        if (ov.type === 'groundOverlay') {
+        if (ov.type === 'groundOverlay' || ov.type === 'groundPoint') {
           if (typeof o.url === 'string') r.setImage?.(o.url);
           if (typeof o.imageURL === 'string') r.setImageURL?.(o.imageURL);
           if (typeof o.displayOnMinLevel === 'number') r.setDisplayOnMinLevel?.(o.displayOnMinLevel);
           if (typeof o.displayOnMaxLevel === 'number') r.setDisplayOnMaxLevel?.(o.displayOnMaxLevel);
         }
+        // GroundPoint 专属 setter：size/scale。anchor 是 Size（与 Marker 的 number 枚举不同）。
+        if (ov.type === 'groundPoint') {
+          if (o.size && typeof o.size === 'object') r.setSize?.(toRawSize(rawSDK, o.size as Size));
+          if (typeof o.scale === 'number') r.setScale?.(o.scale);
+        }
+        // PointCollection 专属：SDK 没有 setColor/setShape/setSize，只有 setStyles(opts) 批量设置。
+        // shape/color/size 任一变化时收集当前值整体传给 setStyles。
+        if (ov.type === 'pointCollection') {
+          const styles: Record<string, unknown> = {};
+          if (o.shape !== undefined) styles.shape = o.shape;
+          if (typeof o.color === 'string') styles.color = o.color;
+          if (o.size !== undefined) styles.size = o.size;
+          if (Object.keys(styles).length > 0) r.setStyles?.(styles);
+        }
         // rotation=0 是 SDK 默认值，主动调 setRotation(0) 会让 v3.0 默认 marker 进入 rotation 模式，
-        // 导致命中区域塌缩成锚点。只在非 0 时才调用。
-        if (typeof o.rotation === 'number' && o.rotation !== 0) r.setRotation?.(o.rotation);
+        // 导致命中区域塌缩成锚点。Marker 只在非 0 时才调用；GroundPoint 的 rotation 安全可设 0。
+        if (typeof o.rotation === 'number' && (ov.type === 'groundPoint' || o.rotation !== 0)) r.setRotation?.(o.rotation);
         if (typeof o.title === 'string') r.setTitle?.(o.title);
         if (typeof o.content === 'string') r.setContent?.(o.content);
         // Label 专属
         if (o.styles && typeof o.styles === 'object') r.setStyles?.(o.styles);
         if (typeof o.opacity === 'number') r.setOpacity?.(o.opacity);
         if (o.icon !== undefined) r.setIcon?.(toRawIcon(rawSDK, o.icon));
+        // Marker/Label 的 anchor 是 ControlAnchor 枚举（number）；GroundPoint 的 anchor 是 Size
         if (typeof o.anchor === 'number') r.setAnchor?.(o.anchor);
+        else if (o.anchor && typeof o.anchor === 'object' && ov.type === 'groundPoint') r.setAnchor?.(toRawSize(rawSDK, o.anchor as Size));
         // SDK Marker 默认不可拖拽，必须主动调 enable/disable 控制。
         // undefined 时不干预（用 SDK 默认行为，即不可拖拽）。
         if (o.enableDragging === true) r.enableDragging?.();

@@ -397,7 +397,7 @@ export function GroundOverlayPage() {
               setBounds(DEFAULT_BOUNDS);
               setType('image');
               setImageUrl(IMAGE_PRESETS[0]);
-              setVideoUrl('');
+              setVideoUrl(VIDEO_PRESET);
               setLegacyImageURL('');
               setOpacity(0.8);
               setDisplayOnMinLevel(undefined);

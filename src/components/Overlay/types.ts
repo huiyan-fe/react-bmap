@@ -167,8 +167,27 @@ export interface GroundOverlayOptions {
    */
   zIndex?: number;
 }
-export interface GroundPointOptions {
-  url?: string; size?: Size; anchor?: Size; scale?: number; rotation?: number; offset?: Size; level?: number;
+/**
+ * GroundPoint 构造函数的可选参数。
+ * SDK dts 注释标明"继承 GroundOverlayOptions"，类本身继承 GroundOverlay，
+ * 因此除自身 7 个字段外还继承了 GroundOverlayOptions 的全部字段（opacity、enableMassClear 等）。
+ * @since 4.0
+ */
+export interface GroundPointOptions extends GroundOverlayOptions {
+  /** 图标地址（GroundPoint 只接受图片地址，不接受 canvas 元素） */
+  url?: string;
+  /** 坐标点尺寸，单位像素 */
+  size?: Size;
+  /** 锚点，以图标左上角为原点 @default new BMap.Size(0, 0) */
+  anchor?: Size;
+  /** 缩放比例 @default 1 */
+  scale?: number;
+  /** 旋转角度，单位度 @default 0 */
+  rotation?: number;
+  /** 偏移量 @default new BMap.Size(0, 0) */
+  offset?: Size;
+  /** 尺寸参考的缩放级别 @default 18 */
+  level?: number;
 }
 export interface PointCollectionOptions { shape?: number; color?: string; size?: number; }
 export interface InfoWindowOptions {
@@ -418,7 +437,27 @@ export interface GroundOverlayProps extends GroundOverlayOptions, OverlayReactPr
   /** 渲染数据发生变化 @since 4.0 */
   onLineUpdate?: (raw: unknown) => void;
 }
-export interface GroundPointProps extends GroundPointOptions, OverlayReactProps { point: Point; }
+/**
+ * GroundPoint 事件对照 GroundOverlayEventMap（SDK 未定义 GroundPointEventMap，
+ * 类继承 GroundOverlay，事件沿用了同一套）。
+ * GroundPoint 整体 @since 4.0，故全部事件均为 v4+。
+ */
+export interface GroundPointProps extends GroundPointOptions, OverlayReactProps {
+  /** 地理坐标点 */
+  point: Point;
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  onRightDoubleClick?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseMove?: (point: Point, raw: unknown) => void;
+  onRemove?: (point: Point, raw: unknown) => void;
+  /** 渲染数据发生变化 */
+  onLineUpdate?: (raw: unknown) => void;
+}
 export interface PointCollectionProps extends PointCollectionOptions, OverlayReactProps { points: Point[]; }
 export interface InfoWindowProps extends InfoWindowOptions, OverlayReactProps {
   content: unknown;
