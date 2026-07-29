@@ -155,11 +155,35 @@ export const Circle = createOverlayComponent<CircleProps>({
   ],
 });
 
-// ─── 矩形 ───
+// ─── 矩形（v4+） ───
 export const Rectangle = createOverlayComponent<RectangleProps>({
   displayName: 'Rectangle',
   factory: (d, p) => d.createRectangle(p.bounds, p),
-  optionProps: ['strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'enableEditing', 'enableClicking'],
+  // bounds 走 setBounds（在 setOverlayOptions 内按 type 分发），没有 positionProp/pathProp
+  optionProps: ['bounds', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear'],
+  // SDK 无 setter，只能 constructor 设置；变化时框架自动重建。
+  // enableEditing 同 Circle：SDK 的 enableEditing() 对 bounds 驱动的覆盖物有 null 访问问题，
+  // 用重建 + driver 内 rAF 延迟开启替代运行时 enable/disable 调用。
+  ctorOnlyProps: ['enableEditing', 'enableClicking', 'linkRight', 'coordType', 'dashArray'],
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'rightdblclick', prop: 'onRightDoubleClick' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousemove', prop: 'onMouseMove' },
+    { sdk: 'remove', prop: 'onRemove' },
+    { sdk: 'lineupdate', prop: 'onLineUpdate' },
+    { sdk: 'editstart', prop: 'onEditStart' },
+    { sdk: 'editend', prop: 'onEditEnd' },
+    { sdk: 'linevertexdragstart', prop: 'onLineVertexDragStart' },
+    { sdk: 'linevertexdragging', prop: 'onLineVertexDragging' },
+    { sdk: 'linevertexdragend', prop: 'onLineVertexDragEnd' },
+    { sdk: 'linevertexdel', prop: 'onLineVertexDel' },
+  ],
 });
 
 // ─── 贝塞尔曲线 ───

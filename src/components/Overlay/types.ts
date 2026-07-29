@@ -90,8 +90,23 @@ export interface CircleOptions {
   dashArray?: number[];
   zIndex?: number;
 }
-/** Rectangle 不支持 strokeLineCap/strokeLineJoin */
-export type RectangleOptions = Omit<PolygonOptions, 'strokeLineCap' | 'strokeLineJoin'>;
+/**
+ * Rectangle 不支持 strokeLineCap/strokeLineJoin。
+ * 整个 Rectangle 类 @since 4.0（v3 不存在，driver 返回 null）。
+ */
+export interface RectangleOptions {
+  strokeColor?: string; fillColor?: string; strokeWeight?: number;
+  strokeOpacity?: number; fillOpacity?: number;
+  strokeStyle?: 'solid' | 'dashed' | 'dotted';
+  enableMassClear?: boolean; enableEditing?: boolean; enableClicking?: boolean;
+  /** 跨180度经线最短路径 */
+  linkRight?: boolean;
+  /** 输入坐标类型 */
+  coordType?: 'BMAP_COORD_BD09' | 'BMAP_COORD_GCJ02' | 'BMAP_COORD_WGS84';
+  /** 虚线样式 [实线长, 间隙长]，默认实线与空隙均为线宽的 2 倍 */
+  dashArray?: number[];
+  zIndex?: number;
+}
 export type BezierCurveOptions = Pick<PolylineOptions, 'strokeColor' | 'strokeWeight' | 'strokeOpacity' | 'strokeStyle' | 'enableMassClear'>;
 export interface PrismOptions {
   topFillColor?: string; topFillOpacity?: number;
@@ -247,7 +262,34 @@ export interface CircleProps extends CircleOptions, OverlayReactProps {
   /** 删除编辑节点 @since 4.0 */
   onLineVertexDel?: (raw: unknown) => void;
 }
-export interface RectangleProps extends RectangleOptions, OverlayReactProps { bounds: Bounds; }
+/** Rectangle 事件对照 RectangleEventMap = GraphEventMap<Rectangle>（整体 @since 4.0） */
+export interface RectangleProps extends RectangleOptions, OverlayReactProps {
+  bounds: Bounds;
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  onRightDoubleClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
+  onMouseMove?: (point: Point, raw: unknown) => void;
+  onRemove?: (point: Point, raw: unknown) => void;
+  /** 线更新 */
+  onLineUpdate?: (raw: unknown) => void;
+  /** 开始编辑 */
+  onEditStart?: (raw: unknown) => void;
+  /** 编辑结束 */
+  onEditEnd?: (raw: unknown) => void;
+  /** 开始拖拽编辑节点 */
+  onLineVertexDragStart?: (raw: unknown) => void;
+  /** 拖拽编辑节点中 */
+  onLineVertexDragging?: (raw: unknown) => void;
+  /** 拖拽编辑节点结束 */
+  onLineVertexDragEnd?: (raw: unknown) => void;
+  /** 删除编辑节点 */
+  onLineVertexDel?: (raw: unknown) => void;
+}
 export interface BezierCurveProps extends BezierCurveOptions, OverlayReactProps { path: Point[]; }
 export interface PrismProps extends PrismOptions, OverlayReactProps { path: Point[]; }
 export interface GroundOverlayProps extends GroundOverlayOptions, OverlayReactProps { bounds: Bounds; }

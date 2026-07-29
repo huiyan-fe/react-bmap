@@ -496,7 +496,33 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         return inst;
       }, 'circle');
     },
-    createRectangle: (b, o) => createOverlayFactory('Rectangle', () => new rawSDK.Rectangle(toRawBounds(rawSDK, b), o), 'rectangle'),
+    createRectangle: (b, o) => {
+      const raw = o as Record<string, unknown>;
+      // enableEditing 同 Circle：Rectangle 也是 bounds 驱动、无内部 path 数组，
+      // 在 constructor 阶段初始化编辑句柄会踩同一个 SDK null 访问问题，改为创建后 rAF 延迟开启。
+      const wantEditing = raw?.enableEditing === true;
+      const ctorOpts: Record<string, unknown> = {};
+      const fields = ['strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle'];
+      for (const f of fields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (typeof raw?.linkRight === 'boolean') ctorOpts.linkRight = raw.linkRight;
+      if (typeof raw?.coordType === 'string') ctorOpts.coordType = raw.coordType;
+      if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
+      if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('Rectangle', () => {
+        const inst = hasOpts
+          ? new rawSDK.Rectangle(toRawBounds(rawSDK, b), ctorOpts)
+          : new rawSDK.Rectangle(toRawBounds(rawSDK, b));
+        if (wantEditing) {
+          requestAnimationFrame(() => {
+            try { inst.enableEditing?.(); } catch { /* ignore */ }
+          });
+        }
+        return inst;
+      }, 'rectangle');
+    },
     createBezierCurve: (p, o) => createOverlayFactory('BezierCurve', () => new rawSDK.BezierCurve(toRawPoints(rawSDK, p), o), 'bezierCurve'),
     createPrism: (p, o) => createOverlayFactory('Prism', () => new rawSDK.Prism(toRawPoints(rawSDK, p), o), 'prism'),
     createGroundOverlay: (b, o) => createOverlayFactory('GroundOverlay', () => new rawSDK.GroundOverlay(toRawBounds(rawSDK, b), o), 'groundOverlay'),
@@ -532,10 +558,11 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (typeof o.strokeOpacity === 'number') r.setStrokeOpacity?.(o.strokeOpacity);
         if (typeof o.strokeStyle === 'string') r.setStrokeStyle?.(o.strokeStyle);
         if (o.enableEditing === true) r.enableEditing?.();
-        else if (o.enableEditing === false && ov.type !== 'circle') r.disableEditing?.();
+        else if (o.enableEditing === false && ov.type !== 'circle' && ov.type !== 'rectangle') r.disableEditing?.();
         if (typeof o.fillColor === 'string') r.setFillColor?.(o.fillColor);
         if (typeof o.fillOpacity === 'number') r.setFillOpacity?.(o.fillOpacity);
         if (typeof o.radius === 'number' && ov.type === 'circle') r.setRadius?.(o.radius);
+        if (o.bounds && ov.type === 'rectangle') r.setBounds?.(toRawBounds(rawSDK, o.bounds as Bounds));
         // rotation=0 是 SDK 默认值，主动调 setRotation(0) 会让 v3.0 默认 marker 进入 rotation 模式，
         // 导致命中区域塌缩成锚点。只在非 0 时才调用。
         if (typeof o.rotation === 'number' && o.rotation !== 0) r.setRotation?.(o.rotation);
