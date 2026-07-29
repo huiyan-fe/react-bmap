@@ -91,12 +91,15 @@ function SymbolMarkerLayer(props: {
   }, [driver, map, pathKey]);
 
   // ─── 响应式更新 Symbol 选项（走 setOverlayOptions → 各 setter）───
+  // Symbol 是值对象，调 setter 后 SDK 的 Marker 不会自动刷新，
+  // 需要再调 marker.setIcon(symbol) 触发重渲染。
   useEffect(() => {
-    if (!driver || !symbolRef.current) return;
+    if (!driver || !symbolRef.current || !markerRef.current) return;
     driver.setOverlayOptions(symbolRef.current, {
       fillColor, fillOpacity, scale, rotation,
       strokeColor, strokeOpacity, strokeWeight, anchor,
     });
+    driver.setOverlayOptions(markerRef.current, { icon: symbolRef.current });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driver, fillColor, fillOpacity, scale, rotation, strokeColor, strokeOpacity, strokeWeight, anchor]);
 

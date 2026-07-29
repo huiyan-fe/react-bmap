@@ -319,10 +319,12 @@ export const Symbol = createOverlayComponent<SymbolProps>({
 });
 
 // ─── 图标 ───
+// Icon 是值对象（非 Overlay），用作 Marker 的 icon；无事件。
+// url/size 是 constructor 前两个参数，但有 setImageUrl/setSize 可响应式更新。
 export const Icon = createOverlayComponent<IconProps>({
   displayName: 'Icon',
   factory: (d, p) => d.createIcon(p.url, p.size, p),
-  optionProps: ['anchor', 'imageOffset', 'imageSize', 'infoWindowAnchor', 'printImageUrl', 'srcset'],
+  optionProps: ['url', 'size', 'anchor', 'imageOffset', 'imageSize', 'infoWindowAnchor', 'printImageUrl', 'srcset'],
 });
 
 // ─── 图标序列（折线循环图标） ───

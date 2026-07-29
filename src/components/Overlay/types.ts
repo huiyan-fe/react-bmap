@@ -254,9 +254,25 @@ export interface SymbolOptions {
   /** 描边线宽，未指定时与 scale 值相同 */
   strokeWeight?: number;
 }
+/**
+ * Icon 构造函数的可选参数。Icon 是值对象（非 Overlay），用作 Marker 的 icon。
+ */
 export interface IconOptions {
-  anchor?: Size; imageOffset?: Size; imageSize?: Size;
-  infoWindowAnchor?: Size; printImageUrl?: string; srcset?: { '2x': string };
+  /**
+   * 定位锚点，相对于图标左上角的偏移值。
+   * @deprecated 4.0 起不建议使用，请用 MarkerOptions#anchor 替代
+   */
+  anchor?: Size;
+  /** 图片相对于可视区域的偏移值（等同 CSS background-position），用于 Sprites 切图 */
+  imageOffset?: Size;
+  /** 图片实际大小（等同 CSS background-size），用于 Sprites 逻辑大小 / 高清屏适配 */
+  imageSize?: Size;
+  /** 信息窗口定位锚点 @removed 4.0 */
+  infoWindowAnchor?: Size;
+  /** 打印图片 URL，仅对 IE6 有效 @removed 4.0 */
+  printImageUrl?: string;
+  /** 高分辨率屏幕图片资源集 @since 4.0 @hide */
+  srcset?: { '2x': string };
 }
 export interface HotspotOptions { text?: string; offsets?: number[]; userData?: unknown; minZoom?: number; maxZoom?: number; }
 export interface CustomOverlayOptions {
@@ -555,6 +571,10 @@ export interface InfoWindowProps extends InfoWindowOptions, OverlayReactProps {
  * path 为 SVG path 字符串或预定义符号常量（BMap_Symbol_SHAPE_*）。
  */
 export interface SymbolProps extends SymbolOptions, OverlayReactProps { path: unknown; }
+/**
+ * Icon 是值对象（非 Overlay），无事件。
+ * url 和 size 是 constructor 的前两个位置参数，但也有 setter（setImageUrl/setSize）可响应式更新。
+ */
 export interface IconProps extends IconOptions, OverlayReactProps { url: string; size: Size; }
 export interface IconSequenceProps extends OverlayReactProps { symbol?: unknown; offset?: unknown; repeat?: string; fixedRotation?: boolean; }
 export interface HotspotProps extends HotspotOptions, OverlayReactProps { position: Point; }
