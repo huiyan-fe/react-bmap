@@ -109,7 +109,7 @@ const HANDLED_OVERLAY_OPTION_KEYS = new Set([
   'url', 'imageURL', 'displayOnMinLevel', 'displayOnMaxLevel',
   'rotation', 'title', 'content', 'styles', 'opacity',
   'icon', 'anchor', 'zIndex', 'offset',
-  'size', 'scale', 'shape', 'color',
+  'size', 'scale', 'shape', 'color', 'path',
   // visible 不走 setOverlayOptions，由 showOverlay/hideOverlay 单独处理
   'visible',
 ]);
@@ -692,7 +692,22 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         hasOpts ? new rawSDK.InfoWindow(c, ctorOpts) : new rawSDK.InfoWindow(c),
       'infoWindow');
     },
-    createSymbol: (path, o) => createOverlayFactory('Symbol', () => new rawSDK.Symbol(path, o), 'symbol'),
+    createSymbol: (path, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      if (raw?.anchor) ctorOpts.anchor = toRawSize(rawSDK, raw.anchor as Size);
+      if (typeof raw?.fillColor === 'string') ctorOpts.fillColor = raw.fillColor;
+      if (typeof raw?.fillOpacity === 'number') ctorOpts.fillOpacity = raw.fillOpacity;
+      if (typeof raw?.scale === 'number') ctorOpts.scale = raw.scale;
+      if (typeof raw?.rotation === 'number') ctorOpts.rotation = raw.rotation;
+      if (typeof raw?.strokeColor === 'string') ctorOpts.strokeColor = raw.strokeColor;
+      if (typeof raw?.strokeOpacity === 'number') ctorOpts.strokeOpacity = raw.strokeOpacity;
+      if (typeof raw?.strokeWeight === 'number') ctorOpts.strokeWeight = raw.strokeWeight;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('Symbol', () =>
+        hasOpts ? new rawSDK.Symbol(path, ctorOpts) : new rawSDK.Symbol(path),
+      'symbol');
+    },
     createIcon: (url, size, o) => createOverlayFactory('Icon', () => new rawSDK.Icon(url, new rawSDK.Size(size.width, size.height), o), 'icon'),
     createIconSequence: (sym, offset, repeat, fr) => createOverlayFactory('IconSequence', () => new rawSDK.IconSequence(sym ? rawOf(sym) : undefined, offset, repeat, fr), 'iconSequence'),
     createHotspot: (p, o) => createOverlayFactory('Hotspot', () => new rawSDK.Hotspot(toRawPoint(rawSDK, p), o), 'hotspot'),
@@ -757,8 +772,11 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         // GroundPoint 专属 setter：size/scale。anchor 是 Size（与 Marker 的 number 枚举不同）。
         if (ov.type === 'groundPoint') {
           if (o.size && typeof o.size === 'object') r.setSize?.(toRawSize(rawSDK, o.size as Size));
-          if (typeof o.scale === 'number') r.setScale?.(o.scale);
         }
+        // GroundPoint / Symbol 共有：scale
+        if (typeof o.scale === 'number' && (ov.type === 'groundPoint' || ov.type === 'symbol')) r.setScale?.(o.scale);
+        // Symbol 专属：path 是 SVG path 字符串或符号常量（非 Point[]），走 setPath 而非 setOverlayPath
+        if (ov.type === 'symbol' && o.path !== undefined) r.setPath?.(o.path);
         // PointCollection 专属：SDK 没有 setColor/setShape/setSize，只有 setStyles(opts) 批量设置。
         // shape/color/size 任一变化时收集当前值整体传给 setStyles。
         if (ov.type === 'pointCollection') {
@@ -769,17 +787,17 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           if (Object.keys(styles).length > 0) r.setStyles?.(styles);
         }
         // rotation=0 是 SDK 默认值，主动调 setRotation(0) 会让 v3.0 默认 marker 进入 rotation 模式，
-        // 导致命中区域塌缩成锚点。Marker 只在非 0 时才调用；GroundPoint 的 rotation 安全可设 0。
-        if (typeof o.rotation === 'number' && (ov.type === 'groundPoint' || o.rotation !== 0)) r.setRotation?.(o.rotation);
+        // 导致命中区域塌缩成锚点。Marker 只在非 0 时才调用；GroundPoint/Symbol 的 rotation 安全可设 0。
+        if (typeof o.rotation === 'number' && (ov.type === 'groundPoint' || ov.type === 'symbol' || o.rotation !== 0)) r.setRotation?.(o.rotation);
         if (typeof o.title === 'string') r.setTitle?.(o.title);
         if (typeof o.content === 'string') r.setContent?.(o.content);
         // Label 专属
         if (o.styles && typeof o.styles === 'object') r.setStyles?.(o.styles);
         if (typeof o.opacity === 'number') r.setOpacity?.(o.opacity);
         if (o.icon !== undefined) r.setIcon?.(toRawIcon(rawSDK, o.icon));
-        // Marker/Label 的 anchor 是 ControlAnchor 枚举（number）；GroundPoint 的 anchor 是 Size
+        // Marker/Label 的 anchor 是 ControlAnchor 枚举（number）；GroundPoint/Symbol 的 anchor 是 Size
         if (typeof o.anchor === 'number') r.setAnchor?.(o.anchor);
-        else if (o.anchor && typeof o.anchor === 'object' && ov.type === 'groundPoint') r.setAnchor?.(toRawSize(rawSDK, o.anchor as Size));
+        else if (o.anchor && typeof o.anchor === 'object' && (ov.type === 'groundPoint' || ov.type === 'symbol')) r.setAnchor?.(toRawSize(rawSDK, o.anchor as Size));
         // SDK Marker 默认不可拖拽，必须主动调 enable/disable 控制。
         // undefined 时不干预（用 SDK 默认行为，即不可拖拽）。
         if (o.enableDragging === true) r.enableDragging?.();

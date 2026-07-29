@@ -232,9 +232,27 @@ export interface InfoWindowOptions {
   /** 开启最大化功能 @default false */
   enableMaximize?: boolean;
 }
+/**
+ * Symbol 构造函数的可选参数。
+ * Symbol 是矢量图标值对象（非 Overlay），用作 Marker 的 icon 参数。
+ */
 export interface SymbolOptions {
-  anchor?: Size; fillColor?: string; fillOpacity?: number; scale?: number;
-  rotation?: number; strokeColor?: string; strokeOpacity?: number; strokeWeight?: number;
+  /** 锚点位置，相对于图标自身坐标系 */
+  anchor?: Size;
+  /** 填充颜色，支持十六进制、RGB、RGBA 等 */
+  fillColor?: string;
+  /** 填充透明度，取值范围 0-1 */
+  fillOpacity?: number;
+  /** 缩放比例 @default 1 */
+  scale?: number;
+  /** 旋转角度，单位度 */
+  rotation?: number;
+  /** 描边颜色 */
+  strokeColor?: string;
+  /** 描边透明度，取值范围 0-1 */
+  strokeOpacity?: number;
+  /** 描边线宽，未指定时与 scale 值相同 */
+  strokeWeight?: number;
 }
 export interface IconOptions {
   anchor?: Size; imageOffset?: Size; imageSize?: Size;
@@ -532,6 +550,10 @@ export interface InfoWindowProps extends InfoWindowOptions, OverlayReactProps {
   /** 信息窗口尺寸变化时触发 */
   onResize?: (raw: unknown) => void;
 }
+/**
+ * Symbol 是值对象（非 Overlay），无事件。
+ * path 为 SVG path 字符串或预定义符号常量（BMap_Symbol_SHAPE_*）。
+ */
 export interface SymbolProps extends SymbolOptions, OverlayReactProps { path: unknown; }
 export interface IconProps extends IconOptions, OverlayReactProps { url: string; size: Size; }
 export interface IconSequenceProps extends OverlayReactProps { symbol?: unknown; offset?: unknown; repeat?: string; fixedRotation?: boolean; }

@@ -311,10 +311,11 @@ export const PointCollection = createOverlayComponent<PointCollectionProps>({
 export { InfoWindow } from './InfoWindow';
 
 // ─── 矢量符号 ───
+// Symbol 是值对象（非 Overlay），用作 Marker 的 icon；无事件。
 export const Symbol = createOverlayComponent<SymbolProps>({
   displayName: 'Symbol',
   factory: (d, p) => d.createSymbol(p.path, p),
-  optionProps: ['anchor', 'fillColor', 'fillOpacity', 'scale', 'rotation', 'strokeColor', 'strokeOpacity', 'strokeWeight'],
+  optionProps: ['path', 'anchor', 'fillColor', 'fillOpacity', 'scale', 'rotation', 'strokeColor', 'strokeOpacity', 'strokeWeight'],
 });
 
 // ─── 图标 ───
