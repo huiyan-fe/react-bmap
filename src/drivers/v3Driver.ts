@@ -51,6 +51,21 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       } catch (e) { reportUnsupported('Hotspot', version, behavior, e); return null; }
     },
 
+    // PointCollection 同理：@removed 4.0，在 v4 矩阵中不存在，闭包检查会 block
+    createPointCollection: (p, o) => {
+      try {
+        const raw = o as Record<string, unknown>;
+        const ctorOpts: Record<string, unknown> = {};
+        if (raw?.shape !== undefined) ctorOpts.shape = raw.shape;
+        if (typeof raw?.color === 'string') ctorOpts.color = raw.color;
+        if (typeof raw?.size === 'number') ctorOpts.size = raw.size;
+        const hasOpts = Object.keys(ctorOpts).length > 0;
+        const points = (p as Point[]).map(pt => new rawSDK.Point(pt.lng, pt.lat));
+        const inst = hasOpts ? new rawSDK.PointCollection(points, ctorOpts) : new rawSDK.PointCollection(points);
+        return { __brand: 'OverlayHandle', raw: inst, type: 'pointCollection' } as OverlayHandle;
+      } catch (e) { reportUnsupported('PointCollection', version, behavior, e); return null; }
+    },
+
     // 3.0 用 setMapStyle（v1），setMapStyleV2 不支持
     setMapStyle: (map, options) => { (map.raw as any).setMapStyle?.(options); },
     setMapStyleV2: () => reportUnsupported('Map.setMapStyleV2', version, behavior),

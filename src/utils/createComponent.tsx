@@ -46,6 +46,13 @@ export interface OverlayComponentConfig<P> {
   events?: Array<{ sdk: string; prop: keyof P & string }>;
   /** 组件显示名（用于 React DevTools） */
   displayName?: string;
+  /**
+   * 值对象模式：跳过 addOverlay/removeOverlay。
+   * 用于 Symbol/Icon/IconSequence 等不是 Overlay 的值对象。
+   * 组件仍然创建 SDK 实例并管理 setter，但不自动加到地图。
+   * 用户通过 ref 或 hooks 拿到 handle 传给父组件（如 Marker icon）。
+   */
+  skipMount?: boolean;
 }
 
 export function createOverlayComponent<P extends { children?: ReactNode }>(
@@ -100,8 +107,11 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       // 其 useLayoutEffect 在 cleanup 后会用新的 target 重新挂载。
       targetRef.current = handle;
       notify();
-      if (target?.addOverlay) target.addOverlay(handle);
-      else driver.addOverlay(map, handle);
+      // 值对象（Symbol/Icon 等）不调 addOverlay
+      if (!config.skipMount) {
+        if (target?.addOverlay) target.addOverlay(handle);
+        else driver.addOverlay(map, handle);
+      }
       // 同步设置一次 options：StrictMode 双调用会重建 overlay（新实例），
       // 但 setOverlayOptions 的独立 useEffect deps 不含 marker 引用、不会重跑。
       // 必须在这里对新实例立即设置 enableDragging 等，否则 v3.0 默认 disabled 的开关不生效。
@@ -120,8 +130,11 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
         driver.hideOverlay(handle);
       }
       return () => {
+      // 值对象不调 removeOverlay
+      if (!config.skipMount) {
         if (target?.removeOverlay) target.removeOverlay(handle);
         else if (map) driver.removeOverlay(map, handle);
+      }
         ref.current = null;
         targetRef.current = null;
         notify();

@@ -13,7 +13,7 @@ import type {
   MarkerProps, LabelProps, PolylineProps, PolygonProps, CircleProps,
   RectangleProps, BezierCurveProps, PrismProps, GroundOverlayProps,
   GroundPointProps, PointCollectionProps, InfoWindowProps, SymbolProps,
-  IconProps, IconSequenceProps, HotspotProps, CustomOverlayProps,
+  IconProps, IconSequenceProps, HotspotProps,
 } from './types';
 
 // ─── 点标注 ───
@@ -298,7 +298,7 @@ export const PointCollection = createOverlayComponent<PointCollectionProps>({
   displayName: 'PointCollection',
   factory: (d, p) => d.createPointCollection(p.points, p),
   pathProp: 'points',
-  optionProps: ['shape', 'color', 'size'],
+  optionProps: ['shape', 'color', 'size', 'enableMassClear'],
   // PointCollectionEventMap：整体 @removed 4.0（仅 v3）
   events: [
     { sdk: 'click', prop: 'onClick' },
@@ -312,28 +312,32 @@ export { InfoWindow } from './InfoWindow';
 
 // ─── 矢量符号 ───
 // Symbol 是值对象（非 Overlay），用作 Marker 的 icon；无事件。
+// skipMount: 不调 addOverlay；推荐用 useSymbol hook 获取实例传给 Marker。
 export const Symbol = createOverlayComponent<SymbolProps>({
   displayName: 'Symbol',
   factory: (d, p) => d.createSymbol(p.path, p),
   optionProps: ['path', 'anchor', 'fillColor', 'fillOpacity', 'scale', 'rotation', 'strokeColor', 'strokeOpacity', 'strokeWeight'],
+  skipMount: true,
 });
 
 // ─── 图标 ───
 // Icon 是值对象（非 Overlay），用作 Marker 的 icon；无事件。
-// url/size 是 constructor 前两个参数，但有 setImageUrl/setSize 可响应式更新。
+// skipMount: 不调 addOverlay；推荐用 useIcon hook 获取实例传给 Marker。
 export const Icon = createOverlayComponent<IconProps>({
   displayName: 'Icon',
   factory: (d, p) => d.createIcon(p.url, p.size, p),
   optionProps: ['url', 'size', 'anchor', 'imageOffset', 'imageSize', 'infoWindowAnchor', 'printImageUrl', 'srcset'],
+  skipMount: true,
 });
 
 // ─── 图标序列（折线循环图标） ───
 // IconSequence 是值对象（非 Overlay），@deprecated 4.0。无 setter/无事件，
-// 全部 4 个参数都是 constructor 位置参数，变化时重建。
+// skipMount: 不调 addOverlay；推荐用 driver API 创建后传给 Polyline icons。
 export const IconSequence = createOverlayComponent<IconSequenceProps>({
   displayName: 'IconSequence',
   factory: (d, p) => d.createIconSequence(p.symbol as any, p.offset, p.repeat, p.fixedRotation),
   ctorOnlyProps: ['symbol', 'offset', 'repeat', 'fixedRotation'],
+  skipMount: true,
 });
 
 // ─── 热区 ───
@@ -349,21 +353,8 @@ export const Hotspot = createOverlayComponent<HotspotProps>({
   ctorOnlyProps: ['offsets', 'minZoom', 'maxZoom'],
 });
 
-// ─── 自定义覆盖物 ───
-// CustomOverlay @since 4.0，通过 domCreate 函数让用户完全控制 DOM 内容。
-export const CustomOverlay = createOverlayComponent<CustomOverlayProps>({
-  displayName: 'CustomOverlay',
-  factory: (d, p) => d.createCustomOverlay(p.domCreate as Function, p),
-  // point 通过 optionProps → setOverlayOptions → setPoint 更新（不走 positionProp，CustomOverlay 无 setPosition）
-  optionProps: ['point', 'rotation', 'rotationInit', 'properties', 'enableMassClear', 'zIndex'],
-  // 无 setter：anchors / offsetX / offsetY / minZoom / maxZoom / fixBottom / useTranslate / autoFollowHeadingChanged / enableDraggingMap / domCreate
-  ctorOnlyProps: ['domCreate', 'anchors', 'offsetX', 'offsetY', 'minZoom', 'maxZoom', 'fixBottom', 'useTranslate', 'autoFollowHeadingChanged', 'enableDraggingMap'],
-  events: [
-    { sdk: 'click', prop: 'onClick' },
-    { sdk: 'mouseover', prop: 'onMouseOver' },
-    { sdk: 'mouseout', prop: 'onMouseOut' },
-  ],
-});
+// ─── 自定义覆盖物（独立组件，见 CustomOverlay.tsx） ───
+export { CustomOverlay } from './CustomOverlay';
 
 // ─── PlaceDetail（v4+ 地点详情，类似 InfoWindow 的声明式组件） ───
 export { PlaceDetail } from './PlaceDetail';

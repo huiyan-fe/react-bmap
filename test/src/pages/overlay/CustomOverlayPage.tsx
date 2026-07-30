@@ -1,6 +1,6 @@
 /**
  * CustomOverlay 全量测试页 — 覆盖 CustomOverlay.d.ts + CustomOverlayOptions.d.ts 全部功能。
- * CustomOverlay @since 4.0，通过 domCreate 函数让用户完全控制 DOM 内容。
+ * CustomOverlay @since 4.0，通过 React children 控制 DOM 内容。
  * 事件：CustomOverlayEventMap（click / mouseover / mouseout）。
  * Setter：setPoint / setRotation / setRotationOrigin / setProperties。
  */
@@ -49,31 +49,6 @@ export function CustomOverlayPage() {
     );
   }, []);
 
-  // domCreate：SDK 调用此函数获取覆盖物的 DOM 元素。
-  // 用 useCallback([]) 保持稳定引用。label/color 通过 ref 在创建时和变化时读取。
-  const domRef = useRef<HTMLDivElement | null>(null);
-  const labelRef = useRef(label);
-  labelRef.current = label;
-  const colorRef = useRef(color);
-  colorRef.current = color;
-
-  const domCreate = useCallback(() => {
-    const div = document.createElement('div');
-    div.style.cssText = 'padding:4px 12px;border-radius:4px;font-size:13px;color:#fff;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.3);transition:all 0.2s;cursor:pointer;';
-    div.textContent = labelRef.current;
-    div.style.background = colorRef.current;
-    domRef.current = div;
-    return div;
-  }, []);
-
-  // label/color 变化时直接更新 DOM（绕过重建）
-  useEffect(() => {
-    if (domRef.current) {
-      domRef.current.textContent = label;
-      domRef.current.style.background = color;
-    }
-  }, [label, color]);
-
   const fmtPt = (pt: any) =>
     pt ? `${pt.lng?.toFixed(4)},${pt.lat?.toFixed(4)}` : '';
 
@@ -94,7 +69,6 @@ export function CustomOverlayPage() {
       <div className="test-map">
         <Map defaultCenter={BEIJING} defaultZoom={14} style={{ height: '100%' }}>
           {isV4 && <CustomOverlay
-            domCreate={domCreate}
             point={point}
             anchors={[anchorsX, anchorsY]}
             offsetX={offsetX}
@@ -114,7 +88,21 @@ export function CustomOverlayPage() {
             onClick={onEvt('click')}
             onMouseOver={onEvt('mouseover')}
             onMouseOut={onEvt('mouseout')}
-          />}
+          >
+            <div style={{
+              padding: '4px 12px',
+              borderRadius: 4,
+              fontSize: 13,
+              color: '#fff',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+              transition: 'all 0.2s',
+              cursor: 'pointer',
+              background: color,
+            }}>
+              {label}
+            </div>
+          </CustomOverlay>}
         </Map>
         {/* 事件日志 */}
         <div ref={logRef} style={{
@@ -154,14 +142,14 @@ export function CustomOverlayPage() {
         <section>
           <h3>能力 {v4Tag}</h3>
           <p className="muted small">
-            @since 4.0。通过 domCreate 函数完全控制 DOM 内容。
+            @since 4.0。通过 React children 完全控制 DOM 内容。
             v3 上不可用。
           </p>
         </section>
 
-        {/* domCreate 预览 */}
+        {/* children 预览 */}
         <section>
-          <h3>domCreate（DOM 内容）</h3>
+          <h3>children（DOM 内容）</h3>
           <label className="checkbox-row">
             label
             <input type="text" value={label}
@@ -178,7 +166,7 @@ export function CustomOverlayPage() {
               >{c}</button>
             ))}
           </div>
-          <p className="muted small">domCreate 函数返回 HTMLElement；改 label/color 会重建覆盖物</p>
+          <p className="muted small">children 渲染进覆盖物 DOM；改 label/color 走 React 更新，不重建覆盖物</p>
         </section>
 
         {/* point */}

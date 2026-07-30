@@ -37,7 +37,7 @@ const V4_MAP_LAYER: Capability[] = [
 
 // ── 4.0+ 覆盖物类 ──
 const V4_OVERLAY: Capability[] = [
-  'Prism', 'Rectangle', 'BezierCurve', 'CustomOverlay',
+  'Prism', 'Rectangle', 'BezierCurve', 'CustomOverlay', 'GroundPoint',
 ];
 
 // ── 4.0+ 控件类 ──
@@ -82,6 +82,7 @@ const V3_MAP_ONLY: Capability[] = [
 // ── 3.0-only 覆盖物 ──
 const V3_OVERLAY_ONLY: Capability[] = [
   'Hotspot',   // 仅 3.0
+  'PointCollection',   // @removed 4.0
 ];
 
 // ── 全版本共有（隐式：v3 与 v4 共有） ──
@@ -103,7 +104,7 @@ const COMMON: Capability[] = [
   'Map.clearOverlays', 'Map.getOverlays', 'Map.addOverlay', 'Map.removeOverlay',
   // 覆盖物（全版本）
   'Marker', 'Label', 'Polyline', 'Polygon', 'Circle',
-  'GroundOverlay', 'GroundPoint', 'PointCollection', 'InfoWindow', 'Symbol', 'Icon', 'IconSequence',
+  'GroundOverlay', 'InfoWindow', 'Symbol', 'Icon', 'IconSequence',
   // 控件（全版本）
   'NavigationControl', 'ScaleControl', 'OverviewMapControl', 'MapTypeControl',
   'CopyrightControl', 'GeolocationControl', 'PanoramaControl',

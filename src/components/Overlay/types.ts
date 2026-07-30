@@ -292,7 +292,7 @@ export interface HotspotOptions {
 }
 /**
  * CustomOverlay 构造函数的可选参数。@since 4.0。
- * CustomOverlay 通过 domCreate 函数让用户完全控制 DOM 内容。
+ * React 组件通过 children 渲染 DOM 内容，内部转换为 SDK 需要的 domCreate。
  */
 export interface CustomOverlayOptions {
   /** 地理坐标点 */
@@ -645,11 +645,9 @@ export interface IconSequenceProps extends OverlayReactProps {
 export interface HotspotProps extends HotspotOptions, OverlayReactProps { position: Point; }
 /**
  * CustomOverlay 事件对照 CustomOverlayEventMap。@since 4.0。
- * domCreate 是 constructor 第一参数：SDK 调用它获取覆盖物的 DOM 元素。
+ * children 会被渲染到 SDK 自定义覆盖物的 DOM 容器内。
  */
 export interface CustomOverlayProps extends CustomOverlayOptions, OverlayReactProps {
-  /** DOM 创建函数，SDK 调用它返回覆盖物的 HTMLElement */
-  domCreate?: () => HTMLElement;
   onClick?: (point: Point, raw: unknown) => void;
   onMouseOver?: (point: Point, raw: unknown) => void;
   onMouseOut?: (point: Point, raw: unknown) => void;

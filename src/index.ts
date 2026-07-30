@@ -106,6 +106,10 @@ export { useMapEvent } from './hooks/useMapEvent';
 export { useMapStatus } from './hooks/useMapStatus';
 export type { MapSnapshot } from './hooks/useMapStatus';
 
+// ─── 值对象 Hooks（Symbol/Icon 等值对象，用作 Marker icon 参数） ───
+export { useSymbol } from './hooks/useSymbol';
+export { useIcon } from './hooks/useIcon';
+
 // ─── Service Hooks（13 个） ───
 export {
   useLocalSearch, useGeocoder, useDrivingRoute, useWalkingRoute,

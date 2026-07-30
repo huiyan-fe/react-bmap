@@ -112,9 +112,7 @@ const HANDLED_OVERLAY_OPTION_KEYS = new Set([
   'size', 'scale', 'shape', 'color', 'path',
   'imageOffset', 'imageSize', 'infoWindowAnchor', 'printImageUrl', 'srcset',
   'text', 'userData',
-  'point', 'anchors', 'offsetX', 'offsetY', 'rotationInit',
-  'minZoom', 'maxZoom', 'properties', 'fixBottom', 'useTranslate',
-  'autoFollowHeadingChanged', 'enableDraggingMap',
+  'point', 'rotationInit', 'properties',
   // visible 不走 setOverlayOptions，由 showOverlay/hideOverlay 单独处理
   'visible',
 ]);
