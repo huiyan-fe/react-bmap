@@ -181,6 +181,7 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createBezierCurve: () => { reportUnsupported('BezierCurve', version, behavior); return null; },
     createPrism: () => { reportUnsupported('Prism', version, behavior); return null; },
     createGroundPoint: () => { reportUnsupported('GroundPoint', version, behavior); return null; },
+    createCustomOverlay: () => { reportUnsupported('CustomOverlay', version, behavior); return null; },
     createNormalLayer: () => { reportUnsupported('NormalLayer', version, behavior); return null; },
     createGeoJSONLayer: () => { reportUnsupported('GeoJSONLayer', version, behavior); return null; },
     createDistrictLayer: () => { reportUnsupported('DistrictLayer', version, behavior); return null; },

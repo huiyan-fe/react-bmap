@@ -290,12 +290,41 @@ export interface HotspotOptions {
   /** 最大缩放级别 */
   maxZoom?: number;
 }
+/**
+ * CustomOverlay 构造函数的可选参数。@since 4.0。
+ * CustomOverlay 通过 domCreate 函数让用户完全控制 DOM 内容。
+ */
 export interface CustomOverlayOptions {
-  point?: Point; anchors?: [number, number]; offsetX?: number; offsetY?: number;
-  rotation?: number; rotationInit?: number; minZoom?: number; maxZoom?: number;
-  properties?: unknown; fixBottom?: boolean; useTranslate?: boolean;
-  autoFollowHeadingChanged?: boolean; visible?: boolean; zIndex?: number;
-  enableMassClear?: boolean; enableDraggingMap?: boolean;
+  /** 地理坐标点 */
+  point?: Point;
+  /** 锚点 [x, y]，左上角 [0,0]，取值 [0,1] @default [0.5, 1] */
+  anchors?: [number, number];
+  /** X 轴偏移（px） @default 0 */
+  offsetX?: number;
+  /** Y 轴偏移（px） @default 0 */
+  offsetY?: number;
+  /** 旋转角度（度） @default 0 */
+  rotation?: number;
+  /** 初始旋转基准角度，最终角度 = rotationOrigin + 地图朝向 @default 0 */
+  rotationInit?: number;
+  /** 最小缩放级别 */
+  minZoom?: number;
+  /** 最大缩放级别 */
+  maxZoom?: number;
+  /** 自定义业务属性 */
+  properties?: unknown;
+  /** DOM 固定在底部 @default false */
+  fixBottom?: boolean;
+  /** 使用 translate3d 性能优化 @default false */
+  useTranslate?: boolean;
+  /** 随地图旋转 @default false */
+  autoFollowHeadingChanged?: boolean;
+  /** 层叠顺序 @default 0 */
+  zIndex?: number;
+  /** 是否在 map.clearOverlays() 时清除 @since 4.0 @default true */
+  enableMassClear?: boolean;
+  /** 覆盖物上是否允许拖拽地图 @since 4.0 @default false */
+  enableDraggingMap?: boolean;
 }
 
 // Props = Options + 必需的几何参数 + children + 事件回调
@@ -614,4 +643,14 @@ export interface IconSequenceProps extends OverlayReactProps {
  * 无事件（SDK 未定义 HotspotEventMap）。
  */
 export interface HotspotProps extends HotspotOptions, OverlayReactProps { position: Point; }
-export interface CustomOverlayProps extends CustomOverlayOptions { children?: React.ReactNode; }
+/**
+ * CustomOverlay 事件对照 CustomOverlayEventMap。@since 4.0。
+ * domCreate 是 constructor 第一参数：SDK 调用它获取覆盖物的 DOM 元素。
+ */
+export interface CustomOverlayProps extends CustomOverlayOptions, OverlayReactProps {
+  /** DOM 创建函数，SDK 调用它返回覆盖物的 HTMLElement */
+  domCreate?: () => HTMLElement;
+  onClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+}

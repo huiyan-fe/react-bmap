@@ -112,6 +112,9 @@ const HANDLED_OVERLAY_OPTION_KEYS = new Set([
   'size', 'scale', 'shape', 'color', 'path',
   'imageOffset', 'imageSize', 'infoWindowAnchor', 'printImageUrl', 'srcset',
   'text', 'userData',
+  'point', 'anchors', 'offsetX', 'offsetY', 'rotationInit',
+  'minZoom', 'maxZoom', 'properties', 'fixBottom', 'useTranslate',
+  'autoFollowHeadingChanged', 'enableDraggingMap',
   // visible 不走 setOverlayOptions，由 showOverlay/hideOverlay 单独处理
   'visible',
 ]);
@@ -742,11 +745,28 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         hasOpts ? new rawSDK.Hotspot(toRawPoint(rawSDK, p), ctorOpts) : new rawSDK.Hotspot(toRawPoint(rawSDK, p)),
       'hotspot');
     },
-    createCustomOverlay: (o) => createOverlayFactory('CustomOverlay', () => {
-      const inst = new rawSDK.Overlay();
-      Object.assign(inst, o);
-      return inst;
-    }, 'customOverlay'),
+    createCustomOverlay: (domCreate, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      if (raw?.point) ctorOpts.point = toRawPoint(rawSDK, raw.point as Point);
+      if (raw?.anchors) ctorOpts.anchors = raw.anchors;
+      if (typeof raw?.offsetX === 'number') ctorOpts.offsetX = raw.offsetX;
+      if (typeof raw?.offsetY === 'number') ctorOpts.offsetY = raw.offsetY;
+      if (typeof raw?.rotation === 'number') ctorOpts.rotation = raw.rotation;
+      if (typeof raw?.rotationInit === 'number') ctorOpts.rotationInit = raw.rotationInit;
+      if (typeof raw?.minZoom === 'number') ctorOpts.minZoom = raw.minZoom;
+      if (typeof raw?.maxZoom === 'number') ctorOpts.maxZoom = raw.maxZoom;
+      if (raw?.properties !== undefined) ctorOpts.properties = raw.properties;
+      if (typeof raw?.fixBottom === 'boolean') ctorOpts.fixBottom = raw.fixBottom;
+      if (typeof raw?.useTranslate === 'boolean') ctorOpts.useTranslate = raw.useTranslate;
+      if (typeof raw?.autoFollowHeadingChanged === 'boolean') ctorOpts.autoFollowHeadingChanged = raw.autoFollowHeadingChanged;
+      if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      if (typeof raw?.enableDraggingMap === 'boolean') ctorOpts.enableDraggingMap = raw.enableDraggingMap;
+      return createOverlayFactory('CustomOverlay', () =>
+        new rawSDK.CustomOverlay(domCreate ?? (() => document.createElement('div')), ctorOpts),
+      'customOverlay');
+    },
 
     // ─────────────── 27. Overlay 属性 setter ───────────────
     setOverlayPosition: (ov, p) => {
@@ -830,13 +850,19 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         }
         // rotation=0 是 SDK 默认值，主动调 setRotation(0) 会让 v3.0 默认 marker 进入 rotation 模式，
         // 导致命中区域塌缩成锚点。Marker 只在非 0 时才调用；GroundPoint/Symbol 的 rotation 安全可设 0。
-        if (typeof o.rotation === 'number' && (ov.type === 'groundPoint' || ov.type === 'symbol' || o.rotation !== 0)) r.setRotation?.(o.rotation);
+        if (typeof o.rotation === 'number' && (ov.type === 'groundPoint' || ov.type === 'symbol' || ov.type === 'customOverlay' || o.rotation !== 0)) r.setRotation?.(o.rotation);
         if (typeof o.title === 'string') r.setTitle?.(o.title);
         if (typeof o.content === 'string') r.setContent?.(o.content);
         // Hotspot 专属：setText / setUserData（@removed 4.0，仅 v3）
         if (ov.type === 'hotspot') {
           if (typeof o.text === 'string') r.setText?.(o.text);
           if (o.userData !== undefined) r.setUserData?.(o.userData);
+        }
+        // CustomOverlay 专属（@since 4.0）：setPoint / setRotationOrigin / setProperties
+        if (ov.type === 'customOverlay') {
+          if (o.point) r.setPoint?.(toRawPoint(rawSDK, o.point as Point));
+          if (typeof o.rotationInit === 'number') r.setRotationOrigin?.(o.rotationInit);
+          if (o.properties !== undefined) r.setProperties?.(o.properties);
         }
         // Label 专属
         if (o.styles && typeof o.styles === 'object') r.setStyles?.(o.styles);

@@ -350,11 +350,19 @@ export const Hotspot = createOverlayComponent<HotspotProps>({
 });
 
 // ─── 自定义覆盖物 ───
+// CustomOverlay @since 4.0，通过 domCreate 函数让用户完全控制 DOM 内容。
 export const CustomOverlay = createOverlayComponent<CustomOverlayProps>({
   displayName: 'CustomOverlay',
-  factory: (d, p) => d.createCustomOverlay(p),
-  optionProps: ['point', 'anchors', 'offsetX', 'offsetY', 'rotation', 'rotationInit', 'minZoom', 'maxZoom', 'properties', 'fixBottom', 'useTranslate', 'autoFollowHeadingChanged', 'visible', 'zIndex', 'enableMassClear', 'enableDraggingMap'],
-  supportsChildren: true,
+  factory: (d, p) => d.createCustomOverlay(p.domCreate as Function, p),
+  // point 通过 optionProps → setOverlayOptions → setPoint 更新（不走 positionProp，CustomOverlay 无 setPosition）
+  optionProps: ['point', 'rotation', 'rotationInit', 'properties', 'enableMassClear', 'zIndex'],
+  // 无 setter：anchors / offsetX / offsetY / minZoom / maxZoom / fixBottom / useTranslate / autoFollowHeadingChanged / enableDraggingMap / domCreate
+  ctorOnlyProps: ['domCreate', 'anchors', 'offsetX', 'offsetY', 'minZoom', 'maxZoom', 'fixBottom', 'useTranslate', 'autoFollowHeadingChanged', 'enableDraggingMap'],
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+  ],
 });
 
 // ─── PlaceDetail（v4+ 地点详情，类似 InfoWindow 的声明式组件） ───

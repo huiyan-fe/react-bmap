@@ -18,12 +18,4 @@ export { SymbolPage } from './SymbolPage';
 export { IconPage } from './IconPage';
 export { IconSequencePage } from './IconSequencePage';
 export { HotspotPage } from './HotspotPage';
-
-import { makeOverlayTestPage } from '../templates';
-import {
-  CustomOverlay,
-} from 'react-bmap';
-
-const BEIJING = { lng: 116.404, lat: 39.915 };
-
-export const CustomOverlayPage = makeOverlayTestPage({ name: 'CustomOverlay', Component: CustomOverlay, defaultProps: { point: BEIJING } });
+export { CustomOverlayPage } from './CustomOverlayPage';

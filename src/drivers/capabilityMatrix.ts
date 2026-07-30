@@ -37,7 +37,7 @@ const V4_MAP_LAYER: Capability[] = [
 
 // ── 4.0+ 覆盖物类 ──
 const V4_OVERLAY: Capability[] = [
-  'Prism', 'Rectangle', 'BezierCurve',
+  'Prism', 'Rectangle', 'BezierCurve', 'CustomOverlay',
 ];
 
 // ── 4.0+ 控件类 ──

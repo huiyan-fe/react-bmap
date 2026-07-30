@@ -309,7 +309,7 @@ export interface BMapDriver {
   createIcon(url: string, size: Size, options?: unknown): OverlayHandle | null;
   createIconSequence(symbol?: OverlayHandle, offset?: unknown, repeat?: string, fixedRotation?: boolean): OverlayHandle | null;
   createHotspot(position: Point, options?: unknown): OverlayHandle | null;
-  createCustomOverlay(options: unknown): OverlayHandle | null;
+  createCustomOverlay(domCreate?: Function, options?: unknown): OverlayHandle | null;
 
   // ─────────────── 27. Overlay 属性 setter ───────────────
   setOverlayPosition(overlay: OverlayHandle, position: Point): void;
