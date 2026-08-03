@@ -14,7 +14,7 @@ export function LayersTestPage() {
     : <span className="cap-tag no">✗</span>;
 
   const layers: Array<[string, React.ReactNode, React.ReactNode]> = [
-    ['tile', <>TileLayer {capTag('TileLayer')}</>, show.tile && <TileLayer tileUrlTemplate="https://api.map.baidu.com/customimage/tile?&x={X}&y={Y}&z={Z}&styles=pl&udt=20150601" />],
+    ['tile', <>TileLayer {capTag('TileLayer')}</>, show.tile && <TileLayer tileUrlTemplate="https://maponline0.bdimg.com/tile/?qt=tile&x={X}&y={Y}&z={Z}&styles=pl&scaler=1&udt=20230815" />],
     ['normal', <>NormalLayer (v4+) {capTag('NormalLayer')}</>, show.normal && <NormalLayer opacity={0.5} />],
     ['geojson', <>GeoJSONLayer (v4+) {capTag('GeoJSONLayer')}</>, show.geojson && <GeoJSONLayer dataSource={{}} />],
     ['district', <>DistrictLayer (v4+) {capTag('DistrictLayer')}</>, show.district && <DistrictLayer name="北京市" strokeColor="#1890ff" fillColor="#1890ff33" />],

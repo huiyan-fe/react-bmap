@@ -24,7 +24,9 @@ const V4_MAP_VIEW: Capability[] = [
 // ── 4.0+ 图层类（class 本身存在性） ──
 const V4_LAYER_CLASS: Capability[] = [
   'NormalLayer', 'GeoJSONLayer', 'DistrictLayer',
-  // 还有：RasterTileLayer / WMSLayer / WMTSLayer / XYZLayer / MVTLayer / PointIconLayer / PointShapeLayer / FillLayer / LineLayer / FeatureLayer / DOMLayer / PanoramaCoverageLayer 等
+  'RasterTileLayer', 'WMSLayer', 'WMTSLayer', 'XYZLayer', 'MVTLayer',
+  'FeatureLayer', 'FillLayer', 'DOMLayer',
+  'PointIconLayer', 'PointShapeLayer', 'PanoramaCoverageLayer',
 ];
 
 // ── 4.0+ Map 图层方法 ──
@@ -79,10 +81,12 @@ const V3_MAP_ONLY: Capability[] = [
   'Map.addControl', 'Map.removeControl',
 ];
 
-// ── 3.0-only 覆盖物 ──
+// ── 3.0-only 覆盖物/图层 ──
 const V3_OVERLAY_ONLY: Capability[] = [
   'Hotspot',   // 仅 3.0
   'PointCollection',   // @removed 4.0
+  'CustomLayer',   // @removed 4.0
+  'CanvasLayer',   // @removed 4.0
 ];
 
 // ── 全版本共有（隐式：v3 与 v4 共有） ──
@@ -109,7 +113,7 @@ const COMMON: Capability[] = [
   'NavigationControl', 'ScaleControl', 'OverviewMapControl', 'MapTypeControl',
   'CopyrightControl', 'GeolocationControl', 'LocationControl', 'PanoramaControl',
   // 图层（全版本）
-  'TileLayer', 'CustomLayer', 'CanvasLayer', 'TrafficLayer',
+  'TileLayer', 'TrafficLayer',
   // 服务（全版本）
   'LocalSearch', 'Geocoder', 'DrivingRoute', 'WalkingRoute', 'TransitRoute',
   'BusLineSearch', 'Autocomplete', 'Boundary', 'Convertor', 'PanoramaService',

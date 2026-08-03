@@ -35,6 +35,7 @@ const PAGE_MAP: Record<string, React.ComponentType> = {
   map: MapTestPage,
   // 覆盖物
   marker: OverlayPages.MarkerPage,
+  'place-detail-overlay': OverlayPages.PlaceDetailPage,
   label: OverlayPages.LabelPage,
   polyline: OverlayPages.PolylinePage,
   polygon: OverlayPages.PolygonPage,

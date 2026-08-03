@@ -175,8 +175,27 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     removeGeoJSONLayer: () => reportUnsupported('Map.removeGeoJSONLayer', version, behavior),
     addDistrictLayer: () => reportUnsupported('Map.addDistrictLayer', version, behavior),
     removeDistrictLayer: () => reportUnsupported('Map.removeDistrictLayer', version, behavior),
-    addLayer: (map, l) => { (map.raw as any).addTileLayer?.((l as any).raw); },
-    removeLayer: (map, l) => { (map.raw as any).removeTileLayer?.((l as any).raw); },
+    setTrafficOn: () => reportUnsupported('Map.setTrafficOn', version, behavior),
+    setTrafficOff: () => reportUnsupported('Map.setTrafficOff', version, behavior),
+    addLayer: (map, l) => {
+      const raw = (l as any).raw;
+      const kind = (l as any).kind;
+      // 瓦片类图层走 addTileLayer；CanvasLayer/CustomLayer 等走 addOverlay
+      if (kind === 'tile' || typeof raw?.getTilesUrl === 'function') {
+        (map.raw as any).addTileLayer?.(raw);
+      } else {
+        (map.raw as any).addOverlay?.(raw);
+      }
+    },
+    removeLayer: (map, l) => {
+      const raw = (l as any).raw;
+      const kind = (l as any).kind;
+      if (kind === 'tile' || typeof raw?.getTilesUrl === 'function') {
+        (map.raw as any).removeTileLayer?.(raw);
+      } else {
+        (map.raw as any).removeOverlay?.(raw);
+      }
+    },
     showOverlayContainer: () => reportUnsupported('Map.showOverlayContainer', version, behavior),
     hideOverlayContainer: () => reportUnsupported('Map.hideOverlayContainer', version, behavior),
 
@@ -199,6 +218,27 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createNormalLayer: () => { reportUnsupported('NormalLayer', version, behavior); return null; },
     createGeoJSONLayer: () => { reportUnsupported('GeoJSONLayer', version, behavior); return null; },
     createDistrictLayer: () => { reportUnsupported('DistrictLayer', version, behavior); return null; },
+    // 4.0+ 高级图层在 v3 不支持
+    createRasterTileLayer: () => { reportUnsupported('RasterTileLayer', version, behavior); return null; },
+    createWMSLayer: () => { reportUnsupported('WMSLayer', version, behavior); return null; },
+    createWMTSLayer: () => { reportUnsupported('WMTSLayer', version, behavior); return null; },
+    createXYZLayer: () => { reportUnsupported('XYZLayer', version, behavior); return null; },
+    createMVTLayer: () => { reportUnsupported('MVTLayer', version, behavior); return null; },
+    createFeatureLayer: () => { reportUnsupported('FeatureLayer', version, behavior); return null; },
+    createFillLayer: () => { reportUnsupported('FillLayer', version, behavior); return null; },
+    createDOMLayer: () => { reportUnsupported('DOMLayer', version, behavior); return null; },
+    createPointIconLayer: () => { reportUnsupported('PointIconLayer', version, behavior); return null; },
+    createPointShapeLayer: () => { reportUnsupported('PointShapeLayer', version, behavior); return null; },
+    createPanoramaCoverageLayer: () => { reportUnsupported('PanoramaCoverageLayer', version, behavior); return null; },
+    // v3-only 图层在 v3 直接创建（v4 capability 闭包不包含这些类）
+    createCustomLayer: (o) => {
+      try { return { __brand: 'LayerHandle' as const, raw: new rawSDK.CustomLayer(o), kind: 'custom' } as any; }
+      catch (e) { reportUnsupported('CustomLayer', version, behavior, e); return null; }
+    },
+    createCanvasLayer: (o) => {
+      try { return { __brand: 'LayerHandle' as const, raw: new rawSDK.CanvasLayer(o), kind: 'canvas' } as any; }
+      catch (e) { reportUnsupported('CanvasLayer', version, behavior, e); return null; }
+    },
   };
 
   return {

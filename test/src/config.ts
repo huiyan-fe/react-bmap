@@ -13,8 +13,9 @@ export const PAGES: TestPage[] = [
   { id: 'unsupported', name: 'Unsupported', category: '框架', ready: true },
   // 基础
   { id: 'map', name: 'Map（全量）', category: '基础', ready: true },
-  // 覆盖物（17 个独立页）
+  // 覆盖物（18 个独立页）
   { id: 'marker', name: 'Marker', category: O, ready: true },
+  { id: 'place-detail-overlay', name: 'PlaceDetail（Overlay）', category: O, ready: true },
   { id: 'label', name: 'Label', category: O, ready: true },
   { id: 'polyline', name: 'Polyline', category: O, ready: true },
   { id: 'polygon', name: 'Polygon', category: O, ready: true },

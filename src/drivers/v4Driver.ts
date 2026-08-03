@@ -963,7 +963,13 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createMVTLayer: (o) => createLayerFactory('MVTLayer', () => new rawSDK.MVTLayer(o), 'tile'),
     createFeatureLayer: (o) => createLayerFactory('FeatureLayer', () => new rawSDK.FeatureLayer(o), 'custom'),
     createFillLayer: (o) => createLayerFactory('FillLayer', () => new rawSDK.FillLayer(o), 'custom'),
-    createDOMLayer: (o) => createLayerFactory('DOMLayer', () => new rawSDK.DOMLayer(o), 'custom'),
+    createDOMLayer: (o) => createLayerFactory('DOMLayer', () => {
+      // DOMLayer 构造函数签名: (createDOM: Function, opts?: DOMLayerOptions)
+      const createDOM = (o as any)?.createDOM;
+      if (!createDOM) throw new Error('DOMLayer requires createDOM function');
+      const { createDOM: _cd, ...opts } = o as any;
+      return new rawSDK.DOMLayer(createDOM, opts);
+    }, 'custom'),
     createPointIconLayer: (o) => createLayerFactory('PointIconLayer', () => new rawSDK.PointIconLayer(o), 'custom'),
     createPointShapeLayer: (o) => createLayerFactory('PointShapeLayer', () => new rawSDK.PointShapeLayer(o), 'custom'),
     createPanoramaCoverageLayer: (o) => createLayerFactory('PanoramaCoverageLayer', () => new rawSDK.PanoramaCoverageLayer(o), 'custom'),

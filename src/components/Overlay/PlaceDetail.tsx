@@ -85,7 +85,7 @@ export const PlaceDetail = memo(function PlaceDetail(props: PlaceDetailProps) {
     if (!driver || !pdRef.current) return;
     const raw = (pdRef.current as any).raw;
     raw?.setData?.(uid);
-  }, [driver, uid]);
+  }, [driver, uid, optsKey]);
 
   // open/close 控制（需要父 Marker）
   const targetHandle = target?.target ?? null;
@@ -96,8 +96,9 @@ export const PlaceDetail = memo(function PlaceDetail(props: PlaceDetailProps) {
     } else {
       driver.closePlaceDetail(targetHandle as any);
     }
+    // options 变化会重建 PlaceDetail 实例，需重新执行 open/close。
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, targetHandle, open, uid]);
+  }, [driver, targetHandle, open, uid, optsKey]);
 
   // PlaceDetail 不渲染 React children 到 DOM（内容通过 SDK overlay 渲染）
   return null;

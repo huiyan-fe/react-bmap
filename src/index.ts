@@ -19,7 +19,7 @@ export { Map } from './components/Map';
 export type { MapProps } from './components/Map';
 export type { MapRef } from './components/Map';
 
-// ─── Overlay 组件（16 个） ───
+// ─── Overlay 组件（18 个） ───
 export { Marker } from './components/Overlay';
 export type { MarkerProps } from './components/Overlay';
 export { Label } from './components/Overlay';
@@ -84,14 +84,26 @@ export type {
   CopyrightItem,
 } from './components/Control';
 
-// ─── Layer 组件（7 个） ───
+// ─── Layer 组件（18 个） ───
 export {
   TileLayer, NormalLayer, GeoJSONLayer, DistrictLayer,
   TrafficLayer, CustomLayer, CanvasLayer,
+  RasterTileLayer, WMSLayer, WMTSLayer, XYZLayer, MVTLayer,
+  FeatureLayer, FillLayer, DOMLayer, PointIconLayer, PointShapeLayer,
+  PanoramaCoverageLayer,
 } from './components/Layer';
 export type {
   TileLayerProps, NormalLayerProps, GeoJSONLayerProps, DistrictLayerProps,
   TrafficLayerProps, CustomLayerProps, CanvasLayerProps,
+  RasterTileLayerProps, WMSLayerProps, WMTSLayerProps, XYZLayerProps, MVTLayerProps,
+  FeatureLayerProps, FillLayerProps, DOMLayerProps, PointIconLayerProps, PointShapeLayerProps,
+  PanoramaCoverageLayerProps,
+} from './components/Layer';
+export type {
+  TileLayerOptions, NormalLayerOptions, GeoJSONLayerOptions, DistrictLayerOptions,
+  TrafficLayerOptions, CustomLayerOptions, CanvasLayerOptions,
+  RasterTileLayerOptions, WMSLayerOptions, WMTSLayerOptions, XYZLayerOptions, MVTLayerOptions,
+  FeatureLayerOptions, FillLayerOptions, DOMLayerOptions, PointIconLayerOptions, PointShapeLayerOptions,
 } from './components/Layer';
 
 // ─── ContextMenu + MenuItem ───
@@ -159,18 +171,6 @@ export type {
   TaxiFare, TaxiFareDetail, PanoramaData,
   RenderOptions,
 } from './types/results';
-
-// ─── 高级图层组件（4.0+，11 个） ───
-export {
-  RasterTileLayer, WMSLayer, WMTSLayer, XYZLayer, MVTLayer,
-  FeatureLayer, FillLayer, DOMLayer, PointIconLayer, PointShapeLayer,
-  PanoramaCoverageLayer,
-} from './components/Layer';
-export type {
-  RasterTileLayerProps, WMSLayerProps, WMTSLayerProps, XYZLayerProps, MVTLayerProps,
-  FeatureLayerProps, FillLayerProps, DOMLayerProps, PointIconLayerProps, PointShapeLayerProps,
-  PanoramaCoverageLayerProps,
-} from './components/Layer';
 
 // ─── 常量（全量 28 组） ───
 export * from './constants';

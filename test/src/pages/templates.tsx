@@ -230,22 +230,58 @@ export function makeLayerTestPage(
   name: string,
   Component: React.ComponentType<any>,
   defaultProps?: Record<string, unknown>,
+  config?: {
+    capability?: string;
+    versionNote?: string;
+    presets?: Array<{ label: string; props: Record<string, unknown> }>;
+  },
 ): React.FC {
   return function LayerTestPage() {
+    const caps = useCapabilities();
     const [visible, setVisible] = useState(true);
+    const [props, setProps] = useState<Record<string, unknown>>(defaultProps ?? {});
+    const supported = !config?.capability || caps.has(config.capability);
+
+    const reset = () => { setProps(defaultProps ?? {}); setVisible(true); };
+
     return (
       <div className="test-page">
         <div className="test-map">
           <Map defaultCenter={BEIJING} defaultZoom={11} style={{ height: '100%' }}>
-            {visible && <Component {...(defaultProps ?? {})} />}
+            {visible && supported && <Component {...props} />}
           </Map>
         </div>
         <div className="test-controls">
           <h2>{name}</h2>
-          <label className="checkbox-row">
-            <input type="checkbox" checked={visible} onChange={e => setVisible(e.target.checked)} />
-            显示图层
-          </label>
+          <section>
+            <h3>能力</h3>
+            <span className={`cap-tag ${supported ? 'ok' : 'no'}`}>{supported ? 'supported' : 'unsupported'}</span>
+            {config?.versionNote && <p className="muted small">{config.versionNote}</p>}
+          </section>
+          <section>
+            <h3>显示</h3>
+            <label className="checkbox-row">
+              <input type="checkbox" checked={visible} onChange={e => setVisible(e.target.checked)} />
+              显示图层（挂载 addLayer / 卸载 removeLayer）
+            </label>
+          </section>
+          {config?.presets && config.presets.length > 0 && (
+            <section>
+              <h3>预设</h3>
+              <div className="btn-group" style={{ flexWrap: 'wrap' }}>
+                <button onClick={reset}>reset all</button>
+                {config.presets.map(preset => (
+                  <button key={preset.label} onClick={() => setProps(p => ({ ...p, ...preset.props }))}>{preset.label}</button>
+                ))}
+              </div>
+            </section>
+          )}
+          <section>
+            <h3>当前 Props</h3>
+            <pre style={{ fontSize: 11, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
+              {JSON.stringify(props, null, 2)}
+            </pre>
+          </section>
         </div>
       </div>
     );

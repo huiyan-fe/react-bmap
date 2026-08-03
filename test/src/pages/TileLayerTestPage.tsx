@@ -13,7 +13,7 @@ import { BEIJING } from '../TestProvider';
  */
 export function TileLayerTestPage() {
   const caps = useCapabilities();
-  const [url, setUrl] = useState('https://api.map.baidu.com/customimage/tile?&x={X}&y={Y}&z={Z}&styles=pl&udt=20150601');
+  const [url, setUrl] = useState('https://maponline0.bdimg.com/tile/?qt=tile&x={X}&y={Y}&z={Z}&styles=pl&scaler=1&udt=20230815');
   const [transparentPng, setTransparentPng] = useState(false);
   const [zIndex, setZIndex] = useState(1);
   const [visible, setVisible] = useState(true);
@@ -66,7 +66,7 @@ export function TileLayerTestPage() {
             rows={3}
           />
           <div className="btn-group">
-            <button onClick={() => setUrl('https://api.map.baidu.com/customimage/tile?&x={X}&y={Y}&z={Z}&styles=pl&udt=20150601')}>
+            <button onClick={() => setUrl('https://maponline0.bdimg.com/tile/?qt=tile&x={X}&y={Y}&z={Z}&styles=pl&scaler=1&udt=20230815')}>
               默认瓦片
             </button>
             <button onClick={() => setUrl('https://h0.huyu.com/tile?x={X}&y={Y}&z={Z}')}>

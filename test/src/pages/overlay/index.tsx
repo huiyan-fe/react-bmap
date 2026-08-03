@@ -1,8 +1,9 @@
 /**
- * 覆盖物独立测试页（17 个）。
- * Marker 使用手写完整页，其余使用模板。
+ * 覆盖物独立测试页（18 个）。
+ * Marker / PlaceDetail 使用手写完整页，其余使用模板。
  */
 export { MarkerPage } from './MarkerPage';
+export { PlaceDetailPage } from './PlaceDetailPage';
 export { LabelPage } from './LabelPage';
 export { PolylinePage } from './PolylinePage';
 export { PolygonPage } from './PolygonPage';
