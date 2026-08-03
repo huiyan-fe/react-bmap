@@ -31,18 +31,17 @@ export const PAGES: TestPage[] = [
   { id: 'icon-sequence', name: 'IconSequence', category: O, ready: true },
   { id: 'hotspot', name: 'Hotspot', category: O, ready: true },
   { id: 'custom-overlay', name: 'CustomOverlay', category: O, ready: true },
-  // 控件（12 个）
+  // 控件（11 个，LocationControl 是 GeolocationControl 的兼容别名）
   { id: 'navigation-control', name: 'NavigationControl', category: C, ready: true },
   { id: 'navigation-control-3d', name: 'NavigationControl3D', category: C, ready: true },
   { id: 'scale-control', name: 'ScaleControl', category: C, ready: true },
   { id: 'overview-map-control', name: 'OverviewMapControl', category: C, ready: true },
   { id: 'map-type-control', name: 'MapTypeControl', category: C, ready: true },
   { id: 'copyright-control', name: 'CopyrightControl', category: C, ready: true },
-  { id: 'geolocation-control', name: 'GeolocationControl', category: C, ready: true },
+  { id: 'geolocation-control', name: 'GeolocationControl / LocationControl', category: C, ready: true },
   { id: 'panorama-control', name: 'PanoramaControl', category: C, ready: true },
   { id: 'zoom-control', name: 'ZoomControl', category: C, ready: true },
   { id: 'city-list-control', name: 'CityListControl', category: C, ready: true },
-  { id: 'location-control', name: 'LocationControl', category: C, ready: true },
   { id: 'logo-control', name: 'LogoControl', category: C, ready: true },
   // 图层（18 个）
   { id: 'tile-layer', name: 'TileLayer', category: L, ready: true },

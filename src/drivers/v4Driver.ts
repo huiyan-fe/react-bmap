@@ -95,6 +95,32 @@ function toPlainPixel(p: any): Pixel | null {
   return { x: p.x ?? 0, y: p.y ?? 0 };
 }
 
+function toRawControlOptions(SDK: any, options: unknown): Record<string, unknown> {
+  const raw = options as Record<string, unknown> | null | undefined;
+  const out: Record<string, unknown> = {};
+  if (!raw) return out;
+  for (const [key, value] of Object.entries(raw)) {
+    if (value === undefined || value === null) continue;
+    if (key === 'children' || key === 'visible') continue;
+    if (key.startsWith('on') && key !== 'onLocationStart' && key !== 'onChangeBefore' && key !== 'onChangeAfter' && key !== 'onChangeSuccess' && key !== 'onOpen' && key !== 'onClose') continue;
+    if (key === 'offset' || key === 'size') out[key] = toRawSize(SDK, value);
+    else if (key === 'locationIcon') out[key] = toRawIcon(SDK, value);
+    else if (key === 'mapTypes' && Array.isArray(value)) out[key] = value.map(v => (v && typeof v === 'object' && 'raw' in v ? rawOf(v as any) : v));
+    else if (key !== 'unit' && key !== 'showStreetLayer' && key !== 'copyrights') out[key] = value;
+  }
+  return out;
+}
+
+function applyCopyrights(SDK: any, control: any, copyrights: unknown): void {
+  if (!Array.isArray(copyrights)) return;
+  for (const item of copyrights) {
+    if (!item || typeof item !== 'object') continue;
+    const rawItem: Record<string, unknown> = { ...(item as Record<string, unknown>) };
+    if (rawItem.bounds) rawItem.bounds = toRawBounds(SDK, rawItem.bounds as Bounds);
+    control.addCopyright?.(rawItem);
+  }
+}
+
 /**
  * setOverlayOptions 里实际有 SDK setter 分支的属性名。
  * 组件的 optionProps 声明了但这里没有的属性，运行时修改不会生效（静默失效），
@@ -335,6 +361,25 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     // ─────────────── 13. 控件 / 右键菜单 ───────────────
     addControl: (map, c) => callRaw('Map.addControl', () => rawMap(map).addControl(rawOf(c))),
     removeControl: (map, c) => callRaw('Map.removeControl', () => rawMap(map).removeControl(rawOf(c))),
+    setControlOptions: (c, options) => {
+      try {
+        const raw = rawOf(c);
+        const opts = toRawControlOptions(rawSDK, options);
+        if (opts.anchor !== undefined) raw.setAnchor?.(opts.anchor);
+        if (opts.offset !== undefined) raw.setOffset?.(opts.offset);
+        if (c.type === 'navigation' && opts.type !== undefined) raw.setType?.(opts.type);
+        if (c.type === 'scale' && (options as any)?.unit !== undefined) raw.setUnit?.((options as any).unit);
+        if (c.type === 'overview') {
+          if (opts.size !== undefined) raw.setSize?.(opts.size);
+          if ((options as any)?.isOpen !== undefined && typeof raw.isOpen === 'function' && raw.isOpen() !== (options as any).isOpen) raw.changeView?.();
+        }
+        if ((c.type === 'geolocation' || c.type === 'location') && raw.setOptions) raw.setOptions(opts);
+        if (c.type === 'mapType' && (options as any)?.showStreetLayer !== undefined) raw.showStreetLayer?.((options as any).showStreetLayer);
+        if (c.type === 'copyright') applyCopyrights(rawSDK, raw, (options as any)?.copyrights);
+      } catch { /* ignore */ }
+    },
+    showControl: (c) => { try { rawOf(c).show?.(); } catch { /* ignore */ } },
+    hideControl: (c) => { try { rawOf(c).hide?.(); } catch { /* ignore */ } },
     addContextMenu: (target, menu) => callRaw('Map.addContextMenu', () => rawOf(target).addContextMenu(rawOf(menu))),
     removeContextMenu: (target, menu) => callRaw('Map.removeContextMenu', () => rawOf(target).removeContextMenu(rawOf(menu))),
 
@@ -887,19 +932,19 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     closePlaceDetail: (marker) => { try { rawOf(marker).closePlaceDetail?.(); } catch { /* ignore */ } },
 
     // ─────────────── 28. Control 工厂 ───────────────
-    createNavigationControl: (o) => createControlFactory('NavigationControl', () => new rawSDK.NavigationControl(o), 'navigation'),
-    createNavigationControl3D: (o) => createControlFactory('NavigationControl3D', () => new rawSDK.NavigationControl3D(o), 'navigation3D'),
-    createScaleControl: (o) => createControlFactory('ScaleControl', () => new rawSDK.ScaleControl(o), 'scale'),
-    createOverviewMapControl: (o) => createControlFactory('OverviewMapControl', () => new rawSDK.OverviewMapControl(o), 'overview'),
-    createMapTypeControl: (o) => createControlFactory('MapTypeControl', () => new rawSDK.MapTypeControl(o), 'mapType'),
-    createCopyrightControl: (o) => createControlFactory('CopyrightControl', () => new rawSDK.CopyrightControl(o), 'copyright'),
-    createGeolocationControl: (o) => createControlFactory('GeolocationControl', () => new rawSDK.GeolocationControl(o), 'geolocation'),
-    createPanoramaControl: (o) => createControlFactory('PanoramaControl', () => new rawSDK.PanoramaControl(o), 'panorama'),
-    createZoomControl: (o) => createControlFactory('ZoomControl', () => new rawSDK.ZoomControl(o), 'zoom'),
-    createCityListControl: (o) => createControlFactory('CityListControl', () => new rawSDK.CityListControl(o), 'cityList'),
-    createLocationControl: (o) => createControlFactory('LocationControl', () => new rawSDK.LocationControl(o), 'location'),
-    createLogoControl: (o) => createControlFactory('LogoControl', () => new rawSDK.LogoControl(o), 'logo'),
-    createControl: (o) => createControlFactory('Control', () => { const c = new rawSDK.Control(); Object.assign(c, o); return c; }, 'custom'),
+    createNavigationControl: (o) => createControlFactory('NavigationControl', () => new rawSDK.NavigationControl(toRawControlOptions(rawSDK, o)), 'navigation'),
+    createNavigationControl3D: (o) => createControlFactory('NavigationControl3D', () => new rawSDK.NavigationControl3D(toRawControlOptions(rawSDK, o)), 'navigation3D'),
+    createScaleControl: (o) => createControlFactory('ScaleControl', () => new rawSDK.ScaleControl(toRawControlOptions(rawSDK, o)), 'scale'),
+    createOverviewMapControl: (o) => createControlFactory('OverviewMapControl', () => new rawSDK.OverviewMapControl(toRawControlOptions(rawSDK, o)), 'overview'),
+    createMapTypeControl: (o) => createControlFactory('MapTypeControl', () => new rawSDK.MapTypeControl(toRawControlOptions(rawSDK, o)), 'mapType'),
+    createCopyrightControl: (o) => createControlFactory('CopyrightControl', () => { const c = new rawSDK.CopyrightControl(toRawControlOptions(rawSDK, o)); applyCopyrights(rawSDK, c, (o as any)?.copyrights); return c; }, 'copyright'),
+    createGeolocationControl: (o) => createControlFactory('GeolocationControl', () => new rawSDK.GeolocationControl(toRawControlOptions(rawSDK, o)), 'geolocation'),
+    createPanoramaControl: () => createControlFactory('PanoramaControl', () => new rawSDK.PanoramaControl(), 'panorama'),
+    createZoomControl: (o) => createControlFactory('ZoomControl', () => new rawSDK.ZoomControl(toRawControlOptions(rawSDK, o)), 'zoom'),
+    createCityListControl: (o) => createControlFactory('CityListControl', () => new rawSDK.CityListControl(toRawControlOptions(rawSDK, o)), 'cityList'),
+    createLocationControl: (o) => createControlFactory('GeolocationControl', () => new rawSDK.GeolocationControl(toRawControlOptions(rawSDK, o)), 'geolocation'),
+    createLogoControl: (o) => createControlFactory('LogoControl', () => new rawSDK.LogoControl(toRawControlOptions(rawSDK, o)), 'logo'),
+    createControl: (o) => createControlFactory('Control', () => { const c = new rawSDK.Control(); Object.assign(c, toRawControlOptions(rawSDK, o)); return c; }, 'custom'),
 
     // ─────────────── 29. Layer 工厂 ───────────────
     createTileLayer: (o) => createLayerFactory('TileLayer', () => new rawSDK.TileLayer(o), 'tile'),

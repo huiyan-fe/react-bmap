@@ -2,8 +2,8 @@
  * 测试页模板工厂 — 为每种组件/Hook 生成独立的测试页。
  * 避免为 50+ 个类各写一个完整文件。
  */
-import React, { useState } from 'react';
-import { Map } from 'react-bmap';
+import React, { useMemo, useState } from 'react';
+import { Map, useCapabilities } from 'react-bmap';
 import { BEIJING } from '../TestProvider';
 import type { Point } from 'react-bmap';
 
@@ -79,28 +79,146 @@ export function makeOverlayTestPage<P extends Record<string, unknown>>(
 }
 
 // ─── Control 测试页 ───────────────
+type ControlEditorType = 'anchor' | 'size' | 'number' | 'text' | 'boolean' | 'select';
+
+interface ControlEditor {
+  key: string;
+  label: string;
+  type: ControlEditorType;
+  options?: Array<{ label: string; value: unknown }>;
+}
+
+interface ControlTestConfig {
+  capability?: string;
+  versionNote?: string;
+  editors?: ControlEditor[];
+  callbacks?: Array<{ prop: string; label: string }>;
+  presets?: Array<{ label: string; props: Record<string, unknown> }>;
+}
+
+const ANCHORS = [
+  { label: 'TOP_LEFT', value: 0 },
+  { label: 'TOP_RIGHT', value: 1 },
+  { label: 'BOTTOM_LEFT', value: 2 },
+  { label: 'BOTTOM_RIGHT', value: 3 },
+];
+
 export function makeControlTestPage(
   name: string,
   Component: React.ComponentType<any>,
   defaultProps?: Record<string, unknown>,
+  config: ControlTestConfig = {},
 ): React.FC {
   return function ControlTestPage() {
+    const caps = useCapabilities();
     const [visible, setVisible] = useState(true);
-    const [props] = useState(defaultProps ?? {});
+    const [props, setProps] = useState(defaultProps ?? {});
+    const [eventLog, setEventLog] = useState<string[]>([]);
+    const supported = !config.capability || caps.has(config.capability);
+
+    const update = (key: string, value: unknown) => setProps(p => ({ ...p, [key]: value }));
+    const reset = () => {
+      setProps(defaultProps ?? {});
+      setVisible(true);
+      setEventLog(s => [`${new Date().toLocaleTimeString()} reset all`, ...s].slice(0, 20));
+    };
+    const log = (msg: string) => setEventLog(s => [`${new Date().toLocaleTimeString()} ${msg}`, ...s].slice(0, 20));
+
+    const callbackProps = useMemo(() => {
+      const out: Record<string, unknown> = {};
+      for (const cb of config.callbacks ?? []) {
+        out[cb.prop] = (raw: unknown) => log(`${cb.label} ${raw ? JSON.stringify(raw).slice(0, 120) : ''}`);
+      }
+      return out;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [config.callbacks]);
+
+    const controlProps = { ...props, ...callbackProps };
+
+    const renderEditor = (ed: ControlEditor) => {
+      const value = props[ed.key];
+      if (ed.type === 'anchor') {
+        return <select value={(value as number | undefined) ?? ''} onChange={e => update(ed.key, e.target.value === '' ? undefined : Number(e.target.value))}>
+          <option value="">默认</option>
+          {ANCHORS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+        </select>;
+      }
+      if (ed.type === 'size') {
+        const size = (value as { width?: number; height?: number } | undefined) ?? {};
+        return <div className="input-row">
+          <input type="number" placeholder="width" value={size.width ?? ''} onChange={e => update(ed.key, { ...size, width: Number(e.target.value) })} />
+          <input type="number" placeholder="height" value={size.height ?? ''} onChange={e => update(ed.key, { ...size, height: Number(e.target.value) })} />
+        </div>;
+      }
+      if (ed.type === 'boolean') {
+        return <label className="checkbox-row">
+          <input type="checkbox" checked={!!value} onChange={e => update(ed.key, e.target.checked)} />
+          {ed.label}
+        </label>;
+      }
+      if (ed.type === 'number') {
+        return <input type="number" className="full-width" value={(value as number | undefined) ?? ''} onChange={e => update(ed.key, e.target.value === '' ? undefined : Number(e.target.value))} />;
+      }
+      if (ed.type === 'select') {
+        return <select value={(value as string | number | undefined) ?? ''} onChange={e => {
+          const opt = ed.options?.find(o => String(o.value) === e.target.value);
+          update(ed.key, e.target.value === '' ? undefined : opt?.value ?? e.target.value);
+        }}>
+          <option value="">默认</option>
+          {ed.options?.map(opt => <option key={String(opt.value)} value={String(opt.value)}>{opt.label}</option>)}
+        </select>;
+      }
+      return <input className="full-width" value={(value as string | undefined) ?? ''} onChange={e => update(ed.key, e.target.value)} />;
+    };
+
     return (
       <div className="test-page">
         <div className="test-map">
           <Map defaultCenter={BEIJING} defaultZoom={12} style={{ height: '100%' }}>
-            {visible && <Component {...props} />}
+            {visible && supported && <Component {...controlProps} />}
           </Map>
         </div>
         <div className="test-controls">
           <h2>{name}</h2>
-          <label className="checkbox-row">
-            <input type="checkbox" checked={visible} onChange={e => setVisible(e.target.checked)} />
-            显示控件
-          </label>
-          <p className="muted small">anchor 默认 TOP_LEFT。组件挂载即 addControl，卸载即 removeControl。</p>
+          <section>
+            <h3>能力</h3>
+            <span className={`cap-tag ${supported ? 'ok' : 'no'}`}>{supported ? 'supported' : 'unsupported'}</span>
+            {config.versionNote && <p className="muted small">{config.versionNote}</p>}
+          </section>
+          <section>
+            <h3>显示</h3>
+            <label className="checkbox-row">
+              <input type="checkbox" checked={visible} onChange={e => setVisible(e.target.checked)} />
+              显示控件（挂载 addControl / 卸载 removeControl）
+            </label>
+          </section>
+          {config.editors?.map(ed => (
+            <section key={ed.key}>
+              <h3>{ed.label}</h3>
+              {renderEditor(ed)}
+            </section>
+          ))}
+          <section>
+            <h3>动作</h3>
+            <div className="btn-group" style={{ flexWrap: 'wrap' }}>
+              <button onClick={reset}>reset all</button>
+              {config.presets?.map(preset => (
+                <button key={preset.label} onClick={() => { setProps(p => ({ ...p, ...preset.props })); log(preset.label); }}>{preset.label}</button>
+              ))}
+            </div>
+          </section>
+          {(config.callbacks?.length || eventLog.length > 0) && <section>
+            <h3>回调日志</h3>
+            {eventLog.length === 0
+              ? <p className="muted small">触发控件回调后显示日志</p>
+              : <pre style={{ fontSize: 11, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>{eventLog.join('\n')}</pre>}
+          </section>}
+          <section>
+            <h3>当前 Props</h3>
+            <pre style={{ fontSize: 11, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
+              {JSON.stringify(props, null, 2)}
+            </pre>
+          </section>
         </div>
       </div>
     );

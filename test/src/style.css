@@ -81,7 +81,7 @@ body {
 /* Test page */
 .test-page {
   display: flex;
-  height: 100vh;
+  height: 100%;
 }
 
 .test-map {
@@ -192,7 +192,7 @@ input[type="range"] {
   margin-bottom: 8px;
 }
 
-button {
+.test-controls button {
   padding: 6px 16px;
   border: 1px solid #1890ff;
   border-radius: 4px;
@@ -203,7 +203,7 @@ button {
   transition: all 0.15s;
 }
 
-button:hover {
+.test-controls button:hover {
   background: #40a9ff;
   border-color: #40a9ff;
 }

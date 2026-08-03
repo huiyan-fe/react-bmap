@@ -183,6 +183,9 @@ export interface BMapDriver {
   // ─────────────── 13. 控件 / 右键菜单 ───────────────
   addControl(map: MapHandle, control: ControlHandle): void;
   removeControl(map: MapHandle, control: ControlHandle): void;
+  setControlOptions(control: ControlHandle, options: unknown): void;
+  showControl(control: ControlHandle): void;
+  hideControl(control: ControlHandle): void;
   addContextMenu(map: MapHandle | OverlayHandle, menu: OverlayHandle): void;
   removeContextMenu(map: MapHandle | OverlayHandle, menu: OverlayHandle): void;
 
@@ -395,8 +398,8 @@ export interface BMapDriver {
   getServiceResults(service: ServiceHandle): unknown;
 
   // ─────────────── 33. 事件 ───────────────
-  addEventListener(target: MapHandle | OverlayHandle, type: string, handler: (raw: unknown) => void): () => void;
-  removeEventListener(target: MapHandle | OverlayHandle, type: string, handler: (raw: unknown) => void): void;
+  addEventListener(target: MapHandle | OverlayHandle | ControlHandle, type: string, handler: (raw: unknown) => void): () => void;
+  removeEventListener(target: MapHandle | OverlayHandle | ControlHandle, type: string, handler: (raw: unknown) => void): void;
 }
 
 export type { LoadKeyComponents, LayerKind };

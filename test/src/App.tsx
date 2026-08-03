@@ -62,7 +62,6 @@ const PAGE_MAP: Record<string, React.ComponentType> = {
   'panorama-control': ControlPages.PanoramaControlPage,
   'zoom-control': ControlPages.ZoomControlPage,
   'city-list-control': ControlPages.CityListControlPage,
-  'location-control': ControlPages.LocationControlPage,
   'logo-control': ControlPages.LogoControlPage,
   // 图层
   'tile-layer': LayerPages.TileLayerPage,

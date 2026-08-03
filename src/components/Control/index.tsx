@@ -2,47 +2,220 @@
  * 全部 Control 组件 — 使用 createControlComponent 工厂批量生成。
  */
 import { createControlComponent } from '../../utils/createComponent';
-import type { Size } from '../../types';
-import type { ControlAnchor } from '../../constants';
+import type { Bounds, Size } from '../../types';
+import type {
+  ControlAnchor,
+  LengthUnit,
+  MapTypeControlType,
+  NavigationControlType,
+} from '../../constants';
+import type { PlainIcon } from '../Overlay/types';
 
-// Options 接口（字段对照 dts src/control/*Options.d.ts）
-export interface NavigationControlOptions { anchor?: ControlAnchor; offset?: Size; type?: number; showZoomInfo?: boolean; enableGeolocation?: boolean; }
-export type NavigationControl3DOptions = Pick<NavigationControlOptions, 'anchor' | 'offset'>;
-export type ScaleControlOptions = Pick<NavigationControlOptions, 'anchor' | 'offset'>;
-export interface OverviewMapControlOptions extends Pick<NavigationControlOptions, 'anchor' | 'offset'> { size?: Size; isOpen?: boolean; zoomInterval?: number; padding?: number; }
-export interface MapTypeControlOptions extends Pick<NavigationControlOptions, 'anchor' | 'offset'> { type?: number; mapTypes?: unknown[]; enableSwitch?: boolean; }
-export type CopyrightControlOptions = Pick<NavigationControlOptions, 'anchor' | 'offset'>;
-export interface GeolocationControlOptions extends Pick<NavigationControlOptions, 'anchor' | 'offset'> { showAddressBar?: boolean; enableAutoLocation?: boolean; locationIcon?: unknown; watchPosition?: boolean; useCompass?: boolean; autoZoom?: boolean; autoViewport?: boolean; onLocationStart?: (onSuccess: Function, onFail: Function) => boolean | void; }
-export interface PanoramaControlOptions { anchor?: ControlAnchor; offset?: Size; }
-export type ZoomControlOptions = Pick<NavigationControlOptions, 'anchor' | 'offset'>;
-export interface CityListControlOptions extends Pick<NavigationControlOptions, 'anchor' | 'offset'> { expand?: boolean; trigger?: HTMLElement; onChangeBefore?: () => void; onChangeAfter?: () => void; onChangeSuccess?: (poi: { city: string; code: string | number }) => void; onOpen?: () => void; onClose?: () => void; canCheckSize?: boolean; }
-export interface LocationControlOptions extends Pick<NavigationControlOptions, 'anchor' | 'offset'> { watchPosition?: boolean; useCompass?: boolean; autoZoom?: boolean; autoViewport?: boolean; onLocationStart?: (onSuccess: Function, onFail: Function) => boolean | void; }
-export type LogoControlOptions = Pick<NavigationControlOptions, 'anchor' | 'offset'>;
+interface ControlReactProps {
+  /** 控制控件显示/隐藏。undefined 或 true = 显示，false = 隐藏 */
+  visible?: boolean;
+}
 
-// Props = Options
-export type NavigationControlProps = NavigationControlOptions;
-export type NavigationControl3DProps = NavigationControl3DOptions;
-export type ScaleControlProps = ScaleControlOptions;
-export type OverviewMapControlProps = OverviewMapControlOptions;
-export type MapTypeControlProps = MapTypeControlOptions;
-export type CopyrightControlProps = CopyrightControlOptions;
-export type GeolocationControlProps = GeolocationControlOptions;
-export type PanoramaControlProps = PanoramaControlOptions;
-export type ZoomControlProps = ZoomControlOptions;
-export type CityListControlProps = CityListControlOptions;
-export type LocationControlProps = LocationControlOptions;
-export type LogoControlProps = LogoControlOptions;
+export interface NavigationControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+  type?: NavigationControlType;
+  showZoomInfo?: boolean;
+  enableGeolocation?: boolean;
+}
 
-// 组件
-export const NavigationControl = createControlComponent<NavigationControlProps>({ displayName: 'NavigationControl', factory: (d, p) => d.createNavigationControl(p) });
-export const NavigationControl3D = createControlComponent<NavigationControl3DProps>({ displayName: 'NavigationControl3D', factory: (d, p) => d.createNavigationControl3D(p) });
-export const ScaleControl = createControlComponent<ScaleControlProps>({ displayName: 'ScaleControl', factory: (d, p) => d.createScaleControl(p) });
-export const OverviewMapControl = createControlComponent<OverviewMapControlProps>({ displayName: 'OverviewMapControl', factory: (d, p) => d.createOverviewMapControl(p) });
-export const MapTypeControl = createControlComponent<MapTypeControlProps>({ displayName: 'MapTypeControl', factory: (d, p) => d.createMapTypeControl(p) });
-export const CopyrightControl = createControlComponent<CopyrightControlProps>({ displayName: 'CopyrightControl', factory: (d, p) => d.createCopyrightControl(p) });
-export const GeolocationControl = createControlComponent<GeolocationControlProps>({ displayName: 'GeolocationControl', factory: (d, p) => d.createGeolocationControl(p) });
-export const PanoramaControl = createControlComponent<PanoramaControlProps>({ displayName: 'PanoramaControl', factory: (d) => d.createPanoramaControl({}) });
-export const ZoomControl = createControlComponent<ZoomControlProps>({ displayName: 'ZoomControl', factory: (d, p) => d.createZoomControl(p) });
-export const CityListControl = createControlComponent<CityListControlProps>({ displayName: 'CityListControl', factory: (d, p) => d.createCityListControl(p) });
-export const LocationControl = createControlComponent<LocationControlProps>({ displayName: 'LocationControl', factory: (d, p) => d.createLocationControl(p) });
-export const LogoControl = createControlComponent<LogoControlProps>({ displayName: 'LogoControl', factory: (d, p) => d.createLogoControl(p) });
+export interface NavigationControl3DOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+}
+
+export interface ScaleControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+  /** 比例尺单位制，走 setUnit() */
+  unit?: LengthUnit;
+}
+
+export interface OverviewMapControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+  size?: Size;
+  isOpen?: boolean;
+  zoomInterval?: number;
+  padding?: number;
+}
+
+export interface MapTypeControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+  type?: MapTypeControlType;
+  mapTypes?: unknown[];
+  enableSwitch?: boolean;
+  /** 是否显示路网层，走 showStreetLayer() */
+  showStreetLayer?: boolean;
+}
+
+export interface CopyrightItem {
+  id: number;
+  content?: string;
+  bounds?: Bounds;
+}
+
+export interface CopyrightControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+  /** 自定义版权信息，创建和更新时调用 addCopyright() */
+  copyrights?: CopyrightItem[];
+}
+
+export interface GeolocationControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+  showAddressBar?: boolean;
+  enableAutoLocation?: boolean;
+  locationIcon?: PlainIcon | unknown;
+  watchPosition?: boolean;
+  useCompass?: boolean;
+  autoZoom?: boolean;
+  autoViewport?: boolean;
+  /** @since 4.0 定位前回调；返回 false 可阻止默认定位 */
+  onLocationStart?: (onSuccess: Function, onFail: Function) => boolean | void;
+}
+
+export interface PanoramaControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+}
+
+export interface ZoomControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+}
+
+export interface CityListControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+  expand?: boolean;
+  /** @since 4.0 自定义触发元素 */
+  trigger?: HTMLElement;
+  onChangeBefore?: () => void;
+  onChangeAfter?: () => void;
+  onChangeSuccess?: (poi: { city: string; code: string | number }) => void;
+  /** @since 4.0 */
+  onOpen?: () => void;
+  /** @since 4.0 */
+  onClose?: () => void;
+  canCheckSize?: boolean;
+}
+
+export type LocationControlOptions = GeolocationControlOptions;
+
+export interface LogoControlOptions {
+  anchor?: ControlAnchor;
+  offset?: Size;
+}
+
+export interface NavigationControlProps extends NavigationControlOptions, ControlReactProps {}
+export interface NavigationControl3DProps extends NavigationControl3DOptions, ControlReactProps {}
+export interface ScaleControlProps extends ScaleControlOptions, ControlReactProps {}
+export interface OverviewMapControlProps extends OverviewMapControlOptions, ControlReactProps {
+  onViewChanged?: (raw: unknown) => void;
+  onViewChanging?: (raw: unknown) => void;
+  onResize?: (raw: unknown) => void;
+}
+export interface MapTypeControlProps extends MapTypeControlOptions, ControlReactProps {}
+export interface CopyrightControlProps extends CopyrightControlOptions, ControlReactProps {}
+export interface GeolocationControlProps extends GeolocationControlOptions, ControlReactProps {
+  onLocationSuccess?: (raw: unknown) => void;
+  onLocationError?: (raw: unknown) => void;
+}
+export interface PanoramaControlProps extends PanoramaControlOptions, ControlReactProps {}
+export interface ZoomControlProps extends ZoomControlOptions, ControlReactProps {}
+export interface CityListControlProps extends CityListControlOptions, ControlReactProps {}
+export type LocationControlProps = GeolocationControlProps;
+export interface LogoControlProps extends LogoControlOptions, ControlReactProps {}
+
+export const NavigationControl = createControlComponent<NavigationControlProps>({
+  displayName: 'NavigationControl',
+  factory: (d, p) => d.createNavigationControl(p),
+  optionProps: ['anchor', 'offset', 'type'],
+  ctorOnlyProps: ['showZoomInfo', 'enableGeolocation'],
+});
+
+export const NavigationControl3D = createControlComponent<NavigationControl3DProps>({
+  displayName: 'NavigationControl3D',
+  factory: (d, p) => d.createNavigationControl3D(p),
+  optionProps: ['anchor', 'offset'],
+});
+
+export const ScaleControl = createControlComponent<ScaleControlProps>({
+  displayName: 'ScaleControl',
+  factory: (d, p) => d.createScaleControl(p),
+  optionProps: ['anchor', 'offset', 'unit'],
+});
+
+export const OverviewMapControl = createControlComponent<OverviewMapControlProps>({
+  displayName: 'OverviewMapControl',
+  factory: (d, p) => d.createOverviewMapControl(p),
+  optionProps: ['anchor', 'offset', 'size', 'isOpen'],
+  ctorOnlyProps: ['zoomInterval', 'padding'],
+  events: [
+    { sdk: 'viewchanged', prop: 'onViewChanged' },
+    { sdk: 'viewchanging', prop: 'onViewChanging' },
+    { sdk: 'resize', prop: 'onResize' },
+  ],
+});
+
+export const MapTypeControl = createControlComponent<MapTypeControlProps>({
+  displayName: 'MapTypeControl',
+  factory: (d, p) => d.createMapTypeControl(p),
+  optionProps: ['anchor', 'offset', 'showStreetLayer'],
+  ctorOnlyProps: ['type', 'mapTypes', 'enableSwitch'],
+});
+
+export const CopyrightControl = createControlComponent<CopyrightControlProps>({
+  displayName: 'CopyrightControl',
+  factory: (d, p) => d.createCopyrightControl(p),
+  optionProps: ['anchor', 'offset', 'copyrights'],
+});
+
+export const GeolocationControl = createControlComponent<GeolocationControlProps>({
+  displayName: 'GeolocationControl',
+  factory: (d, p) => d.createGeolocationControl(p),
+  optionProps: [
+    'anchor', 'offset', 'enableAutoLocation', 'locationIcon',
+    'watchPosition', 'useCompass', 'autoZoom', 'autoViewport', 'onLocationStart',
+  ],
+  ctorOnlyProps: ['showAddressBar'],
+  events: [
+    { sdk: 'locationSuccess', prop: 'onLocationSuccess' },
+    { sdk: 'locationError', prop: 'onLocationError' },
+  ],
+});
+
+export const PanoramaControl = createControlComponent<PanoramaControlProps>({
+  displayName: 'PanoramaControl',
+  factory: (d, p) => d.createPanoramaControl(p),
+  optionProps: ['anchor', 'offset'],
+});
+
+export const ZoomControl = createControlComponent<ZoomControlProps>({
+  displayName: 'ZoomControl',
+  factory: (d, p) => d.createZoomControl(p),
+  optionProps: ['anchor', 'offset'],
+});
+
+export const CityListControl = createControlComponent<CityListControlProps>({
+  displayName: 'CityListControl',
+  factory: (d, p) => d.createCityListControl(p),
+  optionProps: ['anchor', 'offset'],
+  ctorOnlyProps: ['expand', 'trigger', 'onChangeBefore', 'onChangeAfter', 'onChangeSuccess', 'onOpen', 'onClose', 'canCheckSize'],
+});
+
+export const LocationControl = GeolocationControl;
+
+export const LogoControl = createControlComponent<LogoControlProps>({
+  displayName: 'LogoControl',
+  factory: (d, p) => d.createLogoControl(p),
+  optionProps: ['anchor', 'offset'],
+});

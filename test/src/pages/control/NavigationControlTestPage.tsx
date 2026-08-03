@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { Map, NavigationControl } from 'react-bmap';
-import { BEIJING } from '../TestProvider';
+import {
+  BMAP_NAVIGATION_CONTROL_LARGE,
+  BMAP_NAVIGATION_CONTROL_PAN,
+  BMAP_NAVIGATION_CONTROL_SMALL,
+  BMAP_NAVIGATION_CONTROL_ZOOM,
+  Map,
+  NavigationControl,
+} from 'react-bmap';
+import type { NavigationControlProps } from 'react-bmap';
+import { BEIJING } from '../../TestProvider';
 
 /**
  * NavigationControl 测试。
  */
 export function NavigationControlTestPage() {
   const [anchor, setAnchor] = useState<number | undefined>(undefined);
-  const [type, setType] = useState<number | undefined>(undefined);
+  const [type, setType] = useState<NavigationControlProps['type']>(undefined);
   const [showZoomInfo, setShowZoomInfo] = useState(true);
   const [showControl, setShowControl] = useState(true);
 
@@ -55,10 +63,10 @@ export function NavigationControlTestPage() {
           <h3>type</h3>
           <div className="btn-group">
             <button onClick={() => setType(undefined)}>default</button>
-            <button onClick={() => setType(0)}>LARGE</button>
-            <button onClick={() => setType(1)}>SMALL</button>
-            <button onClick={() => setType(2)}>PAN</button>
-            <button onClick={() => setType(3)}>ZOOM</button>
+            <button onClick={() => setType(BMAP_NAVIGATION_CONTROL_LARGE)}>LARGE</button>
+            <button onClick={() => setType(BMAP_NAVIGATION_CONTROL_SMALL)}>SMALL</button>
+            <button onClick={() => setType(BMAP_NAVIGATION_CONTROL_PAN)}>PAN</button>
+            <button onClick={() => setType(BMAP_NAVIGATION_CONTROL_ZOOM)}>ZOOM</button>
           </div>
         </section>
 

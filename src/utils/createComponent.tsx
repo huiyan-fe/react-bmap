@@ -226,6 +226,12 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
 
 export interface ControlComponentConfig<P> {
   factory: (driver: BMapDriver, props: P) => ControlHandle | null;
+  /** 可通过 Control 基类或具体控件 setter 响应式更新的 props */
+  optionProps?: Array<keyof P & string>;
+  /** 只能在 constructor options 中读取的 props，变化时自动重建控件 */
+  ctorOnlyProps?: Array<keyof P & string>;
+  /** Control 级事件订阅（SDK 事件 → prop 回调） */
+  events?: Array<{ sdk: string; prop: keyof P & string }>;
   displayName?: string;
 }
 
@@ -235,22 +241,81 @@ export function createControlComponent<P>(
   const Comp = memo(function ControlComponentImpl(props: P) {
     const { map, driver } = useMapContext();
     const ref = useRef<ControlHandle | null>(null);
+    const propsRef = useRef(props);
+    propsRef.current = props;
+
+    const ctorKey = config.ctorOnlyProps
+      ? stableStringify(config.ctorOnlyProps.map(k => (props as any)[k]))
+      : '';
+    const optionDefaultKey = config.optionProps
+      ? stableStringify(config.optionProps.map(k => (props as any)[k] == null))
+      : '';
 
     useLayoutEffect(() => {
       if (!map || !driver) return;
-      const { children: _c, ...rawCtrl } = props as any; void _c;
+      const { children: _c, visible: _v, ...rawCtrl } = propsRef.current as any;
+      void _c; void _v;
       const ctrlProps: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(rawCtrl)) { if (v !== undefined && v !== null) ctrlProps[k] = v; }
       const handle = config.factory(driver, ctrlProps as P);
       if (!handle) return;
       ref.current = handle;
       driver.addControl(map, handle);
+
+      if (config.optionProps) {
+        const initOpts: Record<string, unknown> = {};
+        for (const k of config.optionProps) {
+          const v = ctrlProps[k];
+          if (v !== undefined && v !== null) initOpts[k] = v;
+        }
+        if (Object.keys(initOpts).length > 0) driver.setControlOptions(handle, initOpts);
+      }
+      if ((propsRef.current as any).visible === false) driver.hideControl(handle);
+
       return () => {
         driver.removeControl(map, handle);
         ref.current = null;
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, driver]);
+    }, [map, driver, ctorKey, optionDefaultKey]);
+
+    const optSnapshot = config.optionProps
+      ? config.optionProps.reduce<Record<string, unknown>>((acc, k) => {
+          if ((props as any)[k] !== undefined) acc[k] = (props as any)[k];
+          return acc;
+        }, {})
+      : {};
+    const optKey = stableStringify(optSnapshot);
+    useEffect(() => {
+      if (!ref.current || !driver || !config.optionProps) return;
+      if (Object.keys(optSnapshot).length > 0) driver.setControlOptions(ref.current, optSnapshot);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [driver, optKey]);
+
+    const visible = (props as any).visible;
+    useEffect(() => {
+      if (!ref.current || !driver) return;
+      if (visible === false) driver.hideControl(ref.current);
+      else driver.showControl(ref.current);
+    }, [driver, visible]);
+
+    const eventKey = stableStringify(
+      (config.events ?? []).map(e => `${e.sdk}:${typeof (props as any)[e.prop]}`),
+    );
+    const handlersRef = useRef<Record<string, unknown>>({});
+    (config.events ?? []).forEach(e => { handlersRef.current[e.prop] = (props as any)[e.prop]; });
+    useEffect(() => {
+      if (!ref.current || !driver || !config.events) return;
+      const unsubs: Array<() => void> = [];
+      for (const { sdk, prop } of config.events) {
+        unsubs.push(driver.addEventListener(ref.current, sdk, (raw: unknown) => {
+          const fn = handlersRef.current[prop];
+          if (typeof fn === 'function') fn(raw);
+        }));
+      }
+      return () => unsubs.forEach(unsub => unsub());
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [driver, eventKey, ctorKey]);
 
     return null;
   });

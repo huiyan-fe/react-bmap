@@ -4,7 +4,7 @@ import {
   MapTypeControl, CopyrightControl, GeolocationControl, PanoramaControl,
   ZoomControl, CityListControl, LocationControl, LogoControl, useCapabilities,
 } from 'react-bmap';
-import { BEIJING } from '../TestProvider';
+import { BEIJING } from '../../TestProvider';
 
 export function ControlsTestPage() {
   const caps = useCapabilities();

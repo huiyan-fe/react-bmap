@@ -77,6 +77,11 @@ export type {
   OverviewMapControlProps, MapTypeControlProps, CopyrightControlProps,
   GeolocationControlProps, PanoramaControlProps, ZoomControlProps,
   CityListControlProps, LocationControlProps, LogoControlProps,
+  NavigationControlOptions, NavigationControl3DOptions, ScaleControlOptions,
+  OverviewMapControlOptions, MapTypeControlOptions, CopyrightControlOptions,
+  GeolocationControlOptions, PanoramaControlOptions, ZoomControlOptions,
+  CityListControlOptions, LocationControlOptions, LogoControlOptions,
+  CopyrightItem,
 } from './components/Control';
 
 // ─── Layer 组件（7 个） ───

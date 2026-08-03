@@ -42,7 +42,7 @@ const V4_OVERLAY: Capability[] = [
 
 // ── 4.0+ 控件类 ──
 const V4_CONTROL: Capability[] = [
-  'NavigationControl3D', 'ZoomControl', 'CityListControl', 'LocationControl', 'LogoControl',
+  'NavigationControl3D', 'ZoomControl', 'CityListControl', 'LogoControl',
 ];
 
 // ── 4.0+ 服务类 ──
@@ -107,7 +107,7 @@ const COMMON: Capability[] = [
   'GroundOverlay', 'InfoWindow', 'Symbol', 'Icon', 'IconSequence',
   // 控件（全版本）
   'NavigationControl', 'ScaleControl', 'OverviewMapControl', 'MapTypeControl',
-  'CopyrightControl', 'GeolocationControl', 'PanoramaControl',
+  'CopyrightControl', 'GeolocationControl', 'LocationControl', 'PanoramaControl',
   // 图层（全版本）
   'TileLayer', 'CustomLayer', 'CanvasLayer', 'TrafficLayer',
   // 服务（全版本）

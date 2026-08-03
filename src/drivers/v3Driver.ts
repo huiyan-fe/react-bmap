@@ -190,7 +190,6 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createNavigationControl3D: () => { reportUnsupported('NavigationControl3D', version, behavior); return null; },
     createZoomControl: () => { reportUnsupported('ZoomControl', version, behavior); return null; },
     createCityListControl: () => { reportUnsupported('CityListControl', version, behavior); return null; },
-    createLocationControl: () => { reportUnsupported('LocationControl', version, behavior); return null; },
     createLogoControl: () => { reportUnsupported('LogoControl', version, behavior); return null; },
     createRectangle: () => { reportUnsupported('Rectangle', version, behavior); return null; },
     createBezierCurve: () => { reportUnsupported('BezierCurve', version, behavior); return null; },
