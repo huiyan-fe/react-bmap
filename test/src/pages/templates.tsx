@@ -296,6 +296,8 @@ interface ServiceTestConfig {
     supported: boolean; run: (q: unknown) => void; cancel: () => void;
   };
   defaultQuery?: string;
+  versionNote?: string;
+  codeExample?: string;
 }
 
 export function makeServiceTestPage(config: ServiceTestConfig): React.FC {
@@ -311,9 +313,8 @@ export function makeServiceTestPage(config: ServiceTestConfig): React.FC {
           <h2>{config.name}</h2>
           <section>
             <h3>能力</h3>
-            <div className={`cap-tag ${svc.supported ? 'ok' : 'no'}`}>
-              {svc.supported ? 'supported' : 'unsupported'}
-            </div>
+            <span className={`cap-tag ${svc.supported ? 'ok' : 'no'}`}>{svc.supported ? 'supported' : 'unsupported'}</span>
+            {config.versionNote && <p className="muted small">{config.versionNote}</p>}
           </section>
           <section>
             <h3>查询</h3>
@@ -330,9 +331,25 @@ export function makeServiceTestPage(config: ServiceTestConfig): React.FC {
             <ul className="state-list">
               <li>loading: <code>{String(svc.loading)}</code></li>
               <li>error: <code>{svc.error?.message ?? 'null'}</code></li>
-              <li>data: <code>{svc.data ? JSON.stringify(svc.data).slice(0, 100) : 'null'}</code></li>
+              <li>data: <code>{svc.data ? JSON.stringify(svc.data).slice(0, 200) : 'null'}</code></li>
             </ul>
           </section>
+          {svc.data && (
+            <section>
+              <h3>结果（完整 JSON）</h3>
+              <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto', maxHeight: 300 }}>
+                {JSON.stringify(svc.data, null, 2)}
+              </pre>
+            </section>
+          )}
+          {config.codeExample && (
+            <section>
+              <h3>代码示例</h3>
+              <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
+                {config.codeExample}
+              </pre>
+            </section>
+          )}
         </div>
       </div>
     );

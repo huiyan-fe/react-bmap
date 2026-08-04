@@ -129,11 +129,13 @@ export { useIcon } from './hooks/useIcon';
 
 // ─── Service Hooks（13 个） ───
 export {
-  useLocalSearch, useGeocoder, useDrivingRoute, useWalkingRoute,
+  useLocalSearch,
+  useGeocoder, useDrivingRoute, useWalkingRoute,
   useRidingRoute, useTransitRoute, useBusLineSearch, useAutocomplete,
   useBoundary, useGeolocation, useLocalCity, usePlaceDetail, useConvertor,
   usePanoramaService,
 } from './hooks/services';
+export type { LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions } from './hooks/services';
 
 // ─── Driver（高级用法） ───
 export type { BMapDriver } from './drivers/types';

@@ -1,264 +1,238 @@
-# 新增 Layer 组件开发指南
+# 新增 Service Hook 开发指南
 
-> 每次新增一个 Layer 组件，必须按下面流程完成。Layer 通过 `create -> map.addLayer -> map.removeLayer` 管理生命周期；与 Overlay 不同，Layer 没有运行时 setter，所有字段仅在 constructor 读取，props 变化时需要重建。使用 `createLayerComponent` 工厂，通过 `factory` / `addMethod` / `removeMethod` 三个配置项完成挂载。
+> 每次新增一个 Service Hook，必须按下面流程完成。Service 是命令式异步 API，通过 `createServiceHook` 工厂包装成 React Hook，返回 `{ data, loading, error, supported, run, cancel }`。不支持的服务返回 `isNull: true` 的 ServiceHandle，Hook 转为 `supported: false`。
 
 ## 1. 对照 SDK dts 梳理功能
 
-打开 `/Users/yuexiangmiao/workspace/studio/baidu/mapopen-fe/bmap-jsapi-dts/src/layer/` 下对应的 `.d.ts` 文件，逐项确认：
+打开 `/Users/yuexiangmiao/workspace/studio/baidu/mapopen-fe/bmap-jsapi-dts/src/service/` 下对应的 `.d.ts` 文件，逐项确认：
 
-- **类文件**：`XxxLayer.d.ts`，确认 constructor 参数、实例方法和继承关系。
-- **Options 文件**：`XxxLayerOptions.d.ts`，确认所有可传字段，不要只抄常见字段。
-- **EventMap 文件**：Layer 通常无事件（SDK 大部分 Layer 类没有 `addEventListener`），确认是否有。
-- **版本标注**：重点看 `@since`、`@removed`、`@hide`，判断 v3/v4 是否都支持。
-- **挂载方式**：普通 Layer 走 `map.addLayer()`；部分 Layer 有专用 Map 方法，例如 `addNormalLayer` / `addGeoJSONLayer` / `addDistrictLayer` / `setTrafficOn`。
-- **setter 能力**：Layer 一般没有运行时 setter；如果 SDK 有 `setXxx` 方法且需要响应式更新，需在 `createLayerComponent` 之外手写组件（参考 `TileLayer.tsx`）。
+- **类文件**：`Xxx.d.ts`，确认 constructor 参数、实例方法（如 `search`、`setSearchCompleteCallback`、`getResults`）、回调类型。
+- **Options 文件**：`XxxOptions.d.ts`，确认所有可传字段。
+- **Result 文件**：确认搜索结果类型（如 `LocalResultPoi`、`DrivingRouteResult`）。
+- **EventMap 文件**：确认回调事件名和事件对象结构。
+- **版本标注**：重点看 `@since`、`@removed`，判断 v3/v4 是否都支持。
+- **搜索方法**：确认 SDK 的异步模式 — 大多数服务是「注册完成回调 + 调 `search(query)`」，但有些服务有特殊方法（如 `Geocoder.getPoint`、`Boundary.get`、`Convertor.translate`）。
 
 ## 2. 框架实现（src/）
 
 ### 2.1 capabilityMatrix.ts - 版本能力
 
-如果该 Layer 不是 v3/v4 共有能力，先更新 `src/drivers/capabilityMatrix.ts`：
+更新 `src/drivers/capabilityMatrix.ts`：
 
 ```ts
-// v4+ 图层类（class 本身存在性）
-const V4_LAYER_CLASS: Capability[] = [
-  'NormalLayer', 'GeoJSONLayer', 'DistrictLayer',
-  'XxxLayer',
-];
-
-// v4+ Map 图层方法
-const V4_MAP_LAYER: Capability[] = [
-  'Map.addNormalLayer', 'Map.removeNormalLayer',
-  'Map.addGeoJSONLayer', 'Map.removeGeoJSONLayer',
-  'Map.addDistrictLayer', 'Map.removeDistrictLayer',
-  'Map.setTrafficOn', 'Map.setTrafficOff',
-  'Map.addXxxLayer', 'Map.removeXxxLayer',
+// v4+ 服务类
+const V4_SERVICE: Capability[] = [
+  'RidingRoute', 'Geolocation', 'LocalCity', 'PlaceDetail',
+  'Xxx',
 ];
 
 // 全版本共有
 const COMMON: Capability[] = [
   // ...
-  'TileLayer', 'CustomLayer', 'CanvasLayer', 'TrafficLayer',
-  'XxxLayer',
+  'LocalSearch', 'Geocoder', 'DrivingRoute', 'WalkingRoute',
+  'TransitRoute', 'BusLineSearch', 'Autocomplete', 'Boundary',
+  'Convertor', 'PanoramaService',
+  'Xxx',
 ];
 ```
 
 判断规则：
 
 - SDK dts 没有 `@since 4.0` / `@removed 4.0`，且 v3/v4 都有类：放 `COMMON`。
-- `@since 4.0` 或 v3 无类：放 `V4_LAYER_CLASS`。
-- `@removed 4.0` 或仅 v3 有类：当前无 `V3_LAYER_ONLY` 集合，在 v3 driver 中显式 override。
-- 如果 Layer 有专用 Map 方法（非通用 `addLayer`），对应的 `Map.addXxxLayer` / `Map.removeXxxLayer` 也要加入能力矩阵。
-- capability 名称必须与 driver 工厂使用的名称完全一致。
+- `@since 4.0` 或 v3 无类：放 `V4_SERVICE`。
+- `@removed 4.0` 或仅 v3 有类：在 v3 driver 中显式实现，v4 中不返回 `isNull`。
 
 ### 2.2 drivers/types.ts - Driver 接口
 
-在 `BMapDriver` 的 Layer 工厂区域补充创建方法：
+在 `BMapDriver` 的服务工厂区域补充创建方法：
 
 ```ts
-// ─────────────── 29. Layer 工厂 ───────────────
-createXxxLayer(options?: unknown): LayerHandle | null;
+// ─────────────── 32. 服务工厂 ───────────────
+createXxx(options?: unknown): ServiceHandle;
 ```
 
-如果该 Layer 有专用 Map 方法（非通用 `addLayer` / `removeLayer`），在图层命令区域补充：
+注意：
 
-```ts
-// ─────────────── 15. 图层 ───────────────
-addXxxLayer(map: MapHandle, layer: LayerHandle): void;
-removeXxxLayer(map: MapHandle, layer: LayerHandle): void;
-```
-
-注意点：
-
-- 所有 Layer 工厂签名统一为 `(options?: unknown) => LayerHandle | null`，不要为了必填参数拆出位置参数（与 Overlay 不同）。
-- `| null` 返回值是框架约定：版本不支持时返回 `null`，组件渲染 `null`。
+- 所有服务工厂返回 `ServiceHandle`（不是 `ServiceHandle | null`）。
+- 不支持时返回 `isNull: true` 的 ServiceHandle，**不返回 null**，**不调 reportUnsupported**。
 
 ### 2.3 v4Driver.ts - 创建工厂
 
-在 `src/drivers/v4Driver.ts` 的 Layer 工厂区域补充实现：
+在 `src/drivers/v4Driver.ts` 的服务工厂区域补充实现：
 
 ```ts
-// ─────────────── 29. Layer 工厂 ───────────────
-createXxxLayer: (o) => createLayerFactory('XxxLayer', () => new rawSDK.XxxLayer(o), 'xxx'),
+createXxx: (o) => createServiceFactory('Xxx', () => new rawSDK.Xxx(o)),
 ```
 
-注意点：
+`createServiceFactory` 内部逻辑：
 
-- 第一个参数是 capability 名称，和 `capabilityMatrix.ts` 完全一致。
-- 第三个参数是 `LayerHandle['kind']`，使用稳定的小写语义名，如 `'tile'`、`'normal'`、`'xxx'`。
-- `createLayerFactory` 内部会做 capability 检查 + 构造 + 包装成 `LayerHandle`，不需要重复写 try/catch。
-- 如果 constructor 需要位置参数（如 `new BMap.TileLayer(opts)`），在 lambda 内完成转换。
+- 检查 `capabilities.has(cap)`，不支持时返回 `serviceHandle(null, true)`（`isNull: true`）。
+- 支持时 `try { return serviceHandle(ctor(), false); } catch { return serviceHandle(null, true); }`。
+- **不调 `reportUnsupported`** — 静默返回 isNull，由 Hook 层处理。
 
-如果该 Layer 有专用 Map 方法，在 `v4Driver.ts` 的图层命令区域补充：
+如果 constructor 有位置参数，在 lambda 内拆出：
 
 ```ts
-addXxxLayer: (map, l) => { try { (map as any).raw?.addXxxLayer?.((l as any).raw); } catch { /* ignore */ } },
-removeXxxLayer: (map, l) => { try { (map as any).raw?.removeXxxLayer?.((l as any).raw); } catch { /* ignore */ } },
+createDrivingRoute: (o) => createServiceFactory('DrivingRoute', () => new rawSDK.DrivingRoute((o as any)?.location, o)),
 ```
 
-### 2.4 v3Driver.ts - v3 差异处理
+### 2.4 searchService - 异步搜索
 
-`v3Driver.ts` 默认继承 v4 driver 的实现。遇到版本差异时必须显式处理：
-
-- v4-only Layer：在 v3 driver 中返回 unsupported/null。
-- v3-only Layer：在 v3 driver 中显式实现，避免被 v4 capability 闭包拦住。
-- constructor 签名 v3/v4 不一致：在 v3 driver 中 override。
-- v3 有专用 Map 方法的 Layer：在 v3 driver 中 override 对应的 `addXxxLayer` / `removeXxxLayer`。
-
-示例（v4-only Layer 在 v3 中 unsupported）：
+`searchService` 统一处理 SDK 的异步搜索模型（`v4Driver.ts` 已实现）：
 
 ```ts
-createXxxLayer: () => { reportUnsupported('XxxLayer', version, behavior); return null; },
+searchService(service, query, callbacks) {
+  const raw = rawOf(service);
+  if (!raw) return () => {};
+  let cancelled = false;
+  const safeCb = (fn) => (data) => { if (!cancelled) fn?.(data); };
+  if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(safeCb(callbacks.onSuccess));
+  else if (typeof raw.setSearchComplete === 'function') raw.setSearchComplete(safeCb(callbacks.onSuccess));
+  try { raw.search?.(query); } catch (err) { (safeCb(callbacks.onError))(err); }
+  return () => { cancelled = true; };
+}
 ```
 
-示例（v3 的通用 `addLayer` 走 `addTileLayer`）：
+如果新服务的异步模式不同（如 `Geocoder.getPoint` / `Boundary.get` / `Convertor.translate`），在 `searchService` 中按 `raw` 类型分发，或在 Hook 中手写调用逻辑。
+
+### 2.5 v3Driver.ts - v3 差异处理
+
+`v3Driver.ts` 默认继承 v4 driver。遇到 v4-only 服务时显式 override：
 
 ```ts
-addLayer: (map, l) => { (map.raw as any).addTileLayer?.((l as any).raw); },
-removeLayer: (map, l) => { (map.raw as any).removeTileLayer?.((l as any).raw); },
+// 4.0+ 服务在 v3 不支持（工厂返回 isNull: true）
+createXxx: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
 ```
 
-### 2.5 Layer/types.ts - Props 和 Options 类型
+### 2.6 createServiceHook - Hook 工厂
 
-当前 Layer 类型集中在 `src/components/Layer/index.tsx` 内联定义。新增组件时先补 Options，再补 Props：
+在 `src/hooks/services/index.ts` 中用 `createServiceHook` 工厂创建 Hook：
 
 ```ts
-export interface XxxLayerOptions {
-  opacity?: number;
-  minZoom?: number;
-  maxZoom?: number;
-  visible?: boolean;
-  zIndex?: number;
-  // 对照 XxxLayerOptions.d.ts 写全字段
+export const useXxx = createServiceHook('Xxx', (d, loc, opts) => d.createXxx(opts));
+```
+
+`createServiceHook` 内部：
+
+1. **service 在 effect 中创建** — 依赖 `stableStringify(locationOrOpts)` / `stableStringify(searchOpts)` 生成稳定 key。
+2. **isNull 检查** — `svc.isNull === true` 时返回 `supported: false` + `error: UnsupportedCapabilityError`。
+3. **run(query)** — 自增 `requestIdRef`，先取消上一次，调 `driver.searchService(svc, query, { onSuccess, onError })`。
+4. **过期请求保护** — 连续 `run` 时只有最新一次请求能 `setState`。
+5. **cancel()** — `requestIdRef++` 使在途请求回调全部过期 + 调 driver 返回的取消函数。
+
+返回 `{ data, loading, error, supported, run, cancel }`。
+
+### 2.7 types/results.ts - 结果类型
+
+在 `src/types/results.ts` 中补充搜索结果类型：
+
+```ts
+export interface XxxResult {
+  // 对照 SDK dts 的结果类型写全字段
 }
 
-export type XxxLayerProps = XxxLayerOptions;
+export interface XxxResultItem {
+  // 单条结果项
+}
 ```
 
-类型要求：
+### 2.8 index.ts - 对外导出
 
-- Layer 的 Props 通常就是 Options 本身（`export type XxxLayerProps = XxxLayerOptions`），因为没有 constructor 必填位置参数需要拆出。
-- SDK 写成 `Object` / `any` / `unknown` 的字段，要尽量细化成项目可用类型。
-- v3-only / v4-only 字段用注释标明 `@since` / `@removed`。
-- 如果字段较多或多个 Layer 共用类型，可拆到独立文件（参考 `types-skd.ts`）。
-
-### 2.6 Layer/index.tsx - 组件配置
-
-使用 `createLayerComponent` 工厂，配置 `factory` + 可选的 `addMethod` / `removeMethod`：
+在 `src/index.ts` 的 Service Hooks 导出区域补充：
 
 ```ts
-export const XxxLayer = createLayerComponent<XxxLayerProps>({
-  displayName: 'XxxLayer',
-  factory: (d, p) => d.createXxxLayer(p),
-});
+export {
+  useLocalSearch, useGeocoder, useDrivingRoute, useWalkingRoute,
+  useRidingRoute, useTransitRoute, useBusLineSearch, useAutocomplete,
+  useBoundary, useGeolocation, useLocalCity, usePlaceDetail, useConvertor,
+  usePanoramaService, useXxx,
+} from './hooks/services';
 ```
 
-有专用 Map 方法的 Layer 示例：
+结果类型在 `src/index.ts` 的结果类型区域补充：
 
 ```ts
-export const XxxLayer = createLayerComponent<XxxLayerProps>({
-  displayName: 'XxxLayer',
-  factory: (d, p) => d.createXxxLayer(p),
-  addMethod: 'addXxxLayer',
-  removeMethod: 'removeXxxLayer',
-});
-```
-
-配置规则：
-
-- 默认 `addMethod` / `removeMethod` 是 `'addLayer'` / `'removeLayer'`，对应 `map.addLayer()` / `map.removeLayer()`。
-- 有专用 Map 方法的 Layer 必须显式写 `addMethod` / `removeMethod`，例如 `NormalLayer` 用 `'addNormalLayer'` / `'removeNormalLayer'`。
-- `TrafficLayer` 比较特殊：用 `'setTrafficOn'` / `'setTrafficOff'`，且这两个方法不接收 layer handle 参数。
-- Layer 没有 `optionProps` / `ctorOnlyProps` / `events` / `positionProp` / `pathProp` / `skipMount` / `supportsChildren` —— 所有字段只在 constructor 读取，props 变化时需要手动重建（用 `key` 或 `visible` 开关）。
-- 如果 Layer 需要响应式更新或复杂生命周期，手写独立组件（参考 `TileLayer.tsx`），不要塞进工厂。
-
-### 2.7 index.ts - 对外导出
-
-在 `src/index.ts` 的 Layer 导出区域补充组件和类型：
-
-```ts
-export { XxxLayer } from './components/Layer';
-export type { XxxLayerProps } from './components/Layer';
-```
-
-如果新增了独立 Options 类型，也补充导出：
-
-```ts
-export type { XxxLayerOptions } from './components/Layer';
+export type {
+  // ...
+  XxxResult, XxxResultItem,
+} from './types/results';
 ```
 
 ## 3. 测试页（test/）
 
-### 3.1 创建独立 Layer 页面
+### 3.1 创建独立 Service 页面
 
-优先创建独立测试页：
-
-`test/src/pages/layer/XxxLayerPage.tsx`
+`test/src/pages/service/XxxPage.tsx`
 
 测试页必须覆盖：
 
-- constructor 必填参数，例如 `tileUrlTemplate`、`dataSource`、`name`。
-- 挂载/卸载开关，验证 `addLayer` / `removeLayer`（或专用 Map 方法）生命周期。
-- `visible` 显示/隐藏开关。
-- v3/v4 差异用 `useCapabilities()` 和 `cap-tag` 标注，unsupported 时不要渲染组件。
-- reset all 按钮恢复默认状态，常用预设按钮覆盖典型配置。
-- 如果 Layer 有可响应式更新的字段（需手写组件支持），每个字段对应一个输入控件。
+- `useCapabilities()` 能力检测 + `cap-tag` 标注，unsupported 时不渲染搜索 UI。
+- `useXxx()` Hook 返回值展示：`data` / `loading` / `error` / `supported`。
+- 查询输入框 + `run` 按钮 + `cancel` 按钮。
+- 结果列表展示（对照 SDK dts 的结果字段）。
+- reset 按钮。
+- v3/v4 差异标注。
 
 ### 3.2 简单模板页
 
-简单的 Layer 可以用 `makeLayerTestPage` 起步：
+简单的 Service 可以用 `makeServiceTestPage` 起步：
 
 ```ts
-export const XxxLayerPage = makeLayerTestPage('XxxLayer', XxxLayer, { opacity: 0.5 });
+export const XxxPage = makeServiceTestPage({
+  name: 'useXxx',
+  hook: useXxx,
+  defaultQuery: '餐厅',
+});
 ```
 
-模板只提供显示/隐藏开关 + 当前 Props 展示。复杂 Layer 或需要逐字段编辑的必须手写页面。
+模板提供：能力标签 + 查询输入框 + run/cancel 按钮 + loading/error/data 状态展示。
 
 ### 3.3 注册路由
 
-1. `test/src/pages/layer/index.tsx` 导出页面：
+1. `test/src/pages/service/index.tsx` 导出页面：
 
 ```ts
-export { XxxLayerPage } from './XxxLayerPage';
+export { XxxPage } from './XxxPage';
 ```
 
-2. `test/src/config.ts` 添加或确认条目：
+2. `test/src/config.ts` 添加条目：
 
 ```ts
-{ id: 'xxx-layer', name: 'XxxLayer', category: L, ready: true },
+{ id: 'xxx', name: 'useXxx', category: S, ready: true },
 ```
 
 3. `test/src/App.tsx` 的 `PAGE_MAP` 添加映射：
 
 ```ts
-'xxx-layer': LayerPages.XxxLayerPage,
+xxx: ServicePages.XxxPage,
 ```
 
 ## 4. 检查清单
 
 完成后逐项确认：
 
-- [ ] SDK dts 中 `XxxLayerOptions` 的每个字段都有类型声明或明确不支持说明。
-- [ ] `Object` / `any` / `unknown` 字段已尽量细化。
-- [ ] v3/v4 能力已放入正确 capability 集合（`COMMON` / `V4_LAYER_CLASS` / `V4_MAP_LAYER`）。
-- [ ] `drivers/types.ts` 增加了 `createXxxLayer`；有专用 Map 方法的也增加了 `addXxxLayer` / `removeXxxLayer`。
-- [ ] `v4Driver.ts` 增加了 `createXxxLayer`，使用 `createLayerFactory`；有专用 Map 方法的也增加了实现。
-- [ ] v3/v4 差异已在 `v3Driver.ts` override 或明确 unsupported。
-- [ ] `Layer/index.tsx` 导出了 `XxxLayer`，配置了 `factory` + `addMethod` / `removeMethod`。
-- [ ] `src/index.ts` 对外导出了组件和 Props 类型。
-- [ ] 测试页覆盖显示/隐藏、挂载/卸载、constructor props、版本标签、reset、预设。
-- [ ] v3-only / v4-only 页在 unsupported 版本不会渲染组件。
+- [ ] SDK dts 中 `XxxOptions` 的每个字段都有类型声明或明确不支持说明。
+- [ ] SDK dts 中搜索结果类型的每个字段都有类型声明。
+- [ ] v3/v4 能力已放入正确 capability 集合。
+- [ ] `drivers/types.ts` 增加了 `createXxx`。
+- [ ] `v4Driver.ts` 增加了 `createXxx`，使用 `createServiceFactory`。
+- [ ] v3/v4 差异已在 `v3Driver.ts` override 或明确 isNull。
+- [ ] `searchService` 支持新服务的异步模式（或 Hook 中手写调用逻辑）。
+- [ ] `hooks/services/index.ts` 增加了 `useXxx`。
+- [ ] `types/results.ts` 增加了 `XxxResult` 等结果类型。
+- [ ] `src/index.ts` 对外导出了 Hook 和结果类型。
+- [ ] 测试页覆盖能力标签、查询、run/cancel、loading/error/data、结果展示、reset。
+- [ ] v3-only / v4-only 页在 unsupported 版本显示 `supported: false`。
 - [ ] `npm run build` 通过。
 
 ## 5. 参考实现
 
-- `src/components/Layer/index.tsx`：通用 Layer 组件配置入口（18 个组件，工厂生成）。
-- `src/components/Layer/TileLayer.tsx`：手写 Layer 组件参考（有响应式更新需求时）。
-- `src/components/Layer/types.ts`：TileLayer Options 类型参考。
-- `src/components/Layer/types-skd.ts`：SDK 辅助类型（如 Copyright）。
-- `src/utils/createComponent.tsx`：`createLayerComponent` 生命周期：create/add/remove（无 update）。
-- `src/drivers/v4Driver.ts`：`createLayerFactory`、`addLayer` / `removeLayer`、专用 Map 方法实现。
-- `src/drivers/v3Driver.ts`：v3-only / v4-only 差异 override。
-- `src/drivers/capabilityMatrix.ts`：v3/v4 Layer 能力归类。
-- `test/src/pages/layer/`：Layer 独立测试页。
-- `test/src/pages/templates.tsx`：`makeLayerTestPage` 简单模板。
+- `src/hooks/services/index.ts`：`createServiceHook` 工厂 + 14 个 Hook。
+- `src/hooks/services/useLocalSearch.ts`：手写参考实现（DESIGN.md §6.3 示例），独立文件。
+- `src/drivers/v4Driver.ts`：`createServiceFactory`、14 个服务工厂、`searchService`、`getServiceResults`。
+- `src/drivers/v3Driver.ts`：v4-only 服务的 isNull override。
+- `src/drivers/capabilityMatrix.ts`：`COMMON` / `V4_SERVICE` 服务能力归类。
+- `src/utils/stableStringify.ts`：稳定序列化（对象 key 排序），用于 effect 依赖。
+- `src/drivers/unsupported.ts`：`UnsupportedCapabilityError`，Hook 层不支持时返回。
+- `test/src/pages/service/`：Service 独立测试页。
+- `test/src/pages/templates.tsx`：`makeServiceTestPage` 简单模板。

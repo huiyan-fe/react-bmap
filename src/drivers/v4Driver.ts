@@ -996,12 +996,17 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createWalkingRoute: (o) => createServiceFactory('WalkingRoute', () => new rawSDK.WalkingRoute((o as any)?.location, o)),
     createRidingRoute: (o) => createServiceFactory('RidingRoute', () => new rawSDK.RidingRoute((o as any)?.location, o)),
     createTransitRoute: (o) => createServiceFactory('TransitRoute', () => new rawSDK.TransitRoute((o as any)?.location, o)),
-    createBusLineSearch: (o) => createServiceFactory('BusLineSearch', () => new rawSDK.BusLineSearch((o as any)?.map, o)),
+    createBusLineSearch: (o) => createServiceFactory('BusLineSearch', () => new rawSDK.BusLineSearch((o as any)?.location, o)),
     createAutocomplete: (o) => createServiceFactory('Autocomplete', () => new rawSDK.Autocomplete(o)),
     createBoundary: () => createServiceFactory('Boundary', () => new rawSDK.Boundary()),
     createGeolocation: (o) => createServiceFactory('Geolocation', () => new rawSDK.Geolocation(o)),
     createLocalCity: (o) => createServiceFactory('LocalCity', () => new rawSDK.LocalCity(o)),
-    createPlaceDetail: (o) => createServiceFactory('PlaceDetail', () => new rawSDK.PlaceDetail((o as any)?.container ?? document.createElement('div'), o)),
+    createPlaceDetail: (o) => createServiceFactory('PlaceDetail', () => {
+      const container = (o as any)?.container ?? document.createElement('div');
+      const rawMap = (o as any)?.map;
+      const opts: Record<string, unknown> = { ...(o as Record<string, unknown>), map: rawMap };
+      return new rawSDK.PlaceDetail(container, opts);
+    }),
     createConvertor: () => createServiceFactory('Convertor', () => new rawSDK.Convertor()),
     createPanoramaService: () => createServiceFactory('PanoramaService', () => new rawSDK.PanoramaService()),
 

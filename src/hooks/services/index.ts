@@ -6,7 +6,7 @@
  * - 卸载后 setState 由 React 吞掉
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useMapContext } from '../../context/MapContext';
+import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import type { ServiceHandle } from '../../types';
@@ -31,7 +31,7 @@ function createServiceHook(
     locationOrOpts?: unknown,
     searchOpts?: unknown,
   ): ServiceHookResult<T> {
-    const { driver } = useMapContext();
+    const { driver } = useBMapContext();
     const svcRef = useRef<ServiceHandle | null>(null);
     const requestIdRef = useRef(0);
     const cancelFnRef = useRef<(() => void) | null>(null);
@@ -84,21 +84,61 @@ function createServiceHook(
   };
 }
 
-// ─── 13 个 Service Hook ───────────────
+// ─── 手写完整实现的 Service Hooks ───────────────
 
-export const useLocalSearch = createServiceHook('LocalSearch', (d, loc, opts) => d.createLocalSearch(loc, opts));
-export const useGeocoder = createServiceHook('Geocoder', (d) => d.createGeocoder());
-export const useDrivingRoute = createServiceHook('DrivingRoute', (d, _loc, opts) => d.createDrivingRoute(opts));
-export const useWalkingRoute = createServiceHook('WalkingRoute', (d, _loc, opts) => d.createWalkingRoute(opts));
-export const useRidingRoute = createServiceHook('RidingRoute', (d, _loc, opts) => d.createRidingRoute(opts));
-export const useTransitRoute = createServiceHook('TransitRoute', (d, _loc, opts) => d.createTransitRoute(opts));
-export const useBusLineSearch = createServiceHook('BusLineSearch', (d, _loc, opts) => d.createBusLineSearch(opts));
-export const useAutocomplete = createServiceHook('Autocomplete', (d, _loc, opts) => d.createAutocomplete(opts));
-export const useBoundary = createServiceHook('Boundary', (d) => d.createBoundary());
-export const useGeolocation = createServiceHook('Geolocation', (d, _loc, opts) => d.createGeolocation(opts));
-export const useLocalCity = createServiceHook('LocalCity', (d, _loc, opts) => d.createLocalCity(opts));
-export const usePlaceDetail = createServiceHook('PlaceDetail', (d, _loc, opts) => d.createPlaceDetail(opts));
-export const useConvertor = createServiceHook('Convertor', (d) => d.createConvertor());
+// useLocalSearch — 完整实现，见 useLocalSearch.ts
+export { useLocalSearch } from './useLocalSearch';
+export type { LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions } from './useLocalSearch';
 
-// ─── 全景服务 Hook ───────────────
-export const usePanoramaService = createServiceHook('PanoramaService', (d) => d.createPanoramaService());
+// useGeocoder — 完整实现，见 useGeocoder.ts
+export { useGeocoder } from './useGeocoder';
+export type { GeocoderHookResult } from './useGeocoder';
+
+// useBoundary — 完整实现，见 useBoundary.ts
+export { useBoundary } from './useBoundary';
+export type { BoundaryHookResult } from './useBoundary';
+
+// useGeolocation — 完整实现，见 useGeolocation.ts
+export { useGeolocation } from './useGeolocation';
+export type { GeolocationHookResult } from './useGeolocation';
+
+// useLocalCity — 完整实现，见 useLocalCity.ts
+export { useLocalCity } from './useLocalCity';
+export type { LocalCityHookResult } from './useLocalCity';
+
+// useConvertor — 完整实现，见 useConvertor.ts
+export { useConvertor } from './useConvertor';
+export type { ConvertorHookResult } from './useConvertor';
+
+// usePanoramaService — 完整实现，见 usePanoramaService.ts
+export { usePanoramaService } from './usePanoramaService';
+export type { PanoramaServiceHookResult } from './usePanoramaService';
+
+// ─── 路线规划 Service Hooks（手写，search(start, end)） ───────────────
+
+export { useDrivingRoute } from './useDrivingRoute';
+export type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
+
+export { useWalkingRoute } from './useWalkingRoute';
+export type { WalkingRouteOptions, WalkingRouteHookResult } from './useWalkingRoute';
+
+export { useRidingRoute } from './useRidingRoute';
+export type { RidingRouteOptions, RidingRouteHookResult } from './useRidingRoute';
+
+export { useTransitRoute } from './useTransitRoute';
+export type { TransitRouteOptions, TransitRouteHookResult } from './useTransitRoute';
+
+// useBusLineSearch — 手写，见 useBusLineSearch.ts
+export { useBusLineSearch } from './useBusLineSearch';
+export type { BusLineSearchOptions, BusLineSearchHookResult } from './useBusLineSearch';
+
+// useAutocomplete — 手写，见 useAutocomplete.ts
+export { useAutocomplete } from './useAutocomplete';
+export type { AutocompleteOptions, AutocompleteHookResult } from './useAutocomplete';
+
+// usePlaceDetail — 手写，见 usePlaceDetail.ts
+export { usePlaceDetail } from './usePlaceDetail';
+export type { PlaceDetailOptions, PlaceDetailHookResult } from './usePlaceDetail';
+
+// ─── 通用 Service Hooks（使用 createServiceHook 工厂） ───────────────
+// 全部 14 个 service hooks 已手写实现，不再使用 createServiceHook

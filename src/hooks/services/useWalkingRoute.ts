@@ -1,0 +1,101 @@
+/**
+ * useWalkingRoute — 步行路线规划 Hook（手写，完整实现）。
+ * SDK：search(Point, Point) / clearResults / enableAutoViewport / disableAutoViewport / setLocation / getStatus
+ */
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useBMapContext } from '../../context/BMapContext';
+import { UnsupportedCapabilityError } from '../../drivers/unsupported';
+import { stableStringify } from '../../utils/stableStringify';
+import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
+
+export type WalkingRouteOptions = Omit<DrivingRouteOptions, 'policy'>;
+export type WalkingRouteHookResult = Omit<DrivingRouteHookResult, 'setPolicy'> & { setPolicy?: never };
+
+export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): WalkingRouteHookResult {
+  const { driver } = useBMapContext();
+  const rawRef = useRef<any>(null);
+  const requestIdRef = useRef(0);
+  const callbacksRef = useRef(opts);
+  callbacksRef.current = opts;
+  const searchCbRef = useRef<((results: unknown) => void) | null>(null);
+
+  const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
+    data: undefined, loading: false, error: null, supported: true,
+  });
+
+  const locKey = stableStringify(opts.location);
+  const optKey = stableStringify({ ro: opts.renderOptions });
+
+  useEffect(() => {
+    if (!driver) return;
+    const ro: Record<string, unknown> = {};
+    if (opts.renderOptions) {
+      Object.assign(ro, opts.renderOptions);
+      if (opts.renderOptions.map && (opts.renderOptions.map as any).__brand) ro.map = (opts.renderOptions.map as any).raw;
+    }
+    const searchOpts: Record<string, unknown> = {};
+    if (opts.location !== undefined) {
+      let loc: unknown = opts.location;
+      if (loc && (loc as any).__brand) loc = (loc as any).raw;
+      searchOpts.location = loc;
+    }
+    if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
+    searchOpts.onSearchComplete = (results: unknown) => { searchCbRef.current?.(results); };
+
+    const handle = driver.createWalkingRoute(Object.keys(searchOpts).length > 0 ? searchOpts : undefined);
+    if (handle.isNull) {
+      setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('WalkingRoute', driver.version), supported: false });
+      return;
+    }
+    rawRef.current = (handle as any).raw;
+    const raw = rawRef.current;
+    if (typeof raw.setSearchCompleteCallback === 'function') {
+      raw.setSearchCompleteCallback((results: unknown) => { searchCbRef.current?.(results); });
+    }
+    setState(s => ({ ...s, supported: true, error: null }));
+    return () => { rawRef.current = null; searchCbRef.current = null; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [driver, locKey, optKey]);
+
+  const search = useCallback((start: unknown, end: unknown, _options?: { waypoints?: unknown[] }) => {
+    if (!rawRef.current) return;
+    const requestId = ++requestIdRef.current;
+    setState(s => ({ ...s, loading: true, error: null }));
+    const raw = rawRef.current;
+    const cb = (results: unknown) => {
+      if (requestId !== requestIdRef.current) return;
+      let actual = results;
+      if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
+        try { actual = raw.getResults?.(); } catch { /* noop */ }
+      }
+      callbacksRef.current.onSearchComplete?.(actual);
+      setState({ data: actual ?? results, loading: false, error: null, supported: true });
+    };
+    searchCbRef.current = cb;
+    if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(cb);
+    const SDK = (globalThis as any).BMap || (globalThis as any).BMapGL;
+    const toPoint = (v: unknown) => {
+      if (!v) return v;
+      if ((v as any).__brand) return (v as any).raw;
+      if (typeof v === 'object' && 'lng' in (v as any)) return new SDK.Point((v as any).lng, (v as any).lat);
+      return v;
+    };
+    try { raw.search?.(toPoint(start), toPoint(end)); }
+    catch (e) { if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
+  }, []);
+
+  const clearResults = useCallback(() => { rawRef.current?.clearResults?.(); setState(s => ({ ...s, data: undefined, loading: false })); }, []);
+  const enableAutoViewport = useCallback(() => { rawRef.current?.enableAutoViewport?.(); }, []);
+  const disableAutoViewport = useCallback(() => { rawRef.current?.disableAutoViewport?.(); }, []);
+  const setLocation = useCallback((location: unknown) => {
+    let loc = location;
+    if (loc && (loc as any).__brand) loc = (loc as any).raw;
+    rawRef.current?.setLocation?.(loc);
+  }, []);
+  const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
+  const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);
+
+  // setPolicy 不适用于 WalkingRoute
+  const setPolicy = useCallback((_p: number) => {}, []);
+  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, getStatus, cancel } as WalkingRouteHookResult;
+}
