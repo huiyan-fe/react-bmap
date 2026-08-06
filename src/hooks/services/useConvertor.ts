@@ -42,7 +42,7 @@ export function useConvertor(): ConvertorHookResult {
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
     try {
-      const SDK = (globalThis as any).BMap || (globalThis as any).BMapGL;
+      const SDK = (globalThis as any).BMap;
       const pts = points.map(p => new SDK.Point(p.lng, p.lat));
       const cb = (result: any) => {
         if (requestId !== requestIdRef.current) return;

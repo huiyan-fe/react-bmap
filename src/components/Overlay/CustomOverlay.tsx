@@ -13,12 +13,13 @@ import type { OverlayHandle } from '../../types';
 import type { CustomOverlayProps } from './types';
 
 const OPTION_PROPS: Array<keyof CustomOverlayProps & string> = [
-  'point', 'rotation', 'rotationInit', 'properties', 'enableMassClear', 'zIndex',
+  'point', 'rotation', 'properties',
 ];
 
 const CTOR_ONLY_PROPS: Array<keyof CustomOverlayProps & string> = [
   'anchors', 'offsetX', 'offsetY', 'minZoom', 'maxZoom', 'fixBottom',
   'useTranslate', 'autoFollowHeadingChanged', 'enableDraggingMap',
+  'rotationInit', 'zIndex', 'enableMassClear',
 ];
 
 const EVENTS: Array<{ sdk: string; prop: keyof CustomOverlayProps & string }> = [

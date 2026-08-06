@@ -27,7 +27,8 @@ export function PolylinePage() {
   const [enableClicking, setEnableClicking] = useState(true);
   const [geodesic, setGeodesic] = useState(false);
   const [clip, setClip] = useState(true);
-  const [dashArray, setDashArray] = useState<number[]>([]);
+
+  const [strokeTexture, setStrokeTexture] = useState(false);
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
@@ -45,7 +46,6 @@ export function PolylinePage() {
   const handleEvent = useCallback((name: string) =>
     (pt: any) => log(`🟣 polyline.${name}${pt ? ` @ ${formatPt(pt)}` : ''}`), [log]);
 
-  const dashArrayText = dashArray.length ? dashArray.join(',') : '';
 
   return (
     <div className="test-page">
@@ -64,7 +64,7 @@ export function PolylinePage() {
             enableClicking={enableClicking}
             geodesic={geodesic}
             clip={clip}
-            dashArray={dashArray.length ? dashArray : undefined}
+            strokeTexture={strokeTexture ? { url: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="8" fill="#ff6600"/><rect y="8" width="16" height="8" fill="#ffffff"/></svg>'), width: 16, height: 16 } : undefined}
             zIndex={zIndex}
             visible={visible}
             onClick={handleEvent('click')}
@@ -77,6 +77,13 @@ export function PolylinePage() {
             onMouseMove={handleEvent('mousemove')}
             onRemove={handleEvent('remove')}
             onLineUpdate={() => log('🟣 polyline.lineupdate')}
+            onRightDoubleClick={handleEvent('rightdblclick')}
+            onEditStart={() => log('🟣 polyline.editstart')}
+            onEditEnd={() => log('🟣 polyline.editend')}
+            onLineVertexDragStart={() => log('🟣 polyline.linevertexdragstart')}
+            onLineVertexDragging={() => log('🟣 polyline.linevertexdragging')}
+            onLineVertexDragEnd={() => log('🟣 polyline.linevertexdragend')}
+            onLineVertexDel={() => log('🟣 polyline.linevertexdel')}
           />
         </Map>
         <div ref={logRef} style={{
@@ -147,15 +154,6 @@ export function PolylinePage() {
         </section>
 
         <section>
-          <h3>dashArray <span className={`cap-tag ${caps.has('Map.setHeading') ? 'ok' : 'no'}`}>{caps.has('Map.setHeading') ? 'v4+' : 'v3 ✗'}</span></h3>
-          <input type="text" placeholder="如 8,4" value={dashArrayText} onChange={e => {
-            const parts = e.target.value.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n) && n > 0);
-            setDashArray(parts);
-          }} />
-          <span className="muted small" style={{ marginLeft: 8 }}>[实线长, 间隙长]</span>
-        </section>
-
-        <section>
           <h3>行为开关</h3>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableEditing} onChange={e => setEnableEditing(e.target.checked)} />
@@ -178,6 +176,10 @@ export function PolylinePage() {
             clip（跨180°裁剪）<span className={`cap-tag ${caps.has('Map.setHeading') ? 'ok' : 'no'}`}>{caps.has('Map.setHeading') ? 'v4+' : 'v3 ✗'}</span>
           </label>
           <label className="checkbox-row">
+            <input type="checkbox" checked={strokeTexture} onChange={e => setStrokeTexture(e.target.checked)} />
+            strokeTexture（纹理贴图）<span className={`cap-tag ${caps.has('Map.setHeading') ? 'ok' : 'no'}`}>{caps.has('Map.setHeading') ? 'v4+' : 'v3 ✗'}</span>
+          </label>
+          <label className="checkbox-row">
             <input type="checkbox" checked={visible} onChange={e => setVisible(e.target.checked)} />
             visible（show/hide）
           </label>
@@ -195,13 +197,9 @@ export function PolylinePage() {
               setPath(DEFAULT_PATH); setStrokeColor('#1890ff'); setStrokeWeight(4); setStrokeOpacity(1);
               setStrokeStyle('solid'); setStrokeLineCap('round'); setStrokeLineJoin('round');
               setEnableEditing(false); setEnableMassClear(true); setEnableClicking(true);
-              setGeodesic(false); setClip(true); setDashArray([]); setZIndex(undefined); setVisible(true);
+              setGeodesic(false); setClip(true); setStrokeTexture(false); setZIndex(undefined); setVisible(true);
               log('🔄 reset all');
             }}>reset all</button>
-            <button style={{ fontSize: 11 }} onClick={() => {
-              setPath(p => [...p.reverse()]);
-              log('🔄 反转路径');
-            }}>反转路径</button>
             <button style={{ fontSize: 11 }} onClick={() => {
               setPath(p => [...p, { lng: p[p.length - 1].lng + 0.005, lat: p[p.length - 1].lat + 0.003 }]);
               log('🔄 添加点');

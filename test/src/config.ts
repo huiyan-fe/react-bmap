@@ -32,6 +32,9 @@ export const PAGES: TestPage[] = [
   { id: 'icon-sequence', name: 'IconSequence', category: O, ready: true },
   { id: 'hotspot', name: 'Hotspot', category: O, ready: true },
   { id: 'custom-overlay', name: 'CustomOverlay', category: O, ready: true },
+  { id: 'marker-3d', name: 'Marker3D', category: O, ready: true },
+  { id: 'map-mask', name: 'MapMask', category: O, ready: true },
+  { id: 'simple-info-window', name: 'SimpleInfoWindow', category: O, ready: true },
   // 控件（11 个，LocationControl 是 GeolocationControl 的兼容别名）
   { id: 'navigation-control', name: 'NavigationControl', category: C, ready: true },
   { id: 'navigation-control-3d', name: 'NavigationControl3D', category: C, ready: true },
@@ -63,7 +66,11 @@ export const PAGES: TestPage[] = [
   { id: 'point-icon-layer', name: 'PointIconLayer', category: L, ready: true },
   { id: 'point-shape-layer', name: 'PointShapeLayer', category: L, ready: true },
   { id: 'panorama-coverage-layer', name: 'PanoramaCoverageLayer', category: L, ready: true },
-  // 服务（14 个）
+  { id: 'line-layer', name: 'LineLayer', category: L, ready: true },
+  { id: 'pixel-layer', name: 'PixelLayer', category: L, ready: true },
+  { id: 'baidu-layer', name: 'BaiduLayer', category: L, ready: true },
+  { id: 'three-layer', name: 'ThreeLayer', category: L, ready: true },
+  // 服务（15 个）
   { id: 'local-search', name: 'useLocalSearch', category: S, ready: true },
   { id: 'geocoder', name: 'useGeocoder', category: S, ready: true },
   { id: 'driving-route', name: 'useDrivingRoute', category: S, ready: true },
@@ -78,9 +85,11 @@ export const PAGES: TestPage[] = [
   { id: 'place-detail', name: 'usePlaceDetail', category: S, ready: true },
   { id: 'convertor', name: 'useConvertor', category: S, ready: true },
   { id: 'panorama-service', name: 'usePanoramaService', category: S, ready: true },
+  { id: 'truck-route', name: 'useTruckRoute', category: S, ready: true },
   // 其他
   { id: 'context-menu', name: 'ContextMenu', category: '其他', ready: true },
   { id: 'panorama', name: 'Panorama', category: '其他', ready: true },
+  { id: 'place-detail-panel', name: 'PlaceDetailPanel', category: '其他', ready: true },
 ];
 
 export const DEFAULT_VERSION = '4.0' as const;

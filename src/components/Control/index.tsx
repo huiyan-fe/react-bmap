@@ -209,7 +209,11 @@ export const CityListControl = createControlComponent<CityListControlProps>({
   displayName: 'CityListControl',
   factory: (d, p) => d.createCityListControl(p),
   optionProps: ['anchor', 'offset'],
-  ctorOnlyProps: ['expand', 'trigger', 'onChangeBefore', 'onChangeAfter', 'onChangeSuccess', 'onOpen', 'onClose', 'canCheckSize'],
+  ctorOnlyProps: ['expand', 'trigger', 'onChangeBefore', 'onChangeAfter', 'onChangeSuccess', 'canCheckSize'],
+  events: [
+    { sdk: 'onopen', prop: 'onOpen' },
+    { sdk: 'onclose', prop: 'onClose' },
+  ],
 });
 
 export const LocationControl = GeolocationControl;

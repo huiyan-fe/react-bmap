@@ -25,7 +25,7 @@ export interface DistrictLayerOptions {
   strokeColor?: string; strokeWeight?: number; strokeOpacity?: number;
   fillColor?: string; fillOpacity?: number;
 }
-export interface CustomLayerOptions { databoxId?: string; geotableId?: string; q?: string; tags?: string; filter?: string; pointDensityType?: number; }
+export interface CustomLayerOptions { databoxId?: string; geotableId?: string; q?: string; tags?: string; filter?: string; pointDensity?: number; }
 export interface CanvasLayerOptions { zIndex?: number; paneName?: string; update?: Function; }
 
 export type TileLayerProps = TileLayerOptions;
@@ -188,7 +188,18 @@ export const RasterTileLayer = createLayerComponent<RasterTileLayerProps>({ disp
 export const WMSLayer = createLayerComponent<WMSLayerProps>({ displayName: 'WMSLayer', factory: (d, p) => d.createWMSLayer(p) });
 export const WMTSLayer = createLayerComponent<WMTSLayerProps>({ displayName: 'WMTSLayer', factory: (d, p) => d.createWMTSLayer(p) });
 export const XYZLayer = createLayerComponent<XYZLayerProps>({ displayName: 'XYZLayer', factory: (d, p) => d.createXYZLayer(p) });
-export const MVTLayer = createLayerComponent<MVTLayerProps>({ displayName: 'MVTLayer', factory: (d, p) => d.createMVTLayer(p) });
+export const MVTLayer = createLayerComponent<MVTLayerProps>({
+  displayName: 'MVTLayer',
+  factory: (d, p) => d.createMVTLayer(p),
+  addMethod: 'addTileLayer',
+  removeMethod: 'removeTileLayer',
+  events: [
+    { sdk: 'click', prop: 'onclick' },
+    { sdk: 'dblclick', prop: 'ondblclick' },
+    { sdk: 'mousemove', prop: 'onmousemove' },
+    { sdk: 'mouseout', prop: 'onmouseout' },
+  ],
+});
 // FeatureLayer 是手写组件（支持 setData），见 FeatureLayer.tsx
 export { FeatureLayer } from './FeatureLayer';
 export type { FeatureLayerProps, FeatureLayerOptions } from './FeatureLayer';
@@ -205,3 +216,53 @@ export type { PointIconLayerProps, PointIconLayerOptions, PointIconStyle } from 
 export { PointShapeLayer } from './PointShapeLayer';
 export type { PointShapeLayerProps, PointShapeLayerOptions, PointShapeStyle } from './PointShapeLayer';
 export const PanoramaCoverageLayer = createLayerComponent<PanoramaCoverageLayerProps>({ displayName: 'PanoramaCoverageLayer', factory: (d) => d.createPanoramaCoverageLayer({}) });
+
+// ─── 4.0+ 额外图层（SDK 运行时存在，dts 无完整定义） ───
+
+// LineLayer — 线图层（继承 NormalLayer）
+export interface LineLayerOptions {
+  style?: unknown;
+  idKey?: string;
+  crs?: string;
+  visible?: boolean;
+  opacity?: number;
+  minZoom?: number;
+  maxZoom?: number;
+  zIndex?: number;
+  enablePicked?: boolean;
+}
+export type LineLayerProps = LineLayerOptions;
+export const LineLayer = createLayerComponent<LineLayerProps>({ displayName: 'LineLayer', factory: (d, p) => d.createLineLayer(p) });
+
+// PixelLayer — 像素图层
+export interface PixelLayerOptions {
+  visible?: boolean;
+  opacity?: number;
+  minZoom?: number;
+  maxZoom?: number;
+  zIndex?: number;
+}
+export type PixelLayerProps = PixelLayerOptions;
+export const PixelLayer = createLayerComponent<PixelLayerProps>({ displayName: 'PixelLayer', factory: (d, p) => d.createPixelLayer(p), addMethod: 'addTileLayer', removeMethod: 'removeTileLayer' });
+
+// BaiduLayer — 百度图层
+export interface BaiduLayerOptions {
+  visible?: boolean;
+  opacity?: number;
+  minZoom?: number;
+  maxZoom?: number;
+  zIndex?: number;
+}
+export type BaiduLayerProps = BaiduLayerOptions;
+export const BaiduLayer = createLayerComponent<BaiduLayerProps>({ displayName: 'BaiduLayer', factory: (d, p) => d.createBaiduLayer(p) });
+
+// ThreeLayer — Three.js 图层（需要 three.js 依赖）
+export interface ThreeLayerOptions {
+  visible?: boolean;
+  opacity?: number;
+  minZoom?: number;
+  maxZoom?: number;
+  zIndex?: number;
+}
+export type ThreeLayerProps = ThreeLayerOptions;
+export const ThreeLayer = createLayerComponent<ThreeLayerProps>({ displayName: 'ThreeLayer', factory: (d, p) => d.createThreeLayer(p) });

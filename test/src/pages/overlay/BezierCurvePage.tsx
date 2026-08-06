@@ -40,7 +40,6 @@ export function BezierCurvePage() {
   const [strokeStyle, setStrokeStyle] = useState<'solid' | 'dashed' | 'dotted'>('solid');
   const [enableMassClear, setEnableMassClear] = useState(true);
   const [enableClicking, setEnableClicking] = useState(true);
-  const [dashArray, setDashArray] = useState<number[]>([]);
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
@@ -117,7 +116,6 @@ export function BezierCurvePage() {
             strokeStyle={strokeStyle}
             enableMassClear={enableMassClear}
             enableClicking={enableClicking}
-            dashArray={dashArray.length ? dashArray : undefined}
             zIndex={zIndex}
             visible={visible}
             onClick={onEvt('click')}
@@ -302,19 +300,6 @@ export function BezierCurvePage() {
           </p>
         </section>
 
-        {/* dashArray */}
-        <section>
-          <h3>dashArray</h3>
-          <input type="text" placeholder="如 8,4"
-            value={dashArray.join(',')}
-            onChange={e => {
-              const parts = e.target.value.split(',')
-                .map(s => Number(s.trim()))
-                .filter(n => !isNaN(n) && n > 0);
-              setDashArray(parts);
-            }} />
-        </section>
-
         {/* zIndex */}
         <section>
           <h3>zIndex</h3>
@@ -340,7 +325,6 @@ export function BezierCurvePage() {
               setStrokeStyle('solid');
               setEnableMassClear(true);
               setEnableClicking(true);
-              setDashArray([]);
               setZIndex(undefined);
               setVisible(true);
               log('🔄 reset all');
@@ -360,9 +344,8 @@ export function BezierCurvePage() {
             }}>红色大曲率</button>
             <button style={{ fontSize: 11 }} onClick={() => {
               setStrokeStyle('dashed');
-              setDashArray([10, 6]);
-              log('虚线 10,6');
-            }}>虚线 10,6</button>
+              log('虚线');
+            }}>虚线</button>
             <button style={{ fontSize: 11 }} onClick={() => {
               setPreset('4 点');
               setCpPerSegment(2);

@@ -26,6 +26,22 @@ export interface MarkerOptions {
   /** 阴影图标 @removed 4.0（仅 v3） */
   shadow?: PlainIcon;
   zIndex?: number;
+  /** 基础 zIndex（构造函数） */
+  baseZIndex?: number;
+  /** 限制拖拽区域（构造函数） */
+  restrictDraggingArea?: boolean;
+  /** 透明度 0-1 @since 4.0 */
+  opacity?: number;
+  /** 标注颜色 @since 4.0 */
+  color?: string;
+  /** 碰撞检测优先级 @since 4.0 */
+  rank?: number;
+  /** 旋转中心 @since 4.0 */
+  rotationOrigin?: number;
+  /** 碰撞检测 @since 4.0（构造函数） */
+  enableCollisionDetection?: boolean;
+  /** 拖拽时移动地图 @since 4.0（构造函数） */
+  enableDraggingMap?: boolean;
 }
 export interface LabelOptions {
   offset?: Size; position?: Point; anchor?: ControlAnchor;
@@ -350,7 +366,7 @@ export interface MarkerProps extends MarkerOptions, OverlayReactProps {
   onRemove?: (point: Point, raw: unknown) => void;
 }
 export interface LabelProps extends LabelOptions, OverlayReactProps {
-  content: unknown;
+  content: string;
   onClick?: (point: Point, raw: unknown) => void;
   onDoubleClick?: (point: Point, raw: unknown) => void;
   onRightClick?: (point: Point, raw: unknown) => void;
@@ -586,6 +602,34 @@ export interface PointCollectionProps extends PointCollectionOptions, OverlayRea
   onMouseOver?: (point: Point, raw: unknown) => void;
   onMouseOut?: (point: Point, raw: unknown) => void;
 }
+
+/**
+ * Marker3D — 3D 标注。@since 4.0（WebGL only）。
+ * SDK: constructor(point, height, { shape, size, fillColor, fillOpacity, enableMassClear })
+ * setter: setPosition/setHeight/setFillColor/setFillOpacity；shape/size 无 setter（重建）
+ */
+export interface Marker3DOptions {
+  /** 形状：1=circle, 2=rect（构造函数，无 setter） */
+  shape?: number;
+  /** 像素大小（构造函数，无 setter） */
+  size?: number;
+  /** 填充颜色 */
+  fillColor?: string;
+  /** 填充透明度 0-1 */
+  fillOpacity?: number;
+  enableMassClear?: boolean;
+}
+export interface Marker3DProps extends Marker3DOptions, OverlayReactProps {
+  position: Point;
+  height: number;
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
+}
 /**
  * InfoWindow 事件对照 InfoWindowEventMap。
  * 全部 6 个事件都是 OverlayBaseEvent（仅含 type/target/currentTarget，无 point/pixel）。
@@ -614,7 +658,7 @@ export interface InfoWindowProps extends InfoWindowOptions, OverlayReactProps {
  * Symbol 是值对象（非 Overlay），无事件。
  * path 为 SVG path 字符串或预定义符号常量（BMap_Symbol_SHAPE_*）。
  */
-export interface SymbolProps extends SymbolOptions, OverlayReactProps { path: unknown; }
+export interface SymbolProps extends SymbolOptions, OverlayReactProps { path: string | number; }
 /**
  * Icon 是值对象（非 Overlay），无事件。
  * url 和 size 是 constructor 的前两个位置参数，但也有 setter（setImageUrl/setSize）可响应式更新。
@@ -651,4 +695,32 @@ export interface CustomOverlayProps extends CustomOverlayOptions, OverlayReactPr
   onClick?: (point: Point, raw: unknown) => void;
   onMouseOver?: (point: Point, raw: unknown) => void;
   onMouseOut?: (point: Point, raw: unknown) => void;
+}
+
+/**
+ * Marker3D — 3D 标注。@since 4.0（WebGL only）。
+ * SDK: constructor(point, height, { shape, size, fillColor, fillOpacity, enableMassClear })
+ * setter: setPosition/setHeight/setFillColor/setFillOpacity；shape/size 无 setter（重建）
+ */
+export interface Marker3DOptions {
+  /** 形状：1=circle, 2=rect（构造函数，无 setter） */
+  shape?: number;
+  /** 像素大小（构造函数，无 setter） */
+  size?: number;
+  /** 填充颜色 */
+  fillColor?: string;
+  /** 填充透明度 0-1 */
+  fillOpacity?: number;
+  enableMassClear?: boolean;
+}
+export interface Marker3DProps extends Marker3DOptions, OverlayReactProps {
+  position: Point;
+  height: number;
+  onClick?: (point: Point, raw: unknown) => void;
+  onDoubleClick?: (point: Point, raw: unknown) => void;
+  onRightClick?: (point: Point, raw: unknown) => void;
+  onMouseOver?: (point: Point, raw: unknown) => void;
+  onMouseOut?: (point: Point, raw: unknown) => void;
+  onMouseDown?: (point: Point, raw: unknown) => void;
+  onMouseUp?: (point: Point, raw: unknown) => void;
 }

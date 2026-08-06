@@ -11,7 +11,7 @@ function MapHandleCapture({ onMap }: { onMap: (map: unknown) => void }) {
 }
 
 function getPolicyValue(constantName: string, fallback: number): number {
-  const SDK = (window as any).BMapGL || (window as any).BMap;
+  const SDK = (window as any).BMap;
   return SDK?.[constantName] ?? fallback;
 }
 

@@ -27,6 +27,7 @@ import * as ServicePages from './pages/service';
 // 其他
 import { ContextMenuTestPage } from './pages/ContextMenuTestPage';
 import { PanoramaTestPage } from './pages/PanoramaTestPage';
+import { PlaceDetailPanelPage } from './pages/PlaceDetailPanelPage';
 
 // 映射 id → 组件
 const PAGE_MAP: Record<string, React.ComponentType> = {
@@ -52,6 +53,9 @@ const PAGE_MAP: Record<string, React.ComponentType> = {
   'icon-sequence': OverlayPages.IconSequencePage,
   hotspot: OverlayPages.HotspotPage,
   'custom-overlay': OverlayPages.CustomOverlayPage,
+  'marker-3d': OverlayPages.Marker3DPage,
+  'map-mask': OverlayPages.MapMaskPage,
+  'simple-info-window': OverlayPages.SimpleInfoWindowPage,
   // 控件
   'navigation-control': ControlPages.NavigationControlPage,
   'navigation-control-3d': ControlPages.NavigationControl3DPage,
@@ -83,6 +87,10 @@ const PAGE_MAP: Record<string, React.ComponentType> = {
   'point-icon-layer': LayerPages.PointIconLayerPage,
   'point-shape-layer': LayerPages.PointShapeLayerPage,
   'panorama-coverage-layer': LayerPages.PanoramaCoverageLayerPage,
+  'line-layer': LayerPages.LineLayerPage,
+  'pixel-layer': LayerPages.PixelLayerPage,
+  'baidu-layer': LayerPages.BaiduLayerPage,
+  'three-layer': LayerPages.ThreeLayerPage,
   // 服务
   'local-search': ServicePages.LocalSearchPage,
   geocoder: ServicePages.GeocoderPage,
@@ -98,9 +106,11 @@ const PAGE_MAP: Record<string, React.ComponentType> = {
   'place-detail': ServicePages.PlaceDetailPage,
   convertor: ServicePages.ConvertorPage,
   'panorama-service': ServicePages.PanoramaServicePage,
+  'truck-route': ServicePages.TruckRoutePage,
   // 其他
   'context-menu': ContextMenuTestPage,
   panorama: PanoramaTestPage,
+  'place-detail-panel': PlaceDetailPanelPage,
 };
 
 function Layout() {

@@ -1,5 +1,5 @@
 /**
- * 服务独立测试页（14 个）— 每个服务有独立的页面文件。
+ * 服务独立测试页（15 个）— 每个服务有独立的页面文件。
  */
 export { LocalSearchPage } from './LocalSearchPage';
 export { GeocoderPage } from './GeocoderPage';
@@ -15,3 +15,4 @@ export { LocalCityPage } from './LocalCityPage';
 export { PlaceDetailPage } from './PlaceDetailPage';
 export { ConvertorPage } from './ConvertorPage';
 export { PanoramaServicePage } from './PanoramaServicePage';
+export { TruckRoutePage } from './TruckRoutePage';

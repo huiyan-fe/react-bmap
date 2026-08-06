@@ -105,6 +105,8 @@ export interface BMapDriver {
   // ─────────────── 5. resize ───────────────
   checkResize(map: MapHandle): void;
   resize(map: MapHandle): void;
+  setSize(map: MapHandle, size: { width: number; height: number }): void;  // 3.0
+  zoomTo(map: MapHandle, level: number, point?: unknown): void;  // 3.0
 
   // ─────────────── 6. 显示配置 ───────────────
   setDisplayOptions(map: MapHandle, options: unknown): void;
@@ -135,7 +137,6 @@ export interface BMapDriver {
   getRenderType(map: MapHandle): string;
   isCanvasMap(map: MapHandle): boolean;
   getProjection(map: MapHandle): unknown;
-  getExtendBounds(map: MapHandle, bounds: Bounds): Bounds;
   getSolarInfo(map: MapHandle, date: Date): unknown;
   getTileId(map: MapHandle, point: Point, level: number): string;
   getPoiByUid(map: MapHandle, uid: string, callback: (poi: unknown) => void): void;
@@ -177,7 +178,7 @@ export interface BMapDriver {
   restrictBounds(map: MapHandle, bounds: Bounds | null): void;
 
   // ─────────────── 12. 地图类型 ───────────────
-  setMapType(map: MapHandle, mapTypeId: string): void;
+  setMapType(map: MapHandle, mapTypeId: string | number): void;
   getMapType(map: MapHandle): string;
 
   // ─────────────── 13. 控件 / 右键菜单 ───────────────
@@ -215,6 +216,8 @@ export interface BMapDriver {
   // ─────────────── 16. 信息窗口 ───────────────
   openInfoWindow(map: MapHandle | OverlayHandle, iw: OverlayHandle, point?: Point): void;
   closeInfoWindow(map: MapHandle | OverlayHandle): void;
+  openSimpleInfoWindow(map: MapHandle, iw: OverlayHandle, point: Point): void;
+  closeSimpleInfoWindow(map: MapHandle): void;
 
   // ─────────────── 17. 样式 / 主题 ───────────────
   setMapStyle(map: MapHandle, config: unknown): void;          // v1，3.0-only
@@ -248,6 +251,9 @@ export interface BMapDriver {
   showIndoor(map: MapHandle, uid: string, floor: number): void;
   setIndoor(map: MapHandle, uid: string, floor: number): void;
   getIndoorInfo(map: MapHandle): unknown | null;
+  initIndoorLayer(map: MapHandle, opts?: unknown): unknown;  // 3.0
+  setNormalMapDisplay(map: MapHandle, display: boolean): void;  // 3.0
+  getVectorContainer(map: MapHandle): unknown;  // 3.0
 
   // ─────────────── 22. 街景图层（4.0+） ───────────────
   showStreetLayer(map: MapHandle, show: boolean): void;
@@ -304,6 +310,7 @@ export interface BMapDriver {
    * path 支持单坐标串 Point[] 或多坐标串 Point[][]（后者仅 constructor 支持，setPath 只接受单串）。
    */
   createPrism(path: Point[] | Point[][], altitude: number, options?: unknown): OverlayHandle | null;
+  createMarker3D(position: Point, height: number, options?: unknown): OverlayHandle | null;
   createGroundOverlay(bounds: Bounds, options?: unknown): OverlayHandle | null;
   createGroundPoint(point: Point, options?: unknown): OverlayHandle | null;
   createPointCollection(points: Point[], options?: unknown): OverlayHandle | null;
@@ -362,6 +369,10 @@ export interface BMapDriver {
   createPointIconLayer(options?: unknown): LayerHandle | null;
   createPointShapeLayer(options?: unknown): LayerHandle | null;
   createPanoramaCoverageLayer(options?: unknown): LayerHandle | null;
+  createLineLayer(options?: unknown): LayerHandle | null;
+  createPixelLayer(options?: unknown): LayerHandle | null;
+  createBaiduLayer(options?: unknown): LayerHandle | null;
+  createThreeLayer(options?: unknown): LayerHandle | null;
 
   // ─────────────── 30. ContextMenu 工厂 ───────────────
   createContextMenu(options?: unknown): OverlayHandle | null;
@@ -389,6 +400,7 @@ export interface BMapDriver {
   createPlaceDetail(options?: unknown): ServiceHandle;
   createConvertor(): ServiceHandle;
   createPanoramaService(): ServiceHandle;
+  createTruckRoute(options?: unknown): ServiceHandle;
 
   searchService(
     service: ServiceHandle,

@@ -140,5 +140,9 @@ export type { AutocompleteOptions, AutocompleteHookResult } from './useAutocompl
 export { usePlaceDetail } from './usePlaceDetail';
 export type { PlaceDetailOptions, PlaceDetailHookResult } from './usePlaceDetail';
 
+// useTruckRoute — 手写（货车路线规划），见 useTruckRoute.ts
+export { useTruckRoute } from './useTruckRoute';
+export type { TruckRouteOptions, TruckRouteHookResult } from './useTruckRoute';
+
 // ─── 通用 Service Hooks（使用 createServiceHook 工厂） ───────────────
-// 全部 14 个 service hooks 已手写实现，不再使用 createServiceHook
+// 全部 15 个 service hooks 已手写实现，不再使用 createServiceHook

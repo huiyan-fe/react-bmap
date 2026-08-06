@@ -30,7 +30,9 @@ export function useGeolocation(opts?: { enableSDKLocation?: boolean }): Geolocat
 
   useEffect(() => {
     if (!driver) return;
-    const handle = driver.createGeolocation(opts);
+    const ctorOpts: Record<string, unknown> = {};
+    if (opts?.enableSDKLocation) ctorOpts.SDKLocation = true;
+    const handle = driver.createGeolocation(Object.keys(ctorOpts).length > 0 ? ctorOpts : undefined);
     if (handle.isNull) {
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('Geolocation', driver.version), supported: false });
       return;

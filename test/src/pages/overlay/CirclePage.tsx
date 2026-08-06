@@ -21,7 +21,6 @@ export function CirclePage() {
   const [enableEditing, setEnableEditing] = useState(false);
   const [enableMassClear, setEnableMassClear] = useState(true);
   const [enableClicking, setEnableClicking] = useState(true);
-  const [dashArray, setDashArray] = useState<number[]>([]);
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
@@ -68,7 +67,6 @@ export function CirclePage() {
             enableEditing={enableEditing}
             enableMassClear={enableMassClear}
             enableClicking={enableClicking}
-            dashArray={dashArray.length ? dashArray : undefined}
             zIndex={zIndex}
             visible={visible}
             onClick={onEvt('click')}
@@ -241,19 +239,6 @@ export function CirclePage() {
           </label>
         </section>
 
-        {/* ctorOnlyProps — 重建生效 */}
-        <section>
-          <h3>dashArray {v4Tag}</h3>
-          <input type="text" placeholder="如 8,4"
-            value={dashArray.join(',')}
-            onChange={e => {
-              const parts = e.target.value.split(',')
-                .map(s => Number(s.trim()))
-                .filter(n => !isNaN(n) && n > 0);
-              setDashArray(parts);
-            }} />
-        </section>
-
         {/* zIndex */}
         <section>
           <h3>zIndex {v4Tag}</h3>
@@ -280,7 +265,6 @@ export function CirclePage() {
               setEnableEditing(false);
               setEnableMassClear(true);
               setEnableClicking(true);
-              setDashArray([]);
               setZIndex(undefined);
               setVisible(true);
               log('🔄 reset all');

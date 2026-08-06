@@ -41,6 +41,10 @@ export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): Wa
     }
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
     searchOpts.onSearchComplete = (results: unknown) => { searchCbRef.current?.(results); };
+    if (callbacksRef.current.onMarkersSet) searchOpts.onMarkersSet = (pois: unknown[]) => callbacksRef.current.onMarkersSet?.(pois);
+    if (callbacksRef.current.onInfoHtmlSet) searchOpts.onInfoHtmlSet = (poi: unknown, html: HTMLElement) => callbacksRef.current.onInfoHtmlSet?.(poi, html);
+    if (callbacksRef.current.onPolylinesSet) searchOpts.onPolylinesSet = (pls: unknown[]) => callbacksRef.current.onPolylinesSet?.(pls);
+    if (callbacksRef.current.onResultsHtmlSet) searchOpts.onResultsHtmlSet = (c: HTMLElement) => callbacksRef.current.onResultsHtmlSet?.(c);
 
     const handle = driver.createWalkingRoute(Object.keys(searchOpts).length > 0 ? searchOpts : undefined);
     if (handle.isNull) {
@@ -73,7 +77,7 @@ export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): Wa
     };
     searchCbRef.current = cb;
     if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(cb);
-    const SDK = (globalThis as any).BMap || (globalThis as any).BMapGL;
+    const SDK = (globalThis as any).BMap;
     const toPoint = (v: unknown) => {
       if (!v) return v;
       if ((v as any).__brand) return (v as any).raw;
@@ -97,5 +101,5 @@ export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): Wa
 
   // setPolicy 不适用于 WalkingRoute
   const setPolicy = useCallback((_p: number) => {}, []);
-  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, getStatus, cancel } as WalkingRouteHookResult;
+  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, getStatus, cancel } as unknown as WalkingRouteHookResult;
 }

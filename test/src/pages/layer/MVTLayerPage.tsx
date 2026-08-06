@@ -121,8 +121,8 @@ export function MVTLayerPage() {
     tileUrlTemplate="https://your-mvt-server/[z]/[x]/[y].pbf"
     minZoom={3}
     maxZoom={18}
-    onclick={(e) => console.log('clicked', e)}
-    onmousemove={(e) => console.log('hover', e)}
+    onclick={(e) => { /* MVT click event */ }}
+    onmousemove={(e) => { /* MVT hover event */ }}
   />
 </Map>`}
           </pre>

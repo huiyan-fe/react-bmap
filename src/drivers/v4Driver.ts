@@ -36,11 +36,20 @@ function toRawIcon(SDK: any, icon: any): any {
   if (!icon) return icon;
   if (icon.raw) return icon.raw;                   // 已是 Handle 包装的 SDK 实例
   if (!icon.url) return icon;                      // 无法转换，透传
-  const sz = icon.size ? new SDK.Size(icon.size.width, icon.size.height) : undefined;
+  if (!icon.size) {
+    // SDK 构造函数 size 为必需参数，不传返回 undefined 导致 Marker 无图标
+    // eslint-disable-next-line no-console
+    console.warn('[react-bmap] PlainIcon.size is required');
+    return icon;
+  }
+  const sz = new SDK.Size(icon.size.width, icon.size.height);
   const opts: any = {};
   if (icon.imageOffset) opts.imageOffset = new SDK.Size(icon.imageOffset.width, icon.imageOffset.height);
   if (icon.imageSize) opts.imageSize = new SDK.Size(icon.imageSize.width, icon.imageSize.height);
   if (icon.anchor) opts.anchor = new SDK.Size(icon.anchor.width, icon.anchor.height);
+  if (icon.infoWindowAnchor) opts.infoWindowAnchor = new SDK.Size(icon.infoWindowAnchor.width, icon.infoWindowAnchor.height);
+  if (icon.printImageUrl) opts.printImageUrl = icon.printImageUrl;
+  if (icon.srcset) opts.srcset = icon.srcset;
   return new SDK.Icon(icon.url, sz, opts);
 }
 /** 把 plain offset {width, height} 转成 SDK Size */
@@ -134,6 +143,7 @@ const HANDLED_OVERLAY_OPTION_KEYS = new Set([
   'radius', 'bounds', 'controlPoints', 'altitude',
   'url', 'imageURL', 'displayOnMinLevel', 'displayOnMaxLevel',
   'rotation', 'title', 'content', 'styles', 'opacity',
+  'height', 'fillColor', 'fillOpacity', 'shape', 'size',
   'icon', 'anchor', 'zIndex', 'offset',
   'size', 'scale', 'shape', 'color', 'path',
   'imageOffset', 'imageSize', 'infoWindowAnchor', 'printImageUrl', 'srcset',
@@ -278,7 +288,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
 
     // ─────────────── 5. resize ───────────────
     checkResize: (map) => callRaw('Map.checkResize', () => rawMap(map).checkResize()),
-    resize: (map) => callRaw('Map.resize', () => { const m = rawMap(map); m.resize ? m.resize() : m.checkResize?.(); }),
+    resize: (map) => callRaw('Map.checkResize', () => rawMap(map).checkResize?.()),
+    setSize: (map, size) => callRaw('Map.setSize', () => { rawMap(map).setSize?.(size); }),
+    zoomTo: (map, level, point) => callRaw('Map.zoomTo', () => { const m = rawMap(map); if (point) m.zoomTo?.(level, toRawPixel(rawSDK, point as Pixel)); else m.zoomTo?.(level); }),
 
     // ─────────────── 6. 显示配置 ───────────────
     setDisplayOptions: (map, o) => callRaw('Map.setDisplayOptions', () => rawMap(map).setDisplayOptions(o)),
@@ -309,7 +321,6 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     getRenderType: (map) => getRaw('Map.getRenderType', () => rawMap(map).getRenderType?.(), ''),
     isCanvasMap: (map) => getRaw('Map.isCanvasMap', () => rawMap(map).isCanvasMap?.() ?? false, false),
     getProjection: (map) => getRaw('Map.getProjection', () => rawMap(map).getProjection?.(), null),
-    getExtendBounds: (map, b) => getRaw('Map.getExtendBounds', () => toPlainBounds(rawMap(map).getExtendBounds?.(toRawBounds(rawSDK, b))) ?? b, b),
     getSolarInfo: (map, date) => getRaw('Map.getSolarInfo', () => rawMap(map).getSolarInfo?.(date), null),
     getTileId: (map, p, level) => getRaw('Map.getTileId', () => rawMap(map).getTileId?.(toRawPoint(rawSDK, p), level), ''),
     getPoiByUid: (map, uid, cb) => callRaw('Map.getPoiByUid', () => rawMap(map).getPoiByUid?.(uid, cb)),
@@ -425,9 +436,11 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       }
     },
     closeInfoWindow: (target) => callRaw('Map.closeInfoWindow', () => rawOf(target).closeInfoWindow?.()),
+    openSimpleInfoWindow: (map, iw, point) => callRaw('Map.openSimpleInfoWindow', () => rawMap(map).openSimpleInfoWindow?.(rawOf(iw), toRawPoint(rawSDK, point))),
+    closeSimpleInfoWindow: (map) => callRaw('Map.closeSimpleInfoWindow', () => rawMap(map).closeSimpleInfoWindow?.()),
 
     // ─────────────── 17. 样式 / 主题 ───────────────
-    setMapStyle: () => reportUnsupported('Map.setMapStyle', version, behavior),
+    setMapStyle: (map, o) => callRaw('Map.setMapStyle', () => rawMap(map).setMapStyle(o)),
     setMapStyleV2: (map, o) => callRaw('Map.setMapStyleV2', () => rawMap(map).setMapStyleV2(o)),
     setTheme: (map, t, cv) => callRaw('Map.setTheme', () => rawMap(map).setTheme(t, cv)),
     setCopyrightOffset: (map, l, c) => callRaw('Map.setCopyrightOffset', () => rawMap(map).setCopyrightOffset(l, c)),
@@ -438,10 +451,12 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     setOverlayMoveCursor: (map, c) => callRaw('Map.setOverlayMoveCursor', () => rawMap(map).setOverlayMoveCursor?.(c)),
 
     // ─────────────── 18. 视角动画 ───────────────
+    // pause/continue/cancel 在没有进行中的动画时会抛 TypeError（读 _viewAnimationController 为 undefined），
+    // 这是 SDK 正常行为，不算"不支持"，静默吞掉即可。
     startViewAnimation: (map, a) => getRaw('Map.startViewAnimation', () => rawMap(map).startViewAnimation(a) ?? 0, 0),
-    pauseViewAnimation: (map, a) => callRaw('Map.pauseViewAnimation', () => rawMap(map).pauseViewAnimation(a)),
-    continueViewAnimation: (map, a) => callRaw('Map.continueViewAnimation', () => rawMap(map).continueViewAnimation(a)),
-    cancelViewAnimation: (map, a) => callRaw('Map.cancelViewAnimation', () => rawMap(map).cancelViewAnimation(a)),
+    pauseViewAnimation: (map, a) => { try { rawMap(map).pauseViewAnimation?.(a); } catch { /* 无进行中动画 */ } },
+    continueViewAnimation: (map, a) => { try { rawMap(map).continueViewAnimation?.(a); } catch { /* 无进行中动画 */ } },
+    cancelViewAnimation: (map, a) => { try { rawMap(map).cancelViewAnimation?.(a); } catch { /* 无进行中动画 */ } },
 
     // ─────────────── 19. 截图 ───────────────
     getScreenshot: (map) => getRaw('Map.getScreenshot', () => rawMap(map).getScreenshot?.() ?? rawMap(map).getMapScreenshot?.() ?? '', ''),
@@ -458,6 +473,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     showIndoor: (map, uid, floor) => callRaw('Map.showIndoor', () => rawMap(map).showIndoor?.(uid, floor)),
     setIndoor: (map, uid, floor) => callRaw('Map.setIndoor', () => rawMap(map).setIndoor?.(uid, floor)),
     getIndoorInfo: (map) => getRaw('Map.getIndoorInfo', () => rawMap(map).getIndoorInfo?.() ?? null, null),
+    initIndoorLayer: (map, opts) => getRaw('Map.initIndoorLayer', () => rawMap(map).initIndoorLayer?.(opts), null),
+    setNormalMapDisplay: (map, display) => callRaw('Map.setNormalMapDisplay', () => rawMap(map).setNormalMapDisplay?.(display)),
+    getVectorContainer: (map) => getRaw('Map.getVectorContainer', () => rawMap(map).getVectorContainer?.(), null),
 
     // ─────────────── 22. 街景图层 ───────────────
     showStreetLayer: (map, s) => callRaw('Map.showStreetLayer', () => rawMap(map).showStreetLayer?.(s)),
@@ -495,10 +513,10 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     setPanorama: () => reportUnsupported('Map.setPanorama', version, behavior),
     getPanorama: () => unsupportedValue('Map.getPanorama', version, behavior, null),
     setCurrentCity: () => reportUnsupported('Map.setCurrentCity', version, behavior),
-    highResolutionEnabled: () => unsupportedValue('Map.highResolutionEnabled', version, behavior, false),
-    addHotspot: () => reportUnsupported('Map.addHotspot', version, behavior),
-    removeHotspot: () => reportUnsupported('Map.removeHotspot', version, behavior),
-    clearHotspots: () => reportUnsupported('Map.clearHotspots', version, behavior),
+    highResolutionEnabled: (map) => getRaw('Map.highResolutionEnabled', () => rawMap(map).highResolutionEnabled?.() ?? false, false),
+    addHotspot: (map, h) => { try { rawMap(map).addHotspot?.(rawOf(h)); } catch { /* ignore */ } },
+    removeHotspot: (map, h) => { try { rawMap(map).removeHotspot?.(rawOf(h)); } catch { /* ignore */ } },
+    clearHotspots: (map) => { try { rawMap(map).clearHotspots?.(); } catch { /* ignore */ } },
 
     // ─────────────── 26. Overlay 工厂 ───────────────
     createMarker: (p, o) => {
@@ -597,9 +615,12 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           : new rawSDK.Circle(toRawPoint(rawSDK, c), r);
         if (wantEditing) {
           // 延迟到下一帧：编辑系统需要 overlay 已渲染到地图上才能初始化句柄。
-          requestAnimationFrame(() => {
+          const rafId = requestAnimationFrame(() => {
             try { inst.enableEditing?.(); } catch { /* ignore */ }
           });
+          // 防止重建时旧 rAF 在已移除的实例上调用 enableEditing（ghost 顶点残留）
+          const origRemove = inst.remove?.bind(inst);
+          if (origRemove) inst.remove = function () { cancelAnimationFrame(rafId); return origRemove(); };
         }
         return inst;
       }, 'circle');
@@ -624,15 +645,26 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           ? new rawSDK.Rectangle(toRawBounds(rawSDK, b), ctorOpts)
           : new rawSDK.Rectangle(toRawBounds(rawSDK, b));
         if (wantEditing) {
-          requestAnimationFrame(() => {
+          const rafId = requestAnimationFrame(() => {
             try { inst.enableEditing?.(); } catch { /* ignore */ }
           });
+          const origRemove = inst.remove?.bind(inst);
+          if (origRemove) inst.remove = function () { cancelAnimationFrame(rafId); return origRemove(); };
         }
         return inst;
       }, 'rectangle');
     },
     createBezierCurve: (p, cp, o) => {
       const raw = o as Record<string, unknown>;
+      // P2: controlPoints 兜底，防止漏传导致 SDK 抛错被误报为 unsupported
+      const safeCp = Array.isArray(cp) ? cp : [];
+      // P1: controlPoints 组数必须 >= path.length - 1，否则 SDK 内部索引越界
+      const pathLen = Array.isArray(p) ? p.length : 0;
+      if (safeCp.length < Math.max(0, pathLen - 1)) {
+        // eslint-disable-next-line no-console
+        console.warn(`[react-bmap] BezierCurve: controlPoints 需要 ${pathLen - 1} 组，实际 ${safeCp.length} 组，已自动补齐`);
+        while (safeCp.length < pathLen - 1) safeCp.push([{ lng: 0, lat: 0 }]);
+      }
       const ctorOpts: Record<string, unknown> = {};
       const fields = ['strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle'];
       for (const f of fields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
@@ -644,8 +676,8 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       // controlPoints 是第 2 个位置参数，opts 是第 3 个，顺序不能省
       return createOverlayFactory('BezierCurve', () =>
         hasOpts
-          ? new rawSDK.BezierCurve(toRawPoints(rawSDK, p), toRawPointGroups(rawSDK, cp), ctorOpts)
-          : new rawSDK.BezierCurve(toRawPoints(rawSDK, p), toRawPointGroups(rawSDK, cp)),
+          ? new rawSDK.BezierCurve(toRawPoints(rawSDK, p), toRawPointGroups(rawSDK, safeCp), ctorOpts)
+          : new rawSDK.BezierCurve(toRawPoints(rawSDK, p), toRawPointGroups(rawSDK, safeCp)),
       'bezierCurve');
     },
     createPrism: (p, altitude, o) => {
@@ -706,10 +738,15 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       if (typeof raw?.displayOnMinLevel === 'number') ctorOpts.displayOnMinLevel = raw.displayOnMinLevel;
       if (typeof raw?.displayOnMaxLevel === 'number') ctorOpts.displayOnMaxLevel = raw.displayOnMaxLevel;
       if (typeof raw?.imageURL === 'string') ctorOpts.imageURL = raw.imageURL;
+      // type/top/isReDraw/drawHook 继承自 GroundOverlayOptions
+      if (typeof raw?.type === 'string') ctorOpts.type = raw.type;
+      if (typeof raw?.top === 'boolean') ctorOpts.top = raw.top;
+      if (typeof raw?.isReDraw === 'boolean') ctorOpts.isReDraw = raw.isReDraw;
+      if (typeof raw?.drawHook === 'function') ctorOpts.drawHook = raw.drawHook;
       // zIndex 不是 constructor 选项（见 GroundOverlayOptions 注释），跳过
-      const hasOpts = Object.keys(ctorOpts).length > 0;
+      // Bug fix: SDK GroundPoint 构造函数直接读 options.size，不传 options 会崩溃
       return createOverlayFactory('GroundPoint', () =>
-        hasOpts ? new rawSDK.GroundPoint(toRawPoint(rawSDK, p), ctorOpts) : new rawSDK.GroundPoint(toRawPoint(rawSDK, p)),
+        new rawSDK.GroundPoint(toRawPoint(rawSDK, p), ctorOpts),
       'groundPoint');
     },
     createPointCollection: (p, o) => {
@@ -774,7 +811,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           : new rawSDK.Icon(url, new rawSDK.Size(size.width, size.height)),
       'icon');
     },
-    createIconSequence: (sym, offset, repeat, fr) => createOverlayFactory('IconSequence', () => new rawSDK.IconSequence(sym ? rawOf(sym) : undefined, offset, repeat, fr), 'iconSequence'),
+    createIconSequence: (sym, offset, repeat, fr) => createOverlayFactory('IconSequence', () => new rawSDK.IconSequence(sym ? rawOf(sym) : undefined, offset, repeat ?? '', fr), 'iconSequence'),
     createHotspot: (p, o) => {
       const raw = o as Record<string, unknown>;
       const ctorOpts: Record<string, unknown> = {};
@@ -809,6 +846,21 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       return createOverlayFactory('CustomOverlay', () =>
         new rawSDK.CustomOverlay(domCreate ?? (() => document.createElement('div')), ctorOpts),
       'customOverlay');
+    },
+    createMarker3D: (p, height, o) => {
+      const raw = o as Record<string, unknown>;
+      const ctorOpts: Record<string, unknown> = {};
+      if (typeof raw?.shape === 'number') ctorOpts.shape = raw.shape;
+      if (typeof raw?.size === 'number') ctorOpts.size = raw.size;
+      if (typeof raw?.fillColor === 'string') ctorOpts.fillColor = raw.fillColor;
+      if (typeof raw?.fillOpacity === 'number') ctorOpts.fillOpacity = raw.fillOpacity;
+      if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
+      const hasOpts = Object.keys(ctorOpts).length > 0;
+      return createOverlayFactory('Marker3D', () =>
+        hasOpts
+          ? new rawSDK.Marker3D(toRawPoint(rawSDK, p), height, ctorOpts)
+          : new rawSDK.Marker3D(toRawPoint(rawSDK, p), height),
+      'marker3d');
     },
 
     // ─────────────── 27. Overlay 属性 setter ───────────────
@@ -891,9 +943,8 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           if (o.size !== undefined) styles.size = o.size;
           if (Object.keys(styles).length > 0) r.setStyles?.(styles);
         }
-        // rotation=0 是 SDK 默认值，主动调 setRotation(0) 会让 v3.0 默认 marker 进入 rotation 模式，
-        // 导致命中区域塌缩成锚点。Marker 只在非 0 时才调用；GroundPoint/Symbol 的 rotation 安全可设 0。
-        if (typeof o.rotation === 'number' && (ov.type === 'groundPoint' || ov.type === 'symbol' || ov.type === 'customOverlay' || o.rotation !== 0)) r.setRotation?.(o.rotation);
+        // rotation=0 在 v4 下安全，v3 下会导致命中区域塌缩（但影响较小，允许设置以支持重置）
+        if (typeof o.rotation === 'number') r.setRotation?.(o.rotation);
         if (typeof o.title === 'string') r.setTitle?.(o.title);
         if (typeof o.content === 'string') r.setContent?.(o.content);
         // Hotspot 专属：setText / setUserData（@removed 4.0，仅 v3）
@@ -907,9 +958,18 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           if (typeof o.rotationInit === 'number') r.setRotationOrigin?.(o.rotationInit);
           if (o.properties !== undefined) r.setProperties?.(o.properties);
         }
+        // Marker3D 专属 setter（shape/size 无 setter，走 ctorOnlyProps 重建）
+        if (ov.type === 'marker3d') {
+          if (typeof o.height === 'number') r.setHeight?.(o.height);
+          if (typeof o.fillColor === 'string') r.setFillColor?.(o.fillColor);
+          if (typeof o.fillOpacity === 'number') r.setFillOpacity?.(o.fillOpacity);
+        }
         // Label 专属
         if (o.styles && typeof o.styles === 'object') r.setStyles?.(o.styles);
-        if (typeof o.opacity === 'number') r.setOpacity?.(o.opacity);
+        if (typeof o.opacity === 'number') {
+          if (ov.type === 'marker' && typeof r.setOptions === 'function') r.setOptions({ opacity: o.opacity });
+          else r.setOpacity?.(o.opacity);
+        }
         if (o.icon !== undefined) r.setIcon?.(toRawIcon(rawSDK, o.icon));
         // Marker/Label 的 anchor 是 ControlAnchor 枚举（number）；GroundPoint/Symbol/Icon 的 anchor 是 Size
         if (typeof o.anchor === 'number') r.setAnchor?.(o.anchor);
@@ -922,6 +982,10 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         else if (o.enableMassClear === false) r.disableMassClear?.();
         if (typeof o.zIndex === 'number') r.setZIndex?.(o.zIndex);
         if (o.offset) r.setOffset?.(toRawSize(rawSDK, o.offset));
+        // Marker v4+ 专属 setter
+        if (typeof o.color === 'string' && ov.type === 'marker') r.setColor?.(o.color);
+        if (typeof o.rank === 'number' && ov.type === 'marker') r.setRank?.(o.rank);
+        if (typeof o.rotationOrigin === 'number' && ov.type === 'marker') r.setRotationOrigin?.(o.rotationOrigin);
       } catch { /* ignore */ }
     },
 
@@ -949,7 +1013,11 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     // ─────────────── 29. Layer 工厂 ───────────────
     createTileLayer: (o) => createLayerFactory('TileLayer', () => new rawSDK.TileLayer(o), 'tile'),
     createNormalLayer: (o) => createLayerFactory('NormalLayer', () => new rawSDK.NormalLayer(o), 'normal'),
-    createGeoJSONLayer: (o) => createLayerFactory('GeoJSONLayer', () => new rawSDK.GeoJSONLayer(o), 'geojson'),
+    createGeoJSONLayer: (o) => {
+      const opts = o as Record<string, unknown>;
+      const layerName = (opts?.layerName as string) || 'react-bmap-geojson';
+      return createLayerFactory('GeoJSONLayer', () => new rawSDK.GeoJSONLayer(layerName, opts), 'geojson');
+    },
     createDistrictLayer: (o) => createLayerFactory('DistrictLayer', () => new rawSDK.DistrictLayer(o), 'district'),
     createTrafficLayer: (o) => createLayerFactory('TrafficLayer', () => new rawSDK.TrafficLayer(o), 'traffic'),
     createCustomLayer: (o) => createLayerFactory('CustomLayer', () => new rawSDK.CustomLayer(o), 'custom'),
@@ -973,6 +1041,10 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createPointIconLayer: (o) => createLayerFactory('PointIconLayer', () => new rawSDK.PointIconLayer(o), 'custom'),
     createPointShapeLayer: (o) => createLayerFactory('PointShapeLayer', () => new rawSDK.PointShapeLayer(o), 'custom'),
     createPanoramaCoverageLayer: (o) => createLayerFactory('PanoramaCoverageLayer', () => new rawSDK.PanoramaCoverageLayer(o), 'custom'),
+    createLineLayer: (o) => createLayerFactory('LineLayer', () => new rawSDK.LineLayer(o), 'custom'),
+    createPixelLayer: (o) => createLayerFactory('PixelLayer', () => new rawSDK.PixelLayer(o), 'custom'),
+    createBaiduLayer: (o) => createLayerFactory('BaiduLayer', () => new rawSDK.BaiduLayer(o), 'custom'),
+    createThreeLayer: (o) => createLayerFactory('ThreeLayer', () => new rawSDK.ThreeLayer(o), 'custom'),
 
     // ─────────────── 30. ContextMenu ───────────────
     createContextMenu: (o) => createOverlayFactory('ContextMenu', () => new rawSDK.ContextMenu(o), 'contextMenu'),
@@ -986,7 +1058,14 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       try { return mapHandle(new rawSDK.Panorama(container, o)); }
       catch { reportUnsupported('Panorama', version, behavior); return null; }
     },
-    createPanoramaLabel: (o) => createOverlayFactory('PanoramaLabel', () => new rawSDK.PanoramaLabel(o), 'panoramaLabel'),
+    createPanoramaLabel: (o) => {
+      const opts = o as Record<string, unknown>;
+      const content = (opts?.content as string) || '';
+      const labelOpts: Record<string, unknown> = {};
+      if (opts?.position) labelOpts.position = toRawPoint(rawSDK, opts.position as Point);
+      if (typeof opts?.altitude === 'number') labelOpts.altitude = opts.altitude;
+      return createOverlayFactory('PanoramaLabel', () => new rawSDK.PanoramaLabel(content, labelOpts), 'panoramaLabel');
+    },
     destroyPanorama: (handle) => { try { rawOf(handle).destroy?.(); } catch { /* ignore */ } },
 
     // ─────────────── 32. 服务工厂 ───────────────
@@ -1009,6 +1088,10 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     }),
     createConvertor: () => createServiceFactory('Convertor', () => new rawSDK.Convertor()),
     createPanoramaService: () => createServiceFactory('PanoramaService', () => new rawSDK.PanoramaService()),
+    createTruckRoute: (o) => createServiceFactory('TruckRoute', () => {
+      if (!rawSDK.TruckRoute) throw new Error('TruckRoute not exposed in runtime SDK');
+      return new rawSDK.TruckRoute((o as any)?.location, o);
+    }),
 
     searchService(service, query, callbacks) {
       const raw = rawOf(service);

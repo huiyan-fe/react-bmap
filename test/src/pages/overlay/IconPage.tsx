@@ -6,7 +6,7 @@
  * infoWindowAnchor / printImageUrl 为 @removed 4.0；srcset 为 @since 4.0 @hide。
  */
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Map, useMapContext } from 'react-bmap';
+import { Map, useMapContext, useCapabilities } from 'react-bmap';
 import type { OverlayHandle, Point, Size } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 
@@ -116,10 +116,8 @@ export function IconPage() {
     );
   }, []);
 
-  const isV4 = (() => {
-    // 简单判断：v4 有 setHeading
-    return true; // 默认环境是 4.0
-  })();
+  const caps = useCapabilities();
+  const isV4 = caps.has('Map.setHeading');
 
   const v3OnlyTag = (
     <span className={`cap-tag ${isV4 ? 'no' : 'ok'}`}>

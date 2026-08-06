@@ -258,7 +258,7 @@ export function PrismPage() {
             visible（show/hide）
           </label>
           <p className="muted small">
-            Prism 无 enableEditing，也没有任何 stroke / dashArray 配置
+            Prism 无 enableEditing，也没有任何 stroke 配置
           </p>
         </section>
 

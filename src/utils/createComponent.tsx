@@ -109,7 +109,10 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       notify();
       // 值对象（Symbol/Icon 等）不调 addOverlay
       if (!config.skipMount) {
-        if (target?.addOverlay) target.addOverlay(handle);
+        // Hotspot 不是标准 Overlay，用 addHotspot 代替 addOverlay
+        if ((handle as any).type === 'hotspot') {
+          driver.addHotspot?.(map, handle);
+        } else if (target?.addOverlay) target.addOverlay(handle);
         else driver.addOverlay(map, handle);
       }
       // 同步设置一次 options：StrictMode 双调用会重建 overlay（新实例），
@@ -132,7 +135,10 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       return () => {
       // 值对象不调 removeOverlay
       if (!config.skipMount) {
-        if (target?.removeOverlay) target.removeOverlay(handle);
+        // Hotspot 用 removeHotspot 代替 removeOverlay
+        if ((ref.current as any)?.type === 'hotspot') {
+          driver.removeHotspot?.(map, ref.current!);
+        } else if (target?.removeOverlay) target.removeOverlay(handle);
         else if (map) driver.removeOverlay(map, handle);
       }
         ref.current = null;
@@ -331,6 +337,8 @@ export interface LayerComponentConfig<P> {
   addMethod?: keyof BMapDriver;
   /** 移除方法名，默认 'removeLayer' */
   removeMethod?: keyof BMapDriver;
+  /** 事件列表（SDK 事件名 → React 回调 prop 名） */
+  events?: ReadonlyArray<{ sdk: string; prop: keyof P & string }>;
   displayName?: string;
 }
 
@@ -340,6 +348,14 @@ export function createLayerComponent<P>(
   const Comp = memo(function LayerComponentImpl(props: P) {
     const { map, driver } = useMapContext();
     const ref = useRef<LayerHandle | null>(null);
+    const cbRefs = useRef<Record<string, ((e: any) => void) | undefined>>({});
+
+    // 保持事件回调最新引用
+    if (config.events) {
+      for (const ev of config.events) {
+        cbRefs.current[ev.prop] = (props as any)[ev.prop];
+      }
+    }
 
     useLayoutEffect(() => {
       if (!map || !driver) return;
@@ -352,7 +368,21 @@ export function createLayerComponent<P>(
       const add = config.addMethod ?? 'addLayer';
       const remove = config.removeMethod ?? 'removeLayer';
       (driver as any)[add](map, handle);
+
+      // 注册事件
+      const unsubs: Array<() => void> = [];
+      if (config.events && handle.raw) {
+        const raw = handle.raw as any;
+        for (const ev of config.events) {
+          if (typeof raw.addEventListener === 'function') {
+            const unsub = raw.addEventListener(ev.sdk, (e: any) => cbRefs.current[ev.prop]?.(e));
+            if (typeof unsub === 'function') unsubs.push(unsub);
+          }
+        }
+      }
+
       return () => {
+        unsubs.forEach(u => u());
         (driver as any)[remove](map, handle);
         ref.current = null;
       };

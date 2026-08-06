@@ -22,3 +22,7 @@ export { DOMLayerPage } from './DOMLayerPage';
 export { PointIconLayerPage } from './PointIconLayerPage';
 export { PointShapeLayerPage } from './PointShapeLayerPage';
 export { PanoramaCoverageLayerPage } from './PanoramaCoverageLayerPage';
+export { LineLayerPage } from './LineLayerPage';
+export { PixelLayerPage } from './PixelLayerPage';
+export { BaiduLayerPage } from './BaiduLayerPage';
+export { ThreeLayerPage } from './ThreeLayerPage';

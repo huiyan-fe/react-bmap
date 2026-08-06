@@ -29,7 +29,6 @@ export function PolygonPage() {
   const [strokeLineCap, setStrokeLineCap] = useState<'round' | 'butt' | 'square'>('round');
   const [strokeLineJoin, setStrokeLineJoin] = useState<'round' | 'miter' | 'bevel'>('round');
   const [linkRight, setLinkRight] = useState(false);
-  const [dashArray, setDashArray] = useState<number[]>([]);
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
@@ -72,13 +71,6 @@ export function PolygonPage() {
             strokeOpacity={strokeOpacity}
             fillOpacity={fillOpacity}
             strokeStyle={strokeStyle}
-            enableEditing={enableEditing}
-            enableMassClear={enableMassClear}
-            enableClicking={enableClicking}
-            strokeLineCap={strokeLineCap}
-            strokeLineJoin={strokeLineJoin}
-            linkRight={linkRight}
-            dashArray={dashArray.length ? dashArray : undefined}
             zIndex={zIndex}
             visible={visible}
             onClick={onEvt('click')}
@@ -157,7 +149,7 @@ export function PolygonPage() {
         {/* fillColor */}
         <section>
           <h3>fillColor</h3>
-          <input type="color" value={fillColor}
+          <input type="color" value={fillColor || '#ffffff'}
             onChange={e => setFillColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {fillColor}
@@ -258,26 +250,29 @@ export function PolygonPage() {
           </div>
         </section>
 
-        <section>
-          <h3>dashArray {v4Tag}</h3>
-          <input type="text" placeholder="如 8,4"
-            value={dashArray.join(',')}
-            onChange={e => {
-              const parts = e.target.value.split(',')
-                .map(s => Number(s.trim()))
-                .filter(n => !isNaN(n) && n > 0);
-              setDashArray(parts);
-            }} />
-        </section>
-
         {/* zIndex */}
         <section>
-          <h3>zIndex {v4Tag}</h3>
+          <h3>zIndex</h3>
           <input type="number" placeholder="未设置"
             value={zIndex ?? ''}
             onChange={e =>
               setZIndex(e.target.value === '' ? undefined : Number(e.target.value))
             } />
+        </section>
+
+        {/* 路径操作 */}
+        <section>
+          <h3>路径操作（path 变更触发 setPath）</h3>
+          <div className="btn-group" style={{ flexWrap: 'wrap' }}>
+            <button style={{ fontSize: 11 }} onClick={() => {
+              setPath(p => [...p, { lng: p[p.length - 1].lng + 0.005, lat: p[p.length - 1].lat + 0.003 }]);
+              log('➕ 添加顶点');
+            }}>添加顶点</button>
+            <button style={{ fontSize: 11 }} onClick={() => {
+              setPath(p => p.length > 3 ? p.slice(0, -1) : p);
+              log('➖ 删除末尾顶点');
+            }}>删除末尾顶点</button>
+          </div>
         </section>
 
         {/* 动作 */}
@@ -298,15 +293,10 @@ export function PolygonPage() {
               setStrokeLineCap('round');
               setStrokeLineJoin('round');
               setLinkRight(false);
-              setDashArray([]);
               setZIndex(undefined);
               setVisible(true);
               log('🔄 reset all');
             }}>reset all</button>
-            <button style={{ fontSize: 11 }} onClick={() => {
-              setPath(p => [...p.reverse()]);
-              log('🔄 反转路径');
-            }}>反转路径</button>
           </div>
         </section>
 

@@ -2,7 +2,7 @@
  * CustomLayer 测试页 — LBS 云数据图层。
  * dts 标记 @removed 4.0（v3-only），v4 下可能不可用。
  *
- * Options: databoxId, geotableId, q, tags, filter, pointDensityType
+ * Options: databoxId, geotableId, q, tags, filter, pointDensity
  */
 import React, { useState } from 'react';
 import { Map, CustomLayer, useCapabilities } from 'react-bmap';
@@ -17,9 +17,9 @@ export function CustomLayerPage() {
   const [q, setQ] = useState('');
   const [tags, setTags] = useState('');
   const [filter, setFilter] = useState('');
-  const [pointDensityType, setPointDensityType] = useState<number | undefined>(undefined);
+  const [pointDensity, setPointDensityType] = useState<number | undefined>(undefined);
 
-  const rebuildKey = `${databoxId}|${geotableId}|${q}|${tags}|${filter}|${pointDensityType ?? ''}`;
+  const rebuildKey = `${databoxId}|${geotableId}|${q}|${tags}|${filter}|${pointDensity ?? ''}`;
 
   return (
     <div className="test-page">
@@ -33,7 +33,7 @@ export function CustomLayerPage() {
               q={q || undefined}
               tags={tags || undefined}
               filter={filter || undefined}
-              pointDensityType={pointDensityType}
+              pointDensity={pointDensity}
             />
           )}
         </Map>
@@ -84,8 +84,8 @@ export function CustomLayerPage() {
         </section>
 
         <section>
-          <h3>pointDensityType</h3>
-          <input type="number" placeholder="未设置" value={pointDensityType ?? ''} onChange={e => setPointDensityType(e.target.value === '' ? undefined : Number(e.target.value))} />
+          <h3>pointDensity</h3>
+          <input type="number" placeholder="未设置" value={pointDensity ?? ''} onChange={e => setPointDensityType(e.target.value === '' ? undefined : Number(e.target.value))} />
         </section>
 
         <section>
@@ -108,7 +108,7 @@ export function CustomLayerPage() {
     q="餐厅"
     tags="美食,中餐"
     filter="price>100"
-    pointDensityType={1}
+    pointDensity={1}
   />
 </Map>`}
           </pre>

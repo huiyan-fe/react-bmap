@@ -26,7 +26,6 @@ export function RectanglePage() {
   const [enableMassClear, setEnableMassClear] = useState(true);
   const [enableClicking, setEnableClicking] = useState(true);
   const [linkRight, setLinkRight] = useState(false);
-  const [dashArray, setDashArray] = useState<number[]>([]);
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
@@ -76,7 +75,6 @@ export function RectanglePage() {
             enableMassClear={enableMassClear}
             enableClicking={enableClicking}
             linkRight={linkRight}
-            dashArray={dashArray.length ? dashArray : undefined}
             zIndex={zIndex}
             visible={visible}
             onClick={onEvt('click')}
@@ -261,19 +259,6 @@ export function RectanglePage() {
           </label>
         </section>
 
-        {/* ctorOnlyProps — 重建生效 */}
-        <section>
-          <h3>dashArray</h3>
-          <input type="text" placeholder="如 8,4"
-            value={dashArray.join(',')}
-            onChange={e => {
-              const parts = e.target.value.split(',')
-                .map(s => Number(s.trim()))
-                .filter(n => !isNaN(n) && n > 0);
-              setDashArray(parts);
-            }} />
-        </section>
-
         {/* zIndex */}
         <section>
           <h3>zIndex</h3>
@@ -300,7 +285,6 @@ export function RectanglePage() {
               setEnableMassClear(true);
               setEnableClicking(true);
               setLinkRight(false);
-              setDashArray([]);
               setZIndex(undefined);
               setVisible(true);
               log('🔄 reset all');

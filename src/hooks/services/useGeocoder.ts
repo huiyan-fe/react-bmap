@@ -43,21 +43,19 @@ export function useGeocoder(): GeocoderHookResult {
 
   const doAction = useCallback((fn: (raw: any) => void) => {
     if (!rawRef.current) return;
-    const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
     try {
       fn(rawRef.current);
     } catch (e) {
-      if (requestId === requestIdRef.current) {
-        setState(s => ({ ...s, loading: false, error: e as Error }));
-      }
+      setState(s => ({ ...s, loading: false, error: e as Error }));
     }
   }, []);
 
   const getPoint = useCallback((address: string, city?: string) => {
+    const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
       const cb = (result: any) => {
-        if (requestIdRef.current === 0) return;
+        if (myRequestId !== requestIdRef.current) return;
         setState({ data: result, loading: false, error: null, supported: true });
       };
       if (city !== undefined) raw.getPoint?.(address, cb, city);
@@ -66,10 +64,12 @@ export function useGeocoder(): GeocoderHookResult {
   }, [doAction]);
 
   const getLocation = useCallback((point: Point, options?: unknown) => {
+    const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
-      const SDK = (globalThis as any).BMap || (globalThis as any).BMapGL;
+      const SDK = (globalThis as any).BMap;
       const pt = new SDK.Point(point.lng, point.lat);
       const cb = (result: any) => {
+        if (myRequestId !== requestIdRef.current) return;
         setState({ data: result, loading: false, error: null, supported: true });
       };
       if (options !== undefined) raw.getLocation?.(pt, cb, options);

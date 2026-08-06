@@ -42,7 +42,7 @@ export interface MapProps {
   minZoom?: number;
   maxZoom?: number;
   // 地图类型
-  mapType?: string;
+  mapType?: string | number;
   // 光标
   defaultCursor?: string;
   draggingCursor?: string;
@@ -54,6 +54,34 @@ export interface MapProps {
   onZoomChange?: (zoom: number) => void;
   onHeadingChange?: (heading: number) => void;
   onTiltChange?: (tilt: number) => void;
+  // 鼠标事件
+  onClick?: (e: any) => void;
+  onDblClick?: (e: any) => void;
+  onRightClick?: (e: any) => void;
+  onMouseMove?: (e: any) => void;
+  onMouseDown?: (e: any) => void;
+  onMouseUp?: (e: any) => void;
+  onMouseOver?: (e: any) => void;
+  onMouseOut?: (e: any) => void;
+  // 拖拽 / 移动
+  onDragStart?: (e: any) => void;
+  onDragging?: (e: any) => void;
+  onDragEnd?: (e: any) => void;
+  onMoveStart?: (e: any) => void;
+  onMoving?: (e: any) => void;
+  onMoveEnd?: (e: any) => void;
+  // 缩放
+  onZoomStart?: (e: any) => void;
+  onZooming?: (e: any) => void;
+  onZoomEnd?: (e: any) => void;
+  // 其他
+  onResize?: (e: any) => void;
+  onTilesLoaded?: (e: any) => void;
+  onMapTypeChange?: (e: any) => void;
+  onTouchStart?: (e: any) => void;
+  onTouchMove?: (e: any) => void;
+  onTouchEnd?: (e: any) => void;
+  onLongPress?: (e: any) => void;
   // DOM
   className?: string;
   style?: CSSProperties;
@@ -80,6 +108,10 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     enableAutoResize,
     minZoom, maxZoom, mapType, defaultCursor, draggingCursor, theme,
     onReady, onCenterChange, onZoomChange, onHeadingChange, onTiltChange,
+    onClick, onDblClick, onRightClick, onMouseMove, onMouseDown, onMouseUp, onMouseOver, onMouseOut,
+    onDragStart, onDragging, onDragEnd, onMoveStart, onMoving, onMoveEnd,
+    onZoomStart, onZooming, onZoomEnd, onResize, onTilesLoaded, onMapTypeChange,
+    onTouchStart, onTouchMove, onTouchEnd, onLongPress,
     className, style, errorFallback = null, children,
   } = props;
 
@@ -325,6 +357,35 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     if (!map || !driver || mapStyleV2 === undefined) return;
     driver.setMapStyleV2(map, mapStyleV2);
   }, [map, driver, mapStyleV2]);
+
+  // ─── 事件订阅（React 方式：onClick / onZoomEnd 等 prop） ───
+  const eventProps = {
+    onClick, onDblClick, onRightClick, onMouseMove, onMouseDown, onMouseUp, onMouseOver, onMouseOut,
+    onDragStart, onDragging, onDragEnd, onMoveStart, onMoving, onMoveEnd,
+    onZoomStart, onZooming, onZoomEnd, onResize, onTilesLoaded, onMapTypeChange,
+    onTouchStart, onTouchMove, onTouchEnd, onLongPress,
+  };
+  useEffect(() => {
+    if (!map || !driver) return;
+    const EVENT_MAP: Record<string, string> = {
+      onClick: 'click', onDblClick: 'dblclick', onRightClick: 'rightclick',
+      onMouseMove: 'mousemove', onMouseDown: 'mousedown', onMouseUp: 'mouseup',
+      onMouseOver: 'mouseover', onMouseOut: 'mouseout',
+      onDragStart: 'dragstart', onDragging: 'dragging', onDragEnd: 'dragend',
+      onMoveStart: 'movestart', onMoving: 'moving', onMoveEnd: 'moveend',
+      onZoomStart: 'zoomstart', onZooming: 'zooming', onZoomEnd: 'zoomend',
+      onResize: 'resize', onTilesLoaded: 'tilesloaded', onMapTypeChange: 'maptypechange',
+      onTouchStart: 'touchstart', onTouchMove: 'touchmove', onTouchEnd: 'touchend',
+      onLongPress: 'longpress',
+    };
+    const unsubs: Array<() => void> = [];
+    for (const [prop, evt] of Object.entries(EVENT_MAP)) {
+      const handler = (eventProps as Record<string, ((e: any) => void) | undefined>)[prop];
+      if (handler) unsubs.push(driver.addEventListener(map, evt, handler));
+    }
+    return () => unsubs.forEach(u => u());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, driver, ...Object.values(eventProps)]);
 
   const ctxValue = useMemo(() => (map && driver ? { map, driver } : null), [map, driver]);
 

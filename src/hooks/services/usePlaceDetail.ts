@@ -1,7 +1,7 @@
 /**
  * usePlaceDetail — 地点详情 Hook（手写）。
- * SDK：render(data) / rerender() / setData(data) / dispose()
- * render() 内部需要访问 map.v4aboveExt，构造时必须传 map。
+ * SDK：render(uid) / rerender() / setData(data) / dispose()
+ * render() 是异步的（SDK 内部发请求获取详情），loading 在 render 后保持 true。
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
@@ -33,22 +33,15 @@ export function usePlaceDetail(opts: PlaceDetailOptions = {}): PlaceDetailHookRe
     data: undefined, loading: false, error: null, supported: true,
   });
 
-  const optKey = stableStringify({ compact: opts.compact, ro: opts.renderOptions, container: opts.container, map: opts.map });
+  const optKey = stableStringify({ compact: opts.compact, ro: opts.renderOptions, container: opts.container });
 
   useEffect(() => {
     if (!driver) return;
     const container = opts.container ?? document.createElement('div');
-    // 解包 map — 必须是 raw BMapGL.Map 实例
-    let rawMap: unknown = undefined;
-    if (opts.map) {
-      rawMap = (opts.map as any).__brand ? (opts.map as any).raw : opts.map;
-    }
-    console.log('[usePlaceDetail] rawMap:', rawMap?.constructor?.name, 'has v4aboveExt:', !!(rawMap as any)?.v4aboveExt);
 
     const searchOpts: Record<string, unknown> = { container };
     if (opts.compact !== undefined) searchOpts.compact = opts.compact;
     if (opts.renderOptions !== undefined) searchOpts.renderOptions = opts.renderOptions;
-    if (rawMap) searchOpts.map = rawMap;
 
     const handle = driver.createPlaceDetail(searchOpts);
     if (handle.isNull) {
@@ -56,15 +49,6 @@ export function usePlaceDetail(opts: PlaceDetailOptions = {}): PlaceDetailHookRe
       return;
     }
     rawRef.current = (handle as any).raw;
-
-    // 如果 SDK 构造时没设 map，手动设到实例上
-    if (rawMap && !rawRef.current._map && !rawRef.current.map) {
-      try {
-        rawRef.current._map = rawMap;
-        rawRef.current.map = rawMap;
-        console.log('[usePlaceDetail] set map on instance manually');
-      } catch { /* noop */ }
-    }
 
     setState(s => ({ ...s, supported: true, error: null }));
     return () => { rawRef.current?.dispose?.(); rawRef.current = null; };
@@ -77,11 +61,11 @@ export function usePlaceDetail(opts: PlaceDetailOptions = {}): PlaceDetailHookRe
     try {
       const container = opts.container as HTMLElement | undefined;
       if (container) container.innerHTML = '';
-      // render 接受字符串 uid，不是对象
+      // render 接受字符串 uid，SDK 内部异步请求详情数据
       rawRef.current.render?.(uid);
-      setState({ data: { uid }, loading: false, error: null, supported: true });
+      // SDK 异步渲染，延迟清除 loading
+      setTimeout(() => setState(s => ({ ...s, data: { uid }, loading: false })), 500);
     } catch (e) {
-      console.log('[usePlaceDetail] render error:', e);
       setState(s => ({ ...s, loading: false, error: e as Error }));
     }
   }, [opts.container]);

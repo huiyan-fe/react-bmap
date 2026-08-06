@@ -53,6 +53,8 @@ export function MarkerPage() {
   const [clicking, setClicking] = useState(true);
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [anchor, setAnchor] = useState<number | undefined>(undefined);
+  const [color, setColor] = useState<string | undefined>(undefined);
+  const [rank, setRank] = useState<number | undefined>(undefined);
   const [iconMode, setIconMode] = useState<typeof ICON_MODES[number]>('默认');
   const [showLabel, setShowLabel] = useState(false);
   const [labelText, setLabelText] = useState('标注文字');
@@ -94,12 +96,12 @@ export function MarkerPage() {
   const iconProps = useMemo<{ icon?: PlainIcon }>(() => {
     switch (iconMode) {
       case '自定义URL':
-        return { icon: { url: ICON_URL, size: { width: 30, height: 30 } } };
+        return { icon: { url: ICON_URL, size: { width: 30, height: 30 }, imageSize: { width: 30, height: 30 } } };
       case 'SVG':
-        return { icon: { url: SVG_CIRCLE, size: { width: 32, height: 32 } } };
+        return { icon: { url: SVG_CIRCLE, size: { width: 32, height: 32 }, imageSize: { width: 32, height: 32 } } };
       case 'CSS Sprites':
         return { icon: { url: ICON_SPRITE, size: { width: 30, height: 30 },
-          imageOffset: { width: 60, height: 0 }, imageSize: { width: 90, height: 90 }, anchor: { width: 15, height: 30 } } };
+          imageOffset: { width: 60, height: 0 }, imageSize: { width: 300, height: 300 }, anchor: { width: 15, height: 30 } } };
       default:
         return {};
     }
@@ -142,6 +144,8 @@ export function MarkerPage() {
             draggingCursor={draggingCursor || undefined}
             zIndex={zIndex}
             anchor={anchor as any}
+            color={color}
+            rank={rank}
             offset={offsetX || offsetY ? { width: offsetX, height: offsetY } : undefined}
             {...iconProps}
             onDragEnd={handleDragEnd}
@@ -287,6 +291,21 @@ export function MarkerPage() {
           <input type="number" placeholder="未设置" value={zIndex ?? ''} onChange={e => setZIndex(e.target.value === '' ? undefined : Number(e.target.value))} />
         </section>
 
+        {/* ─── v4 视觉属性 ─── */}
+        <section>
+          <h3>v4+ 视觉属性 <span className={`cap-tag ${caps.has('Map.setHeading') ? 'ok' : 'no'}`}>{caps.has('Map.setHeading') ? 'v4+' : 'v3 ✗'}</span></h3>
+          <div className="input-row">
+            <label>color</label>
+            <input type="text" placeholder="如 #ff0000" value={color ?? ''} onChange={e => setColor(e.target.value || undefined)} />
+            <input type="color" value={color ?? '#ff0000'} onChange={e => setColor(e.target.value)} style={{ width: 40, padding: 0 }} />
+          </div>
+          <div className="input-row" style={{ marginTop: 8 }}>
+            <label>rank（碰撞优先级）</label>
+            <input type="number" placeholder="未设置" value={rank ?? ''} onChange={e => setRank(e.target.value === '' ? undefined : Number(e.target.value))} style={{ width: 80 }} />
+            <button onClick={() => setRank(undefined)}>清除</button>
+          </div>
+        </section>
+
         {/* ─── Offset ─── */}
         <section>
           <h3>offset（像素偏移）</h3>
@@ -376,7 +395,7 @@ export function MarkerPage() {
 
           <div style={{ fontSize: 11, fontWeight: 600, marginTop: 8, marginBottom: 4 }}>动作</div>
           <div className="btn-group" style={{ flexWrap: 'wrap' }}>
-            <button style={{ fontSize: 11 }} onClick={() => { setPosition({ lng: 116.404, lat: 39.915 }); setRotation(0); setTitle('天安门'); setZIndex(undefined); setAnchor(undefined); setIconMode('默认'); setOffsetX(0); setOffsetY(0); setRaiseOnDrag(false); setDraggingCursor(''); log('🔄 reset all'); }}>reset all</button>
+            <button style={{ fontSize: 11 }} onClick={() => { setPosition({ lng: 116.404, lat: 39.915 }); setRotation(0); setTitle('天安门'); setZIndex(undefined); setAnchor(undefined); setIconMode('默认'); setOffsetX(0); setOffsetY(0); setRaiseOnDrag(false); setDraggingCursor(''); setColor(undefined); setRank(undefined); log('🔄 reset all'); }}>reset all</button>
             <button style={{ fontSize: 11 }} onClick={() => setRotation(r => (r + 45) % 360)}>rotate +45°</button>
             <button style={{ fontSize: 11 }} onClick={() => setRotation(r => (r + 360 - 45) % 360)}>rotate -45°</button>
             <button style={{ fontSize: 11 }} onClick={() => setZIndex(z => (z ?? 0) + 1)}>zIndex +1</button>

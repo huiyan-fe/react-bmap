@@ -29,8 +29,6 @@ export function PlaceDetailPage() {
   const [displayContactInformation, setDisplayContactInformation] = useState(true);
   const [contactInformationCount, setContactInformationCount] = useState<number | undefined>(2);
   const [displayAddress, setDisplayAddress] = useState(true);
-  const [displayComment, setDisplayComment] = useState(true);
-  const [displayCommentTotalCount, setDisplayCommentTotalCount] = useState(true);
 
   const renderOptions = useMemo<PlaceDetailRenderOptions>(() => ({
     displayCarousel,
@@ -43,8 +41,6 @@ export function PlaceDetailPage() {
     displayContactInformation,
     contactInformationCount,
     displayAddress,
-    displayComment,
-    displayCommentTotalCount,
   }), [
     displayCarousel,
     displayTag,
@@ -56,8 +52,6 @@ export function PlaceDetailPage() {
     displayContactInformation,
     contactInformationCount,
     displayAddress,
-    displayComment,
-    displayCommentTotalCount,
   ]);
 
   const options = useMemo<PlaceDetailOptions>(() => ({
@@ -211,22 +205,6 @@ export function PlaceDetailPage() {
             />
             displayAddress
           </label>
-          <label className="checkbox-row">
-            <input
-              type="checkbox"
-              checked={displayComment}
-              onChange={e => setDisplayComment(e.target.checked)}
-            />
-            displayComment
-          </label>
-          <label className="checkbox-row">
-            <input
-              type="checkbox"
-              checked={displayCommentTotalCount}
-              onChange={e => setDisplayCommentTotalCount(e.target.checked)}
-            />
-            displayCommentTotalCount
-          </label>
         </section>
 
         <section>
@@ -248,8 +226,6 @@ export function PlaceDetailPage() {
                 setDisplayContactInformation(true);
                 setContactInformationCount(2);
                 setDisplayAddress(true);
-                setDisplayComment(true);
-                setDisplayCommentTotalCount(true);
               }}
             >
               reset all
@@ -268,11 +244,11 @@ export function PlaceDetailPage() {
               style={{ fontSize: 11 }}
               onClick={() => {
                 setPosition({ lng: 116.397, lat: 39.908 });
-                setUid(DEFAULT_UID);
+                setUid('435d7aea036e54355abbbcc8');
                 setOpen(true);
               }}
             >
-              天安门预设
+              百度大厦预设
             </button>
           </div>
         </section>

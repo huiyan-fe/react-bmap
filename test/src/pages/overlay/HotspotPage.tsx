@@ -47,7 +47,6 @@ function HotspotLayer(props: {
     driver.setOverlayOptions(h, { text, userData });
     driver.addHotspot(map, h);
     onLog(`✅ Hotspot 创建 text="${text}" pos=${position.lng},${position.lat}`);
-    console.log('[Hotspot] rebuild', { text, position, raw: h });
 
     return () => {
       // removeHotspot 可能不生效，用 clearHotspots 确保清空

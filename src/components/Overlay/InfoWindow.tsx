@@ -106,14 +106,14 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
         const rawTarget = openTarget?.raw ?? openTarget;
         const rawIW = (iw as any).raw;
 
-        if (typeof rawTarget?.openInfoWindow === 'function') {
-          // marker.openInfoWindow(iw) — v3/v4
-          rawTarget.openInfoWindow(rawIW);
-        } else if (position) {
-          // map.openInfoWindow(iw, point) — v3 fallback
+        if (position) {
+          // 独立用法：map.openInfoWindow(iw, point) — 需要 point 参数
           const SDK = (globalThis as any).BMap;
           const pt = new SDK.Point(position.lng, position.lat);
           rawTarget?.openInfoWindow?.(rawIW, pt);
+        } else if (typeof rawTarget?.openInfoWindow === 'function') {
+          // 嵌套用法：marker.openInfoWindow(iw)
+          rawTarget.openInfoWindow(rawIW);
         }
       } catch (e) {
         console.warn('[InfoWindow] open failed:', e);

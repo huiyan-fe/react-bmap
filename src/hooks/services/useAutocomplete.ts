@@ -83,15 +83,13 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
     const raw = rawRef.current;
-    console.log('[useAutocomplete] raw.search:', typeof raw?.search, 'keywords:', keywords);
     cbRef.current = (results: unknown) => {
-      console.log('[useAutocomplete] callback fired, results:', results);
       if (requestId !== requestIdRef.current) return;
       setState({ data: results, loading: false, error: null, supported: true });
     };
     if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(cbRef.current);
     try { raw.search?.(keywords); }
-    catch (e) { console.log('[useAutocomplete] search error:', e); if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
+    catch (e) { if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
   }, []);
 
   const show = useCallback(() => { rawRef.current?.show?.(); }, []);

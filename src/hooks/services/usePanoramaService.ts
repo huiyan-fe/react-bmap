@@ -40,32 +40,31 @@ export function usePanoramaService(): PanoramaServiceHookResult {
 
   const doAction = useCallback((fn: (raw: any) => void) => {
     if (!rawRef.current) return;
-    const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
     try {
       fn(rawRef.current);
     } catch (e) {
-      if (requestId === requestIdRef.current) {
-        setState(s => ({ ...s, loading: false, error: e as Error }));
-      }
+      setState(s => ({ ...s, loading: false, error: e as Error }));
     }
   }, []);
 
   const getPanoramaById = useCallback((id: string) => {
+    const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
       raw.getPanoramaById?.(id, (data: any) => {
-        if (requestIdRef.current === 0) return;
+        if (myRequestId !== requestIdRef.current) return;
         setState({ data, loading: false, error: null, supported: true });
       });
     });
   }, [doAction]);
 
   const getPanoramaByLocation = useCallback((point: Point, radius: number) => {
+    const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
-      const SDK = (globalThis as any).BMap || (globalThis as any).BMapGL;
+      const SDK = (globalThis as any).BMap;
       const pt = new SDK.Point(point.lng, point.lat);
       raw.getPanoramaByLocation?.(pt, radius, (data: any) => {
-        if (requestIdRef.current === 0) return;
+        if (myRequestId !== requestIdRef.current) return;
         setState({ data, loading: false, error: null, supported: true });
       });
     });

@@ -83,7 +83,6 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
   const svcRef = useRef<ServiceHandle | null>(null);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
-  const cancelFnRef = useRef<(() => void) | null>(null);
 
   const [state, setState] = useState<{
     data: T | undefined; loading: boolean; error: Error | null; supported: boolean;
@@ -165,7 +164,6 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
-    cancelFnRef.current?.();
     // 先注册回调，再调搜索（SDK 要求回调在 search 之前注册）
     const raw = rawRef.current;
     if (raw && typeof raw.setSearchCompleteCallback === 'function') {
@@ -203,7 +201,7 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
         c = (c as any).raw;
       } else if (c && typeof c === 'object' && 'lng' in (c as any)) {
         // 纯 { lng, lat } 对象 → SDK Point 实例
-        const SDK = (globalThis as any).BMap || (globalThis as any).BMapGL;
+        const SDK = (globalThis as any).BMap;
         c = new SDK.Point((c as any).lng, (c as any).lat);
       }
       rawRef.current.searchNearby?.(keyword, c, radius);
@@ -218,7 +216,7 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
         b = (b as any).raw;
       } else if (b && typeof b === 'object' && 'sw' in (b as any)) {
         // 纯 { sw: {lng,lat}, ne: {lng,lat} } → SDK Bounds 实例
-        const SDK = (globalThis as any).BMap || (globalThis as any).BMapGL;
+        const SDK = (globalThis as any).BMap;
         const sw = (b as any).sw;
         const ne = (b as any).ne;
         b = new SDK.Bounds(new SDK.Point(sw.lng, sw.lat), new SDK.Point(ne.lng, ne.lat));
@@ -256,8 +254,6 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
 
   const cancel = useCallback(() => {
     requestIdRef.current++;
-    cancelFnRef.current?.();
-    cancelFnRef.current = null;
     setState(s => ({ ...s, loading: false }));
   }, []);
 

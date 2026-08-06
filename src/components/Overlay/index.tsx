@@ -8,12 +8,13 @@ export type {
   RectangleProps, BezierCurveProps, PrismProps, GroundOverlayProps,
   GroundPointProps, PointCollectionProps, InfoWindowProps, SymbolProps,
   IconProps, IconSequenceProps, HotspotProps, CustomOverlayProps,
+  Marker3DProps, Marker3DOptions,
 } from './types';
 import type {
   MarkerProps, LabelProps, PolylineProps, PolygonProps, CircleProps,
   RectangleProps, BezierCurveProps, PrismProps, GroundOverlayProps,
   GroundPointProps, PointCollectionProps, InfoWindowProps, SymbolProps,
-  IconProps, IconSequenceProps, HotspotProps,
+  IconProps, IconSequenceProps, HotspotProps, Marker3DProps,
 } from './types';
 
 // ─── 点标注 ───
@@ -21,9 +22,9 @@ export const Marker = createOverlayComponent<MarkerProps>({
   displayName: 'Marker',
   factory: (d, p) => d.createMarker(p.position, p),
   positionProp: 'position',
-  optionProps: ['offset', 'icon', 'anchor', 'enableMassClear', 'enableDragging', 'rotation', 'title', 'zIndex'],
+  optionProps: ['offset', 'icon', 'enableMassClear', 'enableDragging', 'rotation', 'title', 'zIndex', 'opacity', 'color', 'rank', 'rotationOrigin'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建。
-  ctorOnlyProps: ['enableClicking', 'raiseOnDrag', 'draggingCursor', 'shadow'],
+  ctorOnlyProps: ['enableClicking', 'raiseOnDrag', 'draggingCursor', 'shadow', 'baseZIndex', 'restrictDraggingArea', 'enableCollisionDetection', 'enableDraggingMap', 'anchor'],
   events: [
     { sdk: 'click', prop: 'onClick' },
     { sdk: 'dblclick', prop: 'onDoubleClick' },
@@ -45,8 +46,8 @@ export const Label = createOverlayComponent<LabelProps>({
   displayName: 'Label',
   factory: (d, p) => d.createLabel(p.content, p),
   positionProp: 'position',
-  optionProps: ['content', 'offset', 'anchor', 'enableMassClear', 'styles', 'opacity', 'title', 'zIndex'],
-  ctorOnlyProps: ['enableClicking', 'width'],
+  optionProps: ['content', 'offset', 'enableMassClear', 'styles', 'opacity', 'title', 'zIndex'],
+  ctorOnlyProps: ['enableClicking', 'width', 'anchor'],
   events: [
     { sdk: 'click', prop: 'onClick' },
     { sdk: 'dblclick', prop: 'onDoubleClick' },
@@ -276,7 +277,8 @@ export const GroundPoint = createOverlayComponent<GroundPointProps>({
     'enableMassClear', 'zIndex',
   ],
   // SDK 无 setter：level（仅构造时读取）、enableClicking（GroundOverlay 继承，无 disable 方法）
-  ctorOnlyProps: ['level', 'enableClicking'],
+  // type/top/isReDraw/drawHook 继承自 GroundOverlayOptions，仅构造时读取
+  ctorOnlyProps: ['level', 'enableClicking', 'type', 'top', 'isReDraw', 'drawHook'],
   // GroundOverlayEventMap：无 GroundPointEventMap，事件沿用 GroundOverlay 的一套；整体 @since 4.0
   events: [
     { sdk: 'click', prop: 'onClick' },
@@ -355,6 +357,32 @@ export const Hotspot = createOverlayComponent<HotspotProps>({
 
 // ─── 自定义覆盖物（独立组件，见 CustomOverlay.tsx） ───
 export { CustomOverlay } from './CustomOverlay';
+
+// ─── 4.0+ 覆盖物 ───
+// Marker3D — 3D 标注（v4+ WebGL only）
+// SDK: setPosition/setHeight/setFillColor/setFillOpacity 有 setter；shape/size 无 setter（重建）
+export const Marker3D = createOverlayComponent<Marker3DProps>({
+  displayName: 'Marker3D',
+  factory: (d, p) => d.createMarker3D(p.position, p.height, p),
+  positionProp: 'position',
+  optionProps: ['height', 'fillColor', 'fillOpacity'],
+  ctorOnlyProps: ['shape', 'size', 'enableMassClear'],
+  events: [
+    { sdk: 'click', prop: 'onClick' },
+    { sdk: 'dblclick', prop: 'onDoubleClick' },
+    { sdk: 'rightclick', prop: 'onRightClick' },
+    { sdk: 'mouseover', prop: 'onMouseOver' },
+    { sdk: 'mouseout', prop: 'onMouseOut' },
+    { sdk: 'mousedown', prop: 'onMouseDown' },
+    { sdk: 'mouseup', prop: 'onMouseUp' },
+  ],
+  supportsChildren: true,
+});
+
+export { MapMask } from './MapMask';
+export type { MapMaskProps, MapMaskOptions } from './MapMask';
+export { SimpleInfoWindow } from './SimpleInfoWindow';
+export type { SimpleInfoWindowProps, SimpleInfoWindowOptions } from './SimpleInfoWindow';
 
 // ─── PlaceDetail（v4+ 地点详情，类似 InfoWindow 的声明式组件） ───
 export { PlaceDetail } from './PlaceDetail';

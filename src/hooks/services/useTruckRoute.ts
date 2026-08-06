@@ -1,6 +1,7 @@
 /**
- * useRidingRoute — 骑行路线规划 Hook（手写，完整实现）。
- * SDK：search(Point, Point) / clearResults / enableAutoViewport / disableAutoViewport / setLocation / getStatus
+ * useTruckRoute — 货车路线规划 Hook（手写）。
+ * SDK 方法：search(start, end) / getResults / clearResults / setPolicy / setPageCapacity
+ * / setIntercityPolicy / setTransitTypePolicy / setLocation / getStatus
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
@@ -8,10 +9,10 @@ import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
 
-export type RidingRouteOptions = Omit<DrivingRouteOptions, 'policy'>;
-export type RidingRouteHookResult = Omit<DrivingRouteHookResult, 'setPolicy'> & { setPolicy?: never };
+export type TruckRouteOptions = DrivingRouteOptions;
+export type TruckRouteHookResult = DrivingRouteHookResult & { setPageCapacity: (n: number) => void };
 
-export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): RidingRouteHookResult {
+export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckRouteHookResult {
   const { driver } = useBMapContext();
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
@@ -24,7 +25,7 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
   });
 
   const locKey = stableStringify(opts.location);
-  const optKey = stableStringify({ ro: opts.renderOptions });
+  const optKey = stableStringify({ policy: opts.policy, ro: opts.renderOptions });
 
   useEffect(() => {
     if (!driver) return;
@@ -39,6 +40,7 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
       if (loc && (loc as any).__brand) loc = (loc as any).raw;
       searchOpts.location = loc;
     }
+    if (opts.policy !== undefined) searchOpts.policy = opts.policy;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
     searchOpts.onSearchComplete = (results: unknown) => { searchCbRef.current?.(results); };
     if (callbacksRef.current.onMarkersSet) searchOpts.onMarkersSet = (pois: unknown[]) => callbacksRef.current.onMarkersSet?.(pois);
@@ -46,9 +48,9 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
     if (callbacksRef.current.onPolylinesSet) searchOpts.onPolylinesSet = (pls: unknown[]) => callbacksRef.current.onPolylinesSet?.(pls);
     if (callbacksRef.current.onResultsHtmlSet) searchOpts.onResultsHtmlSet = (c: HTMLElement) => callbacksRef.current.onResultsHtmlSet?.(c);
 
-    const handle = driver.createRidingRoute(Object.keys(searchOpts).length > 0 ? searchOpts : undefined);
+    const handle = driver.createTruckRoute(searchOpts);
     if (handle.isNull) {
-      setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('RidingRoute', driver.version), supported: false });
+      setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('TruckRoute', driver.version), supported: false });
       return;
     }
     rawRef.current = (handle as any).raw;
@@ -91,12 +93,14 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
   const clearResults = useCallback(() => { rawRef.current?.clearResults?.(); setState(s => ({ ...s, data: undefined, loading: false })); }, []);
   const enableAutoViewport = useCallback(() => { rawRef.current?.enableAutoViewport?.(); }, []);
   const disableAutoViewport = useCallback(() => { rawRef.current?.disableAutoViewport?.(); }, []);
+  const setPolicy = useCallback((p: number) => { rawRef.current?.setPolicy?.(p); }, []);
+  const setPageCapacity = useCallback((n: number) => { rawRef.current?.setPageCapacity?.(n); }, []);
   const setLocation = useCallback((location: unknown) => {
     let loc = location; if (loc && (loc as any).__brand) loc = (loc as any).raw;
     rawRef.current?.setLocation?.(loc);
   }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);
-  const setPolicy = useCallback((_p: number) => {}, []);
-  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, getStatus, cancel } as unknown as RidingRouteHookResult;
+
+  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setPageCapacity, setLocation, getStatus, cancel };
 }

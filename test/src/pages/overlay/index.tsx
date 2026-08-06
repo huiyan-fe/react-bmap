@@ -20,3 +20,6 @@ export { IconPage } from './IconPage';
 export { IconSequencePage } from './IconSequencePage';
 export { HotspotPage } from './HotspotPage';
 export { CustomOverlayPage } from './CustomOverlayPage';
+export { Marker3DPage } from './Marker3DPage';
+export { MapMaskPage } from './MapMaskPage';
+export { SimpleInfoWindowPage } from './SimpleInfoWindowPage';

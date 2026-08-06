@@ -33,17 +33,18 @@ export interface TrafficLayerProps extends TrafficLayerOptions {
 }
 
 export const TrafficLayer = memo(function TrafficLayer(props: TrafficLayerProps) {
-  const { autoRefresh, refreshInterval, colors, edge } = props;
+  const { autoRefresh, refreshInterval, colors, edge, predictDate } = props;
   const { map, driver } = useMapContext();
   const rawRef = useRef<any>(null);
 
   // create + add（constructor 选项变化时重建）
-  const ctorKey = `${autoRefresh ?? ''}|${refreshInterval ?? ''}`;
+  const ctorKey = `${autoRefresh ?? ''}|${refreshInterval ?? ''}|${JSON.stringify(predictDate ?? '')}`;
   useLayoutEffect(() => {
     if (!map || !driver) return;
     const opts: Record<string, unknown> = {};
     if (autoRefresh !== undefined) opts.autoRefresh = autoRefresh;
     if (refreshInterval !== undefined) opts.refreshInterval = refreshInterval;
+    if (predictDate !== undefined) opts.predictDate = predictDate;
     const handle = driver.createTrafficLayer(opts);
     if (!handle) return;
     rawRef.current = (handle as any).raw;

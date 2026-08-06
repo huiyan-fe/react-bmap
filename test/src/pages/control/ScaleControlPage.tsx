@@ -12,7 +12,7 @@ export function ScaleControlPage() {
   const [visible, setVisible] = useState(true);
   const [anchor, setAnchor] = useState<ControlAnchor | undefined>(BMAP_ANCHOR_BOTTOM_LEFT);
   const [offset, setOffset] = useState<ScaleControlProps['offset']>(DEFAULT_CONTROL_OFFSET);
-  const [unit, setUnit] = useState<ScaleControlProps['unit']>(BMAP_UNIT_METRIC);
+  const [unit, setUnit] = useState<ScaleControlProps['unit']>(BMAP_UNIT_METRIC as any);
 
   const controlProps: ScaleControlProps = { visible, anchor, offset, unit };
 

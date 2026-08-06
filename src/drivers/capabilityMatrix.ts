@@ -25,8 +25,9 @@ const V4_MAP_VIEW: Capability[] = [
 const V4_LAYER_CLASS: Capability[] = [
   'NormalLayer', 'GeoJSONLayer', 'DistrictLayer',
   'RasterTileLayer', 'WMSLayer', 'WMTSLayer', 'XYZLayer', 'MVTLayer',
-  'FeatureLayer', 'FillLayer', 'DOMLayer',
+  'FillLayer', 'DOMLayer',
   'PointIconLayer', 'PointShapeLayer', 'PanoramaCoverageLayer',
+  'LineLayer', 'PixelLayer', 'BaiduLayer', 'ThreeLayer',
 ];
 
 // ── 4.0+ Map 图层方法 ──
@@ -39,7 +40,7 @@ const V4_MAP_LAYER: Capability[] = [
 
 // ── 4.0+ 覆盖物类 ──
 const V4_OVERLAY: Capability[] = [
-  'Prism', 'Rectangle', 'BezierCurve', 'CustomOverlay', 'GroundPoint',
+  'Prism', 'Rectangle', 'BezierCurve', 'CustomOverlay', 'GroundPoint', 'Marker3D', 'SimpleInfoWindow',
 ];
 
 // ── 4.0+ 控件类 ──
@@ -49,16 +50,16 @@ const V4_CONTROL: Capability[] = [
 
 // ── 4.0+ 服务类 ──
 const V4_SERVICE: Capability[] = [
-  'RidingRoute', 'Geolocation', 'LocalCity', 'PlaceDetail',
+  'PlaceDetail',
 ];
 
 // ── 4.0+ Map 实用方法 ──
 const V4_MAP_UTIL: Capability[] = [
-  'Map.getMapScreenshot', 'Map.lnglatToMercator', 'Map.mercatorToLnglat',
+  'Map.getScreenshot', 'Map.lnglatToMercator', 'Map.mercatorToLnglat',
   'Map.isLoaded', 'Map.getCoordType', 'Map.getMinZoom', 'Map.getMaxZoom',
   'Map.getContainerSize', 'Map.getZoomUnits',
   'Map.addSpots', 'Map.getSpots', 'Map.removeSpots', 'Map.clearSpots', 'Map.hightlightSpotByUid',
-  'Map.addLabelsToMapTile', 'Map.removeLabelsFromMapTile',
+  'Map.addMapLabels', 'Map.removeMapLabels',
   'Map.enablePreferredLanguage', 'Map.disablePreferredLanguage',
   'Map.setMapStyleV2',     // 4.0+ 个性化样式 V2
   'Marker.openInfoWindow', // 4.0+ Marker 打开信息窗口
@@ -73,7 +74,7 @@ const V3_MAP_ONLY: Capability[] = [
   'Map.highResolutionEnabled',
   'Map.setCurrentCity',
   'Map.setPanorama', 'Map.getPanorama',
-  'Map.addHotspot', 'Map.removeHotspot', 'Map.clearHotspots',
+  // Hotspot v4 也支持（publicListForMap.js 导出 + SpotManager）
   'Map.setMapStyle',       // 3.0-only 个性化样式 V1
   'Map.openInfoWindow',    // 3.0-only map.openInfoWindow（v4 移到 Marker）
   'Map.closeInfoWindow',
@@ -83,7 +84,6 @@ const V3_MAP_ONLY: Capability[] = [
 
 // ── 3.0-only 覆盖物/图层 ──
 const V3_OVERLAY_ONLY: Capability[] = [
-  'Hotspot',   // 仅 3.0
   'PointCollection',   // @removed 4.0
   'CustomLayer',   // @removed 4.0
   'CanvasLayer',   // @removed 4.0
@@ -116,6 +116,7 @@ const COMMON: Capability[] = [
   'TileLayer', 'TrafficLayer',
   // 服务（全版本）
   'LocalSearch', 'Geocoder', 'DrivingRoute', 'WalkingRoute', 'TransitRoute',
+  'RidingRoute', 'Geolocation', 'LocalCity', 'TruckRoute',
   'BusLineSearch', 'Autocomplete', 'Boundary', 'Convertor', 'PanoramaService',
   // 全景（全版本）
   'Panorama', 'PanoramaLabel',

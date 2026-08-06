@@ -119,7 +119,7 @@ export function useDrivingRoute<T = unknown>(opts: DrivingRouteOptions = {}): Dr
     searchCbRef.current = cb;
 
     // 解包 start/end（可能是 MapHandle 或 plain {lng,lat}）
-    const SDK = (globalThis as any).BMap || (globalThis as any).BMapGL;
+    const SDK = (globalThis as any).BMap;
     const toPoint = (v: unknown): unknown => {
       if (!v) return v;
       if ((v as any).__brand) return (v as any).raw;

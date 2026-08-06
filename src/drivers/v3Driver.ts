@@ -23,15 +23,18 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     // 3.0-only Map 命令真实实现
     enableMapClick: (map) => { (map.raw as any).enableMapClick?.(); },
     disableMapClick: (map) => { (map.raw as any).disableMapClick?.(); },
-    enable3DBuilding: (map) => { (map.raw as any).enable3DBuilding?.(); },
-    disable3DBuilding: (map) => { (map.raw as any).disable3DBuilding?.(); },
-    setPanorama: (map, pano) => { (map.raw as any).setPanorama?.(pano); },
+    enable3DBuilding: (map) => { try { (map.raw as any).enable3DBuilding?.(); } catch { /* BuildingLayer may not be defined */ } },
+    disable3DBuilding: (map) => { try { (map.raw as any).disable3DBuilding?.(); } catch { /* BuildingLayer may not be defined */ } },
+    setPanorama: (map, pano) => { try { if (pano) (map.raw as any).setPanorama?.(pano); } catch { /* ignore */ } },
     getPanorama: (map) => (map.raw as any).getPanorama?.() ?? null,
     setCurrentCity: (map, city) => { (map.raw as any).setCurrentCity?.(city); },
     highResolutionEnabled: (map) => (map.raw as any).highResolutionEnabled?.() ?? false,
-    addHotspot: (map, h) => { (map.raw as any).addHotspot?.(h.raw); },
+    addHotspot: (map, h) => { try { if (h?.raw) (map.raw as any).addHotspot?.(h.raw); } catch { /* ignore */ } },
     removeHotspot: (map, h) => { (map.raw as any).removeHotspot?.(h.raw); },
     clearHotspots: (map) => { (map.raw as any).clearHotspots?.(); },
+
+    // v3 的 setMapType 直接调用原生方法
+    setMapType: (map, t) => { (map.raw as any).setMapType?.(t); },
 
     // Hotspot 是 v3-only，v4Driver 的 createOverlayFactory 闭包捕获了 v4 能力矩阵
     // （Hotspot 不在 v4 矩阵中），所以必须在这里直接创建，绕过能力检查
@@ -66,9 +69,47 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       } catch (e) { reportUnsupported('PointCollection', version, behavior, e); return null; }
     },
 
-    // 3.0 用 setMapStyle（v1），setMapStyleV2 不支持
+    // 3.0 的 setMapStyle 和 setMapStyleV2 均可用
     setMapStyle: (map, options) => { (map.raw as any).setMapStyle?.(options); },
-    setMapStyleV2: () => reportUnsupported('Map.setMapStyleV2', version, behavior),
+    setMapStyleV2: (map, options) => { (map.raw as any).setMapStyleV2?.(options); },
+
+    // 3.0 坐标转换
+    lnglatToMercator: (map, lng, lat) => {
+      try {
+        const MP = rawSDK?.MercatorProjection;
+        if (MP) {
+          const proj = new MP();
+          if (typeof proj.lngLatToMercator === 'function') {
+            const r = proj.lngLatToMercator(new rawSDK.Point(lng, lat));
+            if (r) return [r.lng ?? r.x, r.lat ?? r.y] as [number, number];
+          }
+        }
+        const m = map.raw as any;
+        if (typeof m.lnglatToMercator === 'function') {
+          const r = m.lnglatToMercator(lng, lat);
+          if (r) return [r.lng ?? r.x, r.lat ?? r.y] as [number, number];
+        }
+      } catch { /* ignore */ }
+      return [NaN, NaN] as [number, number];
+    },
+    mercatorToLnglat: (map, x, y) => {
+      try {
+        const MP = rawSDK?.MercatorProjection;
+        if (MP) {
+          const proj = new MP();
+          if (typeof proj.mercatorToLngLat === 'function') {
+            const r = proj.mercatorToLngLat({ x, y });
+            if (r) return [r.lng ?? r.x, r.lat ?? r.y] as [number, number];
+          }
+        }
+        const m = map.raw as any;
+        if (typeof m.mercatorToLnglat === 'function') {
+          const r = m.mercatorToLnglat(x, y);
+          if (r) return [r.lng ?? r.x, r.lat ?? r.y] as [number, number];
+        }
+      } catch { /* ignore */ }
+      return [NaN, NaN] as [number, number];
+    },
 
     // 3.0 信息窗口通过 map.openInfoWindow
     openInfoWindow: (target, iw, point) => {
@@ -116,7 +157,6 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     isLoaded: (map) => (typeof (map.raw as any).isLoaded === 'function' ? (map.raw as any).isLoaded() : true),
     getCoordType: (map) => (typeof (map.raw as any).getCoordType === 'function' ? (map.raw as any).getCoordType() : ''),
     getProjection: (map) => (map.raw as any).getProjection?.() ?? null,
-    getExtendBounds: (map, b) => (map.raw as any).getExtendBounds?.(b) ?? b,
     getSolarInfo: () => unsupportedValue('Map.getSolarInfo', version, behavior, null),
     getTileId: () => unsupportedValue('Map.getTileId', version, behavior, ''),
     getPoiByUid: () => reportUnsupported('Map.getPoiByUid', version, behavior),
@@ -200,9 +240,6 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     hideOverlayContainer: () => reportUnsupported('Map.hideOverlayContainer', version, behavior),
 
     // 4.0+ 服务在 v3 不支持（工厂返回 isNull: true）
-    createRidingRoute: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
-    createGeolocation: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
-    createLocalCity: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
     createPlaceDetail: () => ({ __brand: 'ServiceHandle' as const, raw: null, isNull: true }),
 
     // 4.0+ 类不存在 → null
@@ -215,6 +252,9 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createPrism: () => { reportUnsupported('Prism', version, behavior); return null; },
     createGroundPoint: () => { reportUnsupported('GroundPoint', version, behavior); return null; },
     createCustomOverlay: () => { reportUnsupported('CustomOverlay', version, behavior); return null; },
+    createMarker3D: () => { reportUnsupported('Marker3D', version, behavior); return null; },
+    openSimpleInfoWindow: () => reportUnsupported('Map.openSimpleInfoWindow', version, behavior),
+    closeSimpleInfoWindow: () => reportUnsupported('Map.closeSimpleInfoWindow', version, behavior),
     createNormalLayer: () => { reportUnsupported('NormalLayer', version, behavior); return null; },
     createGeoJSONLayer: () => { reportUnsupported('GeoJSONLayer', version, behavior); return null; },
     createDistrictLayer: () => { reportUnsupported('DistrictLayer', version, behavior); return null; },

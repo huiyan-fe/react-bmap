@@ -57,6 +57,8 @@ export class MapRefImpl {
   // ─── resize ───
   checkResize(): void { this.driver.checkResize(this.map); }
   resize(): void { this.driver.resize(this.map); }
+  setSize(size: { width: number; height: number }): void { this.driver.setSize(this.map, size); }
+  zoomTo(level: number, point?: unknown): void { this.driver.zoomTo(this.map, level, point); }
 
   // ─── 显示配置 ───
   setDisplayOptions(options: unknown): void { this.driver.setDisplayOptions(this.map, options); }
@@ -87,7 +89,7 @@ export class MapRefImpl {
   getRenderType(): string { return this.driver.getRenderType(this.map); }
   isCanvasMap(): boolean { return this.driver.isCanvasMap(this.map); }
   getProjection(): unknown { return this.driver.getProjection(this.map); }
-  getExtendBounds(bounds: Bounds): Bounds { return this.driver.getExtendBounds(this.map, bounds); }
+
   getSolarInfo(date: Date): unknown { return this.driver.getSolarInfo(this.map, date); }
   getTileId(point: Point, level: number): string { return this.driver.getTileId(this.map, point, level); }
   getPoiByUid(uid: string, callback: (poi: unknown) => void): void { this.driver.getPoiByUid(this.map, uid, callback); }
@@ -129,7 +131,7 @@ export class MapRefImpl {
   restrictBounds(bounds: Bounds | null): void { this.driver.restrictBounds(this.map, bounds); }
 
   // ─── 地图类型 ───
-  setMapType(mapTypeId: string): void { this.driver.setMapType(this.map, mapTypeId); }
+  setMapType(mapTypeId: string | number): void { this.driver.setMapType(this.map, mapTypeId); }
   getMapType(): string { return this.driver.getMapType(this.map); }
 
   // ─── 控件 / 右键菜单 ───
@@ -197,6 +199,9 @@ export class MapRefImpl {
   showIndoor(uid: string, floor: number): void { this.driver.showIndoor(this.map, uid, floor); }
   setIndoor(uid: string, floor: number): void { this.driver.setIndoor(this.map, uid, floor); }
   getIndoorInfo(): unknown | null { return this.driver.getIndoorInfo(this.map); }
+  initIndoorLayer(opts?: unknown): unknown { return this.driver.initIndoorLayer(this.map, opts); }
+  setNormalMapDisplay(display: boolean): void { this.driver.setNormalMapDisplay(this.map, display); }
+  getVectorContainer(): unknown { return this.driver.getVectorContainer(this.map); }
 
   // ─── 街景图层 ───
   showStreetLayer(show: boolean): void { this.driver.showStreetLayer(this.map, show); }

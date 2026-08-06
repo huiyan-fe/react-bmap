@@ -35,7 +35,7 @@ body {
   border-right: 1px solid #e8e8e8;
   background: #fff;
   overflow-y: auto;
-  height: 100vh;
+  height: 100%;
 }
 
 .sidebar-title {
