@@ -5,11 +5,13 @@
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.js"
     }
   },
   "files": [
@@ -28,10 +30,7 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
-    "@baidumap/jsapi-loader": "^1.0.0",
-    "mapv": "^2.0.56",
-    "mapvgl": "^1.0.0-beta.117",
-    "zod": "^4.3.6"
+    "@baidumap/jsapi-loader": "^1.0.0"
   },
   "devDependencies": {
     "@types/bmapgl-browser": "^0.0.3",

@@ -49,7 +49,7 @@ export function BoundaryPage() {
             <li>data: <code>{data ? '有结果' : 'null'}</code></li>
           </ul>
         </section>
-        {data && (
+        {data != null && (
           <section>
             <h3>结果</h3>
             <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto', maxHeight: 300 }}>

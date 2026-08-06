@@ -10,7 +10,6 @@ const S = '服务';
 export const PAGES: TestPage[] = [
   // 框架
   { id: 'capabilities', name: 'Capabilities', category: '框架', ready: true },
-  { id: 'unsupported', name: 'Unsupported', category: '框架', ready: true },
   // 基础
   { id: 'map', name: 'Map（全量）', category: '基础', ready: true },
   // 覆盖物（18 个独立页）

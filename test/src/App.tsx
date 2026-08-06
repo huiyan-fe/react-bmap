@@ -8,7 +8,6 @@ import './style.css';
 
 // 框架 & 基础
 import { CapabilitiesPage } from './pages/CapabilitiesPage';
-import { UnsupportedPage } from './pages/UnsupportedPage';
 import { MapTestPage } from './pages/MapTestPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 
@@ -32,7 +31,6 @@ import { PlaceDetailPanelPage } from './pages/PlaceDetailPanelPage';
 // 映射 id → 组件
 const PAGE_MAP: Record<string, React.ComponentType> = {
   capabilities: CapabilitiesPage,
-  unsupported: UnsupportedPage,
   map: MapTestPage,
   // 覆盖物
   marker: OverlayPages.MarkerPage,

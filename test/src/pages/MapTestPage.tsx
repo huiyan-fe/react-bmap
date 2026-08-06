@@ -178,6 +178,10 @@ export function MapTestPage() {
   // 视角动画实例引用（cancel 需要传回动画对象）
   const animRef = useRef<any>(null);
 
+  // 鼠标交互改变 heading/tilt 时，同步回受控状态（滑块跟随地图实际值）
+  useEffect(() => { if (status?.heading != null) setHeading(status.heading); }, [status?.heading]);
+  useEffect(() => { if (status?.tilt != null) setTilt(status.tilt); }, [status?.tilt]);
+
   // 运行时地图类型常量（v3 为全局变量 window.BMAP_*，v4 在 BMap 命名空间下）
   const w = window as any;
   const RT_NORMAL = w.BMap?.BMAP_NORMAL_MAP ?? w.BMAP_NORMAL_MAP ?? 1;

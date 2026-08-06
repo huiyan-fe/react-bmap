@@ -33,7 +33,7 @@ export function useMapStatus(): MapSnapshot | null {
   return useSyncExternalStore(
     (callback) => {
       if (!map || !driver) return () => {};
-      const events = ['moveend', 'zoomend', 'resize', 'headingchange', 'tiltchange'];
+      const events = ['moveend', 'zoomend', 'resize', 'headingchange', 'tiltchange', 'moving', 'tilesloaded'];
       const unsubs = events.map((evt) => driver.addEventListener(map, evt, callback));
       return () => unsubs.forEach((u) => u());
     },

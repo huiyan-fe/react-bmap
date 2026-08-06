@@ -138,6 +138,7 @@ export type {
   TrafficLayerOptions, CustomLayerOptions, CanvasLayerOptions,
   RasterTileLayerOptions, WMSLayerOptions, WMTSLayerOptions, XYZLayerOptions, MVTLayerOptions,
   FeatureLayerOptions, FillLayerOptions, DOMLayerOptions, PointIconLayerOptions, PointShapeLayerOptions,
+  FillLayerStyle, PointIconStyle, PointShapeStyle,
 } from './components/Layer';
 
 // ─── ContextMenu + MenuItem ───
@@ -151,6 +152,7 @@ export type { PanoramaProps, PanoramaLabelProps } from './components/Panorama';
 // ─── Hooks ───
 export { useMap } from './hooks/useMap';
 export { useDriver } from './hooks/useDriver';
+export { CAPABILITY_MATRIX } from './drivers/capabilityMatrix';
 export { useMapRef } from './hooks/useMapRef';
 export { useCapabilities } from './hooks/useCapabilities';
 export { useMapEvent } from './hooks/useMapEvent';
@@ -169,7 +171,23 @@ export {
   useBoundary, useGeolocation, useLocalCity, usePlaceDetail, useConvertor,
   usePanoramaService, useTruckRoute,
 } from './hooks/services';
-export type { LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions } from './hooks/services';
+export type {
+  LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions,
+  DrivingRouteOptions, DrivingRouteHookResult,
+  TransitRouteOptions, TransitRouteHookResult,
+  WalkingRouteOptions, WalkingRouteHookResult,
+  RidingRouteOptions, RidingRouteHookResult,
+  BusLineSearchOptions, BusLineSearchHookResult,
+  AutocompleteOptions, AutocompleteHookResult,
+  GeocoderHookResult,
+  BoundaryHookResult,
+  LocalCityHookResult,
+  ConvertorHookResult,
+  GeolocationHookResult,
+  PanoramaServiceHookResult,
+  PlaceDetailHookResult,
+  TruckRouteOptions, TruckRouteHookResult,
+} from './hooks/services';
 
 // ─── Driver（高级用法） ───
 export type { BMapDriver } from './drivers/types';
