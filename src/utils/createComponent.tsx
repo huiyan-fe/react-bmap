@@ -373,6 +373,10 @@ export interface LayerComponentConfig<P> {
   addMethod?: keyof BMapDriver;
   /** 移除方法名，默认 'removeLayer' */
   removeMethod?: keyof BMapDriver;
+  /** React StrictMode 下复用同一个 SDK layer 实例，避免 add/remove 不成对 */
+  reuseHandle?: boolean;
+  /** 延后一拍添加 layer，让 StrictMode 的模拟卸载可以取消首次 add */
+  deferMount?: boolean;
   /** 事件列表（SDK 事件名 → React 回调 prop 名） */
   events?: ReadonlyArray<{ sdk: string; prop: keyof P & string }>;
   displayName?: string;
@@ -398,12 +402,22 @@ export function createLayerComponent<P>(
       const { children: _c2, ...rawLayer } = props as any; void _c2;
       const layerProps: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(rawLayer)) { if (v !== undefined && v !== null) layerProps[k] = v; }
-      const handle = config.factory(driver, layerProps as P);
-      if (!handle) return;
-      ref.current = handle;
+      let handle = config.reuseHandle ? ref.current : null;
+      if (!handle) {
+        handle = config.factory(driver, layerProps as P);
+        if (!handle) return;
+        ref.current = handle;
+      }
       const add = config.addMethod ?? 'addLayer';
       const remove = config.removeMethod ?? 'removeLayer';
-      (driver as any)[add](map, handle);
+      let mounted = false;
+      let mountTimer: ReturnType<typeof setTimeout> | null = null;
+      const mountLayer = () => {
+        mounted = true;
+        (driver as any)[add](map, handle);
+      };
+      if (config.deferMount) mountTimer = setTimeout(mountLayer, 0);
+      else mountLayer();
 
       // 注册事件
       const unsubs: Array<() => void> = [];
@@ -419,8 +433,9 @@ export function createLayerComponent<P>(
 
       return () => {
         unsubs.forEach(u => u());
-        (driver as any)[remove](map, handle);
-        ref.current = null;
+        if (mountTimer) clearTimeout(mountTimer);
+        if (mounted) (driver as any)[remove](map, handle);
+        if (!config.reuseHandle) ref.current = null;
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, driver]);

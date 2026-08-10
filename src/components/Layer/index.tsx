@@ -39,7 +39,7 @@ export type CanvasLayerProps = CanvasLayerOptions;
 export const TileLayer = createLayerComponent<TileLayerProps>({ displayName: 'TileLayer', factory: (d, p) => d.createTileLayer(p) });
 export const NormalLayer = createLayerComponent<NormalLayerProps>({ displayName: 'NormalLayer', factory: (d, p) => d.createNormalLayer(p) });
 export const GeoJSONLayer = createLayerComponent<GeoJSONLayerProps>({ displayName: 'GeoJSONLayer', factory: (d, p) => d.createGeoJSONLayer(p) });
-export const DistrictLayer = createLayerComponent<DistrictLayerProps>({ displayName: 'DistrictLayer', factory: (d, p) => d.createDistrictLayer(p) });
+export const DistrictLayer = createLayerComponent<DistrictLayerProps>({ displayName: 'DistrictLayer', factory: (d, p) => d.createDistrictLayer(p), reuseHandle: true, deferMount: true });
 // TrafficLayer 是手写组件（支持 setColors / setEdge），见 TrafficLayer.tsx
 export { TrafficLayer } from './TrafficLayer';
 export type { TrafficLayerProps, TrafficLayerOptions } from './TrafficLayer';
