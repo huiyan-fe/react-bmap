@@ -5,9 +5,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
+import type { LocalCityResult } from '../../types/results';
 
 export interface LocalCityHookResult {
-  data: unknown;
+  data: LocalCityResult | undefined;
   loading: boolean;
   error: Error | null;
   supported: boolean;
@@ -20,7 +21,7 @@ export function useLocalCity(): LocalCityHookResult {
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
 
-  const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
+  const [state, setState] = useState<{ data: LocalCityResult | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
   });
 

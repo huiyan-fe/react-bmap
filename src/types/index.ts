@@ -97,6 +97,37 @@ export interface BMapEvent<T = unknown> {
   raw: T;
 }
 
+/** Map 鼠标/触摸事件（click, dblclick, rightclick, mousemove, mousedown, mouseup, mouseover, mouseout, touchstart, touchmove, touchend, longpress） */
+export interface MapMouseEvent {
+  type: string;
+  target: MapHandle;
+  point: Point;
+  pixel: Pixel;
+  overlay?: OverlayHandle;
+}
+
+/** Map 移动/拖拽事件（dragstart, dragging, dragend, movestart, moving, moveend） */
+export interface MapMoveEvent {
+  type: string;
+  target: MapHandle;
+  point: Point;
+  center?: Point;
+}
+
+/** Map 缩放事件（zoomstart, zooming, zoomend） */
+export interface MapZoomEvent {
+  type: string;
+  target: MapHandle;
+  zoom?: number;
+}
+
+/** Map 通用事件（resize, tilesloaded, maptypechange） */
+export interface MapEvent {
+  type: string;
+  target: MapHandle;
+  [key: string]: unknown;
+}
+
 // ─────────────── 加载状态 ───────────────
 
 export type LoaderStatus = 'loading' | 'ready' | 'error';

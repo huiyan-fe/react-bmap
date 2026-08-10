@@ -8,6 +8,7 @@ import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
+import type { DrivingRouteResult } from '../../types/results';
 
 export type TransitRouteOptions = DrivingRouteOptions;
 export type TransitRouteHookResult = DrivingRouteHookResult & { setPageCapacity: (n: number) => void };
@@ -74,7 +75,7 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
       if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
         try { actual = raw.getResults?.(); } catch { /* noop */ }
       }
-      callbacksRef.current.onSearchComplete?.(actual);
+      callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
       setState({ data: actual ?? results, loading: false, error: null, supported: true });
     };
     searchCbRef.current = cb;
@@ -90,7 +91,7 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
     catch (e) { if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
   }, []);
 
-  const clearResults = useCallback(() => { rawRef.current?.clearResults?.(); setState(s => ({ ...s, data: undefined, loading: false })); }, []);
+  const clearResults = useCallback(() => { try { rawRef.current?.clearResults?.(); } catch { /* noop */ } setState(s => ({ ...s, data: undefined, loading: false })); }, []);
   const enableAutoViewport = useCallback(() => { rawRef.current?.enableAutoViewport?.(); }, []);
   const disableAutoViewport = useCallback(() => { rawRef.current?.disableAutoViewport?.(); }, []);
   const setPolicy = useCallback((p: number) => { rawRef.current?.setPolicy?.(p); }, []);

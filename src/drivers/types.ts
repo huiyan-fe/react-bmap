@@ -168,7 +168,7 @@ export interface BMapDriver {
   reset(map: MapHandle): void;
   setCenter(map: MapHandle, center: Point | string, options?: unknown): void;
   getCenter(map: MapHandle): Point;
-  setViewport(map: MapHandle, view: Point[] | unknown, viewportOptions?: unknown): void;
+  setViewport(map: MapHandle, view: Point[] | Bounds, viewportOptions?: unknown): void;
   getViewport(map: MapHandle, view: Point[] | Bounds, viewportOptions?: unknown): unknown;
   setZoom(map: MapHandle, zoom: number, options?: unknown): void;
   getZoom(map: MapHandle): number;
@@ -376,7 +376,7 @@ export interface BMapDriver {
 
   // ─────────────── 30. ContextMenu 工厂 ───────────────
   createContextMenu(options?: unknown): OverlayHandle | null;
-  createMenuItem(text: string, callback: () => void, options?: unknown): OverlayHandle | null;
+  createMenuItem(text: string, callback: (point?: { lng: number; lat: number }) => void, options?: unknown): OverlayHandle | null;
   addMenuItem(menu: OverlayHandle, item: OverlayHandle, insertIndex?: number): void;
   removeMenuItem(menu: OverlayHandle, item: OverlayHandle): void;
 

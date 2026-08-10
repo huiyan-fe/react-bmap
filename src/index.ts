@@ -138,6 +138,7 @@ export type {
   TrafficLayerOptions, CustomLayerOptions, CanvasLayerOptions,
   RasterTileLayerOptions, WMSLayerOptions, WMTSLayerOptions, XYZLayerOptions, MVTLayerOptions,
   FeatureLayerOptions, FillLayerOptions, DOMLayerOptions, PointIconLayerOptions, PointShapeLayerOptions,
+  LineLayerOptions, PixelLayerOptions, BaiduLayerOptions, ThreeLayerOptions,
   FillLayerStyle, PointIconStyle, PointShapeStyle,
 } from './components/Layer';
 
@@ -203,6 +204,7 @@ export type {
   Point, Pixel, Size, Bounds,
   MapHandle, OverlayHandle, ControlHandle, LayerHandle, ServiceHandle,
   BMapVersion, UnsupportedBehavior, Capability, BMapEvent,
+  MapMouseEvent, MapMoveEvent, MapZoomEvent, MapEvent,
   LoadKeyComponents,
 } from './types';
 
@@ -222,6 +224,7 @@ export type {
   BusStation, BusLine, BusListItem, BusListResult,
   AutocompleteResultPoi, AutocompleteResult,
   GeolocationResult, LocalCityResult, TranslateResults,
+  BoundaryResult,
   TaxiFare, TaxiFareDetail, PanoramaData,
   RenderOptions,
 } from './types/results';

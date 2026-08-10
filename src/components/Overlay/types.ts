@@ -2,7 +2,7 @@
  * Overlay Options 类型 — 字段对照 bmap-jsapi-dts/src/overlay/*Options.d.ts。
  * 用 Record<string, unknown> 做基础，子接口精确声明常用字段。
  */
-import type { Point, Size, Bounds } from '../../types';
+import type { Point, Size, Bounds, OverlayHandle } from '../../types';
 import type { ControlAnchor } from '../../constants';
 
 /**
@@ -18,13 +18,13 @@ export interface PlainIcon extends IconOptions {
 
 export interface MarkerOptions {
   offset?: Size;
-  /** 图标 — 传 plain object，框架自动转 SDK Icon */
-  icon?: PlainIcon;
+  /** 图标 — 传 plain object 或 useIcon/useSymbol 返回值，框架自动转 SDK Icon */
+  icon?: PlainIcon | OverlayHandle | null;
   anchor?: ControlAnchor;
   enableMassClear?: boolean; enableDragging?: boolean; enableClicking?: boolean;
   raiseOnDrag?: boolean; draggingCursor?: string; rotation?: number; title?: string;
   /** 阴影图标 @removed 4.0（仅 v3） */
-  shadow?: PlainIcon;
+  shadow?: PlainIcon | OverlayHandle | null;
   zIndex?: number;
   /** 基础 zIndex（构造函数） */
   baseZIndex?: number;
@@ -636,7 +636,7 @@ export interface Marker3DProps extends Marker3DOptions, OverlayReactProps {
  */
 export interface InfoWindowProps extends InfoWindowOptions, OverlayReactProps {
   /** 窗口内容，支持 HTML 字符串或 DOM 节点 */
-  content: unknown;
+  content: string | HTMLElement;
   /** 受控：true=打开, false=关闭。不传则 mount 时自动打开。 */
   open?: boolean;
   /** 地图级打开位置（不在 Marker 内嵌时必传） */

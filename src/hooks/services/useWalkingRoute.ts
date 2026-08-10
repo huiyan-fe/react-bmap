@@ -7,6 +7,7 @@ import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
+import type { DrivingRouteResult } from '../../types/results';
 
 export type WalkingRouteOptions = Omit<DrivingRouteOptions, 'policy'>;
 export type WalkingRouteHookResult = Omit<DrivingRouteHookResult, 'setPolicy'> & { setPolicy?: never };
@@ -72,7 +73,7 @@ export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): Wa
       if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
         try { actual = raw.getResults?.(); } catch { /* noop */ }
       }
-      callbacksRef.current.onSearchComplete?.(actual);
+      callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
       setState({ data: actual ?? results, loading: false, error: null, supported: true });
     };
     searchCbRef.current = cb;
@@ -88,7 +89,7 @@ export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): Wa
     catch (e) { if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
   }, []);
 
-  const clearResults = useCallback(() => { rawRef.current?.clearResults?.(); setState(s => ({ ...s, data: undefined, loading: false })); }, []);
+  const clearResults = useCallback(() => { try { rawRef.current?.clearResults?.(); } catch { /* noop */ } setState(s => ({ ...s, data: undefined, loading: false })); }, []);
   const enableAutoViewport = useCallback(() => { rawRef.current?.enableAutoViewport?.(); }, []);
   const disableAutoViewport = useCallback(() => { rawRef.current?.disableAutoViewport?.(); }, []);
   const setLocation = useCallback((location: unknown) => {

@@ -12,9 +12,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
+import type { Point, MapHandle } from '../../types';
+import type { DrivingRouteResult } from '../../types/results';
 
 export interface DrivingRouteRenderOptions {
-  map?: unknown;
+  map?: MapHandle;
   panel?: string | HTMLElement;
   selectFirstResult?: boolean;
   autoViewport?: boolean;
@@ -22,10 +24,10 @@ export interface DrivingRouteRenderOptions {
 }
 
 export interface DrivingRouteOptions {
-  location?: unknown;
+  location?: string | MapHandle;
   policy?: number;
   renderOptions?: DrivingRouteRenderOptions;
-  onSearchComplete?: (results: unknown) => void;
+  onSearchComplete?: (results: DrivingRouteResult) => void;
   onMarkersSet?: (pois: unknown[]) => void;
   onInfoHtmlSet?: (poi: unknown, html: HTMLElement) => void;
   onPolylinesSet?: (polylines: unknown[]) => void;
@@ -33,22 +35,22 @@ export interface DrivingRouteOptions {
 }
 
 export interface DrivingRouteHookResult {
-  data: unknown;
+  data: DrivingRouteResult | undefined;
   loading: boolean;
   error: Error | null;
   supported: boolean;
-  /** 搜索（start/end 必须是 Point 或 LocalResultPoi，不支持字符串地址） */
-  search: (start: unknown, end: unknown, options?: { waypoints?: unknown[] }) => void;
+  /** 搜索（start/end 必须是 Point，不支持字符串地址） */
+  search: (start: Point, end: Point, options?: { waypoints?: Point[] }) => void;
   clearResults: () => void;
   enableAutoViewport: () => void;
   disableAutoViewport: () => void;
   setPolicy: (policy: number) => void;
-  setLocation: (location: unknown) => void;
+  setLocation: (location: string | MapHandle) => void;
   getStatus: () => number | undefined;
   cancel: () => void;
 }
 
-export function useDrivingRoute<T = unknown>(opts: DrivingRouteOptions = {}): DrivingRouteHookResult {
+export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHookResult {
   const { driver } = useBMapContext();
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
@@ -56,7 +58,7 @@ export function useDrivingRoute<T = unknown>(opts: DrivingRouteOptions = {}): Dr
   callbacksRef.current = opts;
   const searchCbRef = useRef<((results: unknown) => void) | null>(null);
 
-  const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
+  const [state, setState] = useState<{ data: DrivingRouteResult | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
   });
 
@@ -113,7 +115,7 @@ export function useDrivingRoute<T = unknown>(opts: DrivingRouteOptions = {}): Dr
       if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
         try { actual = raw.getResults?.(); } catch { /* noop */ }
       }
-      callbacksRef.current.onSearchComplete?.(actual);
+      callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
       setState({ data: actual ?? results, loading: false, error: null, supported: true });
     };
     searchCbRef.current = cb;
@@ -134,7 +136,7 @@ export function useDrivingRoute<T = unknown>(opts: DrivingRouteOptions = {}): Dr
   }, []);
 
   const clearResults = useCallback(() => {
-    rawRef.current?.clearResults?.();
+    try { rawRef.current?.clearResults?.(); } catch { /* SDK clearResults may crash if map state is stale */ }
     setState(s => ({ ...s, data: undefined, loading: false }));
   }, []);
 

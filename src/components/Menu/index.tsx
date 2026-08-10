@@ -79,7 +79,7 @@ export const ContextMenu = memo(function ContextMenu({ children }: ContextMenuPr
 
 export interface MenuItemProps {
   text: string;
-  callback?: () => void;
+  callback?: (point?: { lng: number; lat: number }) => void;
   iconWidth?: number;
   children?: React.ReactNode;
 }
@@ -92,7 +92,7 @@ export const MenuItem = memo(function MenuItem({ text, callback, iconWidth }: Me
 
   useLayoutEffect(() => {
     if (!driver || !menu) return;
-    const item = driver.createMenuItem(text, () => cbRef.current?.(), { iconWidth });
+    const item = driver.createMenuItem(text, (point?: { lng: number; lat: number }) => cbRef.current?.(point), { iconWidth });
     if (!item) return;
     driver.addMenuItem(menu, item);
     return () => { driver.removeMenuItem(menu, item); };

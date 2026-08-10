@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } fro
 import type { CSSProperties, ReactNode } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { MapContext } from '../../context/MapContext';
-import type { MapHandle, Point } from '../../types';
+import type { MapHandle, Point, MapMouseEvent, MapMoveEvent, MapZoomEvent, MapEvent } from '../../types';
 import { MapRefImpl } from './MapRef';
 import type { MapRef } from './MapRef';
 import { useLatest } from '../../utils/useLatest';
@@ -55,33 +55,33 @@ export interface MapProps {
   onHeadingChange?: (heading: number) => void;
   onTiltChange?: (tilt: number) => void;
   // 鼠标事件
-  onClick?: (e: any) => void;
-  onDblClick?: (e: any) => void;
-  onRightClick?: (e: any) => void;
-  onMouseMove?: (e: any) => void;
-  onMouseDown?: (e: any) => void;
-  onMouseUp?: (e: any) => void;
-  onMouseOver?: (e: any) => void;
-  onMouseOut?: (e: any) => void;
+  onClick?: (e: MapMouseEvent) => void;
+  onDblClick?: (e: MapMouseEvent) => void;
+  onRightClick?: (e: MapMouseEvent) => void;
+  onMouseMove?: (e: MapMouseEvent) => void;
+  onMouseDown?: (e: MapMouseEvent) => void;
+  onMouseUp?: (e: MapMouseEvent) => void;
+  onMouseOver?: (e: MapMouseEvent) => void;
+  onMouseOut?: (e: MapMouseEvent) => void;
   // 拖拽 / 移动
-  onDragStart?: (e: any) => void;
-  onDragging?: (e: any) => void;
-  onDragEnd?: (e: any) => void;
-  onMoveStart?: (e: any) => void;
-  onMoving?: (e: any) => void;
-  onMoveEnd?: (e: any) => void;
+  onDragStart?: (e: MapMoveEvent) => void;
+  onDragging?: (e: MapMoveEvent) => void;
+  onDragEnd?: (e: MapMoveEvent) => void;
+  onMoveStart?: (e: MapMoveEvent) => void;
+  onMoving?: (e: MapMoveEvent) => void;
+  onMoveEnd?: (e: MapMoveEvent) => void;
   // 缩放
-  onZoomStart?: (e: any) => void;
-  onZooming?: (e: any) => void;
-  onZoomEnd?: (e: any) => void;
+  onZoomStart?: (e: MapZoomEvent) => void;
+  onZooming?: (e: MapZoomEvent) => void;
+  onZoomEnd?: (e: MapZoomEvent) => void;
   // 其他
-  onResize?: (e: any) => void;
-  onTilesLoaded?: (e: any) => void;
-  onMapTypeChange?: (e: any) => void;
-  onTouchStart?: (e: any) => void;
-  onTouchMove?: (e: any) => void;
-  onTouchEnd?: (e: any) => void;
-  onLongPress?: (e: any) => void;
+  onResize?: (e: MapEvent) => void;
+  onTilesLoaded?: (e: MapEvent) => void;
+  onMapTypeChange?: (e: MapEvent) => void;
+  onTouchStart?: (e: MapMouseEvent) => void;
+  onTouchMove?: (e: MapMouseEvent) => void;
+  onTouchEnd?: (e: MapMouseEvent) => void;
+  onLongPress?: (e: MapMouseEvent) => void;
   // DOM
   className?: string;
   style?: CSSProperties;
@@ -380,7 +380,7 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     };
     const unsubs: Array<() => void> = [];
     for (const [prop, evt] of Object.entries(EVENT_MAP)) {
-      const handler = (eventProps as Record<string, ((e: any) => void) | undefined>)[prop];
+      const handler = (eventProps as Record<string, ((e: MapMouseEvent | MapMoveEvent | MapZoomEvent | MapEvent) => void) | undefined>)[prop];
       if (handler) unsubs.push(driver.addEventListener(map, evt, handler));
     }
     return () => unsubs.forEach(u => u());

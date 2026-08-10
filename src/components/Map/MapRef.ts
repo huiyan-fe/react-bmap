@@ -121,7 +121,7 @@ export class MapRefImpl {
   reset(): void { this.driver.reset(this.map); }
   setCenter(center: Point | string, options?: unknown): void { this.driver.setCenter(this.map, center, options); }
   getCenter(): Point { return this.driver.getCenter(this.map); }
-  setViewport(view: Point[] | unknown, viewportOptions?: unknown): void { this.driver.setViewport(this.map, view, viewportOptions); }
+  setViewport(view: Point[] | Bounds, viewportOptions?: unknown): void { this.driver.setViewport(this.map, view, viewportOptions); }
   getViewport(view: Point[] | Bounds, viewportOptions?: unknown): unknown { return this.driver.getViewport(this.map, view, viewportOptions); }
   setZoom(zoom: number, options?: unknown): void { this.driver.setZoom(this.map, zoom, options); }
   getZoom(): number { return this.driver.getZoom(this.map); }

@@ -6,9 +6,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import type { Point } from '../../types';
+import type { TranslateResults } from '../../types/results';
 
 export interface ConvertorHookResult {
-  data: unknown;
+  data: TranslateResults | undefined;
   loading: boolean;
   error: Error | null;
   supported: boolean;
@@ -21,7 +22,7 @@ export function useConvertor(): ConvertorHookResult {
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
 
-  const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
+  const [state, setState] = useState<{ data: TranslateResults | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
   });
 

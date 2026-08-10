@@ -51,6 +51,9 @@ export interface TaxiFare { distance: number; duration: number; detail: TaxiFare
 // ─── PanoramaService ───
 export interface PanoramaData { id?: string; links?: unknown[]; pov?: { heading?: number; pitch?: number; zoom?: number }; }
 
+// ─── Boundary ───
+export interface BoundaryResult { boundaries: string[]; }
+
 // ─── RenderOptions ───
 export interface RenderOptions { map?: unknown; panel?: string | HTMLElement; selectFirstResult?: boolean; autoViewport?: boolean; highlightMode?: number; viewportOptions?: ViewportOptions; }
 export interface ViewportOptions { margins?: number[]; zoomFactor?: number; }

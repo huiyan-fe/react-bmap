@@ -7,9 +7,10 @@ import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import type { Point } from '../../types';
+import type { GeocoderResult } from '../../types/results';
 
 export interface GeocoderHookResult {
-  data: unknown;
+  data: GeocoderResult | Point | undefined;
   loading: boolean;
   error: Error | null;
   supported: boolean;
@@ -25,7 +26,7 @@ export function useGeocoder(): GeocoderHookResult {
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
 
-  const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
+  const [state, setState] = useState<{ data: GeocoderResult | Point | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
   });
 
