@@ -2,21 +2,26 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import { BMapProvider } from 'react-bmap';
 import type { BMapVersion } from 'react-bmap';
 
-export type MapVersion = BMapVersion; // '3.0' | 'gl' | '4.0'
+export type MapVersion = BMapVersion;
 
 const MapModeContext = createContext<{
   version: MapVersion;
   setVersion: (version: MapVersion) => void;
 } | null>(null);
 
-/**
- * 暴露 3.0 / gl / 4.0 版本切换，并驱动 BMapProvider 的 version
- * （@baidumap/jsapi-loader 同一页面仅支持一个 version，切换时 provider
- *  内部会 reset 重新加载）
- */
 export function MapModeProvider({ children }: { children: React.ReactNode }) {
-  const [version, setVersionState] = useState<MapVersion>('4.0');
-  const setVersion = useCallback((v: MapVersion) => setVersionState(v), []);
+  // 从 URL 参数读取版本，reload 后不丢失
+  const [version, setVersionState] = useState<MapVersion>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('v') as MapVersion) || '4.0';
+  });
+
+  const setVersion = useCallback((v: MapVersion) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('v', v);
+    // 改 URL 触发 reload，加载新版本 SDK
+    window.location.href = url.toString();
+  }, []);
 
   return (
     <MapModeContext.Provider value={{ version, setVersion }}>

@@ -68,7 +68,6 @@ const PAGE_MAP: Record<string, React.ComponentType> = {
   'logo-control': ControlPages.LogoControlPage,
   // 图层
   'tile-layer': LayerPages.TileLayerPage,
-  'normal-layer': LayerPages.NormalLayerPage,
   'geojson-layer': LayerPages.GeoJSONLayerPage,
   'district-layer': LayerPages.DistrictLayerPage,
   'traffic-layer': LayerPages.TrafficLayerPage,
@@ -79,7 +78,6 @@ const PAGE_MAP: Record<string, React.ComponentType> = {
   'wmts-layer': LayerPages.WMTSLayerPage,
   'xyz-layer': LayerPages.XYZLayerPage,
   'mvt-layer': LayerPages.MVTLayerPage,
-  'feature-layer': LayerPages.FeatureLayerPage,
   'fill-layer': LayerPages.FillLayerPage,
   'dom-layer': LayerPages.DOMLayerPage,
   'point-icon-layer': LayerPages.PointIconLayerPage,

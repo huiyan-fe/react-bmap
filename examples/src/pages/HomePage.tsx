@@ -9,15 +9,15 @@ const FEATURES = [
   },
   {
     title: '多版本 JSAPI',
-    desc: '兼容 JSAPI 3.0 / GL / 4.0，按需选择配置',
+    desc: '兼容 JSAPI 3.0 / 4.0（WebGL），按需选择配置',
   },
   {
     title: 'TypeScript',
-    desc: '完整类型定义，Zod Schema 驱动 API 文档',
+    desc: '完整类型定义，IDE 自动补全，类型安全',
   },
   {
-    title: '可视化扩展',
-    desc: '集成 mapv、mapvgl，支持迁徙图、热力图等',
+    title: '能力矩阵',
+    desc: '运行时能力探测，v3/v4 差异自动降级',
   },
 ];
 
@@ -30,8 +30,8 @@ export function HomePage() {
           基于百度地图 JavaScript API 封装的 React 组件库
         </p>
         <p className="home-desc">
-          使用声明式组件方式开发百度地图应用，兼容 BMap (JSAPI 3.0/4.0) 与 BMapGL (WebGL)，可按需选择配置。
-          内置 28+ 组件，覆盖地图容器、覆盖物、控件、图层、路线规划、输入提示等常用场景。
+          使用声明式组件方式开发百度地图应用，兼容 BMap (JSAPI 3.0) 与 BMapGL (4.0 WebGL)，可按需选择配置。
+          内置 {COMPONENTS.length} 个组件与 Hooks，覆盖地图容器、覆盖物、控件、图层、路线规划、输入提示等常用场景。
         </p>
       </header>
 
@@ -56,7 +56,7 @@ export function HomePage() {
           <a href="http://lbsyun.baidu.com/apiconsole/key" target="_blank" rel="noopener noreferrer">
             申请密钥
           </a>
-          ），通过 <code>version</code> 按需选择 3.0 / GL / 4.0：
+          ），通过 <code>version</code> 按需选择 3.0 / 4.0：
         </p>
         <div className="home-code-block">
           <div className="home-code-label">Hello World</div>
@@ -74,7 +74,7 @@ export function HomePage() {
       <section className="home-section">
         <h2 className="home-section-title">组件列表</h2>
         <p className="home-section-desc">
-          点击组件名称查看示例与 API 文档
+          点击组件名称查看示例与代码
         </p>
         <div className="home-components">
           {CATEGORIES.map((cat) => {

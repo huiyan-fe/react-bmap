@@ -3,7 +3,7 @@
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Map, Polygon, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import type { Point, MapRef } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_PATH: Point[] = [
@@ -32,7 +32,9 @@ export function PolygonPage() {
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
+  const [mapRef, setMapRef] = useState<MapRef | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const editedPathRef = useRef<Point[]>(DEFAULT_PATH);
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = 0;
@@ -62,7 +64,7 @@ export function PolygonPage() {
   return (
     <div className="test-page">
       <div className="test-map">
-        <Map defaultCenter={BEIJING} defaultZoom={14} style={{ height: '100%' }}>
+        <Map ref={setMapRef} defaultCenter={BEIJING} defaultZoom={14} style={{ height: '100%' }}>
           <Polygon
             path={path}
             strokeColor={strokeColor}
@@ -71,6 +73,8 @@ export function PolygonPage() {
             strokeOpacity={strokeOpacity}
             fillOpacity={fillOpacity}
             strokeStyle={strokeStyle}
+            enableEditing={enableEditing}
+            enableMassClear={enableMassClear}
             zIndex={zIndex}
             visible={visible}
             onClick={onEvt('click')}
@@ -83,7 +87,24 @@ export function PolygonPage() {
             onMouseUp={onEvt('mouseup')}
             onMouseMove={onEvt('mousemove')}
             onRemove={onEvt('remove')}
-            onLineUpdate={() => log('🟦 polygon.lineupdate')}
+            onLineUpdate={(e: any) => {
+              log('🟦 polygon.lineupdate');
+              // 编辑后把当前路径存入 ref，切换 enableEditing 前同步到 state
+              const raw = e?.target;
+              if (raw?.getPath) {
+                try {
+                  let pts = raw.getPath();
+                  if (Array.isArray(pts)) {
+                    pts = pts.map((p: any) => ({ lng: p.lng, lat: p.lat }));
+                    // SDK 闭合多边形会重复首尾点，去掉重复的末尾点避免 setPath 时多出一条线
+                    if (pts.length > 1 && pts[0].lng === pts[pts.length - 1].lng && pts[0].lat === pts[pts.length - 1].lat) {
+                      pts = pts.slice(0, -1);
+                    }
+                    editedPathRef.current = pts;
+                  }
+                } catch { /* ignore */ }
+              }
+            }}
             onEditStart={() => log('🟦 polygon.editstart')}
             onEditEnd={() => log('🟦 polygon.editend')}
             onLineVertexDragStart={() => log('🟦 vertex.dragstart')}
@@ -139,7 +160,7 @@ export function PolygonPage() {
         {/* strokeColor */}
         <section>
           <h3>strokeColor</h3>
-          <input type="color" value={strokeColor}
+          <input type="color" value={strokeColor || '#1890ff'}
             onChange={e => setStrokeColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {strokeColor}
@@ -193,6 +214,7 @@ export function PolygonPage() {
               >{s}</button>
             ))}
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         {/* 开关 */}
@@ -200,7 +222,11 @@ export function PolygonPage() {
           <h3>行为开关</h3>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableEditing}
-              onChange={e => setEnableEditing(e.target.checked)} />
+              onChange={e => {
+                // 切换前同步编辑后的路径，避免丢失
+                setPath(editedPathRef.current);
+                setEnableEditing(e.target.checked);
+              }} />
             enableEditing（拖拽顶点编辑）
           </label>
           <label className="checkbox-row">
@@ -208,6 +234,15 @@ export function PolygonPage() {
               onChange={e => setEnableMassClear(e.target.checked)} />
             enableMassClear
           </label>
+          <div className="btn-group" style={{ marginTop: 4 }}>
+            <button style={{ fontSize: 11 }} onClick={() => {
+              const before = mapRef?.getOverlays() ?? [];
+              mapRef?.clearOverlays();
+              const after = mapRef?.getOverlays() ?? [];
+              log(`🧹 clearOverlays: ${before.length} → ${after.length}（massClear=${enableMassClear ? 'on' : 'off'}）`);
+            }}>clearOverlays 测试</button>
+          </div>
+          <p className="muted small">enableMassClear=true 时 clearOverlays 会清除；false 时不受影响。</p>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableClicking}
               onChange={e => setEnableClicking(e.target.checked)} />

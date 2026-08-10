@@ -137,6 +137,7 @@ export function FillLayerPage() {
               </button>
             ))}
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         <section>
@@ -148,6 +149,7 @@ export function FillLayerPage() {
               </button>
             ))}
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         <section>
@@ -162,6 +164,7 @@ export function FillLayerPage() {
               <button key={s} className={strokeStyle === s ? 'active' : ''} style={{ fontSize: 11 }} onClick={() => setStrokeStyle(s)}>{s}</button>
             ))}
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         <section>
@@ -174,6 +177,7 @@ export function FillLayerPage() {
           <div className="btn-group" style={{ flexWrap: 'wrap' }}>
             <button style={{ fontSize: 11 }} onClick={() => { setVisible(true); setBorder(true); setEnablePicked(true); setFillColor('rgba(24, 144, 255, 0.4)'); setBorderWeight(2); setBorderColor('#1890ff'); setStrokeColor('#1890ff'); setStrokeWeight(2); setStrokeStyle('solid'); setOpacity(1); }}>reset all</button>
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         <section>

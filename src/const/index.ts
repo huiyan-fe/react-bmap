@@ -61,14 +61,14 @@ export const BMAP_HYBRID_MAP = 3;
 export type MapType = 0 | 1 | 2 | 3;
 
 // ─── Animation（动画） ───
-export const BMAP_ANIMATION_BOUNCE = 0;
+export const BMAP_ANIMATION_BOUNCE = 2;
 export const BMAP_ANIMATION_DROP = 1;
-export type Animation = 0 | 1;
+export type Animation = 1 | 2;
 
 // ─── LengthUnit（长度单位） ───
-export const BMAP_UNIT_METRIC = 0;
-export const BMAP_UNIT_IMPERIAL = 1;
-export type LengthUnit = 0 | 1;
+export const BMAP_UNIT_METRIC = 'metric';
+export const BMAP_UNIT_IMPERIAL = 'us';
+export type LengthUnit = 'metric' | 'us';
 
 // ─── Language（语言） ───
 export const BMAP_LANG_CN = 0;

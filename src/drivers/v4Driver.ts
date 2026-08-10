@@ -25,6 +25,111 @@ const serviceHandle = (raw: unknown, isNull: boolean): ServiceHandle => ({ __bra
 const rawOf = (h: { raw: unknown }) => h.raw as any;
 const rawMap = (m: MapHandle) => rawOf(m);
 
+// ─── 碰撞检测（SDK v4.0 有 enableCollisionDetection/rank 属性但未实现碰撞逻辑，框架补齐） ───
+const collisionState = new WeakMap<object, { hidden: boolean; userVisible: boolean }>();
+const collisionManagers = new WeakMap<object, CollisionManager>();
+const overlayToCM = new WeakMap<object, CollisionManager>();
+
+class CollisionManager {
+  private mapRaw: any;
+  private markers = new Set<any>();
+  private unsub: (() => void) | null = null;
+  private rafId: number | null = null;
+  private retryCount = 0;
+  pendingContainers = false;
+
+  constructor(mapRaw: any) {
+    this.mapRaw = mapRaw;
+    const evalFn = () => this.schedule();
+    try {
+      const moveFn = () => evalFn();
+      const zoomFn = () => evalFn();
+      mapRaw.addEventListener('moveend', moveFn);
+      mapRaw.addEventListener('zoomend', zoomFn);
+      this.unsub = () => {
+        try { mapRaw.removeEventListener?.('moveend', moveFn); } catch { /* ignore */ }
+        try { mapRaw.removeEventListener?.('zoomend', zoomFn); } catch { /* ignore */ }
+      };
+    } catch { /* ignore */ }
+  }
+
+  register(rawMarker: any) {
+    this.markers.add(rawMarker);
+    collisionState.set(rawMarker, { hidden: false, userVisible: true });
+    overlayToCM.set(rawMarker, this);
+    this.retryCount = 0;
+    this.schedule();
+  }
+  unregister(rawMarker: any) {
+    this.markers.delete(rawMarker);
+    collisionState.delete(rawMarker);
+    overlayToCM.delete(rawMarker);
+  }
+
+  clear() {
+    for (const m of this.markers) collisionState.delete(m);
+    this.markers.clear();
+  }
+
+  private schedule() {
+    if (this.rafId != null) return;
+    this.rafId = requestAnimationFrame(() => { this.rafId = null; this.evaluate(); });
+  }
+
+  evaluate() {
+    if (this.markers.size < 2) return;
+    const entries: Array<{ raw: any; px: { x: number; y: number }; rank: number }> = [];
+    for (const m of this.markers) {
+      try {
+        const pos = m.getPosition?.();
+        if (!pos) continue;
+        const px = this.mapRaw.pointToPixel?.(pos);
+        if (!px || typeof px.x !== 'number') continue;
+        entries.push({ raw: m, px: { x: px.x, y: px.y }, rank: m.getRank?.() ?? 0 });
+      } catch { /* ignore */ }
+    }
+    if (entries.length < 2) return;
+
+    const THRESHOLD_SQ = 32 * 32;
+    for (const e of entries) { const s = collisionState.get(e.raw); if (s) s.hidden = false; }
+
+    for (let i = 0; i < entries.length; i++) {
+      for (let j = i + 1; j < entries.length; j++) {
+        const a = entries[i], b = entries[j];
+        const dx = a.px.x - b.px.x, dy = a.px.y - b.px.y;
+        const distSq = dx * dx + dy * dy;
+        if (distSq < THRESHOLD_SQ) {
+          if (a.rank > b.rank) { const s = collisionState.get(a.raw); if (s) s.hidden = true; }
+          else if (b.rank > a.rank) { const s = collisionState.get(b.raw); if (s) s.hidden = true; }
+        }
+      }
+    }
+
+    for (const e of entries) {
+      const s = collisionState.get(e.raw);
+      if (!s) continue;
+      try {
+        const container = e.raw._container ?? e.raw.domElement;
+        if (s.hidden && s.userVisible !== false) {
+          try { e.raw.hide?.(); } catch { /* ignore */ }
+          if (container) container.style.display = 'none';
+          else this.pendingContainers = true; // 容器未就绪，稍后重试
+        } else if (!s.hidden && s.userVisible !== false) {
+          if (container) container.style.display = '';
+          try { e.raw.show?.(); } catch { /* ignore */ }
+        }
+      } catch { /* ignore */ }
+    }
+    if (this.pendingContainers) { this.pendingContainers = false; if (this.retryCount++ < 5) setTimeout(() => this.schedule(), 300); }
+  }
+
+  destroy() {
+    this.unsub?.();
+    if (this.rafId != null) cancelAnimationFrame(this.rafId);
+    this.clear();
+  }
+}
+
 // Point / Pixel / Bounds 转换
 function toRawPoint(SDK: any, p: Point | null | undefined): any {
   if (!p) return p;
@@ -37,20 +142,30 @@ function toRawIcon(SDK: any, icon: any): any {
   if (icon.raw) return icon.raw;                   // 已是 Handle 包装的 SDK 实例
   if (!icon.url) return icon;                      // 无法转换，透传
   if (!icon.size) {
-    // SDK 构造函数 size 为必需参数，不传返回 undefined 导致 Marker 无图标
-    // eslint-disable-next-line no-console
     console.warn('[react-bmap] PlainIcon.size is required');
     return icon;
   }
   const sz = new SDK.Size(icon.size.width, icon.size.height);
+  // v3 SDK 的 imageOffset 用 CSS background-position 语义（负值=右移），v4 用正值=裁剪起点
+  const isV3 = typeof (globalThis as any).BMapGL === 'undefined';
   const opts: any = {};
-  if (icon.imageOffset) opts.imageOffset = new SDK.Size(icon.imageOffset.width, icon.imageOffset.height);
+  if (icon.imageOffset) {
+    const off = isV3
+      ? new SDK.Size(-icon.imageOffset.width, -icon.imageOffset.height)
+      : new SDK.Size(icon.imageOffset.width, icon.imageOffset.height);
+    opts.imageOffset = off;
+  }
   if (icon.imageSize) opts.imageSize = new SDK.Size(icon.imageSize.width, icon.imageSize.height);
   if (icon.anchor) opts.anchor = new SDK.Size(icon.anchor.width, icon.anchor.height);
   if (icon.infoWindowAnchor) opts.infoWindowAnchor = new SDK.Size(icon.infoWindowAnchor.width, icon.infoWindowAnchor.height);
   if (icon.printImageUrl) opts.printImageUrl = icon.printImageUrl;
   if (icon.srcset) opts.srcset = icon.srcset;
-  return new SDK.Icon(icon.url, sz, opts);
+  const inst = new SDK.Icon(icon.url, sz, opts);
+  // v3 SDK 构造函数不接受 imageSize，需要额外调 setImageSize
+  if (icon.imageSize && typeof inst.setImageSize === 'function') {
+    inst.setImageSize(new SDK.Size(icon.imageSize.width, icon.imageSize.height));
+  }
+  return inst;
 }
 /** 把 plain offset {width, height} 转成 SDK Size */
 function toRawSize(SDK: any, s: any): any {
@@ -115,7 +230,7 @@ function toRawControlOptions(SDK: any, options: unknown): Record<string, unknown
     if (key === 'offset' || key === 'size') out[key] = toRawSize(SDK, value);
     else if (key === 'locationIcon') out[key] = toRawIcon(SDK, value);
     else if (key === 'mapTypes' && Array.isArray(value)) out[key] = value.map(v => (v && typeof v === 'object' && 'raw' in v ? rawOf(v as any) : v));
-    else if (key !== 'unit' && key !== 'showStreetLayer' && key !== 'copyrights') out[key] = value;
+    else if (key !== 'showStreetLayer' && key !== 'copyrights') out[key] = value;
   }
   return out;
 }
@@ -149,6 +264,7 @@ const HANDLED_OVERLAY_OPTION_KEYS = new Set([
   'imageOffset', 'imageSize', 'infoWindowAnchor', 'printImageUrl', 'srcset',
   'text', 'userData',
   'point', 'rotationInit', 'properties',
+  'rank', 'rotationOrigin',
   // visible 不走 setOverlayOptions，由 showOverlay/hideOverlay 单独处理
   'visible',
 ]);
@@ -232,13 +348,22 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       // 无 options 时只传 1 个参数：new Map(container) vs new Map(container, {})
       // SDK 可能检查 arguments.length 走不同初始化路径，影响 pane 结构和 marker DOM
       const hasOpts = options && typeof options === 'object' && Object.keys(options).length > 0;
-      return mapHandle(hasOpts ? new rawSDK.Map(container, options) : new rawSDK.Map(container));
+      const map = hasOpts ? new rawSDK.Map(container, options) : new rawSDK.Map(container);
+      collisionManagers.set(map, new CollisionManager(map));
+      return mapHandle(map);
     },
     destroyMap(handle) {
       const map = rawMap(handle);
+      collisionManagers.get(map)?.destroy();
+      collisionManagers.delete(map);
       try { map.clearOverlays?.(); } catch { /* ignore */ }
+      // 先移除所有图层，防止 SDK 异步瓦片加载在 destroy 后崩溃
+      try {
+        const layers = (map as any).getLayers?.() ?? [];
+        for (const layer of layers) { try { (map as any).removeLayer?.(layer); } catch { /* ignore */ } }
+      } catch { /* ignore */ }
       if (typeof map.destroy === 'function') {
-        map.destroy();
+        try { map.destroy(); } catch { /* ignore */ }
       } else {
         const c = typeof map.getContainer === 'function' ? map.getContainer() : null;
         if (c) try { c.replaceChildren?.(); } catch { /* ignore */ }
@@ -382,7 +507,12 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (c.type === 'scale' && (options as any)?.unit !== undefined) raw.setUnit?.((options as any).unit);
         if (c.type === 'overview') {
           if (opts.size !== undefined) raw.setSize?.(opts.size);
-          if ((options as any)?.isOpen !== undefined && typeof raw.isOpen === 'function' && raw.isOpen() !== (options as any).isOpen) raw.changeView?.();
+          if ((options as any)?.isOpen !== undefined) {
+            // v3 没有 isOpen() 方法，读 _opts.isOpen；changeView 是 toggle，只在状态不同时调
+            const currentOpen = typeof raw.isOpen === 'function' ? raw.isOpen() : (raw as any)._opts?.isOpen;
+            const desired = (options as any).isOpen;
+            if (currentOpen !== desired) raw.changeView?.();
+          }
         }
         if ((c.type === 'geolocation' || c.type === 'location') && raw.setOptions) raw.setOptions(opts);
         if (c.type === 'mapType' && (options as any)?.showStreetLayer !== undefined) raw.showStreetLayer?.((options as any).showStreetLayer);
@@ -395,14 +525,25 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     removeContextMenu: (target, menu) => callRaw('Map.removeContextMenu', () => rawOf(target).removeContextMenu(rawOf(menu))),
 
     // ─────────────── 14. 覆盖物 ───────────────
-    addOverlay: (map, o) => callRaw('Map.addOverlay', () => rawMap(map).addOverlay(rawOf(o))),
+    addOverlay: (map, o) => {
+      callRaw('Map.addOverlay', () => rawMap(map).addOverlay(rawOf(o)));
+      const raw = rawOf(o);
+      if (raw?._config?.enableCollisionDetection) {
+        collisionManagers.get(rawMap(map))?.register(raw);
+      }
+    },
     removeOverlay: (map, o) => {
+      const raw = rawOf(o);
+      collisionManagers.get(rawMap(map))?.unregister(raw);
       // 在 removeOverlay 前先关闭编辑：Circle/Polyline/Polygon 的编辑句柄
       // 在 overlay 被移除时若仍激活，会触发 "Cannot read properties of null"。
-      try { rawOf(o).disableEditing?.(); } catch { /* ignore */ }
-      callRaw('Map.removeOverlay', () => rawMap(map).removeOverlay(rawOf(o)));
+      try { raw?.disableEditing?.(); } catch { /* ignore */ }
+      callRaw('Map.removeOverlay', () => rawMap(map).removeOverlay(raw));
     },
-    clearOverlays: (map) => callRaw('Map.clearOverlays', () => rawMap(map).clearOverlays()),
+    clearOverlays: (map) => {
+      collisionManagers.get(rawMap(map))?.clear();
+      callRaw('Map.clearOverlays', () => rawMap(map).clearOverlays());
+    },
     getOverlays: (map) => getRaw('Map.getOverlays', () => (rawMap(map).getOverlays() ?? []).map((o: any) => overlayHandle(o, inferOverlayType(o))), []),
 
     // ─────────────── 15. 图层 ───────────────
@@ -530,6 +671,11 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
       if (typeof raw?.raiseOnDrag === 'boolean') ctorOpts.raiseOnDrag = raw.raiseOnDrag;
       if (typeof raw?.draggingCursor === 'string') ctorOpts.draggingCursor = raw.draggingCursor;
+      if (typeof raw?.enableCollisionDetection === 'boolean') ctorOpts.enableCollisionDetection = raw.enableCollisionDetection;
+      if (typeof raw?.enableDraggingMap === 'boolean') ctorOpts.enableDraggingMap = raw.enableDraggingMap;
+      if (typeof raw?.baseZIndex === 'number') ctorOpts.baseZIndex = raw.baseZIndex;
+      if (typeof raw?.restrictDraggingArea === 'boolean') ctorOpts.restrictDraggingArea = raw.restrictDraggingArea;
+      if (typeof raw?.anchor === 'number') ctorOpts.anchor = raw.anchor;
       // shadow @removed 4.0，v3 only；icon 类型转换同样适用
       if (raw?.shadow) ctorOpts.shadow = toRawIcon(rawSDK, raw.shadow);
       const hasOpts = Object.keys(ctorOpts).length > 0;
@@ -614,11 +760,9 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
           ? new rawSDK.Circle(toRawPoint(rawSDK, c), r, ctorOpts)
           : new rawSDK.Circle(toRawPoint(rawSDK, c), r);
         if (wantEditing) {
-          // 延迟到下一帧：编辑系统需要 overlay 已渲染到地图上才能初始化句柄。
           const rafId = requestAnimationFrame(() => {
             try { inst.enableEditing?.(); } catch { /* ignore */ }
           });
-          // 防止重建时旧 rAF 在已移除的实例上调用 enableEditing（ghost 顶点残留）
           const origRemove = inst.remove?.bind(inst);
           if (origRemove) inst.remove = function () { cancelAnimationFrame(rafId); return origRemove(); };
         }
@@ -627,9 +771,6 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     },
     createRectangle: (b, o) => {
       const raw = o as Record<string, unknown>;
-      // enableEditing 同 Circle：Rectangle 也是 bounds 驱动、无内部 path 数组，
-      // 在 constructor 阶段初始化编辑句柄会踩同一个 SDK null 访问问题，改为创建后 rAF 延迟开启。
-      const wantEditing = raw?.enableEditing === true;
       const ctorOpts: Record<string, unknown> = {};
       const fields = ['strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle'];
       for (const f of fields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
@@ -640,19 +781,11 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
       if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
       const hasOpts = Object.keys(ctorOpts).length > 0;
-      return createOverlayFactory('Rectangle', () => {
-        const inst = hasOpts
+      return createOverlayFactory('Rectangle', () =>
+        hasOpts
           ? new rawSDK.Rectangle(toRawBounds(rawSDK, b), ctorOpts)
-          : new rawSDK.Rectangle(toRawBounds(rawSDK, b));
-        if (wantEditing) {
-          const rafId = requestAnimationFrame(() => {
-            try { inst.enableEditing?.(); } catch { /* ignore */ }
-          });
-          const origRemove = inst.remove?.bind(inst);
-          if (origRemove) inst.remove = function () { cancelAnimationFrame(rafId); return origRemove(); };
-        }
-        return inst;
-      }, 'rectangle');
+          : new rawSDK.Rectangle(toRawBounds(rawSDK, b)),
+      'rectangle');
     },
     createBezierCurve: (p, cp, o) => {
       const raw = o as Record<string, unknown>;
@@ -703,7 +836,11 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
       if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
       // url 可以是图片/视频地址，也可以是 canvas 元素（type='canvas'）
-      if (raw?.url !== undefined) ctorOpts.url = raw.url;
+      if (raw?.url !== undefined) {
+        ctorOpts.url = raw.url;
+        // v3 SDK 不识别 url，用 imageURL 作为 fallback
+        if (typeof raw.url === 'string' && typeof raw.imageURL !== 'string') ctorOpts.imageURL = raw.url;
+      }
       if (typeof raw?.displayOnMinLevel === 'number') ctorOpts.displayOnMinLevel = raw.displayOnMinLevel;
       if (typeof raw?.displayOnMaxLevel === 'number') ctorOpts.displayOnMaxLevel = raw.displayOnMaxLevel;
       if (typeof raw?.imageURL === 'string') ctorOpts.imageURL = raw.imageURL;
@@ -797,19 +934,30 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     },
     createIcon: (url, size, o) => {
       const raw = o as Record<string, unknown>;
+      const isV3 = typeof (globalThis as any).BMapGL === 'undefined';
       const ctorOpts: Record<string, unknown> = {};
       if (raw?.anchor) ctorOpts.anchor = toRawSize(rawSDK, raw.anchor as Size);
-      if (raw?.imageOffset) ctorOpts.imageOffset = toRawSize(rawSDK, raw.imageOffset as Size);
+      // v3 的 imageOffset 用 CSS background-position 语义（负值=右移），v4 用正值=裁剪起点
+      if (raw?.imageOffset) {
+        const off = raw.imageOffset as Size;
+        ctorOpts.imageOffset = isV3
+          ? new rawSDK.Size(-off.width, -off.height)
+          : toRawSize(rawSDK, off);
+      }
       if (raw?.imageSize) ctorOpts.imageSize = toRawSize(rawSDK, raw.imageSize as Size);
       if (raw?.infoWindowAnchor) ctorOpts.infoWindowAnchor = toRawSize(rawSDK, raw.infoWindowAnchor as Size);
       if (typeof raw?.printImageUrl === 'string') ctorOpts.printImageUrl = raw.printImageUrl;
       if (raw?.srcset) ctorOpts.srcset = raw.srcset;
       const hasOpts = Object.keys(ctorOpts).length > 0;
-      return createOverlayFactory('Icon', () =>
-        hasOpts
+      const imgSize = raw?.imageSize ? toRawSize(rawSDK, raw.imageSize as Size) : null;
+      return createOverlayFactory('Icon', () => {
+        const inst = hasOpts
           ? new rawSDK.Icon(url, new rawSDK.Size(size.width, size.height), ctorOpts)
-          : new rawSDK.Icon(url, new rawSDK.Size(size.width, size.height)),
-      'icon');
+          : new rawSDK.Icon(url, new rawSDK.Size(size.width, size.height));
+        // v3 SDK 构造函数不接受 imageSize，需要额外调 setImageSize
+        if (imgSize && typeof inst.setImageSize === 'function') inst.setImageSize(imgSize);
+        return inst;
+      }, 'icon');
     },
     createIconSequence: (sym, offset, repeat, fr) => createOverlayFactory('IconSequence', () => new rawSDK.IconSequence(sym ? rawOf(sym) : undefined, offset, repeat ?? '', fr), 'iconSequence'),
     createHotspot: (p, o) => {
@@ -893,7 +1041,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (typeof o.strokeOpacity === 'number') r.setStrokeOpacity?.(o.strokeOpacity);
         if (typeof o.strokeStyle === 'string') r.setStrokeStyle?.(o.strokeStyle);
         if (o.enableEditing === true) r.enableEditing?.();
-        else if (o.enableEditing === false && ov.type !== 'circle' && ov.type !== 'rectangle') r.disableEditing?.();
+        else if (o.enableEditing === false && ov.type !== 'circle') r.disableEditing?.();
         if (typeof o.fillColor === 'string') r.setFillColor?.(o.fillColor);
         if (typeof o.fillOpacity === 'number') r.setFillOpacity?.(o.fillOpacity);
         // Prism 专属：顶面/侧面填充分开设置，空字符串表示无填充，所以用 typeof 判断而非真值判断
@@ -912,6 +1060,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (ov.type === 'groundOverlay' || ov.type === 'groundPoint') {
           if (typeof o.url === 'string') r.setImage?.(o.url);
           if (typeof o.imageURL === 'string') r.setImageURL?.(o.imageURL);
+          else if (typeof o.url === 'string') r.setImageURL?.(o.url); // v3 fallback
           if (typeof o.displayOnMinLevel === 'number') r.setDisplayOnMinLevel?.(o.displayOnMinLevel);
           if (typeof o.displayOnMaxLevel === 'number') r.setDisplayOnMaxLevel?.(o.displayOnMaxLevel);
         }
@@ -984,14 +1133,28 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         if (o.offset) r.setOffset?.(toRawSize(rawSDK, o.offset));
         // Marker v4+ 专属 setter
         if (typeof o.color === 'string' && ov.type === 'marker') r.setColor?.(o.color);
-        if (typeof o.rank === 'number' && ov.type === 'marker') r.setRank?.(o.rank);
+        if (typeof o.rank === 'number' && ov.type === 'marker') { r.setRank?.(o.rank); overlayToCM.get(r)?.schedule(); }
         if (typeof o.rotationOrigin === 'number' && ov.type === 'marker') r.setRotationOrigin?.(o.rotationOrigin);
       } catch { /* ignore */ }
     },
 
     // ─────────────── 27b. Overlay 可见性 / PlaceDetail ───────────────
-    showOverlay: (ov) => { try { rawOf(ov).show?.(); } catch { /* ignore */ } },
-    hideOverlay: (ov) => { try { rawOf(ov).hide?.(); } catch { /* ignore */ } },
+    showOverlay: (ov) => {
+      const raw = rawOf(ov);
+      const s = collisionState.get(raw);
+      if (s) { s.userVisible = true; if (s.hidden) return; }
+      try { raw.show?.(); } catch { /* ignore */ }
+      const c = raw?.getContainer?.() ?? raw?._container;
+      if (c) c.style.display = '';
+    },
+    hideOverlay: (ov) => {
+      const raw = rawOf(ov);
+      const s = collisionState.get(raw);
+      if (s) s.userVisible = false;
+      try { raw.hide?.(); } catch { /* ignore */ }
+      const c = raw?.getContainer?.() ?? raw?._container;
+      if (c) c.style.display = 'none';
+    },
     openPlaceDetail: (marker, pd) => callRaw('Marker.openPlaceDetail', () => rawOf(marker).openPlaceDetail?.(rawOf(pd))),
     closePlaceDetail: (marker) => { try { rawOf(marker).closePlaceDetail?.(); } catch { /* ignore */ } },
 

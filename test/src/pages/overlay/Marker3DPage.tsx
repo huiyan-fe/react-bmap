@@ -24,7 +24,7 @@ export function Marker3DPage() {
         <section><h3>height: {height}</h3><input type="range" min={10} max={500} value={height} onChange={e => setHeight(Number(e.target.value))} className="full-width" /></section>
         <section><h3>shape</h3><div className="btn-group"><button className={shape === 1 ? 'active' : ''} onClick={() => setShape(1)}>圆形(1)</button><button className={shape === 2 ? 'active' : ''} onClick={() => setShape(2)}>方形(2)</button></div></section>
         <section><h3>size: {size}</h3><input type="range" min={10} max={200} value={size} onChange={e => setSize(Number(e.target.value))} className="full-width" /></section>
-        <section><h3>color</h3><input type="color" value={color} onChange={e => setColor(e.target.value)} /></section>
+        <section><h3>color</h3><input type="color" value={color || '#1890ff'} onChange={e => setColor(e.target.value)} /></section>
         <section><h3>代码示例</h3><pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>{`<Marker3D position={pt} height={100} shape={1} size={50} fillColor="#1890ff" />`}</pre></section>
       </div>
     </div>

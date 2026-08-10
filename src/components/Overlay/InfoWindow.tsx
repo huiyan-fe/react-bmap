@@ -50,10 +50,11 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
   cbRefs.restore.current = onRestore;
   cbRefs.resize.current = onResize;
 
-  // 1. 创建 InfoWindow 实例（mount 时创建一次）
-  const contentKey = stableStringify(content);
-  const optsKey = stableStringify({ width, height, maxWidth, offset, title, enableAutoPan, enableCloseOnClick, enableMessage, message, maxContent, enableMaximize });
+  // 有 setter 的属性通过 setter 更新，不重建
+  // 无 setter 的属性变化才重建：maxWidth, offset, enableCloseOnClick, enableMessage, message
+  const ctorOnlyOptsKey = stableStringify({ maxWidth, offset, enableCloseOnClick, enableMessage, message });
 
+  // 1. 创建 InfoWindow 实例（仅 ctor-only 属性变化时重建）
   useLayoutEffect(() => {
     if (!driver) return;
     const opts: Record<string, unknown> = {};
@@ -79,7 +80,6 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
     }
 
     return () => {
-      // cleanup: 注销事件 + 关闭窗口
       for (const { event, fn } of handlers) {
         rawIW?.removeEventListener?.(event, fn);
       }
@@ -91,9 +91,49 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
       setCreated(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, contentKey, optsKey]);
+  }, [driver, ctorOnlyOptsKey]);
 
-  // 2. open/close 控制
+  // 2. 有 setter 的属性：变化时调 setter，不重建
+  useEffect(() => {
+    const raw = (iwRef.current as any)?.raw;
+    if (raw && content != null) raw.setContent?.(content);
+  }, [created, content]);
+
+  useEffect(() => {
+    const raw = (iwRef.current as any)?.raw;
+    if (raw && title != null) raw.setTitle?.(title);
+  }, [created, title]);
+
+  useEffect(() => {
+    const raw = (iwRef.current as any)?.raw;
+    if (raw && width != null) raw.setWidth?.(width);
+  }, [created, width]);
+
+  useEffect(() => {
+    const raw = (iwRef.current as any)?.raw;
+    if (raw && height != null) raw.setHeight?.(height);
+  }, [created, height]);
+
+  useEffect(() => {
+    const raw = (iwRef.current as any)?.raw;
+    if (raw && maxContent != null) raw.setMaxContent?.(maxContent);
+  }, [created, maxContent]);
+
+  useEffect(() => {
+    const raw = (iwRef.current as any)?.raw;
+    if (!raw) return;
+    if (enableMaximize === true) raw.enableMaximize?.();
+    else if (enableMaximize === false) raw.disableMaximize?.();
+  }, [created, enableMaximize]);
+
+  useEffect(() => {
+    const raw = (iwRef.current as any)?.raw;
+    if (!raw) return;
+    if (enableAutoPan === true) raw.enableAutoPan?.();
+    else if (enableAutoPan === false) raw.disableAutoPan?.();
+  }, [created, enableAutoPan]);
+
+  // 3. open/close 控制（不依赖 content/opts，避免属性变化时重新打开）
   useEffect(() => {
     if (!driver || !map || !created || !iwRef.current) return;
 
@@ -102,17 +142,14 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
 
     if (open) {
       try {
-        // 直调 raw SDK，绕过 driver 版本检测
         const rawTarget = openTarget?.raw ?? openTarget;
         const rawIW = (iw as any).raw;
 
         if (position) {
-          // 独立用法：map.openInfoWindow(iw, point) — 需要 point 参数
           const SDK = (globalThis as any).BMap;
           const pt = new SDK.Point(position.lng, position.lat);
           rawTarget?.openInfoWindow?.(rawIW, pt);
         } else if (typeof rawTarget?.openInfoWindow === 'function') {
-          // 嵌套用法：marker.openInfoWindow(iw)
           rawTarget.openInfoWindow(rawIW);
         }
       } catch (e) {
@@ -125,10 +162,8 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
         else (map as any).raw?.closeInfoWindow?.();
       } catch { /* ignore */ }
     }
-    // contentKey/optsKey 变化时 InfoWindow 会被 useLayoutEffect 重建，
-    // 必须在这里重新打开，否则重建后窗口处于关闭状态。
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, map, target, created, open, position?.lng, position?.lat, contentKey, optsKey]);
+  }, [driver, map, target, created, open, position?.lng, position?.lat, ctorOnlyOptsKey]);
 
   // InfoWindow 不渲染 React children 到 DOM（内容通过 SDK content 参数传入）
   // children 仅用于逻辑组合（如嵌套在 Marker 内时提供 OverlayTargetContext）

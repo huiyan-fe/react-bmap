@@ -48,7 +48,6 @@ export const PAGES: TestPage[] = [
   { id: 'logo-control', name: 'LogoControl', category: C, ready: true },
   // 图层（18 个）
   { id: 'tile-layer', name: 'TileLayer', category: L, ready: true },
-  { id: 'normal-layer', name: 'NormalLayer', category: L, ready: true },
   { id: 'geojson-layer', name: 'GeoJSONLayer', category: L, ready: true },
   { id: 'district-layer', name: 'DistrictLayer', category: L, ready: true },
   { id: 'traffic-layer', name: 'TrafficLayer', category: L, ready: true },
@@ -59,7 +58,6 @@ export const PAGES: TestPage[] = [
   { id: 'wmts-layer', name: 'WMTSLayer', category: L, ready: true },
   { id: 'xyz-layer', name: 'XYZLayer', category: L, ready: true },
   { id: 'mvt-layer', name: 'MVTLayer', category: L, ready: true },
-  { id: 'feature-layer', name: 'FeatureLayer', category: L, ready: true },
   { id: 'fill-layer', name: 'FillLayer', category: L, ready: true },
   { id: 'dom-layer', name: 'DOMLayer', category: L, ready: true },
   { id: 'point-icon-layer', name: 'PointIconLayer', category: L, ready: true },

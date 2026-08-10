@@ -3,7 +3,7 @@
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Map, Polyline, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import type { Point, MapRef } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_PATH: Point[] = [
@@ -32,7 +32,10 @@ export function PolylinePage() {
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
+  const [mapRef, setMapRef] = useState<MapRef | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  // 编辑后的路径暂存：ctorOnlyProps 变化触发重建前，同步到 state 避免丢失
+  const editedPathRef = useRef<Point[]>(DEFAULT_PATH);
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = 0; }, [eventLog]);
 
@@ -50,7 +53,7 @@ export function PolylinePage() {
   return (
     <div className="test-page">
       <div className="test-map">
-        <Map defaultCenter={BEIJING} defaultZoom={14} style={{ height: '100%' }}>
+        <Map ref={setMapRef} defaultCenter={BEIJING} defaultZoom={14} style={{ height: '100%' }}>
           <Polyline
             path={path}
             strokeColor={strokeColor}
@@ -76,7 +79,17 @@ export function PolylinePage() {
             onMouseUp={handleEvent('mouseup')}
             onMouseMove={handleEvent('mousemove')}
             onRemove={handleEvent('remove')}
-            onLineUpdate={() => log('🟣 polyline.lineupdate')}
+            onLineUpdate={(e: any) => {
+              log('🟣 polyline.lineupdate');
+              // 编辑后把当前路径存入 ref，ctorOnlyProps 变化重建前同步到 state
+              const raw = e?.target;
+              if (raw?.getPath) {
+                try {
+                  const pts = raw.getPath();
+                  if (Array.isArray(pts)) editedPathRef.current = pts.map((p: any) => ({ lng: p.lng, lat: p.lat }));
+                } catch { /* ignore */ }
+              }
+            }}
             onRightDoubleClick={handleEvent('rightdblclick')}
             onEditStart={() => log('🟣 polyline.editstart')}
             onEditEnd={() => log('🟣 polyline.editend')}
@@ -112,7 +125,7 @@ export function PolylinePage() {
 
         <section>
           <h3>strokeColor</h3>
-          <input type="color" value={strokeColor} onChange={e => setStrokeColor(e.target.value)} />
+          <input type="color" value={strokeColor || '#1890ff'} onChange={e => setStrokeColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>{strokeColor}</span>
         </section>
 
@@ -133,6 +146,7 @@ export function PolylinePage() {
               <button key={s} className={strokeStyle === s ? 'active' : ''} onClick={() => setStrokeStyle(s)}>{s}</button>
             ))}
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         <section>
@@ -163,8 +177,22 @@ export function PolylinePage() {
             <input type="checkbox" checked={enableMassClear} onChange={e => setEnableMassClear(e.target.checked)} />
             enableMassClear
           </label>
+          <div className="btn-group" style={{ marginTop: 4 }}>
+            <button style={{ fontSize: 11 }} onClick={() => {
+              const before = mapRef?.getOverlays() ?? [];
+              mapRef?.clearOverlays();
+              const after = mapRef?.getOverlays() ?? [];
+              log(`🧹 clearOverlays: ${before.length} → ${after.length}（massClear=${enableMassClear ? 'on' : 'off'}）`);
+            }}>clearOverlays 测试</button>
+          </div>
+          <p className="muted small">enableMassClear=true 时 clearOverlays 会清除；false 时不受影响。</p>
           <label className="checkbox-row">
-            <input type="checkbox" checked={enableClicking} onChange={e => setEnableClicking(e.target.checked)} />
+            <input type="checkbox" checked={enableClicking} onChange={e => {
+              // 重建前同步编辑后的路径，避免丢失
+              setPath(editedPathRef.current);
+              setEnableClicking(e.target.checked);
+              log('🔄 enableClicking 重建（已同步编辑路径）');
+            }} />
             enableClicking（重建折线）
           </label>
           <label className="checkbox-row">

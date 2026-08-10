@@ -15,7 +15,7 @@ import {
   BMAP_ANCHOR_BOTTOM_RIGHT, BMAP_ANCHOR_TOP_CENTER, BMAP_ANCHOR_BOTTOM_CENTER,
   BMAP_ANCHOR_CENTER,
 } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import type { Point, MapRef } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const ANCHORS = [
@@ -46,6 +46,7 @@ export function LabelPage() {
   const [stylesText, setStylesText] = useState('{"color":"#1890ff","fontSize":"14px","border":"1px solid #ccc","padding":"2px 6px","borderRadius":"3px","backgroundColor":"#fff","whiteSpace":"nowrap"}');
   const [eventLog, setEventLog] = useState<string[]>([]);
   const logRef = useRef<HTMLDivElement>(null);
+  const [mapRef, setMapRef] = useState<MapRef | null>(null);
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = 0; }, [eventLog]);
 
@@ -67,7 +68,7 @@ export function LabelPage() {
   return (
     <div className="test-page">
       <div className="test-map">
-        <Map defaultCenter={BEIJING} defaultZoom={13} style={{ height: '100%' }}>
+        <Map ref={setMapRef} defaultCenter={BEIJING} defaultZoom={13} style={{ height: '100%' }}>
           <Label
             content={content}
             position={position}
@@ -213,6 +214,15 @@ export function LabelPage() {
             <input type="checkbox" checked={massClear} onChange={e => setMassClear(e.target.checked)} />
             enableMassClear
           </label>
+          <div className="btn-group" style={{ marginTop: 4 }}>
+            <button style={{ fontSize: 11 }} onClick={() => {
+              const before = mapRef?.getOverlays() ?? [];
+              mapRef?.clearOverlays();
+              const after = mapRef?.getOverlays() ?? [];
+              log(`🧹 clearOverlays: ${before.length} → ${after.length}（massClear=${massClear ? 'on' : 'off'}）`);
+            }}>clearOverlays 测试</button>
+          </div>
+          <p className="muted small">enableMassClear=true 时 clearOverlays 会清除 label；false 时 label 不受影响。</p>
           <label className="checkbox-row">
             <input type="checkbox" checked={clicking} onChange={e => setClicking(e.target.checked)} />
             enableClicking（关闭后不响应事件，重建 label）

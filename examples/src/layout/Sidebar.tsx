@@ -13,6 +13,10 @@ export function Sidebar() {
         borderRight: '1px solid #eee',
         padding: '16px 0',
         background: '#fafafa',
+        overflowY: 'auto',
+        height: 'calc(100vh - 56px)',
+        position: 'sticky',
+        top: 0,
       }}
     >
       <div style={{ padding: '0 16px 12px', fontSize: 14, color: '#888' }}>

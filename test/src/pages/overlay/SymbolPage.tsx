@@ -207,7 +207,7 @@ export function SymbolPage() {
         {/* fillColor */}
         <section>
           <h3>fillColor</h3>
-          <input type="text" className="full-width" value={fillColor}
+          <input type="color" value={fillColor || '#ff0000'}
             onChange={e => setFillColor(e.target.value)} />
           <div className="btn-group" style={{ flexWrap: 'wrap', marginTop: 4 }}>
             {COLOR_PRESETS.map(c => (
@@ -253,7 +253,7 @@ export function SymbolPage() {
         {/* strokeColor */}
         <section>
           <h3>strokeColor</h3>
-          <input type="text" className="full-width" value={strokeColor}
+          <input type="color" value={strokeColor || '#333333'}
             onChange={e => setStrokeColor(e.target.value)} />
           <p className="muted small">走 setStrokeColor()</p>
         </section>

@@ -52,6 +52,10 @@ export const SimpleInfoWindow = memo(function SimpleInfoWindow(props: SimpleInfo
 
     // SDK 构造函数：SimpleInfoWindow(content, opts) — content 是第一个参数
     const win = new SDK.SimpleInfoWindow(content, opts);
+    // SDK 构造函数的 setConfig 可能不处理 title/content，用 setter 补设
+    if (opts.title && typeof win.setTitle === 'function') win.setTitle(opts.title);
+    if (content && typeof win.setContent === 'function') win.setContent(content);
+    if (opts.maxContent && typeof win.setMaxContent === 'function') win.setMaxContent(opts.maxContent);
     handleRef.current = win;
 
     // 注册事件

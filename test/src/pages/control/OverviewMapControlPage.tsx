@@ -43,16 +43,18 @@ export function OverviewMapControlPage() {
           <SizeInputs value={size} onChange={setSize} />
         </section>
         <section>
-          <h3>isOpen</h3>
+          <h3>isOpen（重建）</h3>
           <BooleanRow label="isOpen" checked={isOpen} onChange={setIsOpen} />
         </section>
         <section>
           <h3>zoomInterval（重建）</h3>
           <input type="number" className="full-width" value={zoomInterval} onChange={e => setZoomInterval(Number(e.target.value))} />
+          <p className="muted small">v3 可能不支持</p>
         </section>
         <section>
           <h3>padding（重建）</h3>
           <input type="number" className="full-width" value={padding} onChange={e => setPadding(Number(e.target.value))} />
+          <p className="muted small">v3 可能不支持；频繁切换会导致 WebGL 上下文耗尽</p>
         </section>
         <EventLog logs={logs} />
         <PropsView value={controlProps} />
@@ -66,9 +68,6 @@ export function OverviewMapControlPage() {
         isOpen={isOpen}
         zoomInterval={zoomInterval}
         padding={padding}
-        onViewChanged={(raw) => logEvent(setLogs, `viewchanged ${formatEventValue(raw)}`)}
-        onViewChanging={(raw) => logEvent(setLogs, `viewchanging ${formatEventValue(raw)}`)}
-        onResize={(raw) => logEvent(setLogs, `resize ${formatEventValue(raw)}`)}
       />
     </ControlPageLayout>
   );

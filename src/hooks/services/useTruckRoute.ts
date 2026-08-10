@@ -59,7 +59,7 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
       raw.setSearchCompleteCallback((results: unknown) => { searchCbRef.current?.(results); });
     }
     setState(s => ({ ...s, supported: true, error: null }));
-    return () => { rawRef.current = null; searchCbRef.current = null; };
+    return () => { rawRef.current?.clearResults?.(); rawRef.current = null; searchCbRef.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driver, locKey, optKey]);
 

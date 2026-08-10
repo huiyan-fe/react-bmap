@@ -1,10 +1,6 @@
-import './Map';
-import './Marker';
-import './Circle';
-import './Polyline';
-import './Polygon';
-import './InfoWindow';
-import './NavigationControl';
-import './ScaleControl';
-import './TrafficLayer';
-import './DrivingRoute';
+import './mapDemo';
+import './overlayDemos';
+import './controlDemos';
+import './layerDemos';
+import './serviceDemos';
+import './otherDemos';

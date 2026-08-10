@@ -29,10 +29,9 @@ export function Header() {
           <select
             className="app-header-select"
             value={version}
-            onChange={(e) => setVersion(e.target.value as '3.0' | 'gl' | '4.0')}
+            onChange={(e) => setVersion(e.target.value as '3.0' | '4.0')}
           >
             <option value="4.0">4.0</option>
-            <option value="gl">GL</option>
             <option value="3.0">3.0</option>
           </select>
         </div>

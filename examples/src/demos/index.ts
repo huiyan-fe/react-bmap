@@ -1,10 +1,8 @@
-import type { z } from 'zod';
 import React from 'react';
 
 export interface DemoItem {
-  Component: React.FC;
+  Component?: React.FC;
   code: string;
-  schema?: z.ZodObject<z.ZodRawShape>;
 }
 
 const demos: Record<string, DemoItem> = {};

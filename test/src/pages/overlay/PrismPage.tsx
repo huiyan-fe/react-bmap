@@ -202,7 +202,7 @@ export function PrismPage() {
         {/* topFillColor */}
         <section>
           <h3>topFillColor（顶面）</h3>
-          <input type="color" value={topFillColor}
+          <input type="color" value={topFillColor || '#1890ff'}
             onChange={e => setTopFillColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {topFillColor}
@@ -222,7 +222,7 @@ export function PrismPage() {
         {/* sideFillColor */}
         <section>
           <h3>sideFillColor（侧面）</h3>
-          <input type="color" value={sideFillColor}
+          <input type="color" value={sideFillColor || '#1890ff'}
             onChange={e => setSideFillColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {sideFillColor}

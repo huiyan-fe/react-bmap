@@ -45,7 +45,7 @@ const V4_OVERLAY: Capability[] = [
 
 // ── 4.0+ 控件类 ──
 const V4_CONTROL: Capability[] = [
-  'NavigationControl3D', 'ZoomControl', 'CityListControl', 'LogoControl',
+  'NavigationControl3D', 'ZoomControl', 'LogoControl',
 ];
 
 // ── 4.0+ 服务类 ──
@@ -84,9 +84,8 @@ const V3_MAP_ONLY: Capability[] = [
 
 // ── 3.0-only 覆盖物/图层 ──
 const V3_OVERLAY_ONLY: Capability[] = [
-  'PointCollection',   // @removed 4.0
-  'CustomLayer',   // @removed 4.0
-  'CanvasLayer',   // @removed 4.0
+  'CustomLayer',   // @removed 4.0 (v4 用 Layer 目录下的 CustomLayer)
+  'CanvasLayer',   // @removed 4.0 (v4 用 Layer 目录下的 CanvasLayer)
 ];
 
 // ── 全版本共有（隐式：v3 与 v4 共有） ──
@@ -108,10 +107,12 @@ const COMMON: Capability[] = [
   'Map.clearOverlays', 'Map.getOverlays', 'Map.addOverlay', 'Map.removeOverlay',
   // 覆盖物（全版本）
   'Marker', 'Label', 'Polyline', 'Polygon', 'Circle',
-  'GroundOverlay', 'InfoWindow', 'Symbol', 'Icon', 'IconSequence',
+  'GroundOverlay', 'InfoWindow', 'Symbol', 'Icon', 'IconSequence', 'PointCollection',
+  'Hotspot', 'MapMask',
   // 控件（全版本）
   'NavigationControl', 'ScaleControl', 'OverviewMapControl', 'MapTypeControl',
   'CopyrightControl', 'GeolocationControl', 'LocationControl', 'PanoramaControl',
+  'CityListControl',
   // 图层（全版本）
   'TileLayer', 'TrafficLayer',
   // 服务（全版本）

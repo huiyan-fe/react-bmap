@@ -3,7 +3,7 @@
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Map, Circle, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import type { Point, MapRef } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_CENTER: Point = { lng: 116.404, lat: 39.915 };
@@ -24,7 +24,10 @@ export function CirclePage() {
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
+  const [mapRef, setMapRef] = useState<MapRef | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const editedCenterRef = useRef<Point>(DEFAULT_CENTER);
+  const editedRadiusRef = useRef(1000);
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = 0;
@@ -54,7 +57,7 @@ export function CirclePage() {
   return (
     <div className="test-page">
       <div className="test-map">
-        <Map defaultCenter={BEIJING} defaultZoom={14} style={{ height: '100%' }}>
+        <Map ref={setMapRef} defaultCenter={BEIJING} defaultZoom={14} style={{ height: '100%' }}>
           <Circle
             center={center}
             radius={radius}
@@ -79,7 +82,19 @@ export function CirclePage() {
             onMouseUp={onEvt('mouseup')}
             onMouseMove={onEvt('mousemove')}
             onRemove={onEvt('remove')}
-            onLineUpdate={() => log('⭕ circle.lineupdate')}
+            onLineUpdate={(e: any) => {
+              log('⭕ circle.lineupdate');
+              // 编辑后把当前 center/radius 存入 ref，切换 enableEditing 前同步到 state
+              const raw = e?.target;
+              if (raw) {
+                try {
+                  const c = raw.getCenter?.();
+                  if (c) editedCenterRef.current = { lng: c.lng, lat: c.lat };
+                  const r = raw.getRadius?.();
+                  if (typeof r === 'number') editedRadiusRef.current = r;
+                } catch { /* ignore */ }
+              }
+            }}
             onEditStart={() => log('⭕ circle.editstart')}
             onEditEnd={() => log('⭕ circle.editend')}
             onLineVertexDragStart={() => log('⭕ vertex.dragstart')}
@@ -158,7 +173,7 @@ export function CirclePage() {
         {/* strokeColor */}
         <section>
           <h3>strokeColor</h3>
-          <input type="color" value={strokeColor}
+          <input type="color" value={strokeColor || '#1890ff'}
             onChange={e => setStrokeColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {strokeColor}
@@ -168,7 +183,7 @@ export function CirclePage() {
         {/* fillColor */}
         <section>
           <h3>fillColor</h3>
-          <input type="color" value={fillColor}
+          <input type="color" value={fillColor || '#ffffff'}
             onChange={e => setFillColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {fillColor}
@@ -212,6 +227,7 @@ export function CirclePage() {
               >{s}</button>
             ))}
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         {/* 开关 */}
@@ -219,7 +235,12 @@ export function CirclePage() {
           <h3>行为开关</h3>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableEditing}
-              onChange={e => setEnableEditing(e.target.checked)} />
+              onChange={e => {
+                // 切换前同步编辑后的 center/radius，避免重建时丢失
+                setCenter(editedCenterRef.current);
+                setRadius(editedRadiusRef.current);
+                setEnableEditing(e.target.checked);
+              }} />
             enableEditing（拖拽顶点编辑）
           </label>
           <label className="checkbox-row">
@@ -227,6 +248,15 @@ export function CirclePage() {
               onChange={e => setEnableMassClear(e.target.checked)} />
             enableMassClear
           </label>
+          <div className="btn-group" style={{ marginTop: 4 }}>
+            <button style={{ fontSize: 11 }} onClick={() => {
+              const before = mapRef?.getOverlays() ?? [];
+              mapRef?.clearOverlays();
+              const after = mapRef?.getOverlays() ?? [];
+              log(`🧹 clearOverlays: ${before.length} → ${after.length}（massClear=${enableMassClear ? 'on' : 'off'}）`);
+            }}>clearOverlays 测试</button>
+          </div>
+          <p className="muted small">enableMassClear=true 时 clearOverlays 会清除；false 时不受影响。</p>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableClicking}
               onChange={e => setEnableClicking(e.target.checked)} />

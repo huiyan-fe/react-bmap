@@ -4,7 +4,7 @@
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Map, Rectangle, useCapabilities } from 'react-bmap';
-import type { Bounds } from 'react-bmap';
+import type { Bounds, MapRef } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_BOUNDS: Bounds = {
@@ -29,7 +29,9 @@ export function RectanglePage() {
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
+  const [mapRef, setMapRef] = useState<MapRef | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const editedBoundsRef = useRef<Bounds>(DEFAULT_BOUNDS);
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = 0;
@@ -62,7 +64,7 @@ export function RectanglePage() {
   return (
     <div className="test-page">
       <div className="test-map">
-        <Map defaultCenter={BEIJING} defaultZoom={13} style={{ height: '100%' }}>
+        <Map ref={setMapRef} defaultCenter={BEIJING} defaultZoom={13} style={{ height: '100%' }}>
           <Rectangle
             bounds={bounds}
             strokeColor={strokeColor}
@@ -87,7 +89,17 @@ export function RectanglePage() {
             onMouseUp={onEvt('mouseup')}
             onMouseMove={onEvt('mousemove')}
             onRemove={onEvt('remove')}
-            onLineUpdate={() => log('▭ rectangle.lineupdate')}
+            onLineUpdate={(e: any) => {
+              log('▭ rectangle.lineupdate');
+              // 编辑后把当前 bounds 存入 ref，切换 enableEditing 前同步到 state
+              const raw = e?.target;
+              if (raw?.getBounds) {
+                try {
+                  const b = raw.getBounds();
+                  if (b?.sw && b?.ne) editedBoundsRef.current = { sw: { lng: b.sw.lng, lat: b.sw.lat }, ne: { lng: b.ne.lng, lat: b.ne.lat } };
+                } catch { /* ignore */ }
+              }
+            }}
             onEditStart={() => log('▭ rectangle.editstart')}
             onEditEnd={() => log('▭ rectangle.editend')}
             onLineVertexDragStart={() => log('▭ vertex.dragstart')}
@@ -173,7 +185,7 @@ export function RectanglePage() {
         {/* strokeColor */}
         <section>
           <h3>strokeColor</h3>
-          <input type="color" value={strokeColor}
+          <input type="color" value={strokeColor || '#1890ff'}
             onChange={e => setStrokeColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {strokeColor}
@@ -183,7 +195,7 @@ export function RectanglePage() {
         {/* fillColor */}
         <section>
           <h3>fillColor</h3>
-          <input type="color" value={fillColor}
+          <input type="color" value={fillColor || '#ffffff'}
             onChange={e => setFillColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {fillColor}
@@ -227,6 +239,7 @@ export function RectanglePage() {
               >{s}</button>
             ))}
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         {/* 开关 */}
@@ -234,14 +247,27 @@ export function RectanglePage() {
           <h3>行为开关</h3>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableEditing}
-              onChange={e => setEnableEditing(e.target.checked)} />
-            enableEditing（拖拽顶点编辑，重建矩形）
+              onChange={e => {
+                // 切换前同步编辑后的 bounds，避免丢失
+                setBounds(editedBoundsRef.current);
+                setEnableEditing(e.target.checked);
+              }} />
+            enableEditing（拖拽顶点编辑）
           </label>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableMassClear}
               onChange={e => setEnableMassClear(e.target.checked)} />
             enableMassClear
           </label>
+          <div className="btn-group" style={{ marginTop: 4 }}>
+            <button style={{ fontSize: 11 }} onClick={() => {
+              const before = mapRef?.getOverlays() ?? [];
+              mapRef?.clearOverlays();
+              const after = mapRef?.getOverlays() ?? [];
+              log(`🧹 clearOverlays: ${before.length} → ${after.length}（massClear=${enableMassClear ? 'on' : 'off'}）`);
+            }}>clearOverlays 测试</button>
+          </div>
+          <p className="muted small">enableMassClear=true 时 clearOverlays 会清除；false 时不受影响。</p>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableClicking}
               onChange={e => setEnableClicking(e.target.checked)} />

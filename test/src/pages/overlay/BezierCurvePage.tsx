@@ -5,7 +5,7 @@
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Map, BezierCurve, Marker, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import type { Point, MapRef } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 /** 预设路径点（2/3/4 点） */
@@ -43,6 +43,7 @@ export function BezierCurvePage() {
   const [zIndex, setZIndex] = useState<number | undefined>(undefined);
   const [visible, setVisible] = useState(true);
   const [eventLog, setEventLog] = useState<string[]>([]);
+  const [mapRef, setMapRef] = useState<MapRef | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
 
   const path = PATH_PRESETS[preset];
@@ -106,7 +107,7 @@ export function BezierCurvePage() {
   return (
     <div className="test-page">
       <div className="test-map">
-        <Map defaultCenter={BEIJING} defaultZoom={13} style={{ height: '100%' }}>
+        <Map ref={setMapRef} defaultCenter={BEIJING} defaultZoom={13} style={{ height: '100%' }}>
           <BezierCurve
             path={path}
             controlPoints={controlPoints}
@@ -240,7 +241,7 @@ export function BezierCurvePage() {
         {/* strokeColor */}
         <section>
           <h3>strokeColor</h3>
-          <input type="color" value={strokeColor}
+          <input type="color" value={strokeColor || '#1890ff'}
             onChange={e => setStrokeColor(e.target.value)} />
           <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>
             {strokeColor}
@@ -275,6 +276,7 @@ export function BezierCurvePage() {
               >{s}</button>
             ))}
           </div>
+          <p className="muted small">dotted 仅 v4+ 支持，v3 无效</p>
         </section>
 
         {/* 开关 */}
@@ -285,6 +287,15 @@ export function BezierCurvePage() {
               onChange={e => setEnableMassClear(e.target.checked)} />
             enableMassClear
           </label>
+          <div className="btn-group" style={{ marginTop: 4 }}>
+            <button style={{ fontSize: 11 }} onClick={() => {
+              const before = mapRef?.getOverlays() ?? [];
+              mapRef?.clearOverlays();
+              const after = mapRef?.getOverlays() ?? [];
+              log(`🧹 clearOverlays: ${before.length} → ${after.length}（massClear=${enableMassClear ? 'on' : 'off'}）`);
+            }}>clearOverlays 测试</button>
+          </div>
+          <p className="muted small">enableMassClear=true 时 clearOverlays 会清除；false 时不受影响。</p>
           <label className="checkbox-row">
             <input type="checkbox" checked={enableClicking}
               onChange={e => setEnableClicking(e.target.checked)} />

@@ -132,7 +132,39 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       if (factoryProps.visible === false) {
         driver.hideOverlay(handle);
       }
+      // Marker3D SDK bug: 首次 addOverlay 后 size/shape 不渲染（无 setSize/setShape 方法）
+      // 同一实例 removeOverlay+addOverlay 也不生效——SDK 构造时捕获了 WebGL 状态
+      // 必须：延迟创建全新实例并替换
+      let reAddTimer: ReturnType<typeof setTimeout> | undefined;
+      if ((handle as any).type === 'marker3d') {
+        reAddTimer = setTimeout(() => {
+          if (ref.current !== handle || !map) return;
+          try {
+            const newHandle = config.factory(driver, factoryProps as P);
+            if (!newHandle) return;
+            driver.removeOverlay(map, handle);
+            driver.addOverlay(map, newHandle);
+            ref.current = newHandle;
+            targetRef.current = newHandle;
+            // 重新设置 optionProps
+            if (config.optionProps) {
+              const initOpts: Record<string, unknown> = {};
+              for (const k of config.optionProps) {
+                const v = (factoryProps as Record<string, unknown>)[k];
+                if (v !== undefined && v !== null) initOpts[k] = v;
+              }
+              if (Object.keys(initOpts).length > 0) {
+                driver.setOverlayOptions(newHandle, initOpts);
+              }
+            }
+            if (factoryProps.visible === false) {
+              driver.hideOverlay(newHandle);
+            }
+          } catch {}
+        }, 500);
+      }
       return () => {
+      if (reAddTimer) clearTimeout(reAddTimer);
       // 值对象不调 removeOverlay
       if (!config.skipMount) {
         // Hotspot 用 removeHotspot 代替 removeOverlay
@@ -274,7 +306,8 @@ export function createControlComponent<P>(
           const v = ctrlProps[k];
           if (v !== undefined && v !== null) initOpts[k] = v;
         }
-        if (Object.keys(initOpts).length > 0) driver.setControlOptions(handle, initOpts);
+        // 不在 useLayoutEffect 中调用 setControlOptions（会导致 setAnchor 重置 SDK 默认 offset）
+        // 构造函数已经设置了所有选项，后续变更由 useEffect 处理
       }
       if ((propsRef.current as any).visible === false) driver.hideControl(handle);
 
@@ -292,8 +325,11 @@ export function createControlComponent<P>(
         }, {})
       : {};
     const optKey = stableStringify(optSnapshot);
+    const firstRunRef = useRef(true);
     useEffect(() => {
       if (!ref.current || !driver || !config.optionProps) return;
+      // 跳过首次运行：构造函数已设置所有选项，首次 setControlOptions 会调用 setAnchor 重置 SDK 默认 offset
+      if (firstRunRef.current) { firstRunRef.current = false; return; }
       if (Object.keys(optSnapshot).length > 0) driver.setControlOptions(ref.current, optSnapshot);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [driver, optKey]);

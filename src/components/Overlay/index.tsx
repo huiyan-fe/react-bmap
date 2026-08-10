@@ -132,8 +132,7 @@ export const Circle = createOverlayComponent<CircleProps>({
   positionProp: 'center',
   optionProps: ['radius', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
-  // enableEditing 也放这里：Circle 的 enableEditing() 有 SDK bug（内部 path 为 null），
-  // 用重建替代运行时 enable/disable 调用，由 driver 的 rAF 延迟逻辑处理。
+  // enableEditing: SDK 的 enableEditing() 对 Circle 有 null 访问 bug，用 ctorOnlyProps + rAF 延迟处理
   ctorOnlyProps: ['enableEditing', 'enableClicking', 'coordType', 'dashArray'],
   events: [
     { sdk: 'click', prop: 'onClick' },
@@ -161,11 +160,9 @@ export const Rectangle = createOverlayComponent<RectangleProps>({
   displayName: 'Rectangle',
   factory: (d, p) => d.createRectangle(p.bounds, p),
   // bounds 走 setBounds（在 setOverlayOptions 内按 type 分发），没有 positionProp/pathProp
-  optionProps: ['bounds', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'zIndex'],
+  optionProps: ['bounds', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableEditing', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建。
-  // enableEditing 同 Circle：SDK 的 enableEditing() 对 bounds 驱动的覆盖物有 null 访问问题，
-  // 用重建 + driver 内 rAF 延迟开启替代运行时 enable/disable 调用。
-  ctorOnlyProps: ['enableEditing', 'enableClicking', 'linkRight', 'coordType', 'dashArray'],
+  ctorOnlyProps: ['enableClicking', 'linkRight', 'coordType', 'dashArray'],
   events: [
     { sdk: 'click', prop: 'onClick' },
     { sdk: 'dblclick', prop: 'onDoubleClick' },
@@ -360,7 +357,7 @@ export { CustomOverlay } from './CustomOverlay';
 
 // ─── 4.0+ 覆盖物 ───
 // Marker3D — 3D 标注（v4+ WebGL only）
-// SDK: setPosition/setHeight/setFillColor/setFillOpacity 有 setter；shape/size 无 setter（重建）
+// SDK: setPosition/setHeight/setFillColor/setFillOpacity 有 setter；shape/size 构造时设置但需 rAF 补调 setSize
 export const Marker3D = createOverlayComponent<Marker3DProps>({
   displayName: 'Marker3D',
   factory: (d, p) => d.createMarker3D(p.position, p.height, p),

@@ -25,7 +25,7 @@ export function Header({ current, pages }: HeaderProps) {
   const [customVersion, setCustomVersion] = useState('');
 
   const applyVersion = (v: string) => {
-    if (v && v !== current && confirm(`切换到 JSAPI ${v}？\n需要刷新页面重新加载 SDK。\n\n${v !== '3.0' && v !== '4.0' ? `注意：框架未显式定义 ${v}，会按 4.0 处理（仍按 ${v} 加载 SDK）。` : ''}`)) {
+    if (v && v !== current) {
       switchVersion(v as BMapVersion);
     }
   };

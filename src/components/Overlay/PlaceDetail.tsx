@@ -91,12 +91,35 @@ export const PlaceDetail = memo(function PlaceDetail(props: PlaceDetailProps) {
   const targetHandle = target?.target ?? null;
   useEffect(() => {
     if (!driver || !targetHandle || !pdRef.current) return;
-    if (open) {
-      driver.openPlaceDetail(targetHandle as any, pdRef.current);
-    } else {
+    if (!open) {
       driver.closePlaceDetail(targetHandle as any);
+      return;
     }
-    // options 变化会重建 PlaceDetail 实例，需重新执行 open/close。
+    // open 时锚定到 marker 当前位置
+    driver.openPlaceDetail(targetHandle as any, pdRef.current);
+    // marker 位置变化时重新 open（SDK 的 openPlaceDetail 只锚定一次，不跟随 marker 移动）
+    const raw = (targetHandle as any)?.raw;
+    let lastPos = '';
+    const check = () => {
+      const pos = raw?.getPosition?.();
+      if (!pos) return;
+      const key = `${pos.lng},${pos.lat}`;
+      if (key !== lastPos) {
+        lastPos = key;
+        try {
+          driver.closePlaceDetail(targetHandle as any);
+          driver.openPlaceDetail(targetHandle as any, pdRef.current!);
+        } catch { /* ignore */ }
+      }
+    };
+    // 先记录初始位置，避免 open 后立即触发重 open
+    const initPos = raw?.getPosition?.();
+    if (initPos) lastPos = `${initPos.lng},${initPos.lat}`;
+    const id = setInterval(check, 200);
+    return () => {
+      clearInterval(id);
+      driver.closePlaceDetail(targetHandle as any);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driver, targetHandle, open, uid, optsKey]);
 

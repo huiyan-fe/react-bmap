@@ -63,6 +63,8 @@ export function MarkerPage() {
   const [raiseOnDrag, setRaiseOnDrag] = useState(false);
   const [draggingCursor, setDraggingCursor] = useState<string>('');
   const [visible, setVisible] = useState(true);
+  const [enableCollisionDetection, setEnableCollisionDetection] = useState(false);
+  const [collisionTest, setCollisionTest] = useState(false);
   const [showPlaceDetail, setShowPlaceDetail] = useState(false);
   const [eventLog, setEventLog] = useState<string[]>([]);
   const logRef = useRef<HTMLDivElement>(null);
@@ -142,6 +144,7 @@ export function MarkerPage() {
             visible={visible}
             raiseOnDrag={raiseOnDrag}
             draggingCursor={draggingCursor || undefined}
+            enableCollisionDetection={enableCollisionDetection}
             zIndex={zIndex}
             anchor={anchor as any}
             color={color}
@@ -186,6 +189,21 @@ export function MarkerPage() {
               <PlaceDetail uid="06d2dffda107b0ef89f15db6" open={true} />
             )}
           </Marker>
+          {/* 碰撞检测测试：3 个相近 marker，rank 越小优先级越高 */}
+          {collisionTest && [
+            { rank: 0, color: '#ff0000', label: 'rank=0(红)', offset: 0.0005 },
+            { rank: 1, color: '#00bb00', label: 'rank=1(绿)', offset: 0.0007 },
+            { rank: 2, color: '#0066ff', label: 'rank=2(蓝)', offset: 0.0009 },
+          ].map((m) => (
+            <Marker
+              key={`collision-${m.rank}`}
+              position={{ lng: BEIJING.lng + m.offset, lat: BEIJING.lat + m.offset }}
+              enableCollisionDetection
+              rank={m.rank}
+              color={m.color}
+              title={m.label}
+            />
+          ))}
           {/* 临时 markers（Map 级 addOverlay 测试） */}
           {Array.from({ length: markerCount }, (_, i) => (
             <Marker key={`temp-${i}`} position={{ lng: position.lng + (i + 1) * 0.005, lat: position.lat + (i + 1) * 0.003 }} title={`临时 #${i + 1}`} />
@@ -277,7 +295,11 @@ export function MarkerPage() {
           </label>
           <label className="checkbox-row">
             <input type="checkbox" checked={raiseOnDrag} onChange={e => setRaiseOnDrag(e.target.checked)} />
-            raiseOnDrag（拖拽时标注离开地图表面）
+            raiseOnDrag（拖拽时标注离开地图表面，仅3.0生效）
+          </label>
+          <label className="checkbox-row">
+            <input type="checkbox" checked={enableCollisionDetection} onChange={e => setEnableCollisionDetection(e.target.checked)} />
+            enableCollisionDetection
           </label>
           <label className="checkbox-row">
             draggingCursor（拖拽光标样式，仅3.0）
@@ -304,6 +326,22 @@ export function MarkerPage() {
             <input type="number" placeholder="未设置" value={rank ?? ''} onChange={e => setRank(e.target.value === '' ? undefined : Number(e.target.value))} style={{ width: 80 }} />
             <button onClick={() => setRank(undefined)}>清除</button>
           </div>
+        </section>
+
+        {/* ─── 碰撞检测测试 ─── */}
+        <section>
+          <h3>碰撞检测测试 <span className={`cap-tag ${caps.has('Map.setHeading') ? 'ok' : 'no'}`}>{caps.has('Map.setHeading') ? 'v4+' : 'v3 ✗'}</span></h3>
+          <label className="checkbox-row">
+            <input type="checkbox" checked={collisionTest} onChange={e => {
+              const v = e.target.checked;
+              setCollisionTest(v);
+              if (v) setEnableCollisionDetection(true);
+            }} />
+            显示 3 个重叠 marker（rank=0红 / rank=1绿 / rank=2蓝）
+          </label>
+          <p className="muted small">
+            框架层面实现了碰撞检测：缩小地图让 marker 重叠时，rank 值大的被隐藏，小的优先显示。
+          </p>
         </section>
 
         {/* ─── Offset ─── */}
@@ -395,7 +433,7 @@ export function MarkerPage() {
 
           <div style={{ fontSize: 11, fontWeight: 600, marginTop: 8, marginBottom: 4 }}>动作</div>
           <div className="btn-group" style={{ flexWrap: 'wrap' }}>
-            <button style={{ fontSize: 11 }} onClick={() => { setPosition({ lng: 116.404, lat: 39.915 }); setRotation(0); setTitle('天安门'); setZIndex(undefined); setAnchor(undefined); setIconMode('默认'); setOffsetX(0); setOffsetY(0); setRaiseOnDrag(false); setDraggingCursor(''); setColor(undefined); setRank(undefined); log('🔄 reset all'); }}>reset all</button>
+            <button style={{ fontSize: 11 }} onClick={() => { setPosition({ lng: 116.404, lat: 39.915 }); setRotation(0); setTitle('天安门'); setZIndex(undefined); setAnchor(undefined); setIconMode('默认'); setOffsetX(0); setOffsetY(0); setRaiseOnDrag(false); setDraggingCursor(''); setColor(undefined); setRank(undefined); setEnableCollisionDetection(false); setCollisionTest(false); log('🔄 reset all'); }}>reset all</button>
             <button style={{ fontSize: 11 }} onClick={() => setRotation(r => (r + 45) % 360)}>rotate +45°</button>
             <button style={{ fontSize: 11 }} onClick={() => setRotation(r => (r + 360 - 45) % 360)}>rotate -45°</button>
             <button style={{ fontSize: 11 }} onClick={() => setZIndex(z => (z ?? 0) + 1)}>zIndex +1</button>
@@ -450,7 +488,7 @@ export function MarkerPage() {
               } else log('❌ setShadow 不支持（v4 已移除）');
             }}>setShadow</button>
           </div>
-          <p className="muted small">以上方法在 v4 中已移除（@removed 4.0）。</p>
+          <p className="muted small">以上方法在 v4 中已移除（@removed 4.0）。setAnimation 方法存在但动画不生效（WebGL 渲染器不实现 DOM 动画）。</p>
         </section>
 
         {/* ─── v4+ only ─── */}

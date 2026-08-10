@@ -157,8 +157,8 @@ export const ScaleControl = createControlComponent<ScaleControlProps>({
 export const OverviewMapControl = createControlComponent<OverviewMapControlProps>({
   displayName: 'OverviewMapControl',
   factory: (d, p) => d.createOverviewMapControl(p),
-  optionProps: ['anchor', 'offset', 'size', 'isOpen'],
-  ctorOnlyProps: ['zoomInterval', 'padding'],
+  optionProps: ['anchor', 'offset', 'size'],
+  ctorOnlyProps: ['zoomInterval', 'padding', 'isOpen'],
   events: [
     { sdk: 'viewchanged', prop: 'onViewChanged' },
     { sdk: 'viewchanging', prop: 'onViewChanging' },
