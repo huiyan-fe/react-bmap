@@ -32,7 +32,7 @@ export function useBoundary(): BoundaryHookResult {
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('Boundary', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     setState(s => ({ ...s, supported: true, error: null }));
     return () => { rawRef.current = null; };
   }, [driver]);

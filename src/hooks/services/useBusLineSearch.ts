@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
+import { isHandle, unwrapHandle } from '../../utils/handle';
 
 export interface BusLineSearchOptions {
   location?: unknown;
@@ -46,13 +47,11 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) {
       Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && (opts.renderOptions.map as any).__brand) ro.map = (opts.renderOptions.map as any).raw;
+      if (opts.renderOptions.map && isHandle(opts.renderOptions.map)) ro.map = opts.renderOptions.map.raw;
     }
     const searchOpts: Record<string, unknown> = {};
     if (opts.location !== undefined) {
-      let loc: unknown = opts.location;
-      if (loc && (loc as any).__brand) loc = (loc as any).raw;
-      searchOpts.location = loc;
+      searchOpts.location = unwrapHandle(opts.location);
     }
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
     // 构造时注册回调 — 通过 ref 调用最新回调
@@ -64,7 +63,7 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('BusLineSearch', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     const raw = rawRef.current;
     if (typeof raw.setGetBusListCompleteCallback === 'function') {
       raw.setGetBusListCompleteCallback((results: unknown) => { cbRef.current?.(results); callbacksRef.current.onGetBusListComplete?.(results); });

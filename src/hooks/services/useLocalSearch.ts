@@ -25,6 +25,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
+import { isHandle, unwrapHandle } from '../../utils/handle';
+import { getSDK } from '../../utils/sdk';
 import type { BMapDriver } from '../../drivers/types';
 import type { ServiceHandle, Point, Bounds } from '../../types';
 
@@ -104,8 +106,8 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) {
       Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && (opts.renderOptions.map as any).__brand) {
-        ro.map = (opts.renderOptions.map as any).raw;
+      if (opts.renderOptions.map && isHandle(opts.renderOptions.map)) {
+        ro.map = opts.renderOptions.map.raw;
       }
     }
 
@@ -115,12 +117,11 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
 
     // 解包 location
-    let loc: unknown = opts.location ?? '';
-    if (loc && (loc as any).__brand) loc = (loc as any).raw;
+    const loc: unknown = unwrapHandle(opts.location ?? '');
 
     const handle = driver.createLocalSearch(loc, Object.keys(searchOpts).length > 0 ? searchOpts : undefined);
     svcRef.current = handle;
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
 
     if (handle.isNull) {
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('LocalSearch', driver.version), supported: false });
@@ -128,7 +129,7 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     }
 
     // 注册回调
-    const raw = (handle as any).raw;
+    const raw = rawRef.current;
     if (typeof raw.setSearchCompleteCallback === 'function') {
       raw.setSearchCompleteCallback((results: unknown) => {
         callbacksRef.current.onSearchComplete?.(results);
@@ -197,12 +198,13 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     if (!rawRef.current) return;
     doSearch(() => {
       let c: unknown = center;
-      if (c && (c as any).__brand) {
-        c = (c as any).raw;
-      } else if (c && typeof c === 'object' && 'lng' in (c as any)) {
+      if (isHandle(c)) {
+        c = c.raw;
+      } else if (c && typeof c === 'object' && 'lng' in c) {
         // 纯 { lng, lat } 对象 → SDK Point 实例
-        const SDK = (globalThis as any).BMap;
-        c = new SDK.Point((c as any).lng, (c as any).lat);
+        const p = c as { lng: number; lat: number };
+        const SDK = getSDK();
+        c = new SDK.Point(p.lng, p.lat);
       }
       rawRef.current.searchNearby?.(keyword, c, radius);
     });
@@ -212,14 +214,13 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     if (!rawRef.current) return;
     doSearch(() => {
       let b: unknown = bounds;
-      if (b && (b as any).__brand) {
-        b = (b as any).raw;
-      } else if (b && typeof b === 'object' && 'sw' in (b as any)) {
+      if (isHandle(b)) {
+        b = b.raw;
+      } else if (b && typeof b === 'object' && 'sw' in b) {
         // 纯 { sw: {lng,lat}, ne: {lng,lat} } → SDK Bounds 实例
-        const SDK = (globalThis as any).BMap;
-        const sw = (b as any).sw;
-        const ne = (b as any).ne;
-        b = new SDK.Bounds(new SDK.Point(sw.lng, sw.lat), new SDK.Point(ne.lng, ne.lat));
+        const bd = b as { sw: { lng: number; lat: number }; ne: { lng: number; lat: number } };
+        const SDK = getSDK();
+        b = new SDK.Bounds(new SDK.Point(bd.sw.lng, bd.sw.lat), new SDK.Point(bd.ne.lng, bd.ne.lat));
       }
       rawRef.current.searchInBounds?.(keyword, b);
     });

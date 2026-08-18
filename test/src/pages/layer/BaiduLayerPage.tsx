@@ -1,19 +1,30 @@
-/** BaiduLayer 测试页 */
-import React from 'react';
-import { Map, BaiduLayer, useCapabilities } from 'react-bmap';
-import { BEIJING } from '../../TestProvider';
+/** BaiduLayer 测试页 — v4+。百度底图图层。 */
+import React, { useState } from 'react';
+import { BaiduLayer } from 'react-bmap';
+import type { BaiduLayerProps } from 'react-bmap';
+import { DEFAULT_BASE_OPTIONS, LayerBaseOptionControls, LayerPageLayout, PropsView } from './shared';
+
+const CODE = `<Map defaultCenter={center} defaultZoom={11}>
+  <BaiduLayer visible opacity={0.6} />
+</Map>`;
 
 export function BaiduLayerPage() {
-  const caps = useCapabilities();
-  const supported = caps.has('BaiduLayer');
+  const [options, setOptions] = useState<BaiduLayerProps>({ ...DEFAULT_BASE_OPTIONS });
+
   return (
-    <div className="test-page">
-      <div className="test-map"><Map defaultCenter={BEIJING} defaultZoom={11} style={{ height: '100%' }}>{supported && <BaiduLayer />}</Map></div>
-      <div className="test-controls">
-        <h2>BaiduLayer</h2>
-        <section><h3>能力</h3><span className={`cap-tag ${supported ? 'ok' : 'no'}`}>{supported ? 'v4+' : 'v3 ✗'}</span><p className="muted small">@since 4.0。百度图层。</p></section>
-        <section><h3>代码示例</h3><pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>{`<BaiduLayer />`}</pre></section>
-      </div>
-    </div>
+    <LayerPageLayout
+      title="BaiduLayer"
+      capability="BaiduLayer"
+      versionNote="@since 4.0。百度图层，叠在底图之上，调 opacity 最容易看出差异。"
+      code={CODE}
+      controls={
+        <>
+          <LayerBaseOptionControls value={options} onChange={setOptions} />
+          <PropsView value={options} />
+        </>
+      }
+    >
+      <BaiduLayer {...options} />
+    </LayerPageLayout>
   );
 }

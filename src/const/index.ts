@@ -3,6 +3,7 @@
  * 这些常量在运行时由 SDK (BMapGL/BMap) 提供，这里导出静态值供类型安全和 IntelliSense 使用。
  * 注意：v3 和 v4 的常量值可能不同，运行时应优先使用 SDK 全局对象上的常量。
  */
+import { tryGetSDK } from '../utils/sdk';
 
 // ─── Anchor（控件停靠位置） ───
 export const BMAP_ANCHOR_TOP_LEFT = 0;
@@ -102,6 +103,6 @@ export type ShapeType = 1 | 3;
  * 优先使用 SDK 运行时值，回退到静态值。
  */
 export function getSdkConstant(name: string, fallback: number): number {
-  const SDK = (globalThis as any).BMap;
-  return SDK?.[name] ?? fallback;
+  const SDK = tryGetSDK();
+  return (SDK?.[name] as number | undefined) ?? fallback;
 }

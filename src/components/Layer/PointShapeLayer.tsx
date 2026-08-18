@@ -9,6 +9,7 @@
  */
 import { memo, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMapContext } from '../../context/MapContext';
+import { debugWarn } from '../../utils/debugWarn';
 
 export interface PointShapeStyle {
   visibility?: boolean;
@@ -81,7 +82,7 @@ export const PointShapeLayer = memo(function PointShapeLayer(props: PointShapeLa
     driver.addLayer(map, handle);
 
     if (data && rawRef.current) {
-      try { rawRef.current.setData?.(data); } catch { /* noop */ }
+      try { rawRef.current.setData?.(data); } catch (e) { debugWarn('PointShapeLayer.setData', e); }
     }
 
     return () => {

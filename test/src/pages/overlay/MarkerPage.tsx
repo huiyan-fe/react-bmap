@@ -25,6 +25,8 @@ import { BEIJING } from '../../TestProvider';
 
 const ICON_URL = 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png';
 const ICON_SPRITE = 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_all.png';
+/** 雪碧图单格在屏幕上的显示边长（原图每格 100×100，整图 300×300） */
+const SPRITE_CELL = 40;
 const SVG_CIRCLE = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">' +
   '<circle cx="16" cy="16" r="14" fill="#2563eb" stroke="#fff" stroke-width="2"/></svg>'
@@ -102,8 +104,14 @@ export function MarkerPage() {
       case 'SVG':
         return { icon: { url: SVG_CIRCLE, size: { width: 32, height: 32 }, imageSize: { width: 32, height: 32 } } };
       case 'CSS Sprites':
-        return { icon: { url: ICON_SPRITE, size: { width: 30, height: 30 },
-          imageOffset: { width: 60, height: 0 }, imageSize: { width: 300, height: 300 }, anchor: { width: 15, height: 30 } } };
+        // 雪碧图 300×300 = 3×3 个 100×100 的格子。size 是可视窗口、imageSize 是整图显示尺寸，
+        // 缩放要靠 imageSize 一起缩：整图缩到 120×120（÷2.5）后每格 40×40，
+        // imageOffset 也必须用缩放后的坐标 —— 取第 2 格（row0/col1）即 {40, 0}。
+        // 三者不同比例（如 size 30 配 imageSize 300）会只截到格子的一角，看起来就是图标显示不完整。
+        return { icon: { url: ICON_SPRITE, size: { width: SPRITE_CELL, height: SPRITE_CELL },
+          imageOffset: { width: SPRITE_CELL * 1, height: SPRITE_CELL * 0 },
+          imageSize: { width: SPRITE_CELL * 3, height: SPRITE_CELL * 3 },
+          anchor: { width: SPRITE_CELL / 2, height: SPRITE_CELL } } };
       default:
         return {};
     }

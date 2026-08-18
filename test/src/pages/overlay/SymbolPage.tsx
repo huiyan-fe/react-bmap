@@ -38,7 +38,9 @@ const SHAPES: { label: string; value: number }[] = [
   { label: 'CLOCK', value: BMap_Symbol_SHAPE_CLOCK },
 ];
 
-const COLOR_PRESETS = ['#ff0000', '#1890ff', '#52c41a', '#722ed1', '#fa937e', '#fff'];
+// 这些值会直接喂给 <input type="color">，只能用六位十六进制：
+// 三位简写（#fff）会被浏览器拒绝并报 "does not conform to the required format"
+const COLOR_PRESETS = ['#ff0000', '#1890ff', '#52c41a', '#722ed1', '#fa937e', '#ffffff'];
 
 const DEFAULT_POINT: Point = { lng: 116.404, lat: 39.915 };
 
@@ -107,7 +109,7 @@ export function SymbolPage() {
   const [fillOpacity, setFillOpacity] = useState(0.8);
   const [scale, setScale] = useState(5);
   const [rotation, setRotation] = useState(0);
-  const [strokeColor, setStrokeColor] = useState('#333');
+  const [strokeColor, setStrokeColor] = useState('#333333');
   const [strokeOpacity, setStrokeOpacity] = useState(1);
   const [strokeWeight, setStrokeWeight] = useState(2);
   const [anchor, setAnchor] = useState<Size>({ width: 0, height: 0 });
@@ -213,7 +215,7 @@ export function SymbolPage() {
             {COLOR_PRESETS.map(c => (
               <button key={c} style={{
                 fontSize: 10, background: c,
-                color: c === '#fff' ? '#000' : '#fff',
+                color: c === '#ffffff' ? '#000' : '#fff',
               }}
                 className={fillColor === c ? 'active' : ''}
                 onClick={() => { setFillColor(c); log(`★ fillColor → ${c}`); }}
@@ -317,7 +319,7 @@ export function SymbolPage() {
               setFillOpacity(0.8);
               setScale(5);
               setRotation(0);
-              setStrokeColor('#333');
+              setStrokeColor('#333333');
               setStrokeOpacity(1);
               setStrokeWeight(2);
               setAnchor({ width: 0, height: 0 });
@@ -334,7 +336,7 @@ export function SymbolPage() {
             <button style={{ fontSize: 11 }} onClick={() => {
               setPath(BMap_Symbol_SHAPE_STAR);
               setFillColor('#ff0000');
-              setStrokeColor('#333');
+              setStrokeColor('#333333');
               setScale(5);
               log('★ 红色五角星');
             }}>红色五角星</button>
@@ -354,7 +356,7 @@ export function SymbolPage() {
             }}>笑脸</button>
             <button style={{ fontSize: 11 }} onClick={() => {
               setPath(BMap_Symbol_SHAPE_PLANE);
-              setFillColor('#333');
+              setFillColor('#333333');
               setScale(5);
               setRotation(45);
               log('★ 旋转飞机');

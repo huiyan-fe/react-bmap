@@ -12,6 +12,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
+import { isHandle, unwrapHandle } from '../../utils/handle';
+import { getSDK } from '../../utils/sdk';
 import type { Point, MapHandle } from '../../types';
 import type { DrivingRouteResult } from '../../types/results';
 
@@ -70,14 +72,12 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) {
       Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && (opts.renderOptions.map as any).__brand) ro.map = (opts.renderOptions.map as any).raw;
+      if (opts.renderOptions.map) ro.map = unwrapHandle(opts.renderOptions.map);
     }
 
     const searchOpts: Record<string, unknown> = {};
     if (opts.location !== undefined) {
-      let loc: unknown = opts.location;
-      if (loc && (loc as any).__brand) loc = (loc as any).raw;
-      searchOpts.location = loc;
+      searchOpts.location = unwrapHandle(opts.location);
     }
     if (opts.policy !== undefined) searchOpts.policy = opts.policy;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
@@ -92,14 +92,20 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('DrivingRoute', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     // 也通过 setSearchCompleteCallback 注册（SDK 可能用其中之一）
     const raw = rawRef.current;
     if (typeof raw.setSearchCompleteCallback === 'function') {
       raw.setSearchCompleteCallback((results: unknown) => { searchCbRef.current?.(results); });
     }
     setState(s => ({ ...s, supported: true, error: null }));
-    return () => { rawRef.current?.clearResults?.(); rawRef.current = null; searchCbRef.current = null; };
+    return () => {
+      // 同 clearResults：SDK 内部会摸 renderer 上的 map，map 未就绪/已卸载时会抛，
+      // 而 effect cleanup 里抛出会把组件树带崩。
+      try { rawRef.current?.clearResults?.(); } catch { /* noop */ }
+      rawRef.current = null;
+      searchCbRef.current = null;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driver, locKey, optKey]);
 
@@ -121,11 +127,14 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     searchCbRef.current = cb;
 
     // 解包 start/end（可能是 MapHandle 或 plain {lng,lat}）
-    const SDK = (globalThis as any).BMap;
+    const SDK = getSDK();
     const toPoint = (v: unknown): unknown => {
       if (!v) return v;
-      if ((v as any).__brand) return (v as any).raw;
-      if (typeof v === 'object' && 'lng' in (v as any)) return new SDK.Point((v as any).lng, (v as any).lat);
+      if (isHandle(v)) return v.raw;
+      if (typeof v === 'object' && 'lng' in v) {
+        const p = v as { lng: number; lat: number };
+        return new SDK.Point(p.lng, p.lat);
+      }
       return v; // LocalResultPoi 或已转换的对象
     };
     const s = toPoint(start);
@@ -144,9 +153,7 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
   const disableAutoViewport = useCallback(() => { rawRef.current?.disableAutoViewport?.(); }, []);
   const setPolicy = useCallback((policy: number) => { rawRef.current?.setPolicy?.(policy); }, []);
   const setLocation = useCallback((location: unknown) => {
-    let loc = location;
-    if (loc && (loc as any).__brand) loc = (loc as any).raw;
-    rawRef.current?.setLocation?.(loc);
+    rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);

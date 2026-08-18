@@ -6,6 +6,7 @@
 import { memo, useEffect, useLayoutEffect, useRef } from 'react';
 import { useMapContext } from '../../context/MapContext';
 import { stableStringify } from '../../utils/stableStringify';
+import { tryGetSDK } from '../../utils/sdk';
 import type { Point, Size } from '../../types';
 
 export interface SimpleInfoWindowOptions {
@@ -47,16 +48,16 @@ export const SimpleInfoWindow = memo(function SimpleInfoWindow(props: SimpleInfo
   // 创建 SimpleInfoWindow 实例（content/opts 变化时重建）
   useLayoutEffect(() => {
     if (!map || !driver) return;
-    const SDK = (globalThis as any).BMap;
+    const SDK = tryGetSDK();
     if (!SDK?.SimpleInfoWindow) return;
 
     // SDK 构造函数：SimpleInfoWindow(content, opts) — content 是第一个参数
-    const win = new SDK.SimpleInfoWindow(content, opts);
+    handleRef.current = new SDK.SimpleInfoWindow(content, opts);
+    const win = handleRef.current;
     // SDK 构造函数的 setConfig 可能不处理 title/content，用 setter 补设
     if (opts.title && typeof win.setTitle === 'function') win.setTitle(opts.title);
     if (content && typeof win.setContent === 'function') win.setContent(content);
     if (opts.maxContent && typeof win.setMaxContent === 'function') win.setMaxContent(opts.maxContent);
-    handleRef.current = win;
 
     // 注册事件
     if (typeof win.addEventListener === 'function') {

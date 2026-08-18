@@ -15,6 +15,7 @@
  */
 import { memo, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMapContext } from '../../context/MapContext';
+import { debugWarn } from '../../utils/debugWarn';
 
 export interface TrafficLayerOptions {
   /** v3: 预测日期 */
@@ -60,14 +61,14 @@ export const TrafficLayer = memo(function TrafficLayer(props: TrafficLayerProps)
   const colorsKey = colors?.join(',');
   useEffect(() => {
     if (!rawRef.current || !colors) return;
-    try { rawRef.current.setColors?.(colors); } catch { /* noop */ }
+    try { rawRef.current.setColors?.(colors); } catch (e) { debugWarn('TrafficLayer.setColors', e); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colorsKey]);
 
   // setEdge
   useEffect(() => {
     if (!rawRef.current || edge === undefined) return;
-    try { rawRef.current.setEdge?.(edge); } catch { /* noop */ }
+    try { rawRef.current.setEdge?.(edge); } catch (e) { debugWarn('TrafficLayer.setEdge', e); }
   }, [edge]);
 
   return null;

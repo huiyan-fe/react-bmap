@@ -1,19 +1,37 @@
-/** ThreeLayer 测试页 */
-import React from 'react';
-import { Map, ThreeLayer, useCapabilities } from 'react-bmap';
-import { BEIJING } from '../../TestProvider';
+/** ThreeLayer 测试页 — v4+，依赖 three.js。 */
+import React, { useState } from 'react';
+import { ThreeLayer } from 'react-bmap';
+import type { ThreeLayerProps } from 'react-bmap';
+import { DEFAULT_BASE_OPTIONS, LayerBaseOptionControls, LayerPageLayout, PropsView } from './shared';
+
+const CODE = `<Map defaultCenter={center} defaultZoom={11}>
+  <ThreeLayer visible zIndex={5} />
+</Map>`;
 
 export function ThreeLayerPage() {
-  const caps = useCapabilities();
-  const supported = caps.has('ThreeLayer');
+  const [options, setOptions] = useState<ThreeLayerProps>({ ...DEFAULT_BASE_OPTIONS });
+
   return (
-    <div className="test-page">
-      <div className="test-map"><Map defaultCenter={BEIJING} defaultZoom={11} style={{ height: '100%' }}>{supported && <ThreeLayer />}</Map></div>
-      <div className="test-controls">
-        <h2>ThreeLayer</h2>
-        <section><h3>能力</h3><span className={`cap-tag ${supported ? 'ok' : 'no'}`}>{supported ? 'v4+' : 'v3 ✗'}</span><p className="muted small">@since 4.0。Three.js 图层（需要 three.js 依赖）。</p></section>
-        <section><h3>代码示例</h3><pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>{`<ThreeLayer />`}</pre></section>
-      </div>
-    </div>
+    <LayerPageLayout
+      title="ThreeLayer"
+      capability="ThreeLayer"
+      versionNote="@since 4.0。Three.js 图层，需要页面自行引入 three.js；缺依赖时 SDK 上不会挂出该类，看上面的运行时探测标签。"
+      code={CODE}
+      controls={
+        <>
+          <LayerBaseOptionControls value={options} onChange={setOptions} />
+          <PropsView value={options} />
+          <section>
+            <h3>说明</h3>
+            <p className="muted small">
+              组件只负责创建与挂载图层，three.js 的场景 / 相机 / 模型需要拿到原始图层实例后自行操作，
+              当前组件 API 未暴露该实例，所以这里不会有可见的三维内容。
+            </p>
+          </section>
+        </>
+      }
+    >
+      <ThreeLayer {...options} />
+    </LayerPageLayout>
   );
 }

@@ -70,10 +70,10 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'panorama-service', name: 'usePanoramaService', category: 'Service', description: '全景服务' },
   { id: 'truck-route', name: 'useTruckRoute', category: 'Service', description: '货车路线' },
 
-  // Other (3)
+  // Other (2)
   { id: 'context-menu', name: 'ContextMenu', category: 'Other', description: '右键菜单' },
   { id: 'panorama', name: 'Panorama', category: 'Other', description: '全景地图' },
-  { id: 'place-detail-panel', name: 'PlaceDetailPanel', category: 'Other', description: '地点详情面板' },
+  // { id: 'place-detail-panel', name: 'PlaceDetailPanel', category: 'Other', description: '地点详情面板' },
 ];
 
 export const CATEGORIES = ['Map', 'Overlay', 'Control', 'Layer', 'Service', 'Other'] as const;

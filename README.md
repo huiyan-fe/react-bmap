@@ -148,8 +148,6 @@ import { Map, useDrivingRoute } from 'react-bmap';
 function RouteDemo() {
   const { search, data } = useDrivingRoute({ location: '北京' });
 
-  // search 只接受坐标点（Point），不接受字符串地址；
-  // 若手上只有地址，先用 useGeocoder 转成坐标再传进来。
   return (
     <>
       <button

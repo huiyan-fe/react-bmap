@@ -19,6 +19,7 @@
  */
 import { memo, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMapContext } from '../../context/MapContext';
+import { debugWarn } from '../../utils/debugWarn';
 
 export interface FillLayerStyle {
   fillColor?: string;
@@ -108,7 +109,7 @@ export const FillLayer = memo(function FillLayer(props: FillLayerProps) {
 
     // mount 后如果有 data，立即 setData
     if (data && rawRef.current) {
-      try { rawRef.current.setData?.(data); } catch { /* noop */ }
+      try { rawRef.current.setData?.(data); } catch (e) { debugWarn('FillLayer.setData', e); }
     }
 
     return () => {

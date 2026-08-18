@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
+import { isHandle, unwrapHandle } from '../../utils/handle';
 
 export interface AutocompleteOptions {
   location?: unknown;
@@ -49,16 +50,14 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
     if (!driver) return;
     const searchOpts: Record<string, unknown> = {};
     if (opts.location !== undefined) {
-      let loc: unknown = opts.location;
-      if (loc && (loc as any).__brand) loc = (loc as any).raw;
-      searchOpts.location = loc;
+      searchOpts.location = unwrapHandle(opts.location);
     }
     if (opts.types !== undefined) searchOpts.types = opts.types;
     if (opts.input !== undefined) searchOpts.input = opts.input;
     if (opts.renderOptions) {
       const ro: Record<string, unknown> = {};
       Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && (opts.renderOptions.map as any).__brand) ro.map = (opts.renderOptions.map as any).raw;
+      if (opts.renderOptions.map && isHandle(opts.renderOptions.map)) ro.map = opts.renderOptions.map.raw;
       searchOpts.renderOptions = ro;
     }
     searchOpts.onSearchComplete = (results: unknown) => { cbRef.current?.(results); callbacksRef.current.onSearchComplete?.(results); };
@@ -68,7 +67,7 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('Autocomplete', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     // 设置默认回调 — 输入框输入字符时自动触发 onSearchComplete
     cbRef.current = (results: unknown) => {
       setState({ data: results, loading: false, error: null, supported: true });

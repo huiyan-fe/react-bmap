@@ -37,7 +37,7 @@ export function useGeolocation(opts?: { enableSDKLocation?: boolean }): Geolocat
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('Geolocation', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     if (opts?.enableSDKLocation) rawRef.current?.enableSDKLocation?.();
     setState(s => ({ ...s, supported: true, error: null }));
     return () => { rawRef.current = null; };

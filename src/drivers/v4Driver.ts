@@ -12,6 +12,7 @@ import type {
 } from '../types';
 import type { BMapDriver } from './types';
 import { CAPABILITY_MATRIX } from './capabilityMatrix';
+import { unwrapHandle } from '../utils/handle';
 import { reportUnsupported, unsupportedValue } from './unsupported';
 import { pointToPlain } from '../utils/pointEquals';
 
@@ -24,6 +25,23 @@ const serviceHandle = (raw: unknown, isNull: boolean): ServiceHandle => ({ __bra
 
 const rawOf = (h: { raw: unknown }) => h.raw as any;
 const rawMap = (m: MapHandle) => rawOf(m);
+
+// CanvasLayer 在 SDK 内部是 overlay（实例上 _type === 'overlay'），Map.addLayer 会
+// 拒收并打印 "unknown layer type"，必须走 addOverlay。和 v3Driver 的分派保持一致。
+// 只认 kind：DOMLayer / FeatureLayer 之类也可能带 _type === 'overlay'，但 addLayer 收得下，
+// 按 _type 探测会把它们一起改道，反而挂不上内容。
+const isOverlayLikeLayer = (l: LayerHandle) => l.kind === 'canvas';
+
+// v4 的 Map.addLayer 靠实例上的 isXxxLayer 标记分派，认不出就打 "unknown layer type"。
+const LAYER_BRANDS = ['isNormalLayer', 'isGeoJSONLayer', 'isTileLayer', 'isDistrictLayer', 'isCustomHtmlLayer', 'isWebGLLayer'];
+// PixelLayer / MVTLayer / BaiduVectorLayer 是包在真正 TileLayer 外面的一层壳：TileLayer 挂在
+// .layer 上，壳自己一个标记都没有。SDK 里只有 addTileLayer/removeTileLayer 会拆这层壳，
+// 但那两个方法又会打 "deprecated, use addLayer instead" —— 两条路都有警告。
+// 所以自己先拆壳，再交给 addLayer：命中的还是同一条 _addTileLayer 分支，两条警告都不会出现。
+const unwrapTileWrapper = (raw: any) => {
+  if (!raw || LAYER_BRANDS.some(b => raw[b])) return raw;
+  return raw.layer?.isTileLayer ? raw.layer : raw;
+};
 
 // ─── 碰撞检测（SDK v4.0 有 enableCollisionDetection/rank 属性但未实现碰撞逻辑，框架补齐） ───
 const collisionState = new WeakMap<object, { hidden: boolean; userVisible: boolean }>();
@@ -165,7 +183,7 @@ function toRawIcon(SDK: any, icon: any): any {
   }
   const sz = new SDK.Size(icon.size.width, icon.size.height);
   // v3 SDK 的 imageOffset 用 CSS background-position 语义（负值=右移），v4 用正值=裁剪起点
-  const isV3 = typeof (globalThis as any).BMapGL === 'undefined';
+      const isV3 = typeof (globalThis as { BMapGL?: unknown }).BMapGL === 'undefined';
   const opts: any = {};
   if (icon.imageOffset) {
     const off = isV3
@@ -190,6 +208,22 @@ function toRawSize(SDK: any, s: any): any {
   if (!s) return s;
   if (s instanceof SDK.Size) return s;
   return new SDK.Size(s.width ?? 0, s.height ?? 0);
+}
+/**
+ * option key → SDK getter/setter 方法名。
+ * SDK 绝大多数属性走规则命名（icon → getIcon/setIcon），直接由 key 推导；不规则的列在别名表里。
+ * 推导出的方法不存在时（如 enableDragging 只有 enable/disable、没有 getter），
+ * 快照阶段会跳过该 key，交由上层告警 —— 这就是「能还原就还原、还原不了就说出来」的分界。
+ */
+const OPTION_ACCESSOR_ALIAS: Record<string, { get: string; set: string }> = {
+  url: { get: 'getImageUrl', set: 'setImageUrl' },
+  imageURL: { get: 'getImageUrl', set: 'setImageURL' },
+};
+function optionAccessor(key: string): { get: string; set: string } {
+  const alias = OPTION_ACCESSOR_ALIAS[key];
+  if (alias) return alias;
+  const cap = key.charAt(0).toUpperCase() + key.slice(1);
+  return { get: `get${cap}`, set: `set${cap}` };
 }
 function toRawPoints(SDK: any, path: Point[] | null | undefined): any[] {
   return Array.isArray(path) ? path.map(p => toRawPoint(SDK, p)) : (path as any);
@@ -565,8 +599,14 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     getOverlays: (map) => getRaw('Map.getOverlays', () => (rawMap(map).getOverlays() ?? []).map((o: any) => overlayHandle(o, inferOverlayType(o))), []),
 
     // ─────────────── 15. 图层 ───────────────
-    addLayer: (map, l) => callRaw('Map.addLayer', () => rawMap(map).addLayer(rawOf(l))),
-    removeLayer: (map, l) => callRaw('Map.removeLayer', () => rawMap(map).removeLayer(rawOf(l))),
+    addLayer: (map, l) => {
+      if (isOverlayLikeLayer(l)) { callRaw('Map.addOverlay', () => rawMap(map).addOverlay(rawOf(l))); return; }
+      callRaw('Map.addLayer', () => rawMap(map).addLayer(unwrapTileWrapper(rawOf(l))));
+    },
+    removeLayer: (map, l) => {
+      if (isOverlayLikeLayer(l)) { callRaw('Map.removeOverlay', () => rawMap(map).removeOverlay(rawOf(l))); return; }
+      callRaw('Map.removeLayer', () => rawMap(map).removeLayer(unwrapTileWrapper(rawOf(l))));
+    },
     addTileLayer: (map, l) => callRaw('Map.addTileLayer', () => rawMap(map).addTileLayer(rawOf(l))),
     removeTileLayer: (map, l) => callRaw('Map.removeTileLayer', () => rawMap(map).removeTileLayer(rawOf(l))),
     getTileLayer: (map, t) => {
@@ -952,7 +992,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     },
     createIcon: (url, size, o) => {
       const raw = o as Record<string, unknown>;
-      const isV3 = typeof (globalThis as any).BMapGL === 'undefined';
+  const isV3 = typeof (globalThis as { BMapGL?: unknown }).BMapGL === 'undefined';
       const ctorOpts: Record<string, unknown> = {};
       if (raw?.anchor) ctorOpts.anchor = toRawSize(rawSDK, raw.anchor as Size);
       // v3 的 imageOffset 用 CSS background-position 语义（负值=右移），v4 用正值=裁剪起点
@@ -1156,7 +1196,37 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       } catch { /* ignore */ }
     },
 
-    // ─────────────── 27b. Overlay 可见性 / PlaceDetail ───────────────
+    // ─────────────── 27b. Overlay 默认值快照 / 还原 ───────────────
+    // prop 从有值变回 undefined 时，框架需要「SDK 默认值」才能真正复原。SDK 没有 unset 语义，
+    // 唯一可靠来源是实例自己的 getter：挂载后先读一份，之后按需写回。
+    snapshotOverlayOptions: (ov, keys) => {
+      const out: Record<string, unknown> = {};
+      const r = rawOf(ov);
+      if (!r) return out;
+      for (const k of keys) {
+        const { get, set } = optionAccessor(k);
+        // setter 不存在就不必记 —— 记了也写不回去，只会让上层误判为「已还原」
+        if (typeof r[get] !== 'function' || typeof r[set] !== 'function') continue;
+        try {
+          const v = r[get]();
+          if (v !== undefined && v !== null) out[k] = v;
+        } catch { /* getter 抛错等同于读不到 */ }
+      }
+      return out;
+    },
+    restoreOverlayOptions: (ov, snapshot) => {
+      const failed: string[] = [];
+      const r = rawOf(ov);
+      for (const [k, v] of Object.entries(snapshot)) {
+        const { set } = optionAccessor(k);
+        if (!r || typeof r[set] !== 'function') { failed.push(k); continue; }
+        // 快照里存的已经是 SDK 原始对象，不能再过 toRawXxx 转换
+        try { r[set](v); } catch { failed.push(k); }
+      }
+      return failed;
+    },
+
+    // ─────────────── 27c. Overlay 可见性 / PlaceDetail ───────────────
     showOverlay: (ov) => {
       const raw = rawOf(ov);
       const s = collisionState.get(raw);
@@ -1250,7 +1320,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     destroyPanorama: (handle) => { try { rawOf(handle).destroy?.(); } catch { /* ignore */ } },
 
     // ─────────────── 32. 服务工厂 ───────────────
-    createLocalSearch: (loc, o) => createServiceFactory('LocalSearch', () => new rawSDK.LocalSearch(loc && (loc as any).__brand ? (loc as any).raw : loc, o)),
+    createLocalSearch: (loc, o) => createServiceFactory('LocalSearch', () => new rawSDK.LocalSearch(unwrapHandle(loc), o)),
     createGeocoder: () => createServiceFactory('Geocoder', () => new rawSDK.Geocoder()),
     createDrivingRoute: (o) => createServiceFactory('DrivingRoute', () => new rawSDK.DrivingRoute((o as any)?.location, o)),
     createWalkingRoute: (o) => createServiceFactory('WalkingRoute', () => new rawSDK.WalkingRoute((o as any)?.location, o)),

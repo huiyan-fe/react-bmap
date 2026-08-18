@@ -46,7 +46,7 @@ export const PAGES: TestPage[] = [
   { id: 'zoom-control', name: 'ZoomControl', category: C, ready: true },
   { id: 'city-list-control', name: 'CityListControl', category: C, ready: true },
   { id: 'logo-control', name: 'LogoControl', category: C, ready: true },
-  // 图层（18 个）
+  // 图层（20 个）
   { id: 'tile-layer', name: 'TileLayer', category: L, ready: true },
   { id: 'geojson-layer', name: 'GeoJSONLayer', category: L, ready: true },
   { id: 'district-layer', name: 'DistrictLayer', category: L, ready: true },

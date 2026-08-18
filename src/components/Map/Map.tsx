@@ -145,10 +145,21 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     // v4 GL 渲染器在 marker 图标 image.onload 时调用 getVertexInfoForGL → _buildVertexForEachRender，
     // 此时纹理管线可能还没就绪 → "Cannot read properties of undefined (reading 'width')"。
     // marker 最终能正常渲染，此 error 不影响功能。精准抑制只此一类错误。
+    //
+    // 第二类：destroy 之后 SDK 内部残留的瓦片/raf/setTimeout 回调仍会跑一次，读到已经被置空的
+    // 内部引用 → "Cannot read properties of null (reading 'tileInfo' / 'style' …)"。这些回调不
+    // 经过我们的调用栈，callRaw 的 try/catch 抓不到，只能在 teardown 窗口内按 error 事件吞掉。
+    // 收窄条件：仅 teardown 之后、仅 null 属性读取、且栈里没有本库/业务代码的帧。
+    let tearingDown = false;
     const glErrorHandler = (event: ErrorEvent) => {
       const msg = event.message || '';
       const stack = (event.error as Error)?.stack || '';
       if (msg.includes("'width'") && (stack.includes('getVertexInfoForGL') || stack.includes('_buildVertexForEachRender'))) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      if (tearingDown && /Cannot read propert(?:y|ies) of null/.test(msg) && !/\.tsx|\.jsx|react-bmap/.test(stack)) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -225,10 +236,12 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     }));
 
     return () => {
-      window.removeEventListener('error', glErrorHandler, true);
+      tearingDown = true;
       unsubs.forEach(u => u());
       driver.destroyMap(handle);
       setMap(null);
+      // 监听器多留一拍：SDK 在 destroy 之后还可能回调一次瓦片/raf
+      setTimeout(() => window.removeEventListener('error', glErrorHandler, true), 0);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driver, status]);

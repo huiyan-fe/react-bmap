@@ -325,6 +325,17 @@ export interface BMapDriver {
   setOverlayPosition(overlay: OverlayHandle, position: Point): void;
   setOverlayPath(overlay: OverlayHandle, path: Point[]): void;
   setOverlayOptions(overlay: OverlayHandle, options: unknown): void;
+  /**
+   * 读取 overlay 当前 option 的原始值快照，用于 prop 从有值变回 undefined 时还原。
+   * 只返回「SDK 提供 getter 且当前有值」的 key，其余 key 直接缺席——调用方据此判断哪些还原不了。
+   * 返回的是 SDK 原始对象（raw Icon / raw Size 等），只应交给 restoreOverlayOptions 写回。
+   */
+  snapshotOverlayOptions(overlay: OverlayHandle, keys: string[]): Record<string, unknown>;
+  /**
+   * 把 snapshotOverlayOptions 取到的原始值写回 overlay。
+   * 返回未能还原的 key（SDK 无对应 setter 或调用抛错），调用方据此告警。
+   */
+  restoreOverlayOptions(overlay: OverlayHandle, snapshot: Record<string, unknown>): string[];
   /** Overlay 基类 show() — 显示覆盖物 */
   showOverlay(overlay: OverlayHandle): void;
   /** Overlay 基类 hide() — 隐藏覆盖物 */
@@ -410,8 +421,10 @@ export interface BMapDriver {
   getServiceResults(service: ServiceHandle): unknown;
 
   // ─────────────── 33. 事件 ───────────────
-  addEventListener(target: MapHandle | OverlayHandle | ControlHandle, type: string, handler: (raw: unknown) => void): () => void;
-  removeEventListener(target: MapHandle | OverlayHandle | ControlHandle, type: string, handler: (raw: unknown) => void): void;
+  // LayerHandle 也在内：图层事件同样要走 driver 才能拿到退订函数
+  // （裸 SDK 的 addEventListener 不返回任何东西）。
+  addEventListener(target: MapHandle | OverlayHandle | ControlHandle | LayerHandle, type: string, handler: (raw: unknown) => void): () => void;
+  removeEventListener(target: MapHandle | OverlayHandle | ControlHandle | LayerHandle, type: string, handler: (raw: unknown) => void): void;
 }
 
 export type { LoadKeyComponents, LayerKind };

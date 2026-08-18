@@ -1,19 +1,30 @@
-/** PixelLayer 测试页 */
-import React from 'react';
-import { Map, PixelLayer, useCapabilities } from 'react-bmap';
-import { BEIJING } from '../../TestProvider';
+/** PixelLayer 测试页 — v4+。像素图层。 */
+import React, { useState } from 'react';
+import { PixelLayer } from 'react-bmap';
+import type { PixelLayerProps } from 'react-bmap';
+import { DEFAULT_BASE_OPTIONS, LayerBaseOptionControls, LayerPageLayout, PropsView } from './shared';
+
+const CODE = `<Map defaultCenter={center} defaultZoom={11}>
+  <PixelLayer visible opacity={0.8} zIndex={3} />
+</Map>`;
 
 export function PixelLayerPage() {
-  const caps = useCapabilities();
-  const supported = caps.has('PixelLayer');
+  const [options, setOptions] = useState<PixelLayerProps>({ ...DEFAULT_BASE_OPTIONS });
+
   return (
-    <div className="test-page">
-      <div className="test-map"><Map defaultCenter={BEIJING} defaultZoom={11} style={{ height: '100%' }}>{supported && <PixelLayer />}</Map></div>
-      <div className="test-controls">
-        <h2>PixelLayer</h2>
-        <section><h3>能力</h3><span className={`cap-tag ${supported ? 'ok' : 'no'}`}>{supported ? 'v4+' : 'v3 ✗'}</span><p className="muted small">@since 4.0。像素图层。</p></section>
-        <section><h3>代码示例</h3><pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>{`<PixelLayer />`}</pre></section>
-      </div>
-    </div>
+    <LayerPageLayout
+      title="PixelLayer"
+      capability="PixelLayer"
+      versionNote="@since 4.0。像素图层，通过 addLayer / removeLayer 挂载。"
+      code={CODE}
+      controls={
+        <>
+          <LayerBaseOptionControls value={options} onChange={setOptions} />
+          <PropsView value={options} />
+        </>
+      }
+    >
+      <PixelLayer {...options} />
+    </LayerPageLayout>
   );
 }

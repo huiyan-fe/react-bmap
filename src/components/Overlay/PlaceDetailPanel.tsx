@@ -9,6 +9,7 @@
  */
 import React, { useEffect, useRef } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
+import { debugWarn } from '../../utils/debugWarn';
 import type { PlaceDetailRenderOptions } from './PlaceDetail';
 
 export interface PlaceDetailPanelProps {
@@ -45,7 +46,7 @@ export const PlaceDetailPanel = React.memo(function PlaceDetailPanel(props: Plac
 
     // 实例创建后自动渲染当前 uid
     if (uid) {
-      try { rawRef.current.render?.(uid); onRender?.(); } catch { /* ignore */ }
+      try { rawRef.current.render?.(uid); onRender?.(); } catch (e) { debugWarn('PlaceDetailPanel.render', e); }
     }
 
     return () => { rawRef.current?.dispose?.(); rawRef.current = null; };
@@ -55,7 +56,7 @@ export const PlaceDetailPanel = React.memo(function PlaceDetailPanel(props: Plac
   // uid 变化时自动 render（实例未重建的情况）
   useEffect(() => {
     if (!rawRef.current || !uid) return;
-    try { rawRef.current.render?.(uid); onRender?.(); } catch { /* ignore */ }
+    try { rawRef.current.render?.(uid); onRender?.(); } catch (e) { debugWarn('PlaceDetailPanel.render', e); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid]);
 

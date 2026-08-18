@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
+import { getSDK } from '../../utils/sdk';
 import type { Point } from '../../types';
 
 export interface PanoramaServiceHookResult {
@@ -33,7 +34,7 @@ export function usePanoramaService(): PanoramaServiceHookResult {
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('PanoramaService', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     setState(s => ({ ...s, supported: true, error: null }));
     return () => { rawRef.current = null; };
   }, [driver]);
@@ -61,7 +62,7 @@ export function usePanoramaService(): PanoramaServiceHookResult {
   const getPanoramaByLocation = useCallback((point: Point, radius: number) => {
     const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
-      const SDK = (globalThis as any).BMap;
+      const SDK = getSDK();
       const pt = new SDK.Point(point.lng, point.lat);
       raw.getPanoramaByLocation?.(pt, radius, (data: any) => {
         if (myRequestId !== requestIdRef.current) return;

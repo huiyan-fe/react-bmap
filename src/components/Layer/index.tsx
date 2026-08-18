@@ -191,8 +191,6 @@ export const XYZLayer = createLayerComponent<XYZLayerProps>({ displayName: 'XYZL
 export const MVTLayer = createLayerComponent<MVTLayerProps>({
   displayName: 'MVTLayer',
   factory: (d, p) => d.createMVTLayer(p),
-  addMethod: 'addTileLayer',
-  removeMethod: 'removeTileLayer',
   events: [
     { sdk: 'click', prop: 'onclick' },
     { sdk: 'dblclick', prop: 'ondblclick' },
@@ -243,7 +241,9 @@ export interface PixelLayerOptions {
   zIndex?: number;
 }
 export type PixelLayerProps = PixelLayerOptions;
-export const PixelLayer = createLayerComponent<PixelLayerProps>({ displayName: 'PixelLayer', factory: (d, p) => d.createPixelLayer(p), addMethod: 'addTileLayer', removeMethod: 'removeTileLayer' });
+// v4 SDK 已废弃 addTileLayer/removeTileLayer（控制台会打 deprecated 警告），瓦片类图层
+// 统一走 addLayer/removeLayer；v3 下 driver.addLayer 会自己分派回 addTileLayer。
+export const PixelLayer = createLayerComponent<PixelLayerProps>({ displayName: 'PixelLayer', factory: (d, p) => d.createPixelLayer(p) });
 
 // BaiduLayer — 百度图层
 export interface BaiduLayerOptions {

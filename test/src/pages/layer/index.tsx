@@ -1,8 +1,9 @@
 /**
- * 图层独立测试页（18 个）— 每个图层有独立的页面文件，使用组件方式演示。
+ * 图层独立测试页（20 个）— 每个图层有独立的页面文件，使用组件方式演示。
  * 基础图层：TileLayer / CustomLayer / CanvasLayer / TrafficLayer 为全版本共有，
  *           GeoJSONLayer / DistrictLayer 为 v4+。
- * 高级图层（11 个）：全部 v4+。
+ * 高级图层（13 个）：全部 v4+，其中 LineLayer / PixelLayer / BaiduLayer / ThreeLayer
+ *           共用 ./shared 提供的页面骨架与公共参数控件。
  */
 export { TileLayerFullPage as TileLayerPage } from './TileLayerFullPage';
 export { CustomLayerPage } from './CustomLayerPage';

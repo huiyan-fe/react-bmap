@@ -18,6 +18,7 @@
  */
 import { memo, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMapContext } from '../../context/MapContext';
+import { debugWarn } from '../../utils/debugWarn';
 
 export interface DOMLayerOptions {
   minZoom?: number;
@@ -51,6 +52,11 @@ export const DOMLayer = memo(function DOMLayer(props: DOMLayerProps) {
   const nextTick = props.nextTick ?? true;
   const { map, driver } = useMapContext();
   const rawRef = useRef<any>(null);
+  // 已经喂给当前 raw 的 data 指纹。建图层时会先 setData 一次，这里记下来让下面的 data effect
+  // 跳过同一份数据的重复调用：SDK 的 setData 会重建子覆盖物，而 nextTick 定位是 setTimeout，
+  // 第二次 setData 抹掉上一批 DOM 后定时器才回调，就会 Cannot read properties of null (reading 'style')。
+  const appliedDataKeyRef = useRef<string | null>(null);
+  const dataKey = data ? JSON.stringify(data) : '';
 
   // create + add（constructor 选项变化时重建）
   const ctorKey = `${minZoom ?? ''}|${maxZoom ?? ''}|${zIndex ?? ''}|${offsetX ?? ''}|${offsetY ?? ''}|${anchors?.join(',') ?? ''}|${coordinate ?? ''}|${enableDraggingMap ?? ''}|${nextTick}|${visible ?? ''}`;
@@ -76,21 +82,28 @@ export const DOMLayer = memo(function DOMLayer(props: DOMLayerProps) {
 
     // mount 后如果有 data，立即 setData
     if (data && rawRef.current) {
-      try { rawRef.current.setData?.(data); } catch { /* noop */ }
+      try {
+        rawRef.current.setData?.(data);
+        appliedDataKeyRef.current = dataKey;
+      } catch (e) { debugWarn('DOMLayer.setData', e); }
     }
 
     return () => {
       driver.removeLayer(map, handle);
       rawRef.current = null;
+      appliedDataKeyRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, driver, ctorKey, createDOM]);
 
-  // data 变化 → setData
-  const dataKey = data ? JSON.stringify(data) : '';
+  // data 变化 → setData（建图层时已喂过的同一份数据不再重复调用）
   useEffect(() => {
     if (!rawRef.current || !data) return;
-    try { rawRef.current.setData?.(data); } catch { /* noop */ }
+    if (appliedDataKeyRef.current === dataKey) return;
+    try {
+      rawRef.current.setData?.(data);
+      appliedDataKeyRef.current = dataKey;
+    } catch { /* noop */ }
   }, [dataKey]);
 
   return null;

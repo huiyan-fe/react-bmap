@@ -5,6 +5,7 @@ import type { Point } from '../types';
 import { CAPABILITY_MATRIX } from './capabilityMatrix';
 import { createV4Driver } from './v4Driver';
 import { reportUnsupported, unsupportedValue } from './unsupported';
+import { getSDK } from '../utils/sdk';
 
 /**
  * v3 Driver — 3.0 适配。
@@ -115,7 +116,7 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     openInfoWindow: (target, iw, point) => {
       const t = (target as any).raw;
       if (typeof t.openInfoWindow === 'function') {
-        const SDK = (globalThis as any).BMap;
+        const SDK = getSDK();
         const pt = point && new SDK.Point(point.lng, point.lat);
         t.openInfoWindow((iw as any).raw, pt);
       }

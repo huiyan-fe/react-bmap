@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
+import { getSDK } from '../../utils/sdk';
 import type { Point } from '../../types';
 import type { GeocoderResult } from '../../types/results';
 
@@ -37,7 +38,7 @@ export function useGeocoder(): GeocoderHookResult {
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('Geocoder', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     setState(s => ({ ...s, supported: true, error: null }));
     return () => { rawRef.current = null; };
   }, [driver]);
@@ -67,7 +68,7 @@ export function useGeocoder(): GeocoderHookResult {
   const getLocation = useCallback((point: Point, options?: unknown) => {
     const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
-      const SDK = (globalThis as any).BMap;
+      const SDK = getSDK();
       const pt = new SDK.Point(point.lng, point.lat);
       const cb = (result: any) => {
         if (myRequestId !== requestIdRef.current) return;

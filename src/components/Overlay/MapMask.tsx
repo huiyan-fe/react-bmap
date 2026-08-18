@@ -6,6 +6,7 @@
 import { memo, useLayoutEffect, useRef } from 'react';
 import { useMapContext } from '../../context/MapContext';
 import { stableStringify } from '../../utils/stableStringify';
+import { tryGetSDK } from '../../utils/sdk';
 import type { Bounds } from '../../types';
 
 export interface MapMaskOptions {
@@ -29,7 +30,7 @@ export const MapMask = memo(function MapMask(props: MapMaskProps) {
 
   useLayoutEffect(() => {
     if (!map || !driver) return;
-    const SDK = (globalThis as any).BMap;
+    const SDK = tryGetSDK();
     if (!SDK?.MapMask) return;
 
     // SDK 期望 Point[]（闭合路径），不是 Bounds

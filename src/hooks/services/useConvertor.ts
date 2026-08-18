@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
+import { getSDK } from '../../utils/sdk';
 import type { Point } from '../../types';
 import type { TranslateResults } from '../../types/results';
 
@@ -33,7 +34,7 @@ export function useConvertor(): ConvertorHookResult {
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('Convertor', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     setState(s => ({ ...s, supported: true, error: null }));
     return () => { rawRef.current = null; };
   }, [driver]);
@@ -43,7 +44,7 @@ export function useConvertor(): ConvertorHookResult {
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
     try {
-      const SDK = (globalThis as any).BMap;
+      const SDK = getSDK();
       const pts = points.map(p => new SDK.Point(p.lng, p.lat));
       const cb = (result: any) => {
         if (requestId !== requestIdRef.current) return;

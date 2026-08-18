@@ -310,7 +310,7 @@ export function MapTestPage() {
           width: 100%;
           height: 100%;
           overflow: hidden;
-          background: #0a0a0a;
+          background: #f1f3f4;
         }
         .map-test-page .map-canvas {
           position: absolute;
@@ -318,13 +318,13 @@ export function MapTestPage() {
         }
         /* ── Glass 面板基础 ── */
         .mp-glass {
-          background: rgba(20, 25, 35, 0.82);
+          background: rgba(255, 255, 255, 0.88);
           backdrop-filter: blur(16px) saturate(180%);
           -webkit-backdrop-filter: blur(16px) saturate(180%);
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid rgba(0,0,0,0.08);
           border-radius: 14px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-          color: #e8eaed;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+          color: #202124;
         }
         /* ── 状态 HUD（左上） ── */
         .mp-hud {
@@ -341,7 +341,7 @@ export function MapTestPage() {
           font-size: 10px;
           text-transform: uppercase;
           letter-spacing: 1px;
-          color: #8ab4f8;
+          color: #1a73e8;
           margin-bottom: 8px;
           display: flex;
           align-items: center;
@@ -351,11 +351,11 @@ export function MapTestPage() {
           display: flex;
           justify-content: space-between;
           padding: 3px 0;
-          border-bottom: 1px solid rgba(255,255,255,0.05);
+          border-bottom: 1px solid rgba(0,0,0,0.06);
         }
         .mp-hud .hud-row:last-child { border: none; }
-        .mp-hud .hud-label { color: #9aa0a6; }
-        .mp-hud .hud-val { color: #8ab4f8; font-weight: 600; }
+        .mp-hud .hud-label { color: #5f6368; }
+        .mp-hud .hud-val { color: #1a73e8; font-weight: 600; }
         /* ── 方法结果（左上，HUD 下方） ── */
         .mp-result {
           position: absolute;
@@ -366,7 +366,7 @@ export function MapTestPage() {
           padding: 10px 14px;
           font-size: 12px;
           font-family: 'SF Mono', Monaco, Consolas, monospace;
-          color: #81c995;
+          color: #188038;
           border-left: 3px solid #34a853;
           word-break: break-all;
           display: ${result ? 'block' : 'none'};
@@ -391,12 +391,12 @@ export function MapTestPage() {
           flex-wrap: wrap;
           gap: 2px;
           padding: 8px;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
+          border-bottom: 1px solid rgba(0,0,0,0.06);
         }
         .mp-drawer .drawer-tab {
           padding: 6px 10px;
           font-size: 12px;
-          color: #9aa0a6;
+          color: #5f6368;
           background: transparent;
           border: 1px solid transparent;
           border-radius: 8px;
@@ -407,13 +407,13 @@ export function MapTestPage() {
           gap: 4px;
         }
         .mp-drawer .drawer-tab:hover {
-          background: rgba(255,255,255,0.06);
-          color: #e8eaed;
+          background: rgba(0,0,0,0.06);
+          color: #202124;
         }
         .mp-drawer .drawer-tab.active {
-          background: rgba(138, 180, 248, 0.15);
-          color: #8ab4f8;
-          border-color: rgba(138, 180, 248, 0.3);
+          background: rgba(26, 115, 232, 0.15);
+          color: #1a73e8;
+          border-color: rgba(26, 115, 232, 0.3);
         }
         .mp-drawer .drawer-body {
           flex: 1;
@@ -422,7 +422,7 @@ export function MapTestPage() {
         }
         .mp-drawer .drawer-body::-webkit-scrollbar { width: 6px; }
         .mp-drawer .drawer-body::-webkit-scrollbar-thumb {
-          background: rgba(255,255,255,0.1);
+          background: rgba(0,0,0,0.12);
           border-radius: 3px;
         }
         .mp-drawer .drawer-toggle {
@@ -432,12 +432,12 @@ export function MapTestPage() {
           transform: translateY(-50%);
           width: 28px;
           height: 56px;
-          background: rgba(20, 25, 35, 0.82);
+          background: rgba(255, 255, 255, 0.88);
           backdrop-filter: blur(16px);
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid rgba(0,0,0,0.07);
           border-right: none;
           border-radius: 8px 0 0 8px;
-          color: #8ab4f8;
+          color: #1a73e8;
           cursor: pointer;
           font-size: 16px;
           display: flex;
@@ -450,10 +450,10 @@ export function MapTestPage() {
           font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 0.8px;
-          color: #8ab4f8;
+          color: #1a73e8;
           margin-bottom: 8px;
           padding-bottom: 4px;
-          border-bottom: 1px solid rgba(138,180,248,0.15);
+          border-bottom: 1px solid rgba(26,115,232,0.15);
         }
         .mp-row {
           display: flex;
@@ -464,50 +464,89 @@ export function MapTestPage() {
         }
         .mp-row label {
           font-size: 12px;
-          color: #9aa0a6;
+          color: #5f6368;
           min-width: fit-content;
         }
         .mp-input {
           flex: 1;
           min-width: 60px;
           padding: 5px 10px;
-          background: rgba(255,255,255,0.06);
-          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(0,0,0,0.06);
+          border: 1px solid rgba(0,0,0,0.12);
           border-radius: 6px;
-          color: #e8eaed;
+          color: #202124;
           font-size: 13px;
           outline: none;
           transition: border-color 0.15s;
         }
-        .mp-input:focus { border-color: #8ab4f8; }
-        .mp-input::placeholder { color: #5f6368; }
+        .mp-input:focus { border-color: #1a73e8; }
+        .mp-input::placeholder { color: #9aa0a6; }
         .mp-range {
+          -webkit-appearance: none;
+          appearance: none;
           width: 100%;
-          accent-color: #8ab4f8;
+          height: 18px;
+          background: transparent;
           cursor: pointer;
+        }
+        /* 轨道：已选区间用 --fill 百分比铺主色，剩余为浅灰 */
+        .mp-range::-webkit-slider-runnable-track {
+          height: 4px;
+          border-radius: 2px;
+          background:
+            linear-gradient(#1a73e8, #1a73e8) 0 / var(--fill, 0%) 100% no-repeat,
+            rgba(0,0,0,0.12);
+        }
+        .mp-range::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 14px;
+          height: 14px;
+          margin-top: -7px;
+          border-radius: 50%;
+          background: #1a73e8;
+          border: 2px solid #fff;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.28);
+          transition: transform 0.12s;
+        }
+        .mp-range:hover::-webkit-slider-thumb { transform: scale(1.15); }
+        .mp-range:active::-webkit-slider-thumb { transform: scale(1.28); }
+        .mp-range:focus-visible { outline: none; }
+        .mp-range:focus-visible::-webkit-slider-thumb {
+          box-shadow: 0 1px 4px rgba(0,0,0,0.28), 0 0 0 4px rgba(26,115,232,0.25);
+        }
+        .mp-range::-moz-range-track { height: 4px; border-radius: 2px; background: rgba(0,0,0,0.12); }
+        .mp-range::-moz-range-progress { height: 4px; border-radius: 2px; background: #1a73e8; }
+        .mp-range::-moz-range-thumb {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #1a73e8;
+          border: 2px solid #fff;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.28);
         }
         .mp-btn {
           padding: 5px 12px;
-          background: rgba(138, 180, 248, 0.12);
-          border: 1px solid rgba(138, 180, 248, 0.25);
+          background: rgba(26, 115, 232, 0.12);
+          border: 1px solid rgba(26, 115, 232, 0.25);
           border-radius: 6px;
-          color: #8ab4f8;
+          color: #1a73e8;
           font-size: 12px;
           cursor: pointer;
           transition: all 0.15s;
           white-space: nowrap;
         }
         .mp-btn:hover {
-          background: rgba(138, 180, 248, 0.22);
-          border-color: rgba(138, 180, 248, 0.5);
+          background: rgba(26, 115, 232, 0.22);
+          border-color: rgba(26, 115, 232, 0.5);
         }
         .mp-btn.active {
-          background: #8ab4f8;
-          color: #0a0a0a;
+          background: #1a73e8;
+          color: #fff;
           font-weight: 600;
         }
         .mp-btn.danger {
-          color: #f28b82;
+          color: #c5221f;
           border-color: rgba(242, 139, 130, 0.25);
           background: rgba(242, 139, 130, 0.08);
         }
@@ -524,21 +563,21 @@ export function MapTestPage() {
           align-items: center;
           gap: 5px;
           font-size: 12px;
-          color: #cdd3dc;
+          color: #3c4043;
           cursor: pointer;
           padding: 4px 8px;
           border-radius: 6px;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(0,0,0,0.03);
+          border: 1px solid rgba(0,0,0,0.06);
           transition: all 0.15s;
         }
-        .mp-chk:hover { background: rgba(255,255,255,0.08); }
-        .mp-chk input { accent-color: #8ab4f8; width: 14px; height: 14px; }
+        .mp-chk:hover { background: rgba(0,0,0,0.07); }
+        .mp-chk input { accent-color: #1a73e8; width: 14px; height: 14px; }
         .mp-code {
           font-family: 'SF Mono', Monaco, Consolas, monospace;
           font-size: 11px;
-          color: #8ab4f8;
-          background: rgba(138,180,248,0.08);
+          color: #1a73e8;
+          background: rgba(26,115,232,0.08);
           padding: 1px 6px;
           border-radius: 3px;
         }
@@ -549,8 +588,8 @@ export function MapTestPage() {
           font-size: 10px;
           font-family: monospace;
         }
-        .mp-cap-tag.ok { background: rgba(52,168,83,0.15); color: #81c995; border: 1px solid rgba(52,168,83,0.3); }
-        .mp-cap-tag.no { background: rgba(234,67,53,0.15); color: #f28b82; border: 1px solid rgba(234,67,53,0.3); }
+        .mp-cap-tag.ok { background: rgba(52,168,83,0.15); color: #188038; border: 1px solid rgba(52,168,83,0.3); }
+        .mp-cap-tag.no { background: rgba(234,67,53,0.15); color: #c5221f; border: 1px solid rgba(234,67,53,0.3); }
         /* ── 事件日志（左下） ── */
         .mp-event-log {
           position: absolute;
@@ -567,17 +606,17 @@ export function MapTestPage() {
           justify-content: space-between;
           align-items: center;
           padding: 8px 14px;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
+          border-bottom: 1px solid rgba(0,0,0,0.06);
           cursor: pointer;
         }
         .mp-event-log .log-title {
           font-size: 12px;
-          color: #8ab4f8;
+          color: #1a73e8;
           font-weight: 600;
         }
         .mp-event-log .log-count {
           font-size: 11px;
-          color: #9aa0a6;
+          color: #5f6368;
         }
         .mp-event-log .log-body {
           flex: 1;
@@ -587,19 +626,19 @@ export function MapTestPage() {
         }
         .mp-event-log .log-body::-webkit-scrollbar { width: 4px; }
         .mp-event-log .log-body::-webkit-scrollbar-thumb {
-          background: rgba(255,255,255,0.1);
+          background: rgba(0,0,0,0.12);
           border-radius: 2px;
         }
         .mp-event-log .log-line {
           font-family: 'SF Mono', Monaco, Consolas, monospace;
           font-size: 11px;
-          color: #cdd3dc;
+          color: #3c4043;
           padding: 2px 0;
-          border-bottom: 1px solid rgba(255,255,255,0.03);
+          border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         .mp-event-log .log-empty {
           font-size: 12px;
-          color: #5f6368;
+          color: #9aa0a6;
           padding: 12px 0;
           text-align: center;
         }
@@ -617,7 +656,7 @@ export function MapTestPage() {
         .mp-city-btn {
           padding: 6px 14px;
           font-size: 13px;
-          color: #cdd3dc;
+          color: #3c4043;
           background: transparent;
           border: 1px solid transparent;
           border-radius: 8px;
@@ -625,13 +664,13 @@ export function MapTestPage() {
           transition: all 0.15s;
         }
         .mp-city-btn:hover {
-          background: rgba(255,255,255,0.08);
-          color: #fff;
+          background: rgba(0,0,0,0.07);
+          color: #202124;
         }
         .mp-city-btn.active {
-          background: rgba(138, 180, 248, 0.2);
-          color: #8ab4f8;
-          border-color: rgba(138, 180, 248, 0.3);
+          background: rgba(26, 115, 232, 0.2);
+          color: #1a73e8;
+          border-color: rgba(26, 115, 232, 0.3);
         }
         /* ── 能力网格 ── */
         .mp-cap-grid {
@@ -646,8 +685,8 @@ export function MapTestPage() {
           font-family: monospace;
           text-align: center;
         }
-        .mp-cap-cell.ok { background: rgba(52,168,83,0.1); color: #81c995; border: 1px solid rgba(52,168,83,0.2); }
-        .mp-cap-cell.no { background: rgba(234,67,53,0.1); color: #f28b82; border: 1px solid rgba(234,67,53,0.2); }
+        .mp-cap-cell.ok { background: rgba(52,168,83,0.1); color: #188038; border: 1px solid rgba(52,168,83,0.2); }
+        .mp-cap-cell.no { background: rgba(234,67,53,0.1); color: #c5221f; border: 1px solid rgba(234,67,53,0.2); }
         /* ── 滑块行 ── */
         .mp-slider-row {
           display: flex;
@@ -657,13 +696,13 @@ export function MapTestPage() {
         }
         .mp-slider-label {
           font-size: 12px;
-          color: #9aa0a6;
+          color: #5f6368;
           min-width: 64px;
         }
         .mp-slider-val {
           font-family: 'SF Mono', Monaco, Consolas, monospace;
           font-size: 12px;
-          color: #8ab4f8;
+          color: #1a73e8;
           min-width: 36px;
           text-align: right;
         }
@@ -787,18 +826,18 @@ export function MapTestPage() {
                   <div className="mp-section-title">视角控制 <span className={`mp-cap-tag ${caps.has('Map.setHeading') ? 'ok' : 'no'}`}>{caps.has('Map.setHeading') ? 'v4+' : 'v3 ✗'}</span></div>
                   <div className="mp-slider-row">
                     <span className="mp-slider-label">heading</span>
-                    <input type="range" min={0} max={360} value={heading} onChange={e => setHeading(Number(e.target.value))} className="mp-range" />
+                    <input type="range" min={0} max={360} value={heading} onChange={e => setHeading(Number(e.target.value))} className="mp-range" style={{ '--fill': `${(heading / 360) * 100}%` } as React.CSSProperties} />
                     <span className="mp-slider-val">{heading}°</span>
                   </div>
                   <div className="mp-slider-row">
                     <span className="mp-slider-label">tilt</span>
-                    <input type="range" min={0} max={73} value={tilt} onChange={e => setTilt(Number(e.target.value))} className="mp-range" />
+                    <input type="range" min={0} max={73} value={tilt} onChange={e => setTilt(Number(e.target.value))} className="mp-range" style={{ '--fill': `${(tilt / 73) * 100}%` } as React.CSSProperties} />
                     <span className="mp-slider-val">{tilt}°</span>
                   </div>
                 </div>
                 <div className="mp-section">
                   <div className="mp-section-title">视角动画（v4+） <span className={`mp-cap-tag ${caps.has('Map.startViewAnimation') ? 'ok' : 'no'}`}>{caps.has('Map.startViewAnimation') ? 'v4+' : 'v3 ✗'}</span></div>
-                  <div style={{ fontSize: 11, color: '#9aa0a6', marginBottom: 8 }}>
+                  <div style={{ fontSize: 11, color: '#5f6368', marginBottom: 8 }}>
                     点击「长动画」启动 8 秒动画，进行中可 cancel 终止。<br/>
                     ⚠ pause/continue 为 SDK 未公开方法，4.0 下无效
                   </div>
@@ -883,7 +922,7 @@ export function MapTestPage() {
                 </div>
                 <div className="mp-section">
                   <div className="mp-section-title">个性化样式（mapStyleV2 受控 prop）</div>
-                  <div style={{ fontSize: 11, color: '#9aa0a6', marginBottom: 8 }}>通过 styleJson 自定义底图样式</div>
+                  <div style={{ fontSize: 11, color: '#5f6368', marginBottom: 8 }}>通过 styleJson 自定义底图样式</div>
                   <div className="mp-btn-group">
                     <button className="mp-btn" onClick={() => setMapStyleV2State({ styleJson: [] })}>清除</button>
                     <button className="mp-btn" onClick={() => setMapStyleV2State({ styleJson: STYLE_DARK })}>暗色</button>
@@ -1042,7 +1081,7 @@ export function MapTestPage() {
                   <button className="mp-btn danger" onClick={() => setEventLog([])}>清空日志</button>
                   <div style={{ marginTop: 8, maxHeight: 200, overflowY: 'auto' }}>
                     {eventLog.length === 0
-                      ? <div style={{ fontSize: 12, color: '#5f6368', padding: 8 }}>订阅事件后在此查看日志</div>
+                      ? <div style={{ fontSize: 12, color: '#9aa0a6', padding: 8 }}>订阅事件后在此查看日志</div>
                       : eventLog.slice(0, 10).map((line, i) => <div key={i} className="mp-code" style={{ display: 'block', marginBottom: 2 }}>{line}</div>)}
                   </div>
                 </div>

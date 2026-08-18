@@ -7,6 +7,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
+import { isHandle, unwrapHandle } from '../../utils/handle';
+import { getSDK } from '../../utils/sdk';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
 import type { DrivingRouteResult } from '../../types/results';
 
@@ -33,13 +35,11 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) {
       Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && (opts.renderOptions.map as any).__brand) ro.map = (opts.renderOptions.map as any).raw;
+      if (opts.renderOptions.map) ro.map = unwrapHandle(opts.renderOptions.map);
     }
     const searchOpts: Record<string, unknown> = {};
     if (opts.location !== undefined) {
-      let loc: unknown = opts.location;
-      if (loc && (loc as any).__brand) loc = (loc as any).raw;
-      searchOpts.location = loc;
+      searchOpts.location = unwrapHandle(opts.location);
     }
     if (opts.policy !== undefined) searchOpts.policy = opts.policy;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
@@ -54,13 +54,18 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('TransitRoute', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     const raw = rawRef.current;
     if (typeof raw.setSearchCompleteCallback === 'function') {
       raw.setSearchCompleteCallback((results: unknown) => { searchCbRef.current?.(results); });
     }
     setState(s => ({ ...s, supported: true, error: null }));
-    return () => { rawRef.current?.clearResults?.(); rawRef.current = null; searchCbRef.current = null; };
+    return () => {
+      // SDK 的 clearResults 在 renderer 的 map 未就绪/已卸载时会抛，effect cleanup 里抛出会把组件树带崩。
+      try { rawRef.current?.clearResults?.(); } catch { /* noop */ }
+      rawRef.current = null;
+      searchCbRef.current = null;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driver, locKey, optKey]);
 
@@ -80,11 +85,14 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
     };
     searchCbRef.current = cb;
     if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(cb);
-    const SDK = (globalThis as any).BMap;
+    const SDK = getSDK();
     const toPoint = (v: unknown) => {
       if (!v) return v;
-      if ((v as any).__brand) return (v as any).raw;
-      if (typeof v === 'object' && 'lng' in (v as any)) return new SDK.Point((v as any).lng, (v as any).lat);
+      if (isHandle(v)) return v.raw;
+      if (typeof v === 'object' && 'lng' in v) {
+        const p = v as { lng: number; lat: number };
+        return new SDK.Point(p.lng, p.lat);
+      }
       return v;
     };
     try { raw.search?.(toPoint(start), toPoint(end)); }
@@ -97,8 +105,7 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
   const setPolicy = useCallback((p: number) => { rawRef.current?.setPolicy?.(p); }, []);
   const setPageCapacity = useCallback((n: number) => { rawRef.current?.setPageCapacity?.(n); }, []);
   const setLocation = useCallback((location: unknown) => {
-    let loc = location; if (loc && (loc as any).__brand) loc = (loc as any).raw;
-    rawRef.current?.setLocation?.(loc);
+    rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);

@@ -9,12 +9,13 @@
  *
  * 工厂内部统一处理：mount→create→add、unmount→remove、props change→setter。
  */
-import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useMapContext } from '../context/MapContext';
 import { useOverlayTarget, OverlayTargetContext } from '../context/OverlayTargetContext';
 import type { OverlayTargetStore } from '../context/OverlayTargetContext';
 import { stableStringify } from '../utils/stableStringify';
+import { devWarn } from './debugWarn';
 import type { BMapDriver } from '../drivers/types';
 import type {
   ControlHandle,
@@ -62,6 +63,8 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
     const { map, driver } = useMapContext();
     const target = useOverlayTarget();
     const ref = useRef<OverlayHandle | null>(null);
+    // 挂载时从 SDK 实例读到的 option 默认值，prop 变回 undefined 时用它还原
+    const optionBaselineRef = useRef<Record<string, unknown>>({});
     // 保持对最新 props 的引用，供 create effect 读取。
     const propsRef = useRef(props);
     propsRef.current = props;
@@ -81,6 +84,10 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       getTarget: () => targetRef.current,
     }), []);
     const notify = () => listenersRef.current.forEach(cb => cb());
+
+    // Marker3D 的延迟重建会把 ref.current 换成新实例。事件订阅 effect 的 deps 里
+    // 没有实例身份，必须显式 bump 一个版本号让它重新订阅，否则监听器留在已被移除的旧实例上。
+    const [instanceVersion, setInstanceVersion] = useState(0);
 
     // ─── ctorOnlyProps: 计算 ctorKey，变化时触发创建 effect 重建 overlay ───
     const ctorKey = config.ctorOnlyProps
@@ -119,6 +126,14 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       // 但 setOverlayOptions 的独立 useEffect deps 不含 marker 引用、不会重跑。
       // 必须在这里对新实例立即设置 enableDragging 等，否则 v3.0 默认 disabled 的开关不生效。
       if (config.optionProps) {
+        // 先记录 SDK 默认值，供之后 prop 变回 undefined 时还原（见 options 更新 effect）。
+        // 只记「挂载时用户没传」的 key：这时 getter 读到的才是 SDK 自己的默认值。
+        // 用户挂载时就传了值的 key，getter 读到的是用户的值，冒充默认值还原反而更误导，
+        // 宁可缺席、让上层照旧告警。
+        const defaultableKeys = config.optionProps.filter(k => factoryProps[k] === undefined);
+        optionBaselineRef.current = defaultableKeys.length > 0
+          ? driver.snapshotOverlayOptions(handle, defaultableKeys)
+          : {};
         const initOpts: Record<string, unknown> = {};
         for (const k of config.optionProps) {
           const v = factoryProps[k];
@@ -160,18 +175,23 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
             if (factoryProps.visible === false) {
               driver.hideOverlay(newHandle);
             }
+            // 通知事件订阅 effect 重新绑到新实例上
+            setInstanceVersion(v => v + 1);
           } catch {}
         }, 500);
       }
       return () => {
       if (reAddTimer) clearTimeout(reAddTimer);
+      // Marker3D 的延迟重建可能已经把 ref.current 换成了新实例，闭包里的 handle
+      // 那时已被移除。必须以 ref.current 为准，否则新实例会永远留在地图上。
+      const current = ref.current ?? handle;
       // 值对象不调 removeOverlay
       if (!config.skipMount) {
         // Hotspot 用 removeHotspot 代替 removeOverlay
-        if ((ref.current as any)?.type === 'hotspot') {
-          driver.removeHotspot?.(map, ref.current!);
-        } else if (target?.removeOverlay) target.removeOverlay(handle);
-        else if (map) driver.removeOverlay(map, handle);
+        if ((current as any)?.type === 'hotspot') {
+          driver.removeHotspot?.(map, current);
+        } else if (target?.removeOverlay) target.removeOverlay(current);
+        else if (map) driver.removeOverlay(map, current);
       }
         ref.current = null;
         targetRef.current = null;
@@ -208,9 +228,35 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
         }, {})
       : {};
     const optKey = stableStringify(optSnapshot);
+    const appliedOptKeysRef = useRef<string[]>([]);
     useEffect(() => {
       if (!ref.current || !driver || !config.optionProps) return;
-      if (Object.keys(optSnapshot).length > 0) {
+      const nextKeys = Object.keys(optSnapshot);
+      // props 从有值变 undefined 时快照里就没有这个 key，setOverlayOptions 拿不到任何信息，
+      // driver 的 setter 分支都是 typeof 判断、传 undefined 也是 no-op。
+      // 受控语义要求「传 undefined 就回到默认」，所以这里改用挂载时抓的 SDK 默认值回写；
+      // 只有连默认值都拿不到的 key（SDK 无 getter/setter，或挂载时用户就传了值）才告警。
+      const removed = appliedOptKeysRef.current.filter(k => !nextKeys.includes(k));
+      if (removed.length > 0) {
+        const restorable: Record<string, unknown> = {};
+        const unrestorable: string[] = [];
+        for (const k of removed) {
+          if (k in optionBaselineRef.current) restorable[k] = optionBaselineRef.current[k];
+          else unrestorable.push(k);
+        }
+        if (Object.keys(restorable).length > 0) {
+          unrestorable.push(...driver.restoreOverlayOptions(ref.current, restorable));
+        }
+        if (unrestorable.length > 0) {
+          devWarn(
+            `${config.displayName ?? 'Overlay'} 的 ${unrestorable.join(' / ')} 由有值变为 undefined，`
+            + '框架拿不到 SDK 默认值可还原（覆盖物仍保持上一次设置）。'
+            + '请显式传入目标值，或改用 key 强制重建组件',
+          );
+        }
+      }
+      appliedOptKeysRef.current = nextKeys;
+      if (nextKeys.length > 0) {
         driver.setOverlayOptions(ref.current, optSnapshot);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -244,7 +290,7 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       }
       return () => unsubs.forEach(u => u());
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [driver, eventKey, ctorKey]);
+    }, [driver, eventKey, ctorKey, instanceVersion]);
 
     // ─── children 嵌套 ───
     if (!props.children) return null;
@@ -264,7 +310,12 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
 
 export interface ControlComponentConfig<P> {
   factory: (driver: BMapDriver, props: P) => ControlHandle | null;
-  /** 可通过 Control 基类或具体控件 setter 响应式更新的 props */
+  /**
+   * 可通过 Control 基类或具体控件 setter 响应式更新的 props。
+   * 注意：这类 prop 在 null/undefined 与有值之间切换时控件会整体重建
+   * （见下方 optionDefaultKey），控件内部的交互状态会丢失 —— 需要稳定状态时
+   * 不要让 option prop 在「不传」和「传」之间来回切换，给一个固定值即可。
+   */
   optionProps?: Array<keyof P & string>;
   /** 只能在 constructor options 中读取的 props，变化时自动重建控件 */
   ctorOnlyProps?: Array<keyof P & string>;
@@ -397,16 +448,27 @@ export function createLayerComponent<P>(
       }
     }
 
+    // 图层没有 setter 抽象（driver 只有 addLayer/removeLayer），props 变化只能靠重建生效。
+    // 用值比较而不是引用比较：stableStringify 把函数折叠成 'fn'，所以内联的
+    // tileLoadFunction / onclick 之类不会造成无意义的重建。
+    const { children: _keyChildren, ...propsForKey } = props as any;
+    void _keyChildren;
+    const layerKey = stableStringify(propsForKey);
+    // reuseHandle 是为 StrictMode 的双次挂载准备的（props 没变才复用）；
+    // props 真的变了必须造新实例，否则新配置永远不生效。
+    const handleKeyRef = useRef<string | null>(null);
+
     useLayoutEffect(() => {
       if (!map || !driver) return;
       const { children: _c2, ...rawLayer } = props as any; void _c2;
       const layerProps: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(rawLayer)) { if (v !== undefined && v !== null) layerProps[k] = v; }
-      let handle = config.reuseHandle ? ref.current : null;
+      let handle = config.reuseHandle && handleKeyRef.current === layerKey ? ref.current : null;
       if (!handle) {
         handle = config.factory(driver, layerProps as P);
         if (!handle) return;
         ref.current = handle;
+        handleKeyRef.current = layerKey;
       }
       const add = config.addMethod ?? 'addLayer';
       const remove = config.removeMethod ?? 'removeLayer';
@@ -420,14 +482,12 @@ export function createLayerComponent<P>(
       else mountLayer();
 
       // 注册事件
+      // 走 driver.addEventListener：裸 SDK 的 addEventListener 不返回退订函数，
+      // 直接用它的返回值收集 unsub 等于永远收不到，卸载后回调仍在（reuseHandle 的图层还会叠加）。
       const unsubs: Array<() => void> = [];
       if (config.events && handle.raw) {
-        const raw = handle.raw as any;
         for (const ev of config.events) {
-          if (typeof raw.addEventListener === 'function') {
-            const unsub = raw.addEventListener(ev.sdk, (e: any) => cbRefs.current[ev.prop]?.(e));
-            if (typeof unsub === 'function') unsubs.push(unsub);
-          }
+          unsubs.push(driver.addEventListener(handle, ev.sdk, (e: any) => cbRefs.current[ev.prop]?.(e)));
         }
       }
 
@@ -438,7 +498,7 @@ export function createLayerComponent<P>(
         if (!config.reuseHandle) ref.current = null;
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, driver]);
+    }, [map, driver, layerKey]);
 
     return null;
   });

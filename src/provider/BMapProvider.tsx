@@ -97,7 +97,19 @@ export function BMapProvider({
         if (cancelled || my !== generationRef.current) return;
         const error = err instanceof Error ? err : new Error(String(err));
         setState(s => ({ ...s, status: 'error', error }));
-        onErrorRef.current?.(error);
+        if (onErrorRef.current) {
+          onErrorRef.current(error);
+        } else if (typeof console !== 'undefined') {
+          // 兜底日志：加载失败时下方会渲染 errorFallback（默认 null），整棵子树消失。
+          // 用户没传 onError 时若连日志都没有，看到的就只是白屏，最常见的 ak / 白名单
+          // 问题无从排查。这里不走 debugWarn：production 也必须能看到。
+          console.error(
+            '[react-bmap] 地图脚本加载失败，<BMapProvider> 的子树不会渲染。' +
+            '请检查 ak 是否有效、是否配置了域名白名单、网络能否访问百度地图服务。' +
+            '可传入 onError 自行处理该错误，或用 errorFallback 指定降级 UI。',
+            error,
+          );
+        }
       });
 
     return () => {

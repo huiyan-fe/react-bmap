@@ -21,6 +21,7 @@ import type { ReactNode } from 'react';
 import { useMapContext } from '../../context/MapContext';
 import { useOverlayTarget } from '../../context/OverlayTargetContext';
 import { stableStringify } from '../../utils/stableStringify';
+import { getSDK } from '../../utils/sdk';
 import type { OverlayHandle, Point } from '../../types';
 import type { InfoWindowProps } from './types';
 
@@ -146,7 +147,7 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
         const rawIW = (iw as any).raw;
 
         if (position) {
-          const SDK = (globalThis as any).BMap;
+          const SDK = getSDK();
           const pt = new SDK.Point(position.lng, position.lat);
           rawTarget?.openInfoWindow?.(rawIW, pt);
         } else if (typeof rawTarget?.openInfoWindow === 'function') {

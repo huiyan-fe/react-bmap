@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Map, Marker, ContextMenu, MenuItem, Panorama, PlaceDetailPanel } from 'react-bmap';
+import { Map, Marker, ContextMenu, MenuItem, Panorama } from 'react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
 
@@ -63,36 +63,36 @@ registerDemo('panorama', {
 />`,
 });
 
-// ─── PlaceDetailPanel ───
-registerDemo('place-detail-panel', {
-  Component: () => (
-    <div style={{ height: '100%', position: 'relative' }}>
-      <MapContainer defaultCenter={C} defaultZoom={14} style={{ height: '100%' }} />
-      <PlaceDetailPanel
-        uid="06d2dffda107b0ef89f15db6"
-        renderOptions={{
-          displayCarousel: true,
-          displayTag: true,
-          displayRating: true,
-          displayAddress: true,
-          displayComment: true,
-          displayCommentTotalCount: true,
-        } as any}
-        style={{
-          position: 'absolute', top: 10, left: 10, zIndex: 10,
-          width: 440, background: '#fff', borderRadius: 8, padding: 4,
-          fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          overflow: 'auto', maxHeight: 'calc(100% - 20px)',
-        }}
-      />
-    </div>
-  ),
-  code: `import { Map, PlaceDetailPanel } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={14} />
-<PlaceDetailPanel
-  uid="06d2dffda107b0ef89f15db6"
-  renderOptions={{ displayCarousel: true, displayAddress: true }}
-  style={{ position: 'absolute', top: 10, left: 10, width: 440 }}
-/>`,
-});
+// ─── PlaceDetailPanel ───（暂时下掉，见 examples/src/config/components.ts 同名条目）
+// registerDemo('place-detail-panel', {
+//   Component: () => (
+//     <div style={{ height: '100%', position: 'relative' }}>
+//       <MapContainer defaultCenter={C} defaultZoom={14} style={{ height: '100%' }} />
+//       <PlaceDetailPanel
+//         uid="06d2dffda107b0ef89f15db6"
+//         renderOptions={{
+//           displayCarousel: true,
+//           displayTag: true,
+//           displayRating: true,
+//           displayAddress: true,
+//           displayComment: true,
+//           displayCommentTotalCount: true,
+//         } as any}
+//         style={{
+//           position: 'absolute', top: 10, left: 10, zIndex: 10,
+//           width: 440, background: '#fff', borderRadius: 8, padding: 4,
+//           fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+//           overflow: 'auto', maxHeight: 'calc(100% - 20px)',
+//         }}
+//       />
+//     </div>
+//   ),
+//   code: `import { Map, PlaceDetailPanel } from 'react-bmap';
+//
+// <Map center={{ lng: 116.404, lat: 39.915 }} zoom={14} />
+// <PlaceDetailPanel
+//   uid="06d2dffda107b0ef89f15db6"
+//   renderOptions={{ displayCarousel: true, displayAddress: true }}
+//   style={{ position: 'absolute', top: 10, left: 10, width: 440 }}
+// />`,
+// });

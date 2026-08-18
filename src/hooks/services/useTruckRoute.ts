@@ -7,6 +7,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
+import { isHandle, unwrapHandle } from '../../utils/handle';
+import { getSDK } from '../../utils/sdk';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
 import type { DrivingRouteResult } from '../../types/results';
 
@@ -33,13 +35,11 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) {
       Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && (opts.renderOptions.map as any).__brand) ro.map = (opts.renderOptions.map as any).raw;
+      if (opts.renderOptions.map) ro.map = unwrapHandle(opts.renderOptions.map);
     }
     const searchOpts: Record<string, unknown> = {};
     if (opts.location !== undefined) {
-      let loc: unknown = opts.location;
-      if (loc && (loc as any).__brand) loc = (loc as any).raw;
-      searchOpts.location = loc;
+      searchOpts.location = unwrapHandle(opts.location);
     }
     if (opts.policy !== undefined) searchOpts.policy = opts.policy;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
@@ -54,13 +54,20 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
       setState({ data: undefined, loading: false, error: new UnsupportedCapabilityError('TruckRoute', driver.version), supported: false });
       return;
     }
-    rawRef.current = (handle as any).raw;
+    rawRef.current = handle.raw;
     const raw = rawRef.current;
     if (typeof raw.setSearchCompleteCallback === 'function') {
       raw.setSearchCompleteCallback((results: unknown) => { searchCbRef.current?.(results); });
     }
     setState(s => ({ ...s, supported: true, error: null }));
-    return () => { rawRef.current?.clearResults?.(); rawRef.current = null; searchCbRef.current = null; };
+    return () => {
+      // SDK 的 clearResults 会去摸 renderer 上的 map（this._map._removeNormalLayer）：实例创建时
+      // renderOptions.map 还没就绪（首帧常见），或 map 已先卸载，这里就会抛 —— 抛在 effect cleanup
+      // 里会直接把组件树带崩，所以必须吞掉。
+      try { rawRef.current?.clearResults?.(); } catch { /* noop */ }
+      rawRef.current = null;
+      searchCbRef.current = null;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driver, locKey, optKey]);
 
@@ -80,11 +87,14 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
     };
     searchCbRef.current = cb;
     if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(cb);
-    const SDK = (globalThis as any).BMap;
+    const SDK = getSDK();
     const toPoint = (v: unknown) => {
       if (!v) return v;
-      if ((v as any).__brand) return (v as any).raw;
-      if (typeof v === 'object' && 'lng' in (v as any)) return new SDK.Point((v as any).lng, (v as any).lat);
+      if (isHandle(v)) return v.raw;
+      if (typeof v === 'object' && 'lng' in v) {
+        const p = v as { lng: number; lat: number };
+        return new SDK.Point(p.lng, p.lat);
+      }
       return v;
     };
     try { raw.search?.(toPoint(start), toPoint(end)); }
@@ -97,8 +107,7 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
   const setPolicy = useCallback((p: number) => { rawRef.current?.setPolicy?.(p); }, []);
   const setPageCapacity = useCallback((n: number) => { rawRef.current?.setPageCapacity?.(n); }, []);
   const setLocation = useCallback((location: unknown) => {
-    let loc = location; if (loc && (loc as any).__brand) loc = (loc as any).raw;
-    rawRef.current?.setLocation?.(loc);
+    rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);

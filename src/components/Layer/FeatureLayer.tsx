@@ -20,6 +20,7 @@
  */
 import { memo, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMapContext } from '../../context/MapContext';
+import { debugWarn } from '../../utils/debugWarn';
 import type { NormalLayerOptions } from './index';
 import type { Point } from '../../types';
 
@@ -69,7 +70,7 @@ export const FeatureLayer = memo(function FeatureLayer(props: FeatureLayerProps)
 
     // mount 后如果有 data，立即 setData
     if (data && rawRef.current) {
-      try { rawRef.current.setData?.(data); } catch { /* noop */ }
+      try { rawRef.current.setData?.(data); } catch (e) { debugWarn('FeatureLayer.setData', e); }
     }
 
     return () => {

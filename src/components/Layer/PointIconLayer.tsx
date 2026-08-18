@@ -14,6 +14,7 @@
  */
 import { memo, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMapContext } from '../../context/MapContext';
+import { debugWarn } from '../../utils/debugWarn';
 
 export interface PointIconStyle {
   icon?: string;
@@ -91,7 +92,7 @@ export const PointIconLayer = memo(function PointIconLayer(props: PointIconLayer
     driver.addLayer(map, handle);
 
     if (data && rawRef.current) {
-      try { rawRef.current.setData?.(data); } catch { /* noop */ }
+      try { rawRef.current.setData?.(data); } catch (e) { debugWarn('PointIconLayer.setData', e); }
     }
 
     return () => {

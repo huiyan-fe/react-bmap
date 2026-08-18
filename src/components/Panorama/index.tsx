@@ -9,6 +9,8 @@
 import { memo, useLayoutEffect, useRef, useState, useMemo, useEffect, useCallback } from 'react';
 import type { CSSProperties } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
+import { debugWarn } from '../../utils/debugWarn';
+import { tryGetSDK } from '../../utils/sdk';
 import { createContext, useContext } from 'react';
 import type { MapHandle, Point } from '../../types';
 
@@ -74,9 +76,13 @@ export const Panorama = memo(function Panorama(props: PanoramaProps) {
     if (!pano || !point) return;
     const raw = (pano as any).raw;
     if (!raw) return;
-    const SDK = (globalThis as any).BMap;
+    const SDK = tryGetSDK();
     if (SDK?.Point) {
-      try { raw.setPosition?.(new SDK.Point(point.lng, point.lat)); } catch { /* ignore */ }
+      try {
+        raw.setPosition?.(new SDK.Point(point.lng, point.lat));
+      } catch (e) {
+        debugWarn('Panorama.setPosition', e);
+      }
     }
   }, [pano, point?.lng, point?.lat]);
 
