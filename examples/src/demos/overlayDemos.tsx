@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Marker, Label, Polyline, Polygon, Circle, Rectangle,
   BezierCurve, Prism, GroundOverlay, GroundPoint, PointCollection,
-  InfoWindow, Symbol, Icon, IconSequence, Hotspot, CustomOverlay,
+  InfoWindow, Symbol, Icon, IconSequence, CustomOverlay,
   Marker3D, MapMask, SimpleInfoWindow, PlaceDetail,
   NavigationControl, ScaleControl,
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT,
@@ -15,10 +15,10 @@ const C = { lng: 116.404, lat: 39.915 };
 
 // ─── Marker ───
 registerDemo('marker', {
+  title: '基础用法',
   Component: () => (
     <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <Marker position={C} />
-      <Marker position={{ lng: 116.5, lat: 39.9 }} icon={{ url: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png', size: { width: 30, height: 30 } }} />
       <NavigationControl />
     </MapContainer>
   ),
@@ -26,7 +26,21 @@ registerDemo('marker', {
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Marker position={{ lng: 116.404, lat: 39.915 }} />
-  <Marker position={{ lng: 116.5, lat: 39.9 }}
+</Map>`,
+});
+
+registerDemo('marker', {
+  title: '自定义图标',
+  Component: () => (
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
+      <Marker position={C} icon={{ url: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png', size: { width: 30, height: 30 } }} />
+      <NavigationControl />
+    </MapContainer>
+  ),
+  code: `import { Map, Marker } from 'react-bmap';
+
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
+  <Marker position={{ lng: 116.404, lat: 39.915 }}
     icon={{ url: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png', size: { width: 30, height: 30 } }} />
 </Map>`,
 });
@@ -240,13 +254,31 @@ const pts = Array.from({ length: 50 }, () => ({
 });
 
 // ─── InfoWindow ───
+// ─── InfoWindow ───
 registerDemo('info-window', {
+  title: '自动打开',
+  Component: () => (
+    <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
+      <InfoWindow position={C} title="天安门" content="北京市东城区东长安街" />
+      <NavigationControl />
+    </MapContainer>
+  ),
+  code: `import { Map, InfoWindow } from 'react-bmap';
+
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={13}>
+  <InfoWindow position={{ lng: 116.404, lat: 39.915 }}
+    title="天安门" content="北京市东城区东长安街" />
+</Map>`,
+});
+
+registerDemo('info-window', {
+  title: '点击 Marker 控制开关',
   Component: () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     return (
       <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
         <Marker position={C} onClick={() => setOpen(!open)} />
-        <InfoWindow position={C} content="<b>天安门</b><br/>北京市东城区" visible={open} />
+        <InfoWindow position={C} title="天安门" content="<b>天安门</b><br/>北京市东城区" visible={open} />
         <NavigationControl />
       </MapContainer>
     );
@@ -254,12 +286,12 @@ registerDemo('info-window', {
   code: `import { Map, Marker, InfoWindow } from 'react-bmap';
 
 function Demo() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   return (
     <Map center={{ lng: 116.404, lat: 39.915 }} zoom={13}>
       <Marker position={{ lng: 116.404, lat: 39.915 }} onClick={() => setOpen(!open)} />
       <InfoWindow position={{ lng: 116.404, lat: 39.915 }}
-        content="<b>天安门</b><br/>北京市东城区" visible={open} />
+        title="天安门" content="<b>天安门</b><br/>北京市东城区" visible={open} />
     </Map>
   );
 }`,
@@ -274,7 +306,7 @@ registerDemo('symbol', {
         position={C}
         icon={{
           symbol: {
-            shapeType: "M10 0 C10 5.52 5.52 10 0 10 C5.52 10 10 14.48 10 20 C10 14.48 14.48 10 20 10 C14.48 10 10 5.52 10 0 Z",
+            path: "M10 0 C10 5.52 5.52 10 0 10 C5.52 10 10 14.48 10 20 C10 14.48 14.48 10 20 10 C14.48 10 10 5.52 10 0 Z",
             fillColor: "#1890ff",
             fillOpacity: 0.8,
             strokeColor: "#fff",
@@ -294,7 +326,7 @@ registerDemo('symbol', {
     icon={{
       symbol: {
         // SVG path 或 SDK 预设形状常量（BMap_Symbol_SHAPE_CIRCLE 等）
-        shapeType: "M10 0 C10 5.52 5.52 10 0 10 C5.52 10 10 14.48 10 20 C10 14.48 14.48 10 20 10 C14.48 10 10 5.52 10 0 Z",
+        path: "M10 0 C10 5.52 5.52 10 0 10 C5.52 10 10 14.48 10 20 C10 14.48 14.48 10 20 10 C14.48 10 10 5.52 10 0 Z",
         fillColor: "#1890ff",
         fillOpacity: 0.8,
         strokeColor: "#fff",
@@ -348,21 +380,6 @@ registerDemo('icon-sequence', {
   <Polyline
     path={[{ lng: 116.404, lat: 39.915 }, { lng: 116.41, lat: 39.92 }, { lng: 116.42, lat: 39.91 }]}
     strokeColor="#1890ff" strokeWeight={6} />
-</Map>`,
-});
-
-// ─── Hotspot ───
-registerDemo('hotspot', {
-  Component: () => (
-    <MapContainer center={C} zoom={15} style={{ height: '100%' }}>
-      <Hotspot position={C} />
-      <ScaleControl />
-    </MapContainer>
-  ),
-  code: `import { Map, Hotspot } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={15}>
-  <Hotspot position={{ lng: 116.404, lat: 39.915 }} />
 </Map>`,
 });
 

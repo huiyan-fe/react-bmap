@@ -21,7 +21,7 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
   callbacksRef.current = opts;
   const searchCbRef = useRef<((results: unknown) => void) | null>(null);
 
-  const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
+  const [state, setState] = useState<{ data: DrivingRouteResult | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
   });
 
@@ -76,7 +76,7 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
         try { actual = raw.getResults?.(); } catch { /* noop */ }
       }
       callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
-      setState({ data: actual ?? results, loading: false, error: null, supported: true });
+      setState({ data: (actual ?? results) as DrivingRouteResult, loading: false, error: null, supported: true });
     };
     searchCbRef.current = cb;
     if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(cb);

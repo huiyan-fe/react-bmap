@@ -289,3 +289,18 @@ h2 {
 .home-footer a {
   color: #64748b;
 }
+
+/* Service demo 结果面板 — 无结果时整体隐藏，避免空灰块 */
+.svc-result-panel {
+  margin-top: 6px;
+  max-height: 200px;
+  overflow: auto;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.svc-result-panel:empty {
+  display: none;
+}

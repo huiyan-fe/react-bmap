@@ -8,6 +8,7 @@ import type { BMapContextValue } from '../context/BMapContext';
 import { BMapContext } from '../context/BMapContext';
 import { createDriver } from '../drivers/createDriver';
 import { loadJSAPI } from '../loader';
+import { stableStringify } from '../utils/stableStringify';
 
 export interface BMapProviderProps {
   ak: string;
@@ -61,6 +62,9 @@ export function BMapProvider({
   const generationRef = useRef(0);
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
+  // onLoadConflict 用 ref 持有，避免内联函数进依赖数组导致 driver 反复重建
+  const onLoadConflictRef = useRef(onLoadConflict);
+  onLoadConflictRef.current = onLoadConflict;
 
   const components: LoadKeyComponents = useMemo(
     () => ({ version, ak, serviceHost, language, plugins }),
@@ -68,13 +72,22 @@ export function BMapProvider({
     [version, ak, serviceHost, language, (plugins ?? []).join('|')],
   );
 
+  // globalConfig 是内容型配置：按值（而非引用）决定是否需要重新加载，
+  // 避免用户传内联对象 globalConfig={{...}} 时每次渲染都重建 driver。
+  const globalConfigKey = stableStringify(globalConfig);
+
   useEffect(() => {
     if (typeof window === 'undefined') return; // SSR
 
     let cancelled = false;
     const my = ++generationRef.current;
 
-    loadJSAPI(components, { protocol, timeout, globalConfig, onLoadConflict })
+    loadJSAPI(components, {
+      protocol,
+      timeout,
+      globalConfig,
+      onLoadConflict: (current, requested) => onLoadConflictRef.current?.(current, requested),
+    })
       .then(({ rawSDK, version: real }) => {
         if (cancelled || my !== generationRef.current) return;
         const driver = createDriver(real, rawSDK, { unsupportedBehavior });
@@ -91,7 +104,8 @@ export function BMapProvider({
       cancelled = true;
       generationRef.current++; // 让旧 promise 失效
     };
-  }, [components, protocol, timeout, globalConfig, unsupportedBehavior, onLoadConflict]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [components, protocol, timeout, globalConfigKey, unsupportedBehavior]);
 
   if (state.status === 'loading') return <>{fallback}</>;
   if (state.status === 'error') return <>{errorFallback}</>;

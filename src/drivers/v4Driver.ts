@@ -71,7 +71,7 @@ class CollisionManager {
     this.markers.clear();
   }
 
-  private schedule() {
+  schedule() {
     if (this.rafId != null) return;
     this.rafId = requestAnimationFrame(() => { this.rafId = null; this.evaluate(); });
   }
@@ -136,10 +136,28 @@ function toRawPoint(SDK: any, p: Point | null | undefined): any {
   if (p instanceof SDK.Point) return p;
   return new SDK.Point(p.lng, p.lat);
 }
-/** 把 plain icon 对象 {url, size, imageOffset, imageSize, anchor} 转成 SDK Icon 实例 */
+/** 把 plain icon 对象 {url, size, imageOffset, imageSize, anchor} 转成 SDK Icon 实例；
+ *  或 {symbol: {path/shapeType, ...}} 转成 SDK Symbol 实例（矢量图标）。 */
 function toRawIcon(SDK: any, icon: any): any {
   if (!icon) return icon;
   if (icon.raw) return icon.raw;                   // 已是 Handle 包装的 SDK 实例
+  // Symbol 变体：{ symbol: { path | shapeType, fillColor, ... } } → SDK Symbol 实例
+  if (icon.symbol && typeof icon.symbol === 'object') {
+    const s = icon.symbol;
+    const path = s.path ?? s.shapeType;
+    if (path !== undefined) {
+      const symOpts: Record<string, unknown> = {};
+      if (s.anchor) symOpts.anchor = new SDK.Size(s.anchor.width, s.anchor.height);
+      if (typeof s.fillColor === 'string') symOpts.fillColor = s.fillColor;
+      if (typeof s.fillOpacity === 'number') symOpts.fillOpacity = s.fillOpacity;
+      if (typeof s.scale === 'number') symOpts.scale = s.scale;
+      if (typeof s.rotation === 'number') symOpts.rotation = s.rotation;
+      if (typeof s.strokeColor === 'string') symOpts.strokeColor = s.strokeColor;
+      if (typeof s.strokeOpacity === 'number') symOpts.strokeOpacity = s.strokeOpacity;
+      if (typeof s.strokeWeight === 'number') symOpts.strokeWeight = s.strokeWeight;
+      return new SDK.Symbol(path, symOpts);
+    }
+  }
   if (!icon.url) return icon;                      // 无法转换，透传
   if (!icon.size) {
     console.warn('[react-bmap] PlainIcon.size is required');

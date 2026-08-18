@@ -365,6 +365,10 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     onZoomStart, onZooming, onZoomEnd, onResize, onTilesLoaded, onMapTypeChange,
     onTouchStart, onTouchMove, onTouchEnd, onLongPress,
   };
+  // 用 ref 持有最新 handler：内联函数（每次渲染新引用）不会触发重订阅。
+  // 仅当某个 handler 从「有→无」或「无→有」切换时（eventKey 变化）才重订阅。
+  const eventPropsRef = useLatest(eventProps);
+  const eventKey = Object.entries(eventProps).map(([k, v]) => `${k}:${v ? 1 : 0}`).join('|');
   useEffect(() => {
     if (!map || !driver) return;
     const EVENT_MAP: Record<string, string> = {
@@ -380,12 +384,16 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     };
     const unsubs: Array<() => void> = [];
     for (const [prop, evt] of Object.entries(EVENT_MAP)) {
-      const handler = (eventProps as Record<string, ((e: MapMouseEvent | MapMoveEvent | MapZoomEvent | MapEvent) => void) | undefined>)[prop];
-      if (handler) unsubs.push(driver.addEventListener(map, evt, handler));
+      const current = (eventPropsRef.current as Record<string, unknown>)[prop];
+      if (!current) continue; // 未提供 handler，不订阅
+      unsubs.push(driver.addEventListener(map, evt, (e: unknown) => {
+        const fn = (eventPropsRef.current as Record<string, ((e: unknown) => void) | undefined>)[prop];
+        if (typeof fn === 'function') fn(e);
+      }));
     }
     return () => unsubs.forEach(u => u());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, driver, ...Object.values(eventProps)]);
+  }, [map, driver, eventKey]);
 
   const ctxValue = useMemo(() => (map && driver ? { map, driver } : null), [map, driver]);
 

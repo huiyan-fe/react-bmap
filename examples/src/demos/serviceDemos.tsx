@@ -17,6 +17,15 @@ const panelStyle: React.CSSProperties = {
 };
 const parsePoint = (s: string) => { const [lng, lat] = s.split(',').map(Number); return { lng, lat }; };
 
+// 阻断结果面板上的滚轮冒泡到地图容器（避免滚动面板时触发地图缩放）；不 preventDefault，面板自身滚动不受影响
+const wheelBlocked = new WeakSet<Element>();
+function blockWheel(el: HTMLElement | null) {
+  if (el && !wheelBlocked.has(el)) {
+    wheelBlocked.add(el);
+    el.addEventListener('wheel', (e) => e.stopPropagation());
+  }
+}
+
 // ─── useLocalSearch ───
 function LocalSearchInner() {
   const [query, setQuery] = useState('餐厅');
@@ -35,7 +44,7 @@ function LocalSearchInner() {
           {loading ? '...' : '搜索'}
         </button>
       </div>
-      <div ref={setPanelEl} style={{ marginTop: 6, maxHeight: 200, overflow: 'auto', background: '#f5f5f5', borderRadius: 4, padding: 4, fontSize: 12 }} />
+      <div ref={(el) => { setPanelEl(el); blockWheel(el); }} className="svc-result-panel" />
     </div>
   );
 }
@@ -104,7 +113,7 @@ function DrivingRouteInner() {
         style={{ width: '100%', padding: '6px', border: '1px solid #1890ff', background: '#1890ff', color: '#fff', borderRadius: 4, cursor: 'pointer' }}>
         {loading ? '搜索中...' : '驾车：天安门 → 国贸'}
       </button>
-      <div ref={setPanelEl} style={{ marginTop: 6, maxHeight: 200, overflow: 'auto', background: '#f5f5f5', borderRadius: 4, padding: 4, fontSize: 12 }} />
+      <div ref={(el) => { setPanelEl(el); blockWheel(el); }} className="svc-result-panel" />
     </div>
   );
 }
@@ -138,7 +147,7 @@ function WalkingRouteInner() {
         style={{ width: '100%', padding: '6px', border: '1px solid #52c41a', background: '#52c41a', color: '#fff', borderRadius: 4, cursor: 'pointer' }}>
         {loading ? '搜索中...' : '步行：天安门 → 北海公园'}
       </button>
-      <div ref={setPanelEl} style={{ marginTop: 6, maxHeight: 200, overflow: 'auto', background: '#f5f5f5', borderRadius: 4, padding: 4, fontSize: 12 }} />
+      <div ref={(el) => { setPanelEl(el); blockWheel(el); }} className="svc-result-panel" />
     </div>
   );
 }
@@ -172,7 +181,7 @@ function RidingRouteInner() {
         style={{ width: '100%', padding: '6px', border: '1px solid #722ed1', background: '#722ed1', color: '#fff', borderRadius: 4, cursor: 'pointer' }}>
         {loading ? '搜索中...' : '骑行：天安门 → 朝阳门'}
       </button>
-      <div ref={setPanelEl} style={{ marginTop: 6, maxHeight: 200, overflow: 'auto', background: '#f5f5f5', borderRadius: 4, padding: 4, fontSize: 12 }} />
+      <div ref={(el) => { setPanelEl(el); blockWheel(el); }} className="svc-result-panel" />
     </div>
   );
 }
@@ -212,7 +221,7 @@ function TransitRouteInner() {
         style={{ width: '100%', padding: '4px', border: '1px solid #fa8c16', background: '#fa8c16', color: '#fff', borderRadius: 4, cursor: 'pointer' }}>
         {loading ? '搜索中...' : '公交路线'}
       </button>
-      <div ref={setPanelEl} style={{ marginTop: 6, maxHeight: 200, overflow: 'auto', background: '#f5f5f5', borderRadius: 4, padding: 4, fontSize: 12 }} />
+      <div ref={(el) => { setPanelEl(el); blockWheel(el); }} className="svc-result-panel" />
     </div>
   );
 }
@@ -251,7 +260,7 @@ function BusLineInner() {
         </button>
       </div>
       <div style={{ marginTop: 6, color: '#666' }}>{data ? '有结果' : '输入线路名'}</div>
-      <div ref={setPanelEl} style={{ marginTop: 6, maxHeight: 200, overflow: 'auto', background: '#f5f5f5', borderRadius: 4, padding: 4, fontSize: 12 }} />
+      <div ref={(el) => { setPanelEl(el); blockWheel(el); }} className="svc-result-panel" />
     </div>
   );
 }
@@ -387,7 +396,7 @@ function PlaceDetailInner() {
           {loading ? '...' : '详情'}
         </button>
       </div>
-      <div ref={setContainerEl} style={{ marginTop: 6, width: 400, maxHeight: 250, overflow: 'auto', background: '#f5f5f5', borderRadius: 4, padding: 4, fontSize: 12 }} />
+      <div ref={(el) => { setContainerEl(el); blockWheel(el); }} className="svc-result-panel" style={{ width: 400, maxHeight: 250 }} />
     </div>
   );
 }
@@ -478,7 +487,7 @@ function TruckRouteInner() {
       {data && <div style={{ marginTop: 4, color: '#666', fontSize: 12 }}>
         方案数: {(data as any)?._plans?.length ?? '?'} | {Object.keys(data as any).join(', ')}
       </div>}
-      <div ref={setPanelEl} style={{ marginTop: 6, minHeight: 60, maxHeight: 200, overflow: 'auto', background: '#f5f5f5', borderRadius: 4, padding: 4, fontSize: 12 }} />
+      <div ref={(el) => { setPanelEl(el); blockWheel(el); }} className="svc-result-panel" style={{ minHeight: 60 }} />
     </div>
   );
 }

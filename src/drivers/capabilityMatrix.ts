@@ -26,7 +26,7 @@ const V4_LAYER_CLASS: Capability[] = [
   'NormalLayer', 'GeoJSONLayer', 'DistrictLayer',
   'RasterTileLayer', 'WMSLayer', 'WMTSLayer', 'XYZLayer', 'MVTLayer',
   'FillLayer', 'DOMLayer',
-  'PointIconLayer', 'PointShapeLayer', 'PanoramaCoverageLayer',
+  'PointIconLayer', 'PointShapeLayer',
   'LineLayer', 'PixelLayer', 'BaiduLayer', 'ThreeLayer',
 ];
 
@@ -40,7 +40,8 @@ const V4_MAP_LAYER: Capability[] = [
 
 // ── 4.0+ 覆盖物类 ──
 const V4_OVERLAY: Capability[] = [
-  'Prism', 'Rectangle', 'BezierCurve', 'CustomOverlay', 'GroundPoint', 'Marker3D', 'SimpleInfoWindow',
+  // 注：Rectangle 在源码快照 publicListForMap.js 未导出，但运行时 CDN 版 BMapGL 存在（driver 实测可用）
+  'Prism', 'Rectangle', 'BezierCurve', 'CustomOverlay', 'GroundPoint', 'Marker3D', 'SimpleInfoWindow', 'MapMask',
 ];
 
 // ── 4.0+ 控件类 ──
@@ -50,7 +51,13 @@ const V4_CONTROL: Capability[] = [
 
 // ── 4.0+ 服务类 ──
 const V4_SERVICE: Capability[] = [
-  'PlaceDetail',
+  'PlaceDetail', 'PlaceDetailPanel',
+];
+
+// ── 4.0+ 其他公开类（SDK publicListForMap.js 导出、react-bmap 暂未封装） ──
+const V4_MISC: Capability[] = [
+  'MapConfig', 'SVGSymbol', 'PolylineMultipart', 'ParkingSpot', 'IndoorManager', 'DistanceTool',
+  'Animation', 'ViewAnimation', 'Transitions', 'Event', 'GeoJSONParse', 'Entity', 'DrivingRouteLine', 'XYZProjection',
 ];
 
 // ── 4.0+ Map 实用方法 ──
@@ -84,12 +91,14 @@ const V3_MAP_ONLY: Capability[] = [
 
 // ── 3.0-only 覆盖物/图层 ──
 const V3_OVERLAY_ONLY: Capability[] = [
-  'CustomLayer',   // @removed 4.0 (v4 用 Layer 目录下的 CustomLayer)
-  'CanvasLayer',   // @removed 4.0 (v4 用 Layer 目录下的 CanvasLayer)
+  'CustomLayer',           // v4 无此类（对应物是 CustomHtmlLayer/DOMLayer）
+  'PanoramaFlashInterface',// v3 publish.js:82 导出，v4 无
 ];
 
 // ── 全版本共有（隐式：v3 与 v4 共有） ──
 const COMMON: Capability[] = [
+  // 基础 Map 类（全版本）
+  'Map',
   // 基础 Map 命令（全版本）
   'Map.setCenter', 'Map.setZoom', 'Map.centerAndZoom', 'Map.panTo', 'Map.panBy',
   'Map.setViewport', 'Map.getViewport', 'Map.zoomIn', 'Map.zoomOut', 'Map.reset',
@@ -106,19 +115,25 @@ const COMMON: Capability[] = [
   'Map.enableAutoResize', 'Map.disableAutoResize',
   'Map.clearOverlays', 'Map.getOverlays', 'Map.addOverlay', 'Map.removeOverlay',
   // 覆盖物（全版本）
+  'Overlay', // 公开抽象基类
   'Marker', 'Label', 'Polyline', 'Polygon', 'Circle',
   'GroundOverlay', 'InfoWindow', 'Symbol', 'Icon', 'IconSequence', 'PointCollection',
-  'Hotspot', 'MapMask',
+  'Hotspot',
   // 控件（全版本）
+  'Control', // 公开抽象基类
   'NavigationControl', 'ScaleControl', 'OverviewMapControl', 'MapTypeControl',
-  'CopyrightControl', 'GeolocationControl', 'LocationControl', 'PanoramaControl',
+  'CopyrightControl', 'Copyright', 'GeolocationControl', 'PanoramaControl',
   'CityListControl',
+  // 注：LocationControl 的 SDK 类仅 4.0 存在，但 react-bmap 用 GeolocationControl 别名实现，两个版本均可用
+  'LocationControl',
   // 图层（全版本）
-  'TileLayer', 'TrafficLayer',
+  'TileLayer', 'TrafficLayer', 'CanvasLayer', 'PanoramaCoverageLayer',
   // 服务（全版本）
   'LocalSearch', 'Geocoder', 'DrivingRoute', 'WalkingRoute', 'TransitRoute',
   'RidingRoute', 'Geolocation', 'LocalCity', 'TruckRoute',
-  'BusLineSearch', 'Autocomplete', 'Boundary', 'Convertor', 'PanoramaService',
+  'BusLineSearch', 'Autocomplete', 'Boundary', 'Convertor', 'PanoramaService', 'RouteSearch',
+  // 坐标投影（全版本公开类）
+  'Projection', 'MercatorProjection', 'PerspectiveProjection',
   // 全景（全版本）
   'Panorama', 'PanoramaLabel',
   // 右键菜单
@@ -127,7 +142,7 @@ const COMMON: Capability[] = [
 
 const v3Set = new Set<Capability>([...COMMON, ...V3_MAP_ONLY, ...V3_OVERLAY_ONLY]);
 const v4Set = new Set<Capability>([
-  ...COMMON, ...V4_MAP_VIEW, ...V4_LAYER_CLASS, ...V4_MAP_LAYER, ...V4_OVERLAY, ...V4_CONTROL, ...V4_SERVICE, ...V4_MAP_UTIL,
+  ...COMMON, ...V4_MAP_VIEW, ...V4_LAYER_CLASS, ...V4_MAP_LAYER, ...V4_OVERLAY, ...V4_CONTROL, ...V4_SERVICE, ...V4_MAP_UTIL, ...V4_MISC,
 ]);
 
 export const CAPABILITY_MATRIX: Record<'3.0' | '4.0', ReadonlySet<Capability>> = {

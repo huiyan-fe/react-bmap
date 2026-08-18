@@ -28,6 +28,12 @@ export interface DOMLayerOptions {
   anchors?: [number, number];
   coordinate?: string;
   enableDraggingMap?: boolean;
+  /**
+   * 延迟一拍定位（默认 true）：首次 draw 以 opacity=0 完成定位，setTimeout(0) 后用真实宽高重新定位再显示。
+   * 消除「子元素宽度首次测量不准 → 二次 draw 位置跳变」的初始化抖动。仅在首次渲染生效，不影响后续更新。
+   * 需要严格同步显示时可传 false 关闭。
+   */
+  nextTick?: boolean;
   visible?: boolean;
   data?: object | null;
 }
@@ -41,16 +47,18 @@ export interface DOMLayerProps extends DOMLayerOptions {
 
 export const DOMLayer = memo(function DOMLayer(props: DOMLayerProps) {
   const { createDOM, minZoom, maxZoom, zIndex, offsetX, offsetY, anchors, coordinate, enableDraggingMap, visible, data } = props;
+  // nextTick 默认 true：消除首次定位的宽度测量抖动，显式传 false 关闭
+  const nextTick = props.nextTick ?? true;
   const { map, driver } = useMapContext();
   const rawRef = useRef<any>(null);
 
   // create + add（constructor 选项变化时重建）
-  const ctorKey = `${minZoom ?? ''}|${maxZoom ?? ''}|${zIndex ?? ''}|${offsetX ?? ''}|${offsetY ?? ''}|${anchors?.join(',') ?? ''}|${coordinate ?? ''}|${enableDraggingMap ?? ''}|${visible ?? ''}`;
+  const ctorKey = `${minZoom ?? ''}|${maxZoom ?? ''}|${zIndex ?? ''}|${offsetX ?? ''}|${offsetY ?? ''}|${anchors?.join(',') ?? ''}|${coordinate ?? ''}|${enableDraggingMap ?? ''}|${nextTick}|${visible ?? ''}`;
 
   useLayoutEffect(() => {
     if (!map || !driver || !createDOM) return;
 
-    const opts: Record<string, unknown> = {};
+    const opts: Record<string, unknown> = { nextTick };
     if (minZoom !== undefined) opts.minZoom = minZoom;
     if (maxZoom !== undefined) opts.maxZoom = maxZoom;
     if (zIndex !== undefined) opts.zIndex = zIndex;

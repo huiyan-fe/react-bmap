@@ -6,7 +6,7 @@ import { ApiTable } from '../components/ApiTable';
 import type { ApiMethod } from '../components/ApiTable';
 import { COMPONENTS } from '../config/components';
 import { API_DATA, API_METHODS } from '../config/apiData';
-import { getDemoById } from '../demos';
+import { getDemosById } from '../demos';
 
 export function ComponentPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +17,7 @@ export function ComponentPage() {
   const capName = meta.name.startsWith('use') ? meta.name.slice(3) : meta.name;
   const supported = caps.has(capName);
 
-  const demo = getDemoById(id);
+  const demos = getDemosById(id);
   const apiData = API_DATA[id] ?? [];
   const apiMethods = API_METHODS[id] ?? [];
 
@@ -36,34 +36,37 @@ export function ComponentPage() {
         </div>
       )}
 
-      {supported && demo?.Component && (
-        <>
-          <h2 style={{ fontSize: 16, marginTop: 24, marginBottom: 12 }}>示例</h2>
-          <BMapErrorBoundary
-            fallback={<div style={{ padding: 40, textAlign: 'center', color: '#999', border: '1px solid #eee', borderRadius: 6 }}>地图渲染出错，请刷新页面重试</div>}
-          >
-            <div
-              style={{
-                border: '1px solid #eee',
-                borderRadius: 6,
-                overflow: 'hidden',
-                height: 400,
-              }}
-            >
-              <demo.Component />
-            </div>
-          </BMapErrorBoundary>
-        </>
-      )}
+      {supported && demos.map((demo, index) => (
+        <div key={index}>
+          {demo.title && (
+            <h2 style={{ fontSize: 16, marginTop: 24, marginBottom: 12, color: '#333' }}>
+              {demo.title}
+            </h2>
+          )}
+          {demo.Component && (
+            <>
+              <BMapErrorBoundary
+                fallback={<div style={{ padding: 40, textAlign: 'center', color: '#999', border: '1px solid #eee', borderRadius: 6 }}>地图渲染出错，请刷新页面重试</div>}
+              >
+                <div
+                  style={{
+                    border: '1px solid #eee',
+                    borderRadius: 6,
+                    overflow: 'hidden',
+                    height: 400,
+                  }}
+                >
+                  <demo.Component />
+                </div>
+              </BMapErrorBoundary>
+              <h2 style={{ fontSize: 14, marginTop: 20, marginBottom: 10, color: '#666' }}>代码</h2>
+              <CodeBlock code={demo.code} />
+            </>
+          )}
+        </div>
+      ))}
 
-      {demo?.code && (
-        <>
-          <h2 style={{ fontSize: 16, marginTop: 24, marginBottom: 12 }}>代码</h2>
-          <CodeBlock code={demo.code} />
-        </>
-      )}
-
-      {!demo?.code && !demo?.Component && (
+      {supported && demos.length === 0 && (
         <div
           style={{
             padding: 40,

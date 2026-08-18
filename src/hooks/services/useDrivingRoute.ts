@@ -116,7 +116,7 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
         try { actual = raw.getResults?.(); } catch { /* noop */ }
       }
       callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
-      setState({ data: actual ?? results, loading: false, error: null, supported: true });
+      setState({ data: (actual ?? results) as DrivingRouteResult, loading: false, error: null, supported: true });
     };
     searchCbRef.current = cb;
 

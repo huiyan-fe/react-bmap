@@ -95,7 +95,7 @@ export type {
   RectangleOptions, BezierCurveOptions, PrismOptions, GroundOverlayOptions,
   GroundPointOptions, PointCollectionOptions, InfoWindowOptions, SymbolOptions,
   IconOptions, HotspotOptions, CustomOverlayOptions,
-  OverlayReactProps, PlainIcon,
+  OverlayReactProps, PlainIcon, SymbolIcon,
 } from './components/Overlay/types';
 
 // ─── Control 组件（12 个） ───

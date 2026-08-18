@@ -84,44 +84,6 @@ registerDemo('traffic-layer', {
 </Map>`,
 });
 
-// ─── WMSLayer（仅代码，无在线示例） ───
-registerDemo('wms-layer', {
-  code: `import { Map, WMSLayer } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={10}>
-  <WMSLayer url="https://your-wms-server.com/wms"
-    params={{ LAYERS: 'mrds', FORMAT: 'image/png', TRANSPARENT: 'true' }} />
-</Map>`,
-});
-
-// ─── WMTSLayer（仅代码，无在线示例） ───
-registerDemo('wmts-layer', {
-  code: `import { Map, WMTSLayer } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={10}>
-  <WMTSLayer url="https://your-wmts-server.com/wmts"
-    params={{ LAYER: 'World_Imagery', TILEMATRIXSET: 'default028mm', FORMAT: 'image/png' }} />
-</Map>`,
-});
-
-// ─── XYZLayer（仅代码，无在线示例） ───
-registerDemo('xyz-layer', {
-  code: `import { Map, XYZLayer } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={10}>
-  <XYZLayer tileUrlTemplate="https://your-tile-server.com/[z]/[x]/[y].png" />
-</Map>`,
-});
-
-// ─── MVTLayer（仅代码，无在线示例） ───
-registerDemo('mvt-layer', {
-  code: `import { Map, MVTLayer } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={10}>
-  <MVTLayer tileUrlTemplate="https://your-mvt-server.com/[z]/[x]/[y].pbf" />
-</Map>`,
-});
-
 // ─── FillLayer ───
 registerDemo('fill-layer', {
   Component: () => (

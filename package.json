@@ -33,7 +33,7 @@
     "@baidumap/jsapi-loader": "^1.0.0"
   },
   "devDependencies": {
-    "@types/bmapgl-browser": "^0.0.3",
+    "jsapi-v4-types": "^1.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.0",

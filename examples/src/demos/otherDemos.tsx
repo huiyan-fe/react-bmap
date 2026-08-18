@@ -6,26 +6,46 @@ import { registerDemo } from './index';
 const C = { lng: 116.404, lat: 39.915 };
 
 // ─── ContextMenu ───
-registerDemo('context-menu', {
-  Component: () => (
-    <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
+function ContextMenuInner() {
+  const [zoom, setZoom] = useState(13);
+  const [markers, setMarkers] = useState<{ lng: number; lat: number }[]>([]);
+  return (
+    <MapContainer center={C} zoom={zoom} style={{ height: '100%' }}>
       <ContextMenu>
-        <MenuItem text="放大" callback={() => console.log('zoom in')} />
-        <MenuItem text="缩小" callback={() => console.log('zoom out')} />
-        <MenuItem text="添加标注" callback={() => console.log('add marker')} />
+        <MenuItem text="放大" callback={() => setZoom(z => z + 1)} />
+        <MenuItem text="缩小" callback={() => setZoom(z => z - 1)} />
+        <MenuItem text="添加标注" callback={(pt) => { if (pt) setMarkers(m => [...m, pt]); }} />
+        {markers.length > 0 && (
+          <MenuItem text="清除标注" callback={() => setMarkers([])} />
+        )}
       </ContextMenu>
-      <Marker position={C} />
+      {markers.map((pt, i) => <Marker key={i} position={pt} />)}
     </MapContainer>
-  ),
-  code: `import { Map, ContextMenu, MenuItem } from 'react-bmap';
+  );
+}
+registerDemo('context-menu', {
+  Component: () => <ContextMenuInner />,
+  code: `import { useState } from 'react';
+import { Map, Marker, ContextMenu, MenuItem } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={13}>
-  <ContextMenu>
-    <MenuItem text="放大" callback={() => console.log('zoom in')} />
-    <MenuItem text="缩小" callback={() => console.log('zoom out')} />
-    <MenuItem text="添加标注" callback={() => console.log('add marker')} />
-  </ContextMenu>
-</Map>`,
+function Demo() {
+  const [zoom, setZoom] = useState(13);
+  const [markers, setMarkers] = useState<{ lng: number; lat: number }[]>([]);
+  return (
+    <Map center={{ lng: 116.404, lat: 39.915 }} zoom={zoom}>
+      <ContextMenu>
+        <MenuItem text="放大" callback={() => setZoom(z => z + 1)} />
+        <MenuItem text="缩小" callback={() => setZoom(z => z - 1)} />
+        {/* callback 收到的第一个参数是右键点击处的经纬度 */}
+        <MenuItem text="添加标注" callback={(pt) => { if (pt) setMarkers(m => [...m, pt]); }} />
+        {markers.length > 0 && (
+          <MenuItem text="清除标注" callback={() => setMarkers([])} />
+        )}
+      </ContextMenu>
+      {markers.map((pt, i) => <Marker key={i} position={pt} />)}
+    </Map>
+  );
+}`,
 });
 
 // ─── Panorama ───

@@ -16,10 +16,27 @@ export interface PlainIcon extends IconOptions {
   size?: Size;
 }
 
+/** 矢量图标（Symbol 变体）— 作为 Marker icon 使用，框架自动转 SDK Symbol 实例 */
+export interface SymbolIcon {
+  symbol: {
+    /** SVG path 字符串或 BMap_Symbol_SHAPE_* 常量（shapeType 为别名） */
+    path?: string | number;
+    shapeType?: string | number;
+    anchor?: Size;
+    fillColor?: string;
+    fillOpacity?: number;
+    scale?: number;
+    rotation?: number;
+    strokeColor?: string;
+    strokeOpacity?: number;
+    strokeWeight?: number;
+  };
+}
+
 export interface MarkerOptions {
   offset?: Size;
-  /** 图标 — 传 plain object 或 useIcon/useSymbol 返回值，框架自动转 SDK Icon */
-  icon?: PlainIcon | OverlayHandle | null;
+  /** 图标 — 传 plain object / Symbol 矢量图标 / useIcon/useSymbol 返回值，框架自动转 SDK 实例 */
+  icon?: PlainIcon | SymbolIcon | OverlayHandle | null;
   anchor?: ControlAnchor;
   enableMassClear?: boolean; enableDragging?: boolean; enableClicking?: boolean;
   raiseOnDrag?: boolean; draggingCursor?: string; rotation?: number; title?: string;

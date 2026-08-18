@@ -268,7 +268,7 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createDOMLayer: () => { reportUnsupported('DOMLayer', version, behavior); return null; },
     createPointIconLayer: () => { reportUnsupported('PointIconLayer', version, behavior); return null; },
     createPointShapeLayer: () => { reportUnsupported('PointShapeLayer', version, behavior); return null; },
-    createPanoramaCoverageLayer: () => { reportUnsupported('PanoramaCoverageLayer', version, behavior); return null; },
+    // PanoramaCoverageLayer：v3 SDK 也导出该类（publish.js:81），走 base 的真实实现
     // v3-only 图层在 v3 直接创建（v4 capability 闭包不包含这些类）
     createCustomLayer: (o) => {
       try { return { __brand: 'LayerHandle' as const, raw: new rawSDK.CustomLayer(o), kind: 'custom' } as any; }

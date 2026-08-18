@@ -2,7 +2,7 @@ import React from 'react';
 import {
   NavigationControl, NavigationControl3D, ScaleControl, OverviewMapControl,
   MapTypeControl, CopyrightControl, GeolocationControl, PanoramaControl,
-  ZoomControl, CityListControl, LogoControl,
+  ZoomControl, CityListControl,
   Marker,
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT, BMAP_ANCHOR_BOTTOM_LEFT, BMAP_ANCHOR_BOTTOM_RIGHT,
 } from 'react-bmap';
@@ -152,19 +152,5 @@ registerDemo('city-list-control', {
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <CityListControl anchor={BMAP_ANCHOR_TOP_LEFT} />
-</Map>`,
-});
-
-// ─── LogoControl ───
-registerDemo('logo-control', {
-  Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
-      <LogoControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
-    </MapContainer>
-  ),
-  code: `import { Map, LogoControl, BMAP_ANCHOR_BOTTOM_RIGHT } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
-  <LogoControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
 </Map>`,
 });
