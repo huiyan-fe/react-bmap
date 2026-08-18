@@ -48,6 +48,11 @@ const collisionState = new WeakMap<object, { hidden: boolean; userVisible: boole
 const collisionManagers = new WeakMap<object, CollisionManager>();
 const overlayToCM = new WeakMap<object, CollisionManager>();
 
+// 已 destroy 的原生 Map 实例。React 卸载时父组件 <Map> 的 layout cleanup 先跑 destroyMap，
+// 子组件（右键菜单等）的 passive cleanup 后跑，此时地图容器已被清空 —— 需要据此跳过那些
+// 会去摸 DOM 的 detach 调用。
+const destroyedMaps = new WeakSet<object>();
+
 class CollisionManager {
   private mapRaw: any;
   private markers = new Set<any>();
@@ -406,6 +411,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     },
     destroyMap(handle) {
       const map = rawMap(handle);
+      destroyedMaps.add(map);
       collisionManagers.get(map)?.destroy();
       collisionManagers.delete(map);
       try { map.clearOverlays?.(); } catch { /* ignore */ }
@@ -574,7 +580,14 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     showControl: (c) => { try { rawOf(c).show?.(); } catch { /* ignore */ } },
     hideControl: (c) => { try { rawOf(c).hide?.(); } catch { /* ignore */ } },
     addContextMenu: (target, menu) => callRaw('Map.addContextMenu', () => rawOf(target).addContextMenu(rawOf(menu))),
-    removeContextMenu: (target, menu) => callRaw('Map.removeContextMenu', () => rawOf(target).removeContextMenu(rawOf(menu))),
+    removeContextMenu: (target, menu) => {
+      const raw = rawOf(target);
+      // SDK 的 ContextMenu.remove() 是裸的 this.P.parentNode.removeChild(this.P)，不判空 parentNode。
+      // 地图 destroy 后容器已被清空，菜单 DOM 连 parentNode 都没了 —— 这时地图本身都不在了，
+      // 没什么需要摘的，直接跳过，避免报成"能力不支持"的误导性警告。
+      if (destroyedMaps.has(raw) || destroyedMaps.has(raw?.getMap?.())) return;
+      callRaw('Map.removeContextMenu', () => raw.removeContextMenu(rawOf(menu)));
+    },
 
     // ─────────────── 14. 覆盖物 ───────────────
     addOverlay: (map, o) => {
