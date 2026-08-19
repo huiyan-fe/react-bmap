@@ -287,9 +287,7 @@ registerDemo('use-map-event', {
 import { Map, useMapEvent } from 'react-bmap';
 
 // 传内联函数不会导致重订阅（handler 内部用 ref 持有最新值）。
-// 注意 raw 是没做归一化的 SDK 原生事件：3.0 的鼠标事件给 e.point，
-// 4.0 的 click / rightclick / mousemove 给 e.latlng，
-// 而 dblclick、drag 系列在 4.0 里也还是 e.point，moveend / zoomend 之类两个都没有。
+// 注意 raw 是没做归一化的 SDK 原生事件
 function ClickWatcher() {
   const [last, setLast] = useState(null);
 
