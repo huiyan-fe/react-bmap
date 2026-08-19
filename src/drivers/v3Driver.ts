@@ -4,7 +4,7 @@ import type { BMapDriver } from './types';
 import type { Point } from '../types';
 import { CAPABILITY_MATRIX } from './capabilityMatrix';
 import { createV4Driver } from './v4Driver';
-import { reportUnsupported, unsupportedValue } from './unsupported';
+import { reportCallFailure, reportUnsupported, unsupportedValue } from './unsupported';
 import { getSDK } from '../utils/sdk';
 
 /**
@@ -18,7 +18,8 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
   const behavior = opts.unsupportedBehavior;
   const version = '3.0' as const;
 
-  const base = createV4Driver(rawSDK, opts);
+  // version 传给 base：v4Driver 内部日志文案要说 "JSAPI 3.0"，否则 v3 会话里全打成 4.0
+  const base = createV4Driver(rawSDK, { ...opts, version });
 
   const v3Only: Partial<BMapDriver> = {
     // 3.0-only Map 命令真实实现
@@ -52,7 +53,7 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         const point = new rawSDK.Point((p as Point).lng, (p as Point).lat);
         const inst = hasOpts ? new rawSDK.Hotspot(point, ctorOpts) : new rawSDK.Hotspot(point);
         return { __brand: 'OverlayHandle', raw: inst, type: 'hotspot' } as OverlayHandle;
-      } catch (e) { reportUnsupported('Hotspot', version, behavior, e); return null; }
+      } catch (e) { reportCallFailure('Hotspot', version, behavior, e); return null; }
     },
 
     // PointCollection 同理：@removed 4.0，在 v4 矩阵中不存在，闭包检查会 block
@@ -67,7 +68,7 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
         const points = (p as Point[]).map(pt => new rawSDK.Point(pt.lng, pt.lat));
         const inst = hasOpts ? new rawSDK.PointCollection(points, ctorOpts) : new rawSDK.PointCollection(points);
         return { __brand: 'OverlayHandle', raw: inst, type: 'pointCollection' } as OverlayHandle;
-      } catch (e) { reportUnsupported('PointCollection', version, behavior, e); return null; }
+      } catch (e) { reportCallFailure('PointCollection', version, behavior, e); return null; }
     },
 
     // 3.0 的 setMapStyle 和 setMapStyleV2 均可用
@@ -273,11 +274,11 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     // v3-only 图层在 v3 直接创建（v4 capability 闭包不包含这些类）
     createCustomLayer: (o) => {
       try { return { __brand: 'LayerHandle' as const, raw: new rawSDK.CustomLayer(o), kind: 'custom' } as any; }
-      catch (e) { reportUnsupported('CustomLayer', version, behavior, e); return null; }
+      catch (e) { reportCallFailure('CustomLayer', version, behavior, e); return null; }
     },
     createCanvasLayer: (o) => {
       try { return { __brand: 'LayerHandle' as const, raw: new rawSDK.CanvasLayer(o), kind: 'canvas' } as any; }
-      catch (e) { reportUnsupported('CanvasLayer', version, behavior, e); return null; }
+      catch (e) { reportCallFailure('CanvasLayer', version, behavior, e); return null; }
     },
   };
 

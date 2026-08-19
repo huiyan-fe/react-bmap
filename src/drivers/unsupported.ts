@@ -1,4 +1,5 @@
 import type { BMapVersion, Capability, UnsupportedBehavior } from '../types';
+import { debugWarn } from '../utils/debugWarn';
 
 /**
  * 不支持能力异常。
@@ -17,7 +18,9 @@ export class UnsupportedCapabilityError extends Error {
  * - 'warn'：dev console.warn，正常返回（调用方返回兜底值）
  * - 'ignore'：静默，正常返回（调用方返回兜底值）
  *
- * @param cause 可选，原生方法执行时抛出的原始错误（用于区分“方法不存在”和“方法抛错”）
+ * 只用于「确实不支持」：能力矩阵里没有，或原生成员不存在。
+ * 「成员存在但执行时抛错」请走 reportCallFailure，不要塞到这里 ——
+ * 那会把真实的运行时错误说成版本问题，排障时反而被误导。
  *
  * 用于命令（返回 void）：throw 抛错；warn/ignore noop。
  */
@@ -25,21 +28,47 @@ export function reportUnsupported(
   capability: Capability,
   version: BMapVersion,
   behavior: UnsupportedBehavior,
-  cause?: unknown,
 ): void {
   if (behavior === 'throw') {
     throw new UnsupportedCapabilityError(capability, version);
   }
   if (behavior === 'warn' && typeof console !== 'undefined') {
-    // cause 存在说明原生方法是存在的、只是执行时抛了错（参数非法等），
-    // 不能笼统说“版本不支持”，把原始错误一起打出来才能定位。
-    if (cause !== undefined) {
-      console.warn(`[react-bmap] ${capability} 调用失败（可能是参数非法，也可能是 JSAPI ${version} 不支持）：`, cause);
-    } else {
-      console.warn(`[react-bmap] ${capability} not supported in JSAPI ${version} (noop)`);
-    }
+    console.warn(`[react-bmap] ${capability} not supported in JSAPI ${version} (noop)`);
   }
   // 'ignore' 或 'warn' 走到这里返回 undefined
+}
+
+/**
+ * 判断一个错误是不是「成员根本不存在」。
+ *
+ * 依据的是 JS 引擎自己产出的 TypeError 文案（`x is not a function` /
+ * `x is not a constructor`），V8/JSC/SpiderMonkey 都是这套措辞；不是匹配 SDK
+ * 的字符串，所以 SDK 压缩混淆换版本也不会失效。判错的最坏后果只是日志分类不准，
+ * 不会引入新的失败路径。
+ */
+export function isMissingMember(e: unknown): boolean {
+  return e instanceof TypeError && /is not a (function|constructor)/.test(e.message);
+}
+
+/**
+ * 调用原生 API 失败时的统一出口，按错误性质分流：
+ * - 成员不存在 → reportUnsupported，语义是「这个版本没这能力」
+ * - 成员存在但抛错（参数非法、SDK 内部空指针、销毁竞态……）→ debugWarn 带上原始错误
+ *
+ * 后者刻意不抛：behavior='throw' 的语义是「能力不支持时抛」，而且这些 catch 大多在
+ * React effect / cleanup 里，抛出会连带整棵树。
+ */
+export function reportCallFailure(
+  capability: Capability,
+  version: BMapVersion,
+  behavior: UnsupportedBehavior,
+  error: unknown,
+): void {
+  if (isMissingMember(error)) {
+    reportUnsupported(capability, version, behavior);
+    return;
+  }
+  debugWarn(capability, error);
 }
 
 /**

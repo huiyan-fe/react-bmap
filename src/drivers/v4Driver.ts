@@ -1,4 +1,4 @@
-import type { Capability, UnsupportedBehavior } from '../types';
+import type { BMapVersion, Capability, UnsupportedBehavior } from '../types';
 import type {
   Bounds,
   ControlHandle,
@@ -13,7 +13,8 @@ import type {
 import type { BMapDriver } from './types';
 import { CAPABILITY_MATRIX } from './capabilityMatrix';
 import { unwrapHandle } from '../utils/handle';
-import { reportUnsupported, unsupportedValue } from './unsupported';
+import { reportCallFailure, reportUnsupported, unsupportedValue } from './unsupported';
+import { debugWarn } from '../utils/debugWarn';
 import { pointToPlain } from '../utils/pointEquals';
 
 // ─────────────── Handle 工厂 ───────────────
@@ -354,24 +355,33 @@ function warnUnhandledOverlayOptions(type: string, o: Record<string, unknown>): 
 /**
  * v4 Driver — 4.0 baseline 实现。
  * 直接 1:1 调用 window.BMap 上的类与方法；缺的能力（3.0-only）按 unsupportedBehavior 处理。
+ *
+ * opts.version 只影响日志文案（v3Driver 复用本实现，
+ * 不传的话 3.0 会话里也会打成 "JSAPI 4.0"）。
+ * capabilities 仍固定取 4.0 矩阵：v3Driver 依赖这一点绕过能力检查直建 v3-only 的类。
  */
-export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: UnsupportedBehavior }): BMapDriver {
+export function createV4Driver(
+  rawSDK: any,
+  opts: { unsupportedBehavior: UnsupportedBehavior; version?: BMapVersion },
+): BMapDriver {
   const capabilities = CAPABILITY_MATRIX['4.0'];
   const behavior = opts.unsupportedBehavior;
-  const version = '4.0' as const;
+  const version = opts.version ?? '4.0';
 
-  // 通用工具：调原生方法，不存在则按 behavior 处理
+  // 通用工具：调原生方法，失败按错误性质分流
+  // （成员不存在 = 不支持，其余 = 运行时失败）
   const callRaw = (cap: Capability, fn: () => void) => {
     try { fn(); } catch (e: any) {
       if (e?.name === 'UnsupportedCapabilityError') throw e;
-      // 把原始错误透出去：这里既可能是方法不存在（真不支持），
-      // 也可能是方法存在但参数非法（如 GroundOverlay 的 url 为空），二者不能混为一谈。
-      reportUnsupported(cap, version, behavior, e);
+      reportCallFailure(cap, version, behavior, e);
     }
   };
   const getRaw = <T,>(cap: Capability, fn: () => T, fallback: T): T => {
-    try { const v = fn(); return v ?? fallback; } catch {
-      return unsupportedValue(cap, version, behavior, fallback);
+    try { const v = fn(); return v ?? fallback; } catch (e: any) {
+      if (e?.name === 'UnsupportedCapabilityError') throw e;
+      // getter 无论如何都得给出兜底值；错误分类交给 reportCallFailure，不在这里重复一遍。
+      reportCallFailure(cap, version, behavior, e);
+      return fallback;
     }
   };
 
@@ -379,19 +389,23 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
   const createOverlayFactory = <T>(cap: Capability, ctor: () => T, type: string): OverlayHandle | null => {
     if (!capabilities.has(cap)) { reportUnsupported(cap, version, behavior); return null; }
     try { return overlayHandle(ctor(), type); }
-    catch (e) { reportUnsupported(cap, version, behavior, e); return null; }
+    catch (e) { reportCallFailure(cap, version, behavior, e); return null; }
   };
   const createControlFactory = <T>(cap: Capability, ctor: () => T, type: string): ControlHandle | null => {
     if (!capabilities.has(cap)) { reportUnsupported(cap, version, behavior); return null; }
-    try { return controlHandle(ctor(), type); } catch { reportUnsupported(cap, version, behavior); return null; }
+    try { return controlHandle(ctor(), type); }
+    catch (e) { reportCallFailure(cap, version, behavior, e); return null; }
   };
   const createLayerFactory = <T>(cap: Capability, ctor: () => T, kind: LayerHandle['kind']): LayerHandle | null => {
     if (!capabilities.has(cap)) { reportUnsupported(cap, version, behavior); return null; }
-    try { return layerHandle(ctor(), kind); } catch { reportUnsupported(cap, version, behavior); return null; }
+    try { return layerHandle(ctor(), kind); }
+    catch (e) { reportCallFailure(cap, version, behavior, e); return null; }
   };
   const createServiceFactory = <T>(cap: Capability, ctor: () => T): ServiceHandle => {
     if (!capabilities.has(cap)) return serviceHandle(null, true);
-    try { return serviceHandle(ctor(), false); } catch { return serviceHandle(null, true); }
+    // 构造失败要留痕：服务类静默变成 isNull handle，业务只会看到"什么都没发生"。
+    try { return serviceHandle(ctor(), false); }
+    catch (e) { debugWarn(cap, e); return serviceHandle(null, true); }
   };
 
   return {
@@ -1320,7 +1334,7 @@ export function createV4Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createPanorama: (container, o) => {
       if (!capabilities.has('Panorama')) { reportUnsupported('Panorama', version, behavior); return null; }
       try { return mapHandle(new rawSDK.Panorama(container, o)); }
-      catch { reportUnsupported('Panorama', version, behavior); return null; }
+      catch (e) { reportCallFailure('Panorama', version, behavior, e); return null; }
     },
     createPanoramaLabel: (o) => {
       const opts = o as Record<string, unknown>;
