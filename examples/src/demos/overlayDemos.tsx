@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Marker, Label, Polyline, Polygon, Circle, Rectangle,
   BezierCurve, Prism, GroundOverlay, GroundPoint, PointCollection,
   InfoWindow, Symbol, Icon, IconSequence, CustomOverlay,
   Marker3D, MapMask, SimpleInfoWindow, PlaceDetail,
-  NavigationControl, ScaleControl,
+  ScaleControl,
+  useDriver,
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT,
   BMAP_POINT_SHAPE_CIRCLE,
+  BMap_Symbol_SHAPE_FORWARD_OPEN_ARROW,
 } from 'react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
@@ -19,7 +21,6 @@ registerDemo('marker', {
   Component: () => (
     <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <Marker position={C} />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, Marker } from 'react-bmap';
@@ -34,7 +35,6 @@ registerDemo('marker', {
   Component: () => (
     <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <Marker position={C} icon={{ url: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png', size: { width: 30, height: 30 } }} />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, Marker } from 'react-bmap';
@@ -46,18 +46,76 @@ registerDemo('marker', {
 });
 
 // ─── Label ───
+// styles 是键值对形式的 CSS，直接写在 SDK 生成的 DOM 上，所以样式都在这里调
+const labelBase: Record<string, string | number> = {
+  padding: '3px 8px',
+  fontSize: 12,
+  lineHeight: '18px',
+  textAlign: 'center',
+  borderRadius: 3,
+  backgroundColor: '#fff',
+  borderColor: '#ccc',
+  color: '#333',
+};
+
 registerDemo('label', {
+  title: '基础用法',
   Component: () => (
     <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
-      <Label position={C} content="天安门" width={80} styles={{ color: '#333', borderColor: '#ccc', backgroundColor: '#fff', padding: '2px 6px' }} />
-      <NavigationControl />
+      <Label position={C} content="天安门" width={80} styles={labelBase} />
     </MapContainer>
   ),
   code: `import { Map, Label } from 'react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Label position={{ lng: 116.404, lat: 39.915 }} content="天安门" width={80}
-    styles={{ color: '#333', borderColor: '#ccc', backgroundColor: '#fff' }} />
+    styles={{ padding: '3px 8px', fontSize: 12, borderRadius: 3,
+      backgroundColor: '#fff', borderColor: '#ccc', color: '#333' }} />
+</Map>`,
+});
+
+registerDemo('label', {
+  title: '多个标注与自定义样式',
+  Component: () => (
+    <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
+      <Label
+        position={C}
+        content="天安门"
+        width={72}
+        offset={{ width: -36, height: -30 }}
+        styles={{ ...labelBase, color: '#1890ff', borderColor: '#1890ff' }}
+      />
+      <Label
+        position={{ lng: 116.417, lat: 39.915 }}
+        content="王府井"
+        width={72}
+        offset={{ width: -36, height: -30 }}
+        styles={{ ...labelBase, color: '#52c41a', borderColor: '#52c41a' }}
+      />
+      <Label
+        position={{ lng: 116.398, lat: 39.902 }}
+        content="前门"
+        width={72}
+        offset={{ width: -36, height: -30 }}
+        styles={{ ...labelBase, color: '#fff', backgroundColor: '#1890ff', borderColor: '#1890ff' }}
+      />
+    </MapContainer>
+  ),
+  code: `import { Map, Label } from 'react-bmap';
+
+// offset 以 position 为基准偏移，负值可把标签挪到点位上方居中
+const base = { padding: '3px 8px', fontSize: 12, borderRadius: 3, backgroundColor: '#fff' };
+
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={13}>
+  <Label position={{ lng: 116.404, lat: 39.915 }} content="天安门" width={72}
+    offset={{ width: -36, height: -30 }}
+    styles={{ ...base, color: '#1890ff', borderColor: '#1890ff' }} />
+  <Label position={{ lng: 116.417, lat: 39.915 }} content="王府井" width={72}
+    offset={{ width: -36, height: -30 }}
+    styles={{ ...base, color: '#52c41a', borderColor: '#52c41a' }} />
+  <Label position={{ lng: 116.398, lat: 39.902 }} content="前门" width={72}
+    offset={{ width: -36, height: -30 }}
+    styles={{ ...base, color: '#fff', backgroundColor: '#1890ff', borderColor: '#1890ff' }} />
 </Map>`,
 });
 
@@ -71,7 +129,6 @@ registerDemo('polyline', {
         strokeWeight={5}
         strokeOpacity={0.8}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, Polyline } from 'react-bmap';
@@ -93,7 +150,6 @@ registerDemo('polygon', {
         fillColor="#ff660033"
         strokeWeight={3}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, Polygon } from 'react-bmap';
@@ -142,23 +198,24 @@ registerDemo('rectangle', {
 });
 
 // ─── BezierCurve ───
+// SDK 的 BezierCurve 是二阶贝塞尔：每段只吃一个控制点，controlPoints 组数 = path.length - 1
 registerDemo('bezier-curve', {
   Component: () => (
     <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
       <BezierCurve
         path={[C, { lng: 116.42, lat: 39.93 }]}
-        controlPoints={[[{ lng: 116.41, lat: 39.92 }, { lng: 116.415, lat: 39.925 }]]}
+        controlPoints={[[{ lng: 116.403, lat: 39.932 }]]}
         strokeColor="#722ed1" strokeWeight={4}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, BezierCurve } from 'react-bmap';
 
+// 二阶贝塞尔：每段一个控制点，所以 controlPoints 有 path.length - 1 组
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
   <BezierCurve
     path={[{ lng: 116.404, lat: 39.915 }, { lng: 116.42, lat: 39.93 }]}
-    controlPoints={[[{ lng: 116.41, lat: 39.92 }, { lng: 116.415, lat: 39.925 }]]}
+    controlPoints={[[{ lng: 116.403, lat: 39.932 }]]}
     strokeColor="#722ed1" strokeWeight={4} />
 </Map>`,
 });
@@ -170,9 +227,9 @@ registerDemo('prism', {
       <Prism
         path={[C, { lng: 116.41, lat: 39.92 }, { lng: 116.40, lat: 39.92 }]}
         altitude={200}
-        strokeColor="#ff6600" fillColor="#ff660088"
+        topFillColor="#ff6600" topFillOpacity={0.9}
+        sideFillColor="#ff9955" sideFillOpacity={0.7}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, Prism } from 'react-bmap';
@@ -180,7 +237,8 @@ registerDemo('prism', {
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={14} tilt={60}>
   <Prism
     path={[{ lng: 116.404, lat: 39.915 }, { lng: 116.41, lat: 39.92 }, { lng: 116.40, lat: 39.92 }]}
-    altitude={200} strokeColor="#ff6600" fillColor="#ff660088" />
+    altitude={200} topFillColor="#ff6600" topFillOpacity={0.9}
+    sideFillColor="#ff9955" sideFillOpacity={0.7} />
 </Map>`,
 });
 
@@ -210,20 +268,19 @@ registerDemo('ground-overlay', {
 registerDemo('ground-point', {
   Component: () => (
     <MapContainer center={C} zoom={14} style={{ height: '100%' }} tilt={60}>
-      <GroundPoint point={C} height={100} url="https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_all.png" size={{ width: 30, height: 30 }} fillColor="#1890ff" />
-      <GroundPoint point={{ lng: 116.41, lat: 39.92 }} height={150} url="https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_all.png" size={{ width: 30, height: 30 }} fillColor="#ff6600" />
-      <NavigationControl />
+      <GroundPoint point={C} url="https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_all.png" size={{ width: 30, height: 30 }} />
+      <GroundPoint point={{ lng: 116.41, lat: 39.92 }} url="https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_all.png" size={{ width: 30, height: 30 }} scale={1.5} rotation={45} />
     </MapContainer>
   ),
   code: `import { Map, GroundPoint } from 'react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={14} tilt={60}>
-  <GroundPoint point={{ lng: 116.404, lat: 39.915 }} height={100}
+  <GroundPoint point={{ lng: 116.404, lat: 39.915 }}
     url="https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_all.png"
-    size={{ width: 30, height: 30 }} fillColor="#1890ff" />
-  <GroundPoint point={{ lng: 116.41, lat: 39.92 }} height={150}
+    size={{ width: 30, height: 30 }} />
+  <GroundPoint point={{ lng: 116.41, lat: 39.92 }}
     url="https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_all.png"
-    size={{ width: 30, height: 30 }} fillColor="#ff6600" />
+    size={{ width: 30, height: 30 }} scale={1.5} rotation={45} />
 </Map>`,
 });
 
@@ -237,7 +294,6 @@ registerDemo('point-collection', {
     return (
       <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
         <PointCollection points={pts} shape={BMAP_POINT_SHAPE_CIRCLE} color="#ff6600" size={2} />
-        <NavigationControl />
       </MapContainer>
     );
   },
@@ -260,7 +316,6 @@ registerDemo('info-window', {
   Component: () => (
     <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
       <InfoWindow position={C} title="天安门" content="北京市东城区东长安街" />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, InfoWindow } from 'react-bmap';
@@ -279,7 +334,6 @@ registerDemo('info-window', {
       <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
         <Marker position={C} onClick={() => setOpen(!open)} />
         <InfoWindow position={C} title="天安门" content="<b>天安门</b><br/>北京市东城区" visible={open} />
-        <NavigationControl />
       </MapContainer>
     );
   },
@@ -315,7 +369,6 @@ registerDemo('symbol', {
           }
         }}
       />
-      <NavigationControl />
     </MapContainer>
     );
   },
@@ -348,7 +401,6 @@ registerDemo('icon', {
           size: { width: 30, height: 30 },
         }}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, Marker } from 'react-bmap';
@@ -363,23 +415,66 @@ registerDemo('icon', {
 });
 
 // ─── IconSequence ───
+// IconSequence 是值对象且 skipMount：直接写成 JSX 不会调 addOverlay，地图上什么都看不到。
+// 真实用法是 useDriver() 创建后传给 Polyline 的 icons。
+const SEQ_PATH = [C, { lng: 116.41, lat: 39.92 }, { lng: 116.42, lat: 39.91 }, { lng: 116.43, lat: 39.925 }];
+
+const ArrowLine: React.FC = () => {
+  const driver = useDriver();
+  const [icons, setIcons] = useState<unknown[]>([]);
+
+  useEffect(() => {
+    if (!driver) return;
+    const symbol = driver.createSymbol(BMap_Symbol_SHAPE_FORWARD_OPEN_ARROW, {
+      scale: 0.8,
+      strokeColor: '#fff',
+      strokeWeight: 2,
+    });
+    if (!symbol) return;
+    // offset：首个符号距起点的位置；repeat：符号间距；fixedRotation：图标跟随线走向
+    const seq = driver.createIconSequence(symbol, '0%', '8%', true);
+    if (seq) setIcons([seq]);
+  }, [driver]);
+
+  return <Polyline path={SEQ_PATH} icons={icons} strokeColor="#1890ff" strokeWeight={6} />;
+};
+
 registerDemo('icon-sequence', {
   Component: () => (
     <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
-      <Polyline
-        path={[C, { lng: 116.41, lat: 39.92 }, { lng: 116.42, lat: 39.91 }]}
-        strokeColor="#1890ff"
-        strokeWeight={6}
-      />
-      <NavigationControl />
+      <ArrowLine />
     </MapContainer>
   ),
-  code: `import { Map, Polyline } from 'react-bmap';
+  code: `import { useEffect, useState } from 'react';
+import { Map, Polyline, useDriver, BMap_Symbol_SHAPE_FORWARD_OPEN_ARROW } from 'react-bmap';
+
+const path = [
+  { lng: 116.404, lat: 39.915 }, { lng: 116.41, lat: 39.92 },
+  { lng: 116.42, lat: 39.91 }, { lng: 116.43, lat: 39.925 },
+];
+
+// 注意：<IconSequence /> 是值对象（skipMount），直接渲染不会出现在地图上；
+// 4.0 起已废弃，新代码建议用 Polyline 的 strokeTexture 代替。
+function ArrowLine() {
+  const driver = useDriver();
+  const [icons, setIcons] = useState([]);
+
+  useEffect(() => {
+    if (!driver) return;
+    const symbol = driver.createSymbol(BMap_Symbol_SHAPE_FORWARD_OPEN_ARROW, {
+      scale: 0.8, strokeColor: '#fff', strokeWeight: 2,
+    });
+    if (!symbol) return;
+    // offset：首个符号距起点的位置；repeat：符号间距；fixedRotation：图标跟随线走向
+    const seq = driver.createIconSequence(symbol, '0%', '8%', true);
+    if (seq) setIcons([seq]);
+  }, [driver]);
+
+  return <Polyline path={path} icons={icons} strokeColor="#1890ff" strokeWeight={6} />;
+}
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={13}>
-  <Polyline
-    path={[{ lng: 116.404, lat: 39.915 }, { lng: 116.41, lat: 39.92 }, { lng: 116.42, lat: 39.91 }]}
-    strokeColor="#1890ff" strokeWeight={6} />
+  <ArrowLine />
 </Map>`,
 });
 
@@ -392,7 +487,6 @@ registerDemo('custom-overlay', {
           自定义 HTML 覆盖物
         </div>
       </CustomOverlay>
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, CustomOverlay } from 'react-bmap';
@@ -412,7 +506,6 @@ registerDemo('marker-3d', {
     <MapContainer defaultCenter={C} defaultZoom={14} style={{ height: '100%' }}>
       <Marker3D position={C} height={100} shape={1} size={50} fillColor="#1890ff" fillOpacity={0.8} />
       <Marker3D position={{ lng: 116.41, lat: 39.92 }} height={150} shape={1} size={50} fillColor="#ff6600" fillOpacity={0.8} />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, Marker3D } from 'react-bmap';
@@ -434,7 +527,6 @@ registerDemo('map-mask', {
         isPoiMask
         isMapMask
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, MapMask } from 'react-bmap';
@@ -456,9 +548,8 @@ registerDemo('simple-info-window', {
         <SimpleInfoWindow
           position={C}
           content="天安门广场"
-          visible={open}
+          open={open}
         />
-        <NavigationControl />
       </MapContainer>
     );
   },
@@ -470,7 +561,7 @@ function Demo() {
     <Map center={{ lng: 116.404, lat: 39.915 }} zoom={13}>
       <Marker position={{ lng: 116.404, lat: 39.915 }} onClick={() => setOpen(!open)} />
       <SimpleInfoWindow position={{ lng: 116.404, lat: 39.915 }}
-        content="天安门广场" visible={open} />
+        content="天安门广场" open={open} />
     </Map>
   );
 }`,
@@ -483,7 +574,6 @@ registerDemo('place-detail-overlay', {
       <Marker position={C}>
         <PlaceDetail uid="06d2dffda107b0ef89f15db6" open={true} />
       </Marker>
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, Marker, PlaceDetail } from 'react-bmap';

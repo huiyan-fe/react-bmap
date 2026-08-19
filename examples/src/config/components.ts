@@ -3,10 +3,13 @@ export interface ComponentMeta {
   name: string;
   category: string;
   description: string;
+  /** 传 false 表示不受版本能力矩阵约束（如 Provider 这类非 SDK 能力的组件） */
+  capability?: false;
 }
 
 export const COMPONENTS: ComponentMeta[] = [
   // Map
+  { id: 'bmap-provider', name: 'BMapProvider', category: 'Map', description: 'JSAPI 加载与 driver 注入', capability: false },
   { id: 'map', name: 'Map', category: 'Map', description: '地图容器' },
 
   // Overlay (21)
@@ -74,6 +77,17 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'context-menu', name: 'ContextMenu', category: 'Other', description: '右键菜单' },
   { id: 'panorama', name: 'Panorama', category: 'Other', description: '全景地图' },
   // { id: 'place-detail-panel', name: 'PlaceDetailPanel', category: 'Other', description: '地点详情面板' },
+
+  // Hook (8) —— 均为 React Hook，不受版本能力矩阵约束，故统一 capability: false
+  // useMapRef / useDriver / useMap 三者分工见各自页面说明，日常操作地图只需要 useMapRef
+  { id: 'use-map', name: 'useMap', category: 'Hook', description: '拿地图句柄；唯一能取到原生地图实例（map.raw）的逃生口，日常操作请用 useMapRef', capability: false },
+  { id: 'use-driver', name: 'useDriver', category: 'Hook', description: '拿当前版本的 driver：做版本/能力分支，或用 rawSDK 取原生命名空间', capability: false },
+  { id: 'use-map-ref', name: 'useMapRef', category: 'Hook', description: '命令式操作地图；已转发 driver 的全量方法，是日常首选', capability: false },
+  { id: 'use-capabilities', name: 'useCapabilities', category: 'Hook', description: '读取能力集合', capability: false },
+  { id: 'use-map-event', name: 'useMapEvent', category: 'Hook', description: '订阅地图原生事件', capability: false },
+  { id: 'use-map-status', name: 'useMapStatus', category: 'Hook', description: '订阅地图状态快照', capability: false },
+  { id: 'use-symbol', name: 'useSymbol', category: 'Hook', description: '创建 Symbol 值对象', capability: false },
+  { id: 'use-icon', name: 'useIcon', category: 'Hook', description: '创建 Icon 值对象', capability: false },
 ];
 
-export const CATEGORIES = ['Map', 'Overlay', 'Control', 'Layer', 'Service', 'Other'] as const;
+export const CATEGORIES = ['Map', 'Overlay', 'Control', 'Layer', 'Service', 'Other', 'Hook'] as const;

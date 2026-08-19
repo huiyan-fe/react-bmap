@@ -38,7 +38,7 @@ export function ApiTable({ data, methods }: { data: ApiProp[]; methods?: ApiMeth
           </tbody>
         </table>
       )}
-      {methods?.length > 0 && (
+      {methods && methods.length > 0 && (
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
           <thead>
             <tr style={{ background: '#f5f5f5' }}>
@@ -51,8 +51,8 @@ export function ApiTable({ data, methods }: { data: ApiProp[]; methods?: ApiMeth
             {methods.map((row, i) => (
               <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={{ padding: '10px 12px', fontFamily: 'monospace' }}>{row.name}</td>
-                <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 12 }}>{row.params}</td>
-                <td style={{ padding: '10px 12px', color: '#666' }}>{row.description}</td>
+                <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 12 }}>{row.params || '—'}</td>
+                <td style={{ padding: '10px 12px', color: '#666' }}>{row.description || '-'}</td>
               </tr>
             ))}
           </tbody>

@@ -15,7 +15,7 @@ export function ComponentPage() {
   if (!meta || !id) return <Navigate to="/" replace />;
 
   const capName = meta.name.startsWith('use') ? meta.name.slice(3) : meta.name;
-  const supported = caps.has(capName);
+  const supported = meta.capability === false || caps.has(capName);
 
   const demos = getDemosById(id);
   const apiData = API_DATA[id] ?? [];

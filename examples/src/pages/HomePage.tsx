@@ -60,12 +60,11 @@ export function HomePage() {
         </p>
         <div className="home-code-block">
           <div className="home-code-label">Hello World</div>
-          <pre><code>{`import { BMapProvider, Map, Marker, NavigationControl } from 'react-bmap';
+          <pre><code>{`import { BMapProvider, Map, Marker } from 'react-bmap';
 
 <BMapProvider ak="您的密钥" version="4.0">
   <Map center={{ lng: 116.4, lat: 39.9 }} zoom={11}>
     <Marker position={{ lng: 116.4, lat: 39.9 }} />
-    <NavigationControl />
   </Map>
 </BMapProvider>`}</code></pre>
         </div>

@@ -14,9 +14,8 @@ export function Sidebar() {
         padding: '16px 0',
         background: '#fafafa',
         overflowY: 'auto',
-        height: 'calc(100vh - 56px)',
-        position: 'sticky',
-        top: 0,
+        // 父级 .app-body 已被锁在视口高度内，撑满即可；不需要 sticky
+        height: '100%',
       }}
     >
       <div style={{ padding: '0 16px 12px', fontSize: 14, color: '#888' }}>

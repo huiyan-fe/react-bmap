@@ -4,6 +4,9 @@ import type { BMapVersion } from 'react-bmap';
 
 export type MapVersion = BMapVersion;
 
+/** demo 用的公开 ak（BMapProvider 示例里也要用同一个，保证 loadKey 一致、复用已加载的 SDK） */
+export const EXAMPLE_AK = 'mbKnRu5DQqM420lpbt7tbtm7WK6jiQln';
+
 const MapModeContext = createContext<{
   version: MapVersion;
   setVersion: (version: MapVersion) => void;
@@ -26,7 +29,7 @@ export function MapModeProvider({ children }: { children: React.ReactNode }) {
   return (
     <MapModeContext.Provider value={{ version, setVersion }}>
       <BMapProvider
-        ak="mbKnRu5DQqM420lpbt7tbtm7WK6jiQln"
+        ak={EXAMPLE_AK}
         version={version}
         fallback={<div style={{ padding: 24 }}>加载地图 API 中...</div>}
       >

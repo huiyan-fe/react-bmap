@@ -4,23 +4,26 @@
   box-sizing: border-box;
 }
 
-/* App layout */
+/* App layout — 视口高度锁死，只有 .app-main 内部滚动，侧边栏始终占满一屏 */
 .app-layout {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .app-body {
   flex: 1;
   display: flex;
   min-height: 0;
+  overflow: hidden;
 }
 
 .app-main {
   flex: 1;
+  min-width: 0;
   padding: 24px;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .app-header {

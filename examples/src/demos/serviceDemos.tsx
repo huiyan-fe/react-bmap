@@ -351,8 +351,8 @@ registerDemo('geolocation', {
   ),
   code: `import { useGeolocation } from 'react-bmap';
 
-const { data, getCurrentLocation } = useGeolocation();
-getCurrentLocation();`,
+const { data, getCurrentPosition } = useGeolocation();
+getCurrentPosition();`,
 });
 
 // ─── useLocalCity ───
@@ -465,8 +465,8 @@ registerDemo('panorama-service', {
   ),
   code: `import { usePanoramaService } from 'react-bmap';
 
-const { data, getPanorama } = usePanoramaService();
-getPanorama({ lng: 116.404, lat: 39.915 });`,
+const { data, getPanoramaByLocation } = usePanoramaService();
+getPanoramaByLocation({ lng: 116.404, lat: 39.915 }, 100);`,
 });
 
 // ─── useTruckRoute ───

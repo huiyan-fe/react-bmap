@@ -3,7 +3,6 @@ import {
   GeoJSONLayer, DistrictLayer, TrafficLayer,
   FillLayer, DOMLayer,
   PointIconLayer, PointShapeLayer, PanoramaCoverageLayer,
-  NavigationControl,
 } from 'react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
@@ -39,7 +38,6 @@ registerDemo('geojson-layer', {
         polylineStyle={{ strokeColor: '#1890ff', strokeWeight: 3, strokeOpacity: 0.9 }}
         polygonStyle={{ strokeColor: '#ff6600', strokeWeight: 2, fillColor: '#ff660033', fillOpacity: 0.5 }}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, GeoJSONLayer } from 'react-bmap';
@@ -59,7 +57,6 @@ registerDemo('district-layer', {
   Component: () => (
     <MapContainer center={C} zoom={8} style={{ height: '100%' }}>
       <DistrictLayer name="北京市" strokeColor="#1890ff" fillColor="#1890ff22" />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, DistrictLayer } from 'react-bmap';
@@ -74,7 +71,6 @@ registerDemo('traffic-layer', {
   Component: () => (
     <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
       <TrafficLayer />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, TrafficLayer } from 'react-bmap';
@@ -95,7 +91,6 @@ registerDemo('fill-layer', {
         style={{ fillColor: 'rgba(24, 144, 255, 0.4)', strokeColor: '#1890ff', strokeWeight: 2, strokeStyle: 'solid' } as any}
         data={POLYGON_DATA as any}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, FillLayer } from 'react-bmap';
@@ -123,7 +118,6 @@ registerDemo('dom-layer', {
     return (
       <MapContainer center={C} zoom={14} style={{ height: '100%' }}>
         <DOMLayer createDOM={createDOM} data={POINT_DATA as any} minZoom={5} maxZoom={20} />
-        <NavigationControl />
       </MapContainer>
     );
   },
@@ -153,7 +147,6 @@ registerDemo('point-icon-layer', {
         style={{ icon: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png', sizes: [25, 25], scale: 1, rotation: 0, opacity: 1 } as any}
         data={POINT_DATA as any}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, PointIconLayer } from 'react-bmap';
@@ -176,7 +169,6 @@ registerDemo('point-shape-layer', {
         style={{ shapeType: 1, size: 20, color: '#1890ff', opacity: 1, strokeColor: '#fff', strokeWeight: 0, rotation: 0 } as any}
         data={POINT_DATA as any}
       />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, PointShapeLayer } from 'react-bmap';
@@ -196,7 +188,6 @@ registerDemo('panorama-coverage-layer', {
   Component: () => (
     <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
       <PanoramaCoverageLayer />
-      <NavigationControl />
     </MapContainer>
   ),
   code: `import { Map, PanoramaCoverageLayer } from 'react-bmap';
@@ -206,62 +197,11 @@ registerDemo('panorama-coverage-layer', {
 </Map>`,
 });
 
-// ─── LineLayer ───
-registerDemo('line-layer', {
-  Component: () => (
-    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
-      <LineLayer />
-      <NavigationControl />
-    </MapContainer>
-  ),
-  code: `import { Map, LineLayer } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
-  <LineLayer />
-</Map>`,
-});
-
-// ─── PixelLayer ───
-registerDemo('pixel-layer', {
-  Component: () => (
-    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
-      <PixelLayer />
-      <NavigationControl />
-    </MapContainer>
-  ),
-  code: `import { Map, PixelLayer } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
-  <PixelLayer />
-</Map>`,
-});
-
-// ─── BaiduLayer ───
-registerDemo('baidu-layer', {
-  Component: () => (
-    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
-      <BaiduLayer />
-      <NavigationControl />
-    </MapContainer>
-  ),
-  code: `import { Map, BaiduLayer } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
-  <BaiduLayer />
-</Map>`,
-});
-
-// ─── ThreeLayer ───
-registerDemo('three-layer', {
-  Component: () => (
-    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
-      <ThreeLayer />
-      <NavigationControl />
-    </MapContainer>
-  ),
-  code: `import { Map, ThreeLayer } from 'react-bmap';
-
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
-  <ThreeLayer />
-</Map>`,
-});
+// ─── LineLayer / PixelLayer / BaiduLayer / ThreeLayer ───（暂时下掉）
+// 这四个是 4.0+ 的额外图层，wrapper 由 createLayerComponent 生成，
+// Options 只有 visible/opacity/minZoom/maxZoom/zIndex（LineLayer 多 style/idKey/crs/enablePicked），
+// 既没有 data 属性、也不向外暴露原始实例，所以拿不到 setData 的入口——
+// 写成 <LineLayer /> 只会得到一张空地图，不如不给页面。
+// 恢复条件：先给这四个 wrapper 补上 data（参考 FeatureLayer 的 `data?: object` + rawRef.current.setData?.(data)），
+// 再照 point-icon-layer 的写法补 demo，并在 examples/src/config/components.ts 里加回条目。
+// 对应的 API 表已经在 examples/src/config/apiData.ts 就位（'line-layer' 等），无需重写。
