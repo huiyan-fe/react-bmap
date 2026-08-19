@@ -87,6 +87,14 @@ const routeCommon: ApiProp[] = [
   { name: 'onResultsHtmlSet', type: '(container: HTMLElement) => void', required: false, description: '结果面板渲染回调' },
 ];
 
+// ─── 无入参 Service Hook 的公共返回值片段（data 的类型各不相同，逐个单独写） ───
+const serviceState: ApiProp[] = [
+  { name: '返回值.loading', type: 'boolean', required: false, description: '请求进行中' },
+  { name: '返回值.error', type: 'Error | null', required: false, description: '出错时的错误对象；当前版本不支持该服务时为 UnsupportedCapabilityError' },
+  { name: '返回值.supported', type: 'boolean', required: false, description: '当前 JSAPI 版本是否支持该服务' },
+  { name: '返回值.cancel()', type: '() => void', required: false, description: '丢弃进行中请求的回调结果，并把 loading 置回 false' },
+];
+
 
 export const API_DATA: Record<string, ApiProp[]> = {
   // ─── Provider ───
@@ -622,8 +630,14 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'onInfoHtmlSet', type: '(poi: unknown, html: HTMLElement) => void', required: false, description: '信息窗内容设置回调' },
     { name: 'onResultsHtmlSet', type: '(container: HTMLElement) => void', required: false, description: '结果面板渲染回调' },
   ],
-  // useGeocoder() 不接受任何参数，结果通过返回值 data / loading / error / supported 获取
-  geocoder: [],
+  // useGeocoder() 不接受任何参数，下表是返回值上的方法与状态
+  geocoder: [
+    { name: '（无入参）', type: '—', required: false, description: 'useGeocoder() 不接受参数，需在 <BMapProvider> 内调用' },
+    { name: '返回值.getPoint()', type: '(address: string, city?: string) => void', required: false, description: '地址转坐标；city 用来把检索限定在某个城市' },
+    { name: '返回值.getLocation()', type: '(point: Point, options?: unknown) => void', required: false, description: '坐标转地址（逆地理编码）' },
+    { name: '返回值.data', type: 'GeocoderResult | Point | undefined', required: false, description: 'getLocation() 得到 GeocoderResult（point / address / addressComponents / surroundingPoi / business）；getPoint() 得到的是 Point' },
+    ...serviceState,
+  ],
   'driving-route': [
     { name: 'policy', type: 'number', required: false, description: '驾车策略（BMAP_DRIVING_POLICY_*）' },
     ...routeCommon,
@@ -650,23 +664,44 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'onConfirm', type: '(item: unknown) => void', required: false, description: '选中某条建议时回调' },
     { name: 'onHighlight', type: '(item: unknown) => void', required: false, description: '高亮某条建议时回调' },
   ],
-  // useBoundary() 不接受任何参数，调用 get(name) 后从 data 读取结果
-  boundary: [],
+  // useBoundary() 不接受任何参数，下表是返回值上的方法与状态
+  boundary: [
+    { name: '（无入参）', type: '—', required: false, description: 'useBoundary() 不接受参数，需在 <BMapProvider> 内调用' },
+    { name: '返回值.get()', type: '(name: string) => void', required: false, description: '按行政区名称检索边界，如 "北京市"、"北京市海淀区"' },
+    { name: '返回值.data', type: 'BoundaryResult | undefined', required: false, description: '{ boundaries: string[] }；每项是一圈边界的 "lng,lat;lng,lat;…" 字符串，要自己拆成 Point[] 再交给 Polygon' },
+    ...serviceState,
+  ],
   geolocation: [
     { name: 'enableSDKLocation', type: 'boolean', required: false, description: '创建时启用 SDK 定位（对应 SDKLocation: true），仅创建时生效' },
   ],
-  // useLocalCity() 不接受任何参数，调用 get() 后从 data 读取结果
-  'local-city': [],
+  // useLocalCity() 不接受任何参数，下表是返回值上的方法与状态
+  'local-city': [
+    { name: '（无入参）', type: '—', required: false, description: 'useLocalCity() 不接受参数，需在 <BMapProvider> 内调用' },
+    { name: '返回值.get()', type: '() => void', required: false, description: '按访问者 IP 定位所在城市' },
+    { name: '返回值.data', type: 'LocalCityResult | undefined', required: false, description: '{ center, level, name, code? }：center 是城市中心点，level 是该城市建议的地图级别' },
+    ...serviceState,
+  ],
   'place-detail': [
     { name: 'container', type: 'HTMLElement', required: false, description: '详情面板挂载容器' },
     { name: 'compact', type: 'boolean', required: false, description: '是否使用紧凑样式' },
     { name: 'renderOptions', type: 'unknown', required: false, description: '渲染选项' },
     { name: 'map', type: 'unknown', required: false, description: '关联的地图实例' },
   ],
-  // useConvertor() 不接受任何参数，调用 translate() 后从 data 读取结果
-  convertor: [],
-  // usePanoramaService() 不接受任何参数，结果通过返回值 data 获取
-  'panorama-service': [],
+  // useConvertor() 不接受任何参数，下表是返回值上的方法与状态
+  convertor: [
+    { name: '（无入参）', type: '—', required: false, description: 'useConvertor() 不接受参数，需在 <BMapProvider> 内调用' },
+    { name: '返回值.translate()', type: '(points: Point[], from?: number, to?: number) => void', required: false, description: '批量转换坐标；from / to 是坐标系编号，常用 1 = GPS(WGS84)、3 = 火星坐标(GCJ02)、5 = 百度(BD09)' },
+    { name: '返回值.data', type: 'TranslateResults | undefined', required: false, description: '{ status?, points? }：status 为 0 表示成功，points 是转换后的坐标数组' },
+    ...serviceState,
+  ],
+  // usePanoramaService() 不接受任何参数，下表是返回值上的方法与状态
+  'panorama-service': [
+    { name: '（无入参）', type: '—', required: false, description: 'usePanoramaService() 不接受参数，需在 <BMapProvider> 内调用' },
+    { name: '返回值.getPanoramaById()', type: '(id: string) => void', required: false, description: '按全景 id 查询全景数据' },
+    { name: '返回值.getPanoramaByLocation()', type: '(point: Point, radius: number) => void', required: false, description: '按坐标查询附近全景，radius 为搜索半径（米）' },
+    { name: '返回值.data', type: 'unknown', required: false, description: 'SDK 原始全景数据，大致形如 { id, links, pov }；该点附近没有全景时为 null' },
+    ...serviceState,
+  ],
   'truck-route': [
     { name: 'policy', type: 'number', required: false, description: '货车路线策略' },
     ...routeCommon,
@@ -674,8 +709,12 @@ export const API_DATA: Record<string, ApiProp[]> = {
 
 
   // ─── Other ───
+  // 上半是 <ContextMenu> 自己的 props，MenuItem.* 是子组件 <MenuItem> 的 props
   'context-menu': [
-    { name: 'children', type: 'ReactNode', required: true, description: 'MenuItem 子节点' },
+    { name: 'children', type: 'ReactNode', required: true, description: 'MenuItem 子节点；没有 children 时不渲染菜单' },
+    { name: 'MenuItem.text', type: 'string', required: true, description: '菜单项显示的文字' },
+    { name: 'MenuItem.callback', type: '(point?: Point) => void', required: false, description: '点击菜单项时触发，参数是右键点击处的经纬度' },
+    { name: 'MenuItem.iconWidth', type: 'number', required: false, description: '菜单项左侧图标区域的宽度（像素），原样透传给 SDK 的 MenuItem 选项' },
   ],
   panorama: [
     { name: 'point', type: 'Point', required: false, description: '全景初始位置（注意这里叫 point，不是 position）' },
