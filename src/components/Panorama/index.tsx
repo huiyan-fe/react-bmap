@@ -48,7 +48,7 @@ export const Panorama = memo(function Panorama(props: PanoramaProps) {
     if (raw && typeof raw.addEventListener === 'function') {
       raw.addEventListener('position_changed', (e: any) => {
         // SDK 事件 payload 格式可能不同，尝试多种路径
-        const pt = e?.point || e?.latLng || e?.data?.point || e?.data?.latLng;
+        const pt = e?.point || e?.latlng || e?.latLng || e?.data?.point || e?.data?.latlng || e?.data?.latLng;
         if (pt && typeof pt.lng === 'number') {
           cbRefs.current.onPositionChange?.({ lng: pt.lng, lat: pt.lat });
         } else if (typeof raw.getPosition === 'function') {

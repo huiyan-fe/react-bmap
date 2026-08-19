@@ -203,7 +203,7 @@ function Demo() {
 
 - **覆盖物**：`Marker`、`Label`、`Polyline`、`Polygon`、`Circle`、`Rectangle`、`BezierCurve`、`Prism`、`GroundOverlay`、`GroundPoint`、`PointCollection`、`InfoWindow`、`SimpleInfoWindow`、`Symbol`、`Icon`、`IconSequence`、`Hotspot`、`CustomOverlay`、`Marker3D`、`MapMask`、`PlaceDetail`、`PlaceDetailPanel`
 - **控件**：`NavigationControl`、`NavigationControl3D`、`ScaleControl`、`OverviewMapControl`、`MapTypeControl`、`CopyrightControl`、`GeolocationControl`、`PanoramaControl`、`ZoomControl`、`CityListControl`、`LocationControl`、`LogoControl`
-- **图层**：`TileLayer`、`NormalLayer`、`GeoJSONLayer`、`DistrictLayer`、`TrafficLayer`、`CustomLayer`、`CanvasLayer`、`RasterTileLayer`、`WMSLayer`、`WMTSLayer`、`XYZLayer`、`MVTLayer`、`FeatureLayer`、`FillLayer`、`DOMLayer`、`PointIconLayer`、`PointShapeLayer`、`PanoramaCoverageLayer`、`LineLayer`、`PixelLayer`、`BaiduLayer`、`ThreeLayer`
+- **图层**：`TileLayer`、`NormalLayer`、`GeoJSONLayer`、`DistrictLayer`、`TrafficLayer`、`CustomLayer`、`CanvasLayer`、`RasterTileLayer`、`FeatureLayer`、`FillLayer`、`DOMLayer`、`PointIconLayer`、`PointShapeLayer`、`PanoramaCoverageLayer`、`LineLayer`、`PixelLayer`、`BaiduLayer`、`ThreeLayer`
 - **右键菜单**：`ContextMenu`、`MenuItem`
 - **全景**：`Panorama`、`PanoramaLabel`
 - **检索 Hook**：`useDrivingRoute`、`useWalkingRoute`、`useRidingRoute`、`useTransitRoute`、`useTruckRoute`、`useLocalSearch`、`useAutocomplete`、`useBusLineSearch`、`usePlaceDetail`、`useGeocoder`、`useBoundary`、`useLocalCity`、`useConvertor`、`useGeolocation`、`usePanoramaService`

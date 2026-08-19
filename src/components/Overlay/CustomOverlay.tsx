@@ -131,7 +131,7 @@ export const CustomOverlay = memo(function CustomOverlay(props: CustomOverlayPro
         const fn = handlersRef.current[prop];
         if (typeof fn === 'function') {
           const event = raw as Record<string, unknown>;
-          fn(event?.point ?? event?.latLng ?? raw, raw);
+          fn(event?.point ?? event?.latlng ?? event?.latLng ?? raw, raw);
         }
       }));
     }

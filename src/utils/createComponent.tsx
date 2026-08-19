@@ -284,7 +284,7 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
           const fn = handlersRef.current[prop];
           if (typeof fn === 'function') {
             const r = raw as Record<string, unknown>;
-            fn(r?.point ?? r?.latLng ?? raw, raw);
+            fn(r?.point ?? r?.latlng ?? r?.latLng ?? raw, raw);
           }
         }));
       }

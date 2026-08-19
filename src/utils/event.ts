@@ -9,7 +9,8 @@ export function wrapEvent<T = unknown>(raw: T, target: unknown = null): BMapEven
   return {
     type: (r?.type as string) ?? 'unknown',
     target: target as BMapEvent['target'],
-    point: (r?.point ?? r?.latLng ?? undefined) as BMapEvent['point'],
+    // SDK 事件对象上是全小写的 latlng，latLng 只是兜底
+    point: (r?.point ?? r?.latlng ?? r?.latLng ?? undefined) as BMapEvent['point'],
     pixel: (r?.pixel ?? undefined) as BMapEvent['pixel'],
     overlay: (r?.overlay ?? undefined) as BMapEvent['overlay'],
     raw,
