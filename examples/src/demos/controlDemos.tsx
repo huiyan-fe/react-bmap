@@ -28,13 +28,13 @@ registerDemo('navigation-control', {
 // ─── NavigationControl3D ───
 registerDemo('navigation-control-3d', {
   Component: () => (
-    <MapContainer center={C} zoom={14} style={{ height: '100%' }} tilt={60}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }} tilt={60}>
       <NavigationControl3D anchor={BMAP_ANCHOR_TOP_LEFT} />
     </MapContainer>
   ),
   code: `import { Map, NavigationControl3D, BMAP_ANCHOR_TOP_LEFT } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={14} tilt={60}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} tilt={60}>
   <NavigationControl3D anchor={BMAP_ANCHOR_TOP_LEFT} />
 </Map>`,
 });
@@ -42,13 +42,13 @@ registerDemo('navigation-control-3d', {
 // ─── ScaleControl ───
 registerDemo('scale-control', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <ScaleControl anchor={BMAP_ANCHOR_BOTTOM_LEFT} />
     </MapContainer>
   ),
   code: `import { Map, ScaleControl, BMAP_ANCHOR_BOTTOM_LEFT } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <ScaleControl anchor={BMAP_ANCHOR_BOTTOM_LEFT} />
 </Map>`,
 });
@@ -56,13 +56,13 @@ registerDemo('scale-control', {
 // ─── OverviewMapControl ───
 registerDemo('overview-map-control', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <OverviewMapControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
     </MapContainer>
   ),
   code: `import { Map, OverviewMapControl, BMAP_ANCHOR_BOTTOM_RIGHT } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <OverviewMapControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
 </Map>`,
 });
@@ -84,7 +84,7 @@ registerDemo('map-type-control', {
 // ─── CopyrightControl ───
 registerDemo('copyright-control', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <CopyrightControl
         anchor={BMAP_ANCHOR_BOTTOM_RIGHT}
         copyrights={[{ id: 1, content: '<span style="color:#666;font-size:12px">© 2026 My App</span>' }]}
@@ -93,7 +93,7 @@ registerDemo('copyright-control', {
   ),
   code: `import { Map, CopyrightControl, BMAP_ANCHOR_BOTTOM_LEFT } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <CopyrightControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT}
     copyrights={[{ id: 1, content: '<span>© 2026 My App</span>' }]} />
 </Map>`,
@@ -102,13 +102,13 @@ registerDemo('copyright-control', {
 // ─── GeolocationControl ───
 registerDemo('geolocation-control', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <GeolocationControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
     </MapContainer>
   ),
   code: `import { Map, GeolocationControl, BMAP_ANCHOR_BOTTOM_RIGHT } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <GeolocationControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
 </Map>`,
 });
@@ -116,13 +116,13 @@ registerDemo('geolocation-control', {
 // ─── PanoramaControl ───
 registerDemo('panorama-control', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <PanoramaControl anchor={BMAP_ANCHOR_TOP_LEFT} />
     </MapContainer>
   ),
   code: `import { Map, PanoramaControl, BMAP_ANCHOR_TOP_LEFT } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <PanoramaControl anchor={BMAP_ANCHOR_TOP_LEFT} />
 </Map>`,
 });
@@ -130,13 +130,13 @@ registerDemo('panorama-control', {
 // ─── ZoomControl ───
 registerDemo('zoom-control', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <ZoomControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
     </MapContainer>
   ),
   code: `import { Map, ZoomControl, BMAP_ANCHOR_BOTTOM_RIGHT } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <ZoomControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
 </Map>`,
 });

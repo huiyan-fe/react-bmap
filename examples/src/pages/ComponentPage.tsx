@@ -3,9 +3,8 @@ import { useParams, Navigate } from 'react-router-dom';
 import { useCapabilities, BMapErrorBoundary } from 'react-bmap';
 import { CodeBlock } from '../components/CodeBlock';
 import { ApiTable } from '../components/ApiTable';
-import type { ApiMethod } from '../components/ApiTable';
 import { COMPONENTS } from '../config/components';
-import { API_DATA, API_METHODS } from '../config/apiData';
+import { API_DATA } from '../config/apiData';
 import { getDemosById } from '../demos';
 
 export function ComponentPage() {
@@ -19,7 +18,6 @@ export function ComponentPage() {
 
   const demos = getDemosById(id);
   const apiData = API_DATA[id] ?? [];
-  const apiMethods = API_METHODS[id] ?? [];
 
   return (
     <div>
@@ -83,7 +81,7 @@ export function ComponentPage() {
       {apiData.length > 0 && (
         <>
           <h2 style={{ fontSize: 16, marginTop: 24, marginBottom: 12 }}>API</h2>
-          <ApiTable data={apiData} methods={apiMethods} />
+          <ApiTable data={apiData} />
         </>
       )}
     </div>

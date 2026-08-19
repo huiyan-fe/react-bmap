@@ -65,7 +65,7 @@ const RawEscapePanel: React.FC = () => {
 registerDemo('use-map', {
   title: '逃生口：取原生地图实例',
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <RawEscapePanel />
     </MapContainer>
   ),
@@ -100,7 +100,7 @@ function Escape() {
   );
 }
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Escape />
 </Map>`,
 });
@@ -180,7 +180,7 @@ const MapRefPanel: React.FC = () => {
 registerDemo('use-map-ref', {
   title: '命令式操作地图',
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <MapRefPanel />
     </MapContainer>
   ),
@@ -199,7 +199,7 @@ function Toolbar() {
   );
 }
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Toolbar />
 </Map>`,
 });
@@ -240,7 +240,7 @@ function Building({ path }) {
   if (!caps.has('Prism')) {
     return <Polygon path={path} fillColor="#1890ff" />;
   }
-  return <Prism path={path} altitude={200} topFillColor="#1890ff" />;
+  return <Prism path={path} altitude={800} topFillColor="#1890ff" />;
 }
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
@@ -279,7 +279,7 @@ const ClickWatcher: React.FC = () => {
 registerDemo('use-map-event', {
   title: '订阅地图原生事件',
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <ClickWatcher />
     </MapContainer>
   ),
@@ -298,7 +298,7 @@ function ClickWatcher() {
   return <div>{last ? \`\${last.lng}, \${last.lat}\` : '点一下地图'}</div>;
 }
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <ClickWatcher />
 </Map>`,
 });
@@ -325,7 +325,7 @@ const StatusPanel: React.FC = () => {
 registerDemo('use-map-status', {
   title: '订阅地图状态',
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <StatusPanel />
     </MapContainer>
   ),
@@ -345,7 +345,7 @@ function StatusBar() {
   );
 }
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <StatusBar />
 </Map>`,
 });
@@ -359,9 +359,9 @@ const SymbolMarker: React.FC = () => {
     path: BMap_Symbol_SHAPE_STAR,
     fillColor: '#f5222d',
     fillOpacity: 0.9,
-    scale: 4,
+    scale: 7,
     strokeColor: '#fff',
-    strokeWeight: 1,
+    strokeWeight: 2,
   });
   const [, bump] = useState(0);
   useEffect(() => { bump(1); }, []);
@@ -373,7 +373,7 @@ const SymbolMarker: React.FC = () => {
 registerDemo('use-symbol', {
   title: '把 Symbol 值对象交给 Marker',
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <SymbolMarker />
     </MapContainer>
   ),
@@ -384,8 +384,8 @@ function StarMarker() {
   // path 变化会重建 Symbol，其余选项走 setOverlayOptions 原地更新。
   const symbol = useSymbol({
     path: BMap_Symbol_SHAPE_STAR,
-    fillColor: '#f5222d', fillOpacity: 0.9, scale: 4,
-    strokeColor: '#fff', strokeWeight: 1,
+    fillColor: '#f5222d', fillOpacity: 0.9, scale: 7,
+    strokeColor: '#fff', strokeWeight: 2,
   });
 
   // useSymbol 把结果存在 ref 里，首帧返回 null 且不会自己重渲染，
@@ -397,7 +397,7 @@ function StarMarker() {
   return <Marker position={{ lng: 116.404, lat: 39.915 }} icon={symbol} />;
 }
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <StarMarker />
 </Map>`,
 });
@@ -407,7 +407,7 @@ function StarMarker() {
 const IconMarker: React.FC = () => {
   const icon = useIcon({
     url: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png',
-    size: { width: 30, height: 30 },
+    size: { width: 48, height: 48 },
   });
   const [, bump] = useState(0);
   useEffect(() => { bump(1); }, []);
@@ -419,7 +419,7 @@ const IconMarker: React.FC = () => {
 registerDemo('use-icon', {
   title: '把 Icon 值对象交给 Marker',
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <IconMarker />
     </MapContainer>
   ),
@@ -431,7 +431,7 @@ import { Map, Marker, useIcon } from 'react-bmap';
 function IconMarkers({ points }) {
   const icon = useIcon({
     url: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png',
-    size: { width: 30, height: 30 },
+    size: { width: 48, height: 48 },
   });
 
   // 同 useSymbol：结果存在 ref 里，首帧为 null，补一次渲染。
@@ -442,7 +442,7 @@ function IconMarkers({ points }) {
   return points.map((p, i) => <Marker key={i} position={p} icon={icon} />);
 }
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <IconMarkers points={[{ lng: 116.404, lat: 39.915 }]} />
 </Map>`,
 });

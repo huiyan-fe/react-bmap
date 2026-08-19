@@ -50,7 +50,7 @@ function LocalSearchInner() {
 }
 registerDemo('local-search', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <LocalSearchInner />
     </MapContainer>
   ),
@@ -87,7 +87,7 @@ function GeocoderInner() {
 }
 registerDemo('geocoder', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <GeocoderInner />
     </MapContainer>
   ),
@@ -119,7 +119,7 @@ function DrivingRouteInner() {
 }
 registerDemo('driving-route', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <DrivingRouteInner />
     </MapContainer>
   ),
@@ -153,7 +153,7 @@ function WalkingRouteInner() {
 }
 registerDemo('walking-route', {
   Component: () => (
-    <MapContainer center={C} zoom={14} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <WalkingRouteInner />
     </MapContainer>
   ),
@@ -187,7 +187,7 @@ function RidingRouteInner() {
 }
 registerDemo('riding-route', {
   Component: () => (
-    <MapContainer center={C} zoom={13} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <RidingRouteInner />
     </MapContainer>
   ),
@@ -227,7 +227,7 @@ function TransitRouteInner() {
 }
 registerDemo('transit-route', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <TransitRouteInner />
     </MapContainer>
   ),
@@ -266,7 +266,7 @@ function BusLineInner() {
 }
 registerDemo('bus-line-search', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <BusLineInner />
     </MapContainer>
   ),
@@ -289,7 +289,7 @@ function AutocompleteInner() {
 }
 registerDemo('autocomplete', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <AutocompleteInner />
     </MapContainer>
   ),
@@ -345,7 +345,7 @@ function GeolocationInner() {
 }
 registerDemo('geolocation', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <GeolocationInner />
     </MapContainer>
   ),
@@ -402,7 +402,7 @@ function PlaceDetailInner() {
 }
 registerDemo('place-detail', {
   Component: () => (
-    <MapContainer center={C} zoom={15} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <PlaceDetailInner />
     </MapContainer>
   ),
@@ -433,7 +433,7 @@ function ConvertorInner() {
 }
 registerDemo('convertor', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <ConvertorInner />
     </MapContainer>
   ),
@@ -459,7 +459,7 @@ function PanoramaServiceInner() {
 }
 registerDemo('panorama-service', {
   Component: () => (
-    <MapContainer center={C} zoom={15} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <PanoramaServiceInner />
     </MapContainer>
   ),
@@ -493,7 +493,7 @@ function TruckRouteInner() {
 }
 registerDemo('truck-route', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%', position: 'relative' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%', position: 'relative' }}>
       <TruckRouteInner />
     </MapContainer>
   ),

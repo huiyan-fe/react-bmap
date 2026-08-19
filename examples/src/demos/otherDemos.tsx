@@ -7,7 +7,7 @@ const C = { lng: 116.404, lat: 39.915 };
 
 // ─── ContextMenu ───
 function ContextMenuInner() {
-  const [zoom, setZoom] = useState(13);
+  const [zoom, setZoom] = useState(11);
   const [markers, setMarkers] = useState<{ lng: number; lat: number }[]>([]);
   return (
     <MapContainer center={C} zoom={zoom} style={{ height: '100%' }}>
@@ -29,7 +29,7 @@ registerDemo('context-menu', {
 import { Map, Marker, ContextMenu, MenuItem } from 'react-bmap';
 
 function Demo() {
-  const [zoom, setZoom] = useState(13);
+  const [zoom, setZoom] = useState(11);
   const [markers, setMarkers] = useState<{ lng: number; lat: number }[]>([]);
   return (
     <Map center={{ lng: 116.404, lat: 39.915 }} zoom={zoom}>
@@ -67,7 +67,7 @@ registerDemo('panorama', {
 // registerDemo('place-detail-panel', {
 //   Component: () => (
 //     <div style={{ height: '100%', position: 'relative' }}>
-//       <MapContainer defaultCenter={C} defaultZoom={14} style={{ height: '100%' }} />
+//       <MapContainer defaultCenter={C} defaultZoom={11} style={{ height: '100%' }} />
 //       <PlaceDetailPanel
 //         uid="06d2dffda107b0ef89f15db6"
 //         renderOptions={{
@@ -89,7 +89,7 @@ registerDemo('panorama', {
 //   ),
 //   code: `import { Map, PlaceDetailPanel } from 'react-bmap';
 //
-// <Map center={{ lng: 116.404, lat: 39.915 }} zoom={14} />
+// <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} />
 // <PlaceDetailPanel
 //   uid="06d2dffda107b0ef89f15db6"
 //   renderOptions={{ displayCarousel: true, displayAddress: true }}

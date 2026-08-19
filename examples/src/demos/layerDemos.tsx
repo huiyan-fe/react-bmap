@@ -23,20 +23,20 @@ const POINT_DATA = {
 const POLYGON_DATA = {
   type: 'FeatureCollection',
   features: [
-    { type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[116.395, 39.910], [116.410, 39.910], [116.410, 39.920], [116.395, 39.920], [116.395, 39.910]]] }, properties: { id: 1, name: '区域A' } },
-    { type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[116.415, 39.915], [116.430, 39.915], [116.430, 39.925], [116.415, 39.925], [116.415, 39.915]]] }, properties: { id: 2, name: '区域B' } },
+    { type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[116.355, 39.888], [116.436, 39.888], [116.436, 39.942], [116.355, 39.942], [116.355, 39.888]]] }, properties: { id: 1, name: '区域A' } },
+    { type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[116.463, 39.915], [116.544, 39.915], [116.544, 39.969], [116.463, 39.969], [116.463, 39.915]]] }, properties: { id: 2, name: '区域B' } },
   ],
 };
 
 // ─── GeoJSONLayer ───
 registerDemo('geojson-layer', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <GeoJSONLayer
         dataSource={POINT_DATA as any}
         markerStyle={{ title: 'GeoJSON 点' }}
-        polylineStyle={{ strokeColor: '#1890ff', strokeWeight: 3, strokeOpacity: 0.9 }}
-        polygonStyle={{ strokeColor: '#ff6600', strokeWeight: 2, fillColor: '#ff660033', fillOpacity: 0.5 }}
+        polylineStyle={{ strokeColor: '#1890ff', strokeWeight: 6, strokeOpacity: 0.9 }}
+        polygonStyle={{ strokeColor: '#ff6600', strokeWeight: 4, fillColor: '#ff660033', fillOpacity: 0.5 }}
       />
     </MapContainer>
   ),
@@ -44,10 +44,10 @@ registerDemo('geojson-layer', {
 
 const data = { type: 'FeatureCollection', features: [...] };
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <GeoJSONLayer dataSource={data}
     markerStyle={{ title: '点' }}
-    polylineStyle={{ strokeColor: '#1890ff', strokeWeight: 3 }}
+    polylineStyle={{ strokeColor: '#1890ff', strokeWeight: 6 }}
     polygonStyle={{ strokeColor: '#ff6600', fillColor: '#ff660033' }} />
 </Map>`,
 });
@@ -69,13 +69,13 @@ registerDemo('district-layer', {
 // ─── TrafficLayer ───
 registerDemo('traffic-layer', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <TrafficLayer />
     </MapContainer>
   ),
   code: `import { Map, TrafficLayer } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <TrafficLayer />
 </Map>`,
 });
@@ -83,12 +83,12 @@ registerDemo('traffic-layer', {
 // ─── FillLayer ───
 registerDemo('fill-layer', {
   Component: () => (
-    <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <FillLayer
         border
         enablePicked
         idKey="id"
-        style={{ fillColor: 'rgba(24, 144, 255, 0.4)', strokeColor: '#1890ff', strokeWeight: 2, strokeStyle: 'solid' } as any}
+        style={{ fillColor: 'rgba(24, 144, 255, 0.4)', strokeColor: '#1890ff', strokeWeight: 4, strokeStyle: 'solid' } as any}
         data={POLYGON_DATA as any}
       />
     </MapContainer>
@@ -99,9 +99,9 @@ const data = { type: 'FeatureCollection', features: [
   { type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[...]]] }, properties: { id: 1 } },
 ]};
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={13}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <FillLayer border enablePicked idKey="id"
-    style={{ fillColor: 'rgba(24, 144, 255, 0.4)', strokeColor: '#1890ff', strokeWeight: 2 }}
+    style={{ fillColor: 'rgba(24, 144, 255, 0.4)', strokeColor: '#1890ff', strokeWeight: 4 }}
     data={data} />
 </Map>`,
 });
@@ -116,7 +116,7 @@ registerDemo('dom-layer', {
       return div;
     }, []);
     return (
-      <MapContainer center={C} zoom={14} style={{ height: '100%' }}>
+      <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
         <DOMLayer createDOM={createDOM} data={POINT_DATA as any} minZoom={5} maxZoom={20} />
       </MapContainer>
     );
@@ -127,7 +127,7 @@ const data = { type: 'FeatureCollection', features: [
   { type: 'Feature', geometry: { type: 'Point', coordinates: [116.404, 39.915] }, properties: { name: '天安门' } },
 ]};
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={14}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <DOMLayer createDOM={(props) => {
     const div = document.createElement('div');
     div.textContent = props.name;
@@ -139,12 +139,12 @@ const data = { type: 'FeatureCollection', features: [
 // ─── PointIconLayer ───
 registerDemo('point-icon-layer', {
   Component: () => (
-    <MapContainer center={C} zoom={14} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <PointIconLayer
         isFlat
         isFixed
         idKey="id"
-        style={{ icon: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png', sizes: [25, 25], scale: 1, rotation: 0, opacity: 1 } as any}
+        style={{ icon: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png', sizes: [40, 40], scale: 1, rotation: 0, opacity: 1 } as any}
         data={POINT_DATA as any}
       />
     </MapContainer>
@@ -153,9 +153,9 @@ registerDemo('point-icon-layer', {
 
 const data = { type: 'FeatureCollection', features: [...] };
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={14}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <PointIconLayer isFlat isFixed idKey="id"
-    style={{ icon: 'https://example.com/icon.png', sizes: [25, 25] }}
+    style={{ icon: 'https://example.com/icon.png', sizes: [40, 40] }}
     data={data} />
 </Map>`,
 });
@@ -163,10 +163,10 @@ const data = { type: 'FeatureCollection', features: [...] };
 // ─── PointShapeLayer ───
 registerDemo('point-shape-layer', {
   Component: () => (
-    <MapContainer center={C} zoom={14} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <PointShapeLayer
         idKey="id"
-        style={{ shapeType: 1, size: 20, color: '#1890ff', opacity: 1, strokeColor: '#fff', strokeWeight: 0, rotation: 0 } as any}
+        style={{ shapeType: 1, size: 40, color: '#1890ff', opacity: 1, strokeColor: '#fff', strokeWeight: 0, rotation: 0 } as any}
         data={POINT_DATA as any}
       />
     </MapContainer>
@@ -176,9 +176,9 @@ registerDemo('point-shape-layer', {
 // shapeType: 1=圆形 2=三角形 3=方形 4=菱形 5=六边形 7=五角星
 const data = { type: 'FeatureCollection', features: [...] };
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={14}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <PointShapeLayer idKey="id"
-    style={{ shapeType: 1, size: 20, color: '#1890ff' }}
+    style={{ shapeType: 1, size: 40, color: '#1890ff' }}
     data={data} />
 </Map>`,
 });
@@ -186,13 +186,13 @@ const data = { type: 'FeatureCollection', features: [...] };
 // ─── PanoramaCoverageLayer ───
 registerDemo('panorama-coverage-layer', {
   Component: () => (
-    <MapContainer center={C} zoom={12} style={{ height: '100%' }}>
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
       <PanoramaCoverageLayer />
     </MapContainer>
   ),
   code: `import { Map, PanoramaCoverageLayer } from 'react-bmap';
 
-<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <PanoramaCoverageLayer />
 </Map>`,
 });

@@ -1,5 +1,4 @@
 import type { ApiProp } from '../components/ApiTable';
-import type { ApiMethod } from '../components/ApiTable';
 
 // ─── 公共 prop 片段 ───
 const position: ApiProp = { name: 'position', type: 'Point', required: true, description: '坐标位置 { lng, lat }' };
@@ -14,10 +13,11 @@ const enableMassClear: ApiProp = { name: 'enableMassClear', type: 'boolean', req
 const enableEditing: ApiProp = { name: 'enableEditing', type: 'boolean', required: false, description: '是否启用编辑' };
 const enableClicking: ApiProp = { name: 'enableClicking', type: 'boolean', required: false, description: '是否响应点击事件' };
 const visible: ApiProp = { name: 'visible', type: 'boolean', required: false, description: '是否可见' };
-const onClick: ApiProp = { name: 'onClick', type: '(e: BMapEvent) => void', required: false, description: '点击事件' };
-const onMouseOver: ApiProp = { name: 'onMouseOver', type: '(e: BMapEvent) => void', required: false, description: '鼠标移入' };
-const onMouseOut: ApiProp = { name: 'onMouseOut', type: '(e: BMapEvent) => void', required: false, description: '鼠标移出' };
-const onDoubleClick: ApiProp = { name: 'onDoubleClick', type: '(e: BMapEvent) => void', required: false, description: '双击事件' };
+// 覆盖物鼠标事件统一是两个参数：(point, raw)，point 为事件发生的坐标，raw 为 SDK 原始事件对象
+const onClick: ApiProp = { name: 'onClick', type: '(point: Point, raw: unknown) => void', required: false, description: '点击事件' };
+const onMouseOver: ApiProp = { name: 'onMouseOver', type: '(point: Point, raw: unknown) => void', required: false, description: '鼠标移入' };
+const onMouseOut: ApiProp = { name: 'onMouseOut', type: '(point: Point, raw: unknown) => void', required: false, description: '鼠标移出' };
+const onDoubleClick: ApiProp = { name: 'onDoubleClick', type: '(point: Point, raw: unknown) => void', required: false, description: '双击事件' };
 const anchor: ApiProp = { name: 'anchor', type: 'ControlAnchor', required: false, description: '控件停靠位置' };
 const offset: ApiProp = { name: 'offset', type: '{ width: number; height: number }', required: false, description: '偏移量' };
 const overlayEvents: ApiProp[] = [onClick, onMouseOver, onMouseOut, onDoubleClick, enableMassClear, enableClicking, visible];
@@ -25,20 +25,21 @@ const strokeProps: ApiProp[] = [strokeColor, strokeWeight, strokeOpacity, stroke
 const fillProps: ApiProp[] = [fillColor, fillOpacity];
 
 // ─── 线/面覆盖物扩展 ───
-const onRightClick: ApiProp = { name: 'onRightClick', type: '(e: BMapEvent) => void', required: false, description: '右键点击' };
-const onRightDoubleClick: ApiProp = { name: 'onRightDoubleClick', type: '(e: BMapEvent) => void', required: false, description: '右键双击' };
-const onMouseDown: ApiProp = { name: 'onMouseDown', type: '(e: BMapEvent) => void', required: false, description: '鼠标按下' };
-const onMouseUp: ApiProp = { name: 'onMouseUp', type: '(e: BMapEvent) => void', required: false, description: '鼠标抬起' };
-const onMouseMove: ApiProp = { name: 'onMouseMove', type: '(e: BMapEvent) => void', required: false, description: '鼠标移动' };
-const onRemove: ApiProp = { name: 'onRemove', type: '(e: BMapEvent) => void', required: false, description: '覆盖物被移除' };
-const onLineUpdate: ApiProp = { name: 'onLineUpdate', type: '(e: BMapEvent) => void', required: false, description: '线/面几何更新' };
+const onRightClick: ApiProp = { name: 'onRightClick', type: '(point: Point, raw: unknown) => void', required: false, description: '右键点击' };
+const onRightDoubleClick: ApiProp = { name: 'onRightDoubleClick', type: '(point: Point, raw: unknown) => void', required: false, description: '右键双击' };
+const onMouseDown: ApiProp = { name: 'onMouseDown', type: '(point: Point, raw: unknown) => void', required: false, description: '鼠标按下' };
+const onMouseUp: ApiProp = { name: 'onMouseUp', type: '(point: Point, raw: unknown) => void', required: false, description: '鼠标抬起' };
+const onMouseMove: ApiProp = { name: 'onMouseMove', type: '(point: Point, raw: unknown) => void', required: false, description: '鼠标移动' };
+const onRemove: ApiProp = { name: 'onRemove', type: '(point: Point, raw: unknown) => void', required: false, description: '覆盖物被移除' };
+// 编辑类事件只有一个参数 raw（没有坐标）
+const onLineUpdate: ApiProp = { name: 'onLineUpdate', type: '(raw: unknown) => void', required: false, description: '线/面几何更新' };
 const lineEditEvents: ApiProp[] = [
-  { name: 'onEditStart', type: '(e: BMapEvent) => void', required: false, description: '开始编辑' },
-  { name: 'onEditEnd', type: '(e: BMapEvent) => void', required: false, description: '结束编辑' },
-  { name: 'onLineVertexDragStart', type: '(e: BMapEvent) => void', required: false, description: '顶点开始拖拽' },
-  { name: 'onLineVertexDragging', type: '(e: BMapEvent) => void', required: false, description: '顶点拖拽中' },
-  { name: 'onLineVertexDragEnd', type: '(e: BMapEvent) => void', required: false, description: '顶点结束拖拽' },
-  { name: 'onLineVertexDel', type: '(e: BMapEvent) => void', required: false, description: '顶点被删除' },
+  { name: 'onEditStart', type: '(raw: unknown) => void', required: false, description: '开始编辑' },
+  { name: 'onEditEnd', type: '(raw: unknown) => void', required: false, description: '结束编辑' },
+  { name: 'onLineVertexDragStart', type: '(raw: unknown) => void', required: false, description: '顶点开始拖拽' },
+  { name: 'onLineVertexDragging', type: '(raw: unknown) => void', required: false, description: '顶点拖拽中' },
+  { name: 'onLineVertexDragEnd', type: '(raw: unknown) => void', required: false, description: '顶点结束拖拽' },
+  { name: 'onLineVertexDel', type: '(raw: unknown) => void', required: false, description: '顶点被删除' },
 ];
 const strokeLineCap: ApiProp = { name: 'strokeLineCap', type: '"butt" | "round" | "square"', required: false, description: '线端点样式' };
 const strokeLineJoin: ApiProp = { name: 'strokeLineJoin', type: '"miter" | "round" | "bevel"', required: false, description: '线拐角样式' };
@@ -71,6 +72,7 @@ const layerData: ApiProp[] = [
   { name: 'idKey', type: 'string', required: false, description: '数据项唯一标识的属性 key' },
   { name: 'crs', type: 'string', required: false, description: '来源坐标系：BD09LL / BD09MC / GCJ02' },
   { name: 'selectedIndex', type: 'number', required: false, description: '选中数据的索引' },
+  { name: 'selectedColor', type: 'string', required: false, description: '选中高亮颜色' },
 ];
 
 // ─── 路线检索 Hook 公共 option 片段（DrivingRouteOptions） ───
@@ -195,15 +197,15 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'enableDraggingMap', type: 'boolean', required: false, description: '拖拽时移动地图，4.0+（构造函数）' },
     ...overlayEvents,
     onRightClick, onMouseDown, onMouseUp, onRemove,
-    { name: 'onDragStart', type: '(e: BMapEvent) => void', required: false, description: '拖拽开始' },
-    { name: 'onDragging', type: '(e: BMapEvent) => void', required: false, description: '拖拽中' },
-    { name: 'onDragEnd', type: '(point: Point) => void', required: false, description: '拖拽结束' },
+    { name: 'onDragStart', type: '(point: Point, raw: unknown) => void', required: false, description: '拖拽开始' },
+    { name: 'onDragging', type: '(point: Point, raw: unknown) => void', required: false, description: '拖拽中' },
+    { name: 'onDragEnd', type: '(point: Point, raw: unknown) => void', required: false, description: '拖拽结束' },
   ],
   label: [
     position,
     { name: 'content', type: 'string', required: true, description: '标签文本' },
-    { name: 'width', type: 'number', required: false, description: '标签宽度（不设则竖排显示）' },
-    { name: 'styles', type: 'CSSProperties', required: false, description: '标签样式' },
+    { name: 'width', type: 'number', required: false, description: '标签宽度（像素），仅在大于 0 时生效' },
+    { name: 'styles', type: 'Record<string, string | number>', required: false, description: 'CSS 样式键值对（如 { color: \'#f00\', fontSize: \'14px\' }）' },
     { name: 'offset', type: '{ width: number; height: number }', required: false, description: '标签偏移' },
     { name: 'anchor', type: 'ControlAnchor', required: false, description: '锚点位置' },
     { name: 'title', type: 'string', required: false, description: '鼠标 hover 标题' },
@@ -316,12 +318,12 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'maxContent', type: 'string', required: false, description: '最大化时的内容' },
     { name: 'enableMaximize', type: 'boolean', required: false, description: '是否启用最大化' },
     visible,
-    { name: 'onOpen', type: '(e: BMapEvent) => void', required: false, description: '打开回调' },
-    { name: 'onClose', type: '(e: BMapEvent) => void', required: false, description: '关闭回调（含 X 按钮关闭）' },
-    { name: 'onClickClose', type: '(e: BMapEvent) => void', required: false, description: '点击关闭按钮回调' },
-    { name: 'onMaximize', type: '(e: BMapEvent) => void', required: false, description: '最大化回调（需开启 enableMaximize）' },
-    { name: 'onRestore', type: '(e: BMapEvent) => void', required: false, description: '还原回调' },
-    { name: 'onResize', type: '(e: BMapEvent) => void', required: false, description: '尺寸变化回调' },
+    { name: 'onOpen', type: '(raw: unknown) => void', required: false, description: '打开回调' },
+    { name: 'onClose', type: '(raw: unknown) => void', required: false, description: '关闭回调（含 X 按钮关闭）' },
+    { name: 'onClickClose', type: '(raw: unknown) => void', required: false, description: '点击关闭按钮回调' },
+    { name: 'onMaximize', type: '(raw: unknown) => void', required: false, description: '最大化回调（需开启 enableMaximize）' },
+    { name: 'onRestore', type: '(raw: unknown) => void', required: false, description: '还原回调' },
+    { name: 'onResize', type: '(raw: unknown) => void', required: false, description: '尺寸变化回调' },
   ],
   symbol: [
     { name: 'path', type: 'string | number', required: true, description: 'SVG path 字符串或 BMap_Symbol_SHAPE_* 常量' },
@@ -345,7 +347,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'srcset', type: "{ '2x': string }", required: false, description: '高清屏图片' },
   ],
   'icon-sequence': [
-    { name: 'symbol', type: 'SymbolHandle | unknown', required: false, description: '符号样式（useSymbol 返回值或 SDK Symbol 实例）' },
+    { name: 'symbol', type: 'unknown', required: false, description: '符号样式（useSymbol 返回值或 SDK Symbol 实例）' },
     { name: 'offset', type: 'string', required: false, description: '符号相对线起点的位置，百分比（如 "50%"）或像素值' },
     { name: 'repeat', type: 'string', required: false, description: '符号重复间距，百分比或像素值；与 offset 同时设置时以 repeat 为准' },
     { name: 'fixedRotation', type: 'boolean', required: false, description: '图标旋转角度是否与线走向一致' },
@@ -676,13 +678,17 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'children', type: 'ReactNode', required: true, description: 'MenuItem 子节点' },
   ],
   panorama: [
-    position,
+    { name: 'point', type: 'Point', required: false, description: '全景初始位置（注意这里叫 point，不是 position）' },
     { name: 'style', type: 'CSSProperties', required: false, description: '容器样式' },
-    { name: 'onPositionChange', type: '(e: BMapEvent) => void', required: false, description: '位置变化回调' },
-    { name: 'onPovChange', type: '(e: BMapEvent) => void', required: false, description: '视角变化回调' },
+    { name: 'className', type: 'string', required: false, description: '自定义类名' },
+    { name: 'onPositionChange', type: '(point: Point) => void', required: false, description: '位置变化回调，回调参数是新的位置点' },
+    { name: 'onPovChange', type: '() => void', required: false, description: '视角变化回调，无回调参数' },
   ],
   'place-detail-panel': [
-    { name: 'uid', type: 'string', required: true, description: 'POI 唯一标识' },
+    { name: 'uid', type: 'string', required: false, description: 'POI 唯一标识；变化时自动 render(uid)' },
+    { name: 'compact', type: 'boolean', required: false, description: '紧凑模式' },
+    { name: 'renderOptions', type: 'PlaceDetailRenderOptions', required: false, description: '渲染选项' },
+    { name: 'onRender', type: '() => void', required: false, description: '渲染完成回调（SDK 异步请求后触发）' },
     { name: 'className', type: 'string', required: false, description: '自定义类名' },
     { name: 'style', type: 'CSSProperties', required: false, description: '自定义样式' },
   ],
@@ -737,330 +743,5 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'printImageUrl', type: 'string', required: false, description: '打印图片地址，仅 IE6 有效；4.0 已移除' },
     { name: 'srcset', type: "{ '2x': string }", required: false, description: '高分屏图片资源集，4.0+' },
     { name: '返回值', type: 'OverlayHandle | null', required: false, description: '可直接传给 Marker 的 icon；句柄存在 ref 里，首帧为 null 且不会自动触发重渲染' },
-  ],
-};
-
-// ─── 公共 Overlay 方法 ───
-const overlayMethods: ApiMethod[] = [
-  { name: 'show()', params: '', description: '显示覆盖物' },
-  { name: 'hide()', params: '', description: '隐藏覆盖物' },
-  { name: 'setPosition(point)', params: 'Point', description: '设置位置' },
-  { name: 'getPosition()', params: '', description: '获取位置' },
-  { name: 'setZIndex(z)', params: 'number', description: '设置层级' },
-  { name: 'enableMassClear()', params: '', description: '允许 clearOverlays 清除' },
-  { name: 'disableMassClear()', params: '', description: '禁止 clearOverlays 清除' },
-  { name: 'addEventListener(type, handler)', params: 'string, Function', description: '添加事件监听' },
-  { name: 'removeEventListener(type, handler)', params: 'string, Function', description: '移除事件监听' },
-];
-
-const strokeMethods: ApiMethod[] = [
-  ...overlayMethods,
-  { name: 'setStrokeColor(color)', params: 'string', description: '设置边线颜色' },
-  { name: 'getStrokeColor()', params: '', description: '获取边线颜色' },
-  { name: 'setStrokeWeight(w)', params: 'number', description: '设置边线宽度' },
-  { name: 'getStrokeWeight()', params: '', description: '获取边线宽度' },
-  { name: 'setStrokeOpacity(o)', params: 'number', description: '设置边线透明度 (0-1)' },
-  { name: 'getStrokeOpacity()', params: '', description: '获取边线透明度' },
-  { name: 'setStrokeStyle(s)', params: '"solid"|"dashed"', description: '设置边线样式' },
-  { name: 'setFillColor(color)', params: 'string', description: '设置填充颜色' },
-  { name: 'setFillOpacity(o)', params: 'number', description: '设置填充透明度 (0-1)' },
-  { name: 'enableEditing()', params: '', description: '开启编辑' },
-  { name: 'disableEditing()', params: '', description: '关闭编辑' },
-];
-
-export const API_METHODS: Record<string, ApiMethod[]> = {
-  map: [
-    { name: 'setCenter(point)', params: 'Point', description: '设置中心点' },
-    { name: 'getCenter()', params: '', description: '获取中心点' },
-    { name: 'setZoom(zoom)', params: 'number', description: '设置缩放级别' },
-    { name: 'getZoom()', params: '', description: '获取缩放级别' },
-    { name: 'centerAndZoom(point, zoom)', params: 'Point, number', description: '设置中心和缩放' },
-    { name: 'panTo(point)', params: 'Point', description: '平移到指定位置' },
-    { name: 'panBy(x, y)', params: 'number, number', description: '偏移像素' },
-    { name: 'setMapType(type)', params: 'MapType', description: '设置地图类型' },
-    { name: 'getMapType()', params: '', description: '获取地图类型' },
-    { name: 'setHeading(deg)', params: 'number', description: '设置朝向角度 (v4+)' },
-    { name: 'getHeading()', params: '', description: '获取朝向角度 (v4+)' },
-    { name: 'setTilt(deg)', params: 'number', description: '设置倾斜角度 (v4+)' },
-    { name: 'getTilt()', params: '', description: '获取倾斜角度 (v4+)' },
-    { name: 'flyTo(opts)', params: 'ViewAnimationOptions', description: '视角动画 (v4+)' },
-    { name: 'enableDragging()', params: '', description: '启用拖拽' },
-    { name: 'disableDragging()', params: '', description: '禁用拖拽' },
-    { name: 'enableScrollWheelZoom()', params: '', description: '启用滚轮缩放' },
-    { name: 'disableScrollWheelZoom()', params: '', description: '禁用滚轮缩放' },
-    { name: 'enableDoubleClickZoom()', params: '', description: '启用双击缩放' },
-    { name: 'disableDoubleClickZoom()', params: '', description: '禁用双击缩放' },
-    { name: 'enableKeyboard()', params: '', description: '启用键盘操作' },
-    { name: 'disableKeyboard()', params: '', description: '禁用键盘操作' },
-    { name: 'enablePinchToZoom()', params: '', description: '启用双指缩放' },
-    { name: 'disablePinchToZoom()', params: '', description: '禁用双指缩放' },
-    { name: 'enableRotate()', params: '', description: '启用旋转 (v4+)' },
-    { name: 'disableRotate()', params: '', description: '禁用旋转 (v4+)' },
-    { name: 'enableTilt()', params: '', description: '启用倾斜 (v4+)' },
-    { name: 'disableTilt()', params: '', description: '禁用倾斜 (v4+)' },
-    { name: 'addOverlay(overlay)', params: 'Overlay', description: '添加覆盖物' },
-    { name: 'removeOverlay(overlay)', params: 'Overlay', description: '移除覆盖物' },
-    { name: 'clearOverlays()', params: '', description: '清除所有覆盖物' },
-    { name: 'addControl(control)', params: 'Control', description: '添加控件' },
-    { name: 'removeControl(control)', params: 'Control', description: '移除控件' },
-    { name: 'getBounds()', params: '', description: '获取可视范围' },
-    { name: 'getSize()', params: '', description: '获取地图尺寸' },
-    { name: 'getDistance(p1, p2)', params: 'Point, Point', description: '计算两点距离' },
-    { name: 'pointToPixel(point)', params: 'Point', description: '坐标转像素' },
-    { name: 'pixelToPoint(pixel)', params: 'Pixel', description: '像素转坐标' },
-    { name: 'setMapStyleV2(style)', params: 'MapStyleV2Options', description: '自定义底图样式 (v4+)' },
-    { name: 'setViewport(viewport)', params: 'Viewport', description: '设置可视范围' },
-    { name: 'getViewport(points)', params: 'Point[]', description: '获取最佳可视范围' },
-    { name: 'setCity(city)', params: 'string', description: '切换城市' },
-    { name: 'reset()', params: '', description: '重置地图' },
-  ],
-  marker: [
-    ...overlayMethods,
-    { name: 'setIcon(icon)', params: 'Icon | string', description: '设置图标' },
-    { name: 'getIcon()', params: '', description: '获取图标' },
-    { name: 'setLabel(label)', params: 'Label', description: '设置文本标签' },
-    { name: 'getLabel()', params: '', description: '获取文本标签' },
-    { name: 'setRotation(deg)', params: 'number', description: '设置旋转角度' },
-    { name: 'getRotation()', params: '', description: '获取旋转角度' },
-    { name: 'setTop(top)', params: 'boolean', description: '置顶显示' },
-    { name: 'setAnimation(anim)', params: 'Animation', description: '设置动画 (v3)' },
-    { name: 'enableDragging()', params: '', description: '启用拖拽' },
-    { name: 'disableDragging()', params: '', description: '禁用拖拽' },
-    { name: 'openInfoWindow(iw)', params: 'InfoWindow', description: '打开信息窗口' },
-    { name: 'closeInfoWindow()', params: '', description: '关闭信息窗口' },
-  ],
-  label: [
-    ...overlayMethods,
-    { name: 'setContent(content)', params: 'string', description: '设置内容' },
-    { name: 'getContent()', params: '', description: '获取内容' },
-    { name: 'setStyles(styles)', params: 'CSSProperties', description: '设置样式' },
-  ],
-  polyline: strokeMethods,
-  polygon: strokeMethods,
-  circle: [
-    ...strokeMethods,
-    { name: 'setCenter(point)', params: 'Point', description: '设置圆心' },
-    { name: 'getCenter()', params: '', description: '获取圆心' },
-    { name: 'setRadius(r)', params: 'number', description: '设置半径（米）' },
-    { name: 'getRadius()', params: '', description: '获取半径' },
-    { name: 'getBounds()', params: '', description: '获取圆的边界' },
-  ],
-  rectangle: [
-    ...strokeMethods,
-    { name: 'setBounds(bounds)', params: 'Bounds', description: '设置边界' },
-    { name: 'getBounds()', params: '', description: '获取边界' },
-  ],
-  'bezier-curve': strokeMethods,
-  prism: strokeMethods,
-  'info-window': [
-    { name: 'setWidth(w)', params: 'number', description: '设置宽度' },
-    { name: 'setHeight(h)', params: 'number', description: '设置高度' },
-    { name: 'setTitle(title)', params: 'string', description: '设置标题' },
-    { name: 'setContent(content)', params: 'string', description: '设置内容' },
-    { name: 'getContent()', params: '', description: '获取内容' },
-    { name: 'setPosition(point)', params: 'Point', description: '设置位置' },
-    { name: 'getPosition()', params: '', description: '获取位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'show()', params: '', description: '显示' },
-    { name: 'hide()', params: '', description: '隐藏' },
-  ],
-  'navigation-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'getAnchor()', params: '', description: '获取停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'getOffset()', params: '', description: '获取偏移' },
-    { name: 'setType(type)', params: 'NavigationControlType', description: '设置控件类型' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'scale-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'setUnit(unit)', params: 'LengthUnit', description: '设置单位制' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'overview-map-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'setSize(size)', params: 'Size', description: '设置缩略图大小' },
-    { name: 'changeView()', params: '', description: '展开/收起' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'map-type-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'setType(type)', params: 'MapTypeControlType', description: '设置控件类型' },
-    { name: 'showStreetLayer()', params: '', description: '显示路网层' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'copyright-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'addCopyright(item)', params: 'CopyrightItem', description: '添加版权信息' },
-    { name: 'removeCopyright(id)', params: 'number', description: '移除版权信息' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'geolocation-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'location()', params: '', description: '触发定位' },
-    { name: 'setLocationIcon(icon)', params: 'Icon', description: '设置定位图标' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'panorama-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'zoom-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'city-list-control': [
-    { name: 'setAnchor(anchor)', params: 'ControlAnchor', description: '设置停靠位置' },
-    { name: 'setOffset(offset)', params: 'Size', description: '设置偏移' },
-    { name: 'show()', params: '', description: '显示控件' },
-    { name: 'hide()', params: '', description: '隐藏控件' },
-  ],
-  'local-search': [
-    { name: 'search(keyword, option?)', params: 'string | string[], { forceLocal?: boolean }?', description: '关键词搜索' },
-    { name: 'searchNearby(keyword, center, radius)', params: 'string | string[], string | Point, number', description: '周边搜索' },
-    { name: 'searchInBounds(keyword, bounds)', params: 'string | string[], Bounds', description: '范围搜索' },
-    { name: 'gotoPage(page)', params: 'number', description: '翻页（从 0 开始）' },
-    { name: 'clearResults()', params: '', description: '清除结果' },
-    { name: 'cancel()', params: '', description: '取消搜索' },
-  ],
-  geocoder: [
-    { name: 'getPoint(address, city?)', params: 'string, string?', description: '地址→坐标' },
-    { name: 'getLocation(point, options?)', params: 'Point, unknown?', description: '坐标→地址' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'driving-route': [
-    { name: 'search(start, end, opts?)', params: 'Point, Point, {waypoints?}', description: '驾车路线搜索' },
-    { name: 'clearResults()', params: '', description: '清除结果' },
-    { name: 'setPolicy(policy)', params: 'number', description: '设置策略' },
-    { name: 'enableAutoViewport()', params: '', description: '启用自动视野' },
-    { name: 'disableAutoViewport()', params: '', description: '禁用自动视野' },
-    { name: 'getStatus()', params: '', description: '获取状态' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'walking-route': [
-    { name: 'search(start, end)', params: 'Point, Point', description: '步行路线搜索' },
-    { name: 'clearResults()', params: '', description: '清除结果' },
-    { name: 'enableAutoViewport()', params: '', description: '启用自动视野' },
-    { name: 'disableAutoViewport()', params: '', description: '禁用自动视野' },
-    { name: 'getStatus()', params: '', description: '获取状态' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'riding-route': [
-    { name: 'search(start, end)', params: 'Point, Point', description: '骑行路线搜索' },
-    { name: 'clearResults()', params: '', description: '清除结果' },
-    { name: 'enableAutoViewport()', params: '', description: '启用自动视野' },
-    { name: 'disableAutoViewport()', params: '', description: '禁用自动视野' },
-    { name: 'getStatus()', params: '', description: '获取状态' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'transit-route': [
-    { name: 'search(start, end)', params: 'Point, Point', description: '公交路线搜索' },
-    { name: 'clearResults()', params: '', description: '清除结果' },
-    { name: 'setPolicy(policy)', params: 'number', description: '设置策略' },
-    { name: 'setPageCapacity(n)', params: 'number', description: '设置每页方案数' },
-    { name: 'enableAutoViewport()', params: '', description: '启用自动视野' },
-    { name: 'disableAutoViewport()', params: '', description: '禁用自动视野' },
-    { name: 'getStatus()', params: '', description: '获取状态' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'bus-line-search': [
-    { name: 'getBusList(keyword)', params: 'string', description: '搜索公交线路列表' },
-    { name: 'getBusLine(item)', params: 'unknown', description: '获取线路详情' },
-    { name: 'clearResults()', params: '', description: '清除结果' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  autocomplete: [
-    { name: 'search(keywords)', params: 'string', description: '触发关键词联想' },
-    { name: 'show()', params: '', description: '显示建议列表' },
-    { name: 'hide()', params: '', description: '隐藏建议列表' },
-    { name: 'getResults()', params: '', description: '获取结果' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  boundary: [
-    { name: 'get(name)', params: 'string', description: '获取行政区边界' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  geolocation: [
-    { name: 'getCurrentPosition(opts?)', params: 'object?', description: '获取当前位置' },
-    { name: 'getStatus()', params: '', description: '获取状态' },
-    { name: 'enableSDKLocation()', params: '', description: '启用 SDK 定位' },
-    { name: 'disableSDKLocation()', params: '', description: '禁用 SDK 定位' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'local-city': [
-    { name: 'get()', params: '', description: '获取当前城市' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'place-detail': [
-    { name: 'render(uid)', params: 'string', description: '渲染地点详情' },
-    { name: 'rerender()', params: '', description: '重新渲染' },
-    { name: 'dispose()', params: '', description: '销毁实例' },
-  ],
-  convertor: [
-    { name: 'translate(points, from, to)', params: 'Point[], number, number', description: '坐标转换' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'panorama-service': [
-    { name: 'getPanoramaById(id)', params: 'string', description: '按 ID 获取全景' },
-    { name: 'getPanoramaByLocation(point, radius)', params: 'Point, number', description: '按位置获取全景' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-  'truck-route': [
-    { name: 'search(start, end, opts?)', params: 'Point, Point, object?', description: '货车路线搜索' },
-    { name: 'clearResults()', params: '', description: '清除结果' },
-    { name: 'enableAutoViewport()', params: '', description: '启用自动视野' },
-    { name: 'disableAutoViewport()', params: '', description: '禁用自动视野' },
-    { name: 'getStatus()', params: '', description: '获取状态' },
-    { name: 'cancel()', params: '', description: '取消' },
-  ],
-
-  // ─── Hook（下表列的是返回值上的属性/方法，不是 hook 自身的方法） ───
-  'use-map': [
-    { name: 'map.raw', params: 'unknown', description: '原生地图实例（BMap.Map / BMapGL.Map）。类型是 unknown，用之前要自己断言；MapRef 把 map 存成私有属性不对外暴露，所以这是取原生实例的唯一入口' },
-    { name: 'map.__brand', params: "'MapHandle'", description: '类型标记，运行时无用；作用是防止把裸 SDK 实例当句柄传进封装的 API' },
-  ],
-  'use-driver': [
-    { name: 'driver.version', params: 'BMapVersion', description: '当前 driver 对应的 JSAPI 版本（"3.0" / "4.0"）' },
-    { name: 'driver.capabilities', params: 'ReadonlySet<Capability>', description: '该版本支持的能力名集合' },
-    { name: 'driver.unsupportedBehavior', params: '"silent" | "warn" | "throw"', description: '能力缺失时的处理策略，由 BMapProvider 传入' },
-    { name: 'driver.rawSDK', params: 'unknown', description: '原始 SDK 命名空间（BMap / BMapGL），封装未覆盖的能力从这里取' },
-  ],
-  'use-map-ref': [
-    { name: 'panTo(center, options?)', params: 'Point, unknown?', description: '平移到指定中心点' },
-    { name: 'flyTo(center, zoom, options?)', params: 'Point, number, unknown?', description: '视角动画飞行到目标（4.0+）' },
-    { name: 'zoomIn(zoomCenter?)', params: 'Point?', description: '放大一级' },
-    { name: 'zoomOut(zoomCenter?)', params: 'Point?', description: '缩小一级' },
-    { name: 'setZoom(zoom, options?)', params: 'number, unknown?', description: '设置缩放级别' },
-    { name: 'getZoom()', params: '', description: '读取当前缩放级别' },
-    { name: 'getCenter()', params: '', description: '读取当前中心点' },
-    { name: 'getBounds()', params: '', description: '读取当前可视范围' },
-    { name: 'reset()', params: '', description: '复位到初始视野' },
-  ],
-  'use-capabilities': [
-    { name: 'caps.has(name)', params: 'string', description: '能力是否存在；类名用 PascalCase（如 "Prism"），方法用 "类名.方法"（如 "Map.flyTo"）' },
-    { name: 'caps.size', params: '', description: '当前版本能力总数' },
-  ],
-  'use-map-status': [
-    { name: 'snapshot.center', params: 'Point | null', description: '中心点' },
-    { name: 'snapshot.zoom', params: 'number | null', description: '缩放级别' },
-    { name: 'snapshot.bounds', params: 'Bounds | null', description: '可视范围' },
-    { name: 'snapshot.size', params: 'Size | null', description: '容器像素尺寸' },
-    { name: 'snapshot.heading', params: 'number | null', description: '朝向角度；3.0 下为 null' },
-    { name: 'snapshot.tilt', params: 'number | null', description: '倾斜角度；3.0 下为 null' },
   ],
 };
