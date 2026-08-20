@@ -1,7 +1,6 @@
 # React-BMap
 
 [![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)
-[![v2.x](https://img.shields.io/badge/branch-v2.x-blue)](https://github.com/huiyan-fe/react-bmap)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 
 用 React 组件写百度地图。地图、标注、路线、控件都是普通的 React 组件和 Hook，跟着 state 走，无需手动操作 DOM 或记 SDK 的命令式 API。一套代码同时支持百度地图 **JSAPI 3.0（2D）** 和 **4.0（WebGL）**。
