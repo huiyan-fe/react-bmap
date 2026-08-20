@@ -31,7 +31,6 @@ export function MapModeProvider({ children }: { children: React.ReactNode }) {
       <BMapProvider
         ak={EXAMPLE_AK}
         version={version}
-        fallback={<div style={{ padding: 24 }}>加载地图 API 中...</div>}
       >
         {children}
       </BMapProvider>

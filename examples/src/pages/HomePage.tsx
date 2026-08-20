@@ -31,7 +31,7 @@ export function HomePage() {
         </p>
         <p className="home-desc">
           使用声明式组件方式开发百度地图应用，兼容 BMap (JSAPI 3.0) 与 BMapGL (4.0 WebGL)，可按需选择配置。
-          内置 {COMPONENTS.length} 个组件与 Hooks，覆盖地图容器、覆盖物、控件、图层、路线规划、输入提示等常用场景。
+          提供地图容器、覆盖物、控件、图层、路线规划、输入提示等一系列组件与 Hooks。
         </p>
       </header>
 

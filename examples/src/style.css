@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-/* App layout — 视口高度锁死，只有 .app-main 内部滚动，侧边栏始终占满一屏 */
+/* App layout — 视口高度锁死，只有 .app-main 和 .app-sidebar-nav 内部滚动 */
 .app-layout {
   height: 100vh;
   display: flex;
@@ -26,60 +26,145 @@
   overflow-y: auto;
 }
 
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  padding: 0 24px;
-  background: #fff;
-  border-bottom: 1px solid #eee;
+/* 侧边栏 — 头部放标题和版本选择，底部放外链，中间的导航区滚动 */
+.app-sidebar {
+  width: 220px;
   flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #eee;
+  background: #fafafa;
 }
 
-.app-header-title {
+.app-sidebar-head {
+  flex-shrink: 0;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.app-sidebar-title {
+  display: block;
+  margin-bottom: 12px;
   font-size: 18px;
   font-weight: 600;
   color: #1890ff;
   text-decoration: none;
 }
 
-.app-header-title:hover {
+.app-sidebar-title:hover {
   color: #40a9ff;
 }
 
-.app-header-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.app-header-select-wrap {
+.app-sidebar-select-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.app-header-select-label {
-  font-size: 13px;
-  color: #666;
+.app-sidebar-select-label {
+  font-size: 12px;
+  color: #64748b;
 }
 
-.app-header-select {
-  padding: 6px 10px;
+/* 自定义下拉，原生 <option> 没法统一样式，这里全部自己画 */
+.app-sidebar-select {
+  position: relative;
+}
+
+.app-sidebar-select-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  font: inherit;
   font-size: 13px;
-  border: 1px solid #d9d9d9;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
   background: #fff;
   cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.app-header-select:focus {
+.app-sidebar-select-trigger:hover {
+  border-color: #b6c2d1;
+}
+
+.app-sidebar-select-trigger:focus-visible {
   border-color: #1890ff;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.12);
   outline: none;
 }
 
-.app-header-icon {
+.app-sidebar-select-arrow {
+  color: #94a3b8;
+  transition: transform 0.15s;
+}
+
+.app-sidebar-select-arrow.is-open {
+  transform: rotate(180deg);
+}
+
+.app-sidebar-select-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  min-width: 100%;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+}
+
+.app-sidebar-select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  font-size: 13px;
+  color: #1e293b;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.app-sidebar-select-option:hover,
+.app-sidebar-select-option:focus-visible {
+  background: #f1f5f9;
+  outline: none;
+}
+
+.app-sidebar-select-option.is-active {
+  color: #1890ff;
+}
+
+.app-sidebar-option-check {
+  margin-left: auto;
+  color: #1890ff;
+}
+
+.app-sidebar-nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 0;
+}
+
+.app-sidebar-foot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+}
+
+.app-sidebar-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,7 +172,7 @@
   transition: color 0.2s;
 }
 
-.app-header-icon:hover {
+.app-sidebar-icon:hover {
   color: #1890ff;
 }
 

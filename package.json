@@ -22,6 +22,7 @@
     "build": "vite build",
     "dev": "vite build --watch",
     "examples": "vite --config vite.examples.config.ts --host",
+    "examples:build": "vite build --config vite.examples.config.ts --base=./ --outDir ../docs --emptyOutDir",
     "test": "vite --config test/vite.config.ts --host",
     "prepublishOnly": "npm run build"
   },

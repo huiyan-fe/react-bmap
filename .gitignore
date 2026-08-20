@@ -2,6 +2,7 @@ node_modules
 .svn
 lib
 dist
+docs
 .DS_STORE
 .DS_Store
 *.*~
