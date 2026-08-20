@@ -11,6 +11,7 @@ import type {
   Size,
 } from '../types';
 import type { BMapDriver } from './types';
+import type { BMapSDK } from '../utils/sdk';
 import { CAPABILITY_MATRIX } from './capabilityMatrix';
 import { unwrapHandle } from '../utils/handle';
 import { reportCallFailure, reportUnsupported, unsupportedValue } from './unsupported';
@@ -155,14 +156,22 @@ class CollisionManager {
 }
 
 // Point / Pixel / Bounds 转换
-function toRawPoint(SDK: any, p: Point | null | undefined): any {
-  if (!p) return p;
+// SDK 形参统一用 BMapSDK（构造器签名来自官方 @baidumap/jsapi-v4-types），
+// 这一层的参数与返回值因此是真实类型，几何转换写错会在编译期暴露。
+function toRawPoint(SDK: BMapSDK, p: Point | null | undefined): BMap.Point {
+  if (!p) return p as unknown as BMap.Point;
   if (p instanceof SDK.Point) return p;
   return new SDK.Point(p.lng, p.lat);
 }
+/** 官方 IconOptions 只声明了 anchor/imageOffset/imageSize，其余几项是 SDK 额外支持的 */
+type RawIconOptions = BMap.IconOptions & {
+  infoWindowAnchor?: BMap.Size;
+  printImageUrl?: string;
+  srcset?: string;
+};
 /** 把 plain icon 对象 {url, size, imageOffset, imageSize, anchor} 转成 SDK Icon 实例；
  *  或 {symbol: {path/shapeType, ...}} 转成 SDK Symbol 实例（矢量图标）。 */
-function toRawIcon(SDK: any, icon: any): any {
+function toRawIcon(SDK: BMapSDK, icon: any): any {
   if (!icon) return icon;
   if (icon.raw) return icon.raw;                   // 已是 Handle 包装的 SDK 实例
   // Symbol 变体：{ symbol: { path | shapeType, fillColor, ... } } → SDK Symbol 实例
@@ -170,7 +179,7 @@ function toRawIcon(SDK: any, icon: any): any {
     const s = icon.symbol;
     const path = s.path ?? s.shapeType;
     if (path !== undefined) {
-      const symOpts: Record<string, unknown> = {};
+      const symOpts: BMap.SymbolOptions = {};
       if (s.anchor) symOpts.anchor = new SDK.Size(s.anchor.width, s.anchor.height);
       if (typeof s.fillColor === 'string') symOpts.fillColor = s.fillColor;
       if (typeof s.fillOpacity === 'number') symOpts.fillOpacity = s.fillOpacity;
@@ -190,7 +199,7 @@ function toRawIcon(SDK: any, icon: any): any {
   const sz = new SDK.Size(icon.size.width, icon.size.height);
   // v3 SDK 的 imageOffset 用 CSS background-position 语义（负值=右移），v4 用正值=裁剪起点
       const isV3 = typeof (globalThis as { BMapGL?: unknown }).BMapGL === 'undefined';
-  const opts: any = {};
+  const opts: RawIconOptions = {};
   if (icon.imageOffset) {
     const off = isV3
       ? new SDK.Size(-icon.imageOffset.width, -icon.imageOffset.height)
@@ -210,8 +219,8 @@ function toRawIcon(SDK: any, icon: any): any {
   return inst;
 }
 /** 把 plain offset {width, height} 转成 SDK Size */
-function toRawSize(SDK: any, s: any): any {
-  if (!s) return s;
+function toRawSize(SDK: BMapSDK, s: Partial<Size> | null | undefined): BMap.Size {
+  if (!s) return s as unknown as BMap.Size;
   if (s instanceof SDK.Size) return s;
   return new SDK.Size(s.width ?? 0, s.height ?? 0);
 }
@@ -231,11 +240,11 @@ function optionAccessor(key: string): { get: string; set: string } {
   const cap = key.charAt(0).toUpperCase() + key.slice(1);
   return { get: `get${cap}`, set: `set${cap}` };
 }
-function toRawPoints(SDK: any, path: Point[] | null | undefined): any[] {
+function toRawPoints(SDK: BMapSDK, path: Point[] | null | undefined): BMap.Point[] {
   return Array.isArray(path) ? path.map(p => toRawPoint(SDK, p)) : (path as any);
 }
 /** BezierCurve 的控制点是二维数组：每组对应一段路径的 1~2 个控制点 */
-function toRawPointGroups(SDK: any, groups: Point[][] | null | undefined): any[] {
+function toRawPointGroups(SDK: BMapSDK, groups: Point[][] | null | undefined): BMap.Point[][] {
   return Array.isArray(groups) ? groups.map(g => toRawPoints(SDK, g)) : (groups as any);
 }
 /** 判断是否为多坐标串（Point[][]），Prism 的 constructor 同时接受两种形式 */
@@ -243,16 +252,16 @@ function isNestedPath(path: unknown): path is Point[][] {
   return Array.isArray(path) && Array.isArray(path[0]);
 }
 /** Prism 路径：单坐标串走 toRawPoints，多坐标串逐串转换 */
-function toRawPathOrPaths(SDK: any, path: Point[] | Point[][] | null | undefined): any {
+function toRawPathOrPaths(SDK: BMapSDK, path: Point[] | Point[][] | null | undefined): BMap.Point[] | BMap.Point[][] {
   return isNestedPath(path) ? toRawPointGroups(SDK, path) : toRawPoints(SDK, path as Point[]);
 }
-function toRawPixel(SDK: any, p: Pixel | null | undefined): any {
-  if (!p) return p;
+function toRawPixel(SDK: BMapSDK, p: Pixel | null | undefined): BMap.Pixel {
+  if (!p) return p as unknown as BMap.Pixel;
   if (p instanceof SDK.Pixel) return p;
   return new SDK.Pixel(p.x, p.y);
 }
-function toRawBounds(SDK: any, b: Bounds | null | undefined): any {
-  if (!b) return b;
+function toRawBounds(SDK: BMapSDK, b: Bounds | null | undefined): BMap.Bounds {
+  if (!b) return b as unknown as BMap.Bounds;
   if (b instanceof SDK.Bounds) return b;
   return new SDK.Bounds(toRawPoint(SDK, b.sw), toRawPoint(SDK, b.ne));
 }
