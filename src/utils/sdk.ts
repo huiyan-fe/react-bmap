@@ -7,6 +7,10 @@
  *
  * 仅声明库内部实际会用到的构造器；其余成员通过索引签名以 `unknown` 暴露，
  * 需要时由调用方自行断言。
+ *
+ * 注：启用 `@baidumap/jsapi-v4-types` 后全局已有官方 `BMap` 命名空间，但它缺少
+ * `MapMask` / `SimpleInfoWindow`（本库实际支持的 v4 能力），因此这里保留
+ * `BMapSDK` 作为补充声明，并在读取 `globalThis` 时先经 `unknown` 转换。
  */
 
 export interface BMapSDK {
@@ -24,7 +28,7 @@ export interface BMapSDK {
  * undefined 后触发的 `Cannot read properties of undefined`，这里给出可读的失败原因。
  */
 export function getSDK(): BMapSDK {
-  const sdk = (globalThis as { BMap?: BMapSDK }).BMap;
+  const sdk = (globalThis as unknown as { BMap?: BMapSDK }).BMap;
   if (!sdk) {
     throw new Error('[react-bmap] BMap SDK 尚未加载，请确认地图脚本已由 jsapi-loader 注入完成。');
   }
@@ -36,5 +40,5 @@ export function getSDK(): BMapSDK {
  * 供可优雅降级的调用方使用（如运行时常量回退、组件在 SDK 缺失时静默跳过）。
  */
 export function tryGetSDK(): BMapSDK | undefined {
-  return (globalThis as { BMap?: BMapSDK }).BMap;
+  return (globalThis as unknown as { BMap?: BMapSDK }).BMap;
 }

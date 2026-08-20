@@ -11,6 +11,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "types": ["@baidumap/jsapi-v4-types", "react"],
     "strict": true,
     "strictNullChecks": false,
     "noUnusedLocals": false,

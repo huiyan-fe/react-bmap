@@ -165,6 +165,11 @@
   resolved "http://registry.npm.baidu-int.com/@baidumap%2fjsapi-loader/-/jsapi-loader-1.0.0.tgz"
   integrity sha512-f88EFIvbICW3AtnbhYcnvlpG/bIY2hZyokdCgf30RVXvs67aDkBtFJnDO/C8Bf7p4O8MvlTU6rW8jz8ev1MayA==
 
+"@baidumap/jsapi-v4-types@^4.0.3":
+  version "4.0.3"
+  resolved "http://registry.npm.baidu-int.com/@baidumap%2fjsapi-v4-types/-/jsapi-v4-types-4.0.3.tgz"
+  integrity sha512-YWOd1nqCK5mnGtKnLD2bY4iQjXRDzMw6eeQGOJ0bEO0+6CPDaq34N1r/sGrqFZWU9eblXTamUydCcUvUGBw+4g==
+
 "@esbuild/darwin-arm64@0.21.5":
   version "0.21.5"
   resolved "http://registry.npm.baidu-int.com/@esbuild%2fdarwin-arm64/-/darwin-arm64-0.21.5.tgz"
@@ -342,11 +347,6 @@
   dependencies:
     "@babel/types" "^7.28.2"
 
-"@types/bmapgl-browser@^0.0.3":
-  version "0.0.3"
-  resolved "http://registry.npm.baidu-int.com/@types%2fbmapgl-browser/-/bmapgl-browser-0.0.3.tgz"
-  integrity sha512-0euH0LrUPwORnymOVB4oKU4/u2m27Jzk1vg9BMxdNOEJdvpQj+dZ7VE+86+wm6ND7zYvruA5mV5gCHcVEiwe+w==
-
 "@types/estree@^1.0.0", "@types/estree@1.0.9":
   version "1.0.9"
   resolved "http://registry.npm.baidu-int.com/@types%2festree/-/estree-1.0.9.tgz"
@@ -465,21 +465,6 @@ argparse@~1.0.9:
   dependencies:
     sprintf-js "~1.0.2"
 
-babel-plugin-external-helpers@^6.22.0:
-  version "6.22.0"
-  resolved "http://registry.npm.baidu-int.com/babel-plugin-external-helpers/-/babel-plugin-external-helpers-6.22.0.tgz"
-  integrity sha512-TdAMiM6MzLokhk3yCA0KCctmivVZ/mmCwbp7YPmRGkqh2KkcNuxE3R0jxuYU+4xmvfMZx4p4uo8d1cT9t5BLxA==
-  dependencies:
-    babel-runtime "^6.22.0"
-
-babel-runtime@^6.22.0:
-  version "6.26.0"
-  resolved "http://registry.npm.baidu-int.com/babel-runtime/-/babel-runtime-6.26.0.tgz"
-  integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
-  dependencies:
-    core-js "^2.4.0"
-    regenerator-runtime "^0.11.0"
-
 balanced-match@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.baidu-int.com/balanced-match/-/balanced-match-1.0.0.tgz"
@@ -550,11 +535,6 @@ cookie@^1.0.1:
   version "1.1.1"
   resolved "http://registry.npm.baidu-int.com/cookie/-/cookie-1.1.1.tgz"
   integrity sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==
-
-core-js@^2.4.0:
-  version "2.5.5"
-  resolved "http://registry.npm.baidu-int.com/core-js/-/core-js-2.5.5.tgz"
-  integrity sha1-sU3ek2xkDAV5prUMq8wTLdYSfjs=
 
 csstype@^3.2.2:
   version "3.2.3"
@@ -794,18 +774,6 @@ magic-string@^0.30.8:
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.5.5"
 
-mapv@^2.0.56:
-  version "2.0.62"
-  resolved "http://registry.npm.baidu-int.com/mapv/-/mapv-2.0.62.tgz"
-  integrity sha512-P/diaWXuH+vJHVON//RBA7nCEdJAdafwN3Hys/TVYB6e3n7emqlQm+r9qy2xYV0GuxflRhbEeMPJWVIK5HEEqw==
-  dependencies:
-    babel-plugin-external-helpers "^6.22.0"
-
-mapvgl@^1.0.0-beta.117:
-  version "1.0.0-beta.199"
-  resolved "http://registry.npm.baidu-int.com/mapvgl/-/mapvgl-1.0.0-beta.199.tgz"
-  integrity sha512-l1ieWYBDnrcqHC1+2Dobwe0u69KH6c8Gl6GdZjO0sI86bVj/EJNR6zkfzwgIQ+JofTOLtX2p5qJBt4leN4LGwQ==
-
 minimatch@^9.0.3:
   version "9.0.9"
   resolved "http://registry.npm.baidu-int.com/minimatch/-/minimatch-9.0.9.tgz"
@@ -916,11 +884,6 @@ react@^18.2.0, react@^18.3.1, react@>=16.0.0, react@>=18:
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
   dependencies:
     loose-envify "^1.1.0"
-
-regenerator-runtime@^0.11.0:
-  version "0.11.1"
-  resolved "http://registry.npm.baidu-int.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz"
-  integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
 
 resolve@~1.19.0:
   version "1.19.0"
@@ -1136,8 +1099,3 @@ z-schema@~5.0.2:
     validator "^13.7.0"
   optionalDependencies:
     commander "^9.4.1"
-
-zod@^4.3.6:
-  version "4.4.3"
-  resolved "http://registry.npm.baidu-int.com/zod/-/zod-4.4.3.tgz"
-  integrity sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==
