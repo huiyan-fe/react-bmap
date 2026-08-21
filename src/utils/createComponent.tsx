@@ -90,9 +90,14 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
     const [instanceVersion, setInstanceVersion] = useState(0);
 
     // ─── ctorOnlyProps: 计算 ctorKey，变化时触发创建 effect 重建 overlay ───
-    const ctorKey = config.ctorOnlyProps
-      ? stableStringify(config.ctorOnlyProps.map(k => (props as any)[k]))
-      : '';
+    // 用 useMemo 缓存：deps 是各 ctor prop 的原始值，值不变时跳过 O(n) 的 stableStringify。
+    const ctorKey = useMemo(
+      () => config.ctorOnlyProps
+        ? stableStringify(config.ctorOnlyProps.map(k => (props as any)[k]))
+        : '',
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      config.ctorOnlyProps ? config.ctorOnlyProps.map(k => (props as any)[k]) : [],
+    );
 
     // ─── 创建 ───
     useLayoutEffect(() => {
@@ -202,7 +207,7 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
 
     // ─── position 更新 ───
     const posVal = config.positionProp ? props[config.positionProp] : undefined;
-    const posKey = stableStringify(posVal);
+    const posKey = useMemo(() => stableStringify(posVal), [posVal]);
     useEffect(() => {
       if (ref.current && driver && posVal != null) {
         driver.setOverlayPosition(ref.current, posVal as unknown as Point);
@@ -212,7 +217,7 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
 
     // ─── path 更新 ───
     const pathVal = config.pathProp ? props[config.pathProp] : undefined;
-    const pathKey = stableStringify(pathVal);
+    const pathKey = useMemo(() => stableStringify(pathVal), [pathVal]);
     useEffect(() => {
       if (ref.current && driver && pathVal != null) {
         driver.setOverlayPath(ref.current, pathVal as Point[]);
@@ -221,13 +226,18 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
     }, [driver, pathKey]);
 
     // ─── options 更新 ───
-    const optSnapshot = config.optionProps
-      ? config.optionProps.reduce<Record<string, unknown>>((acc, k) => {
-          if (props[k] !== undefined) acc[k] = props[k];
-          return acc;
-        }, {})
-      : {};
-    const optKey = stableStringify(optSnapshot);
+    // 用 useMemo 缓存快照对象：值不变时引用稳定，避免每次渲染重建对象 + 重跑 stableStringify。
+    const optSnapshot = useMemo<Record<string, unknown>>(
+      () => config.optionProps
+        ? config.optionProps.reduce<Record<string, unknown>>((acc, k) => {
+            if (props[k] !== undefined) acc[k] = props[k];
+            return acc;
+          }, {})
+        : {},
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      config.optionProps ? config.optionProps.map(k => props[k]) : [],
+    );
+    const optKey = useMemo(() => stableStringify(optSnapshot), [optSnapshot]);
     const appliedOptKeysRef = useRef<string[]>([]);
     useEffect(() => {
       if (!ref.current || !driver || !config.optionProps) return;
@@ -271,8 +281,10 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
     }, [driver, visible]);
 
     // ─── overlay 级事件订阅 ───
-    const eventKey = stableStringify(
-      (config.events ?? []).map(e => `${e.sdk}:${typeof props[e.prop]}`)
+    const eventKey = useMemo(
+      () => stableStringify((config.events ?? []).map(e => `${e.sdk}:${typeof props[e.prop]}`)),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      (config.events ?? []).map(e => typeof props[e.prop]),
     );
     const handlersRef = useRef<Record<string, unknown>>({});
     (config.events ?? []).forEach(e => { handlersRef.current[e.prop] = props[e.prop]; });
@@ -333,12 +345,20 @@ export function createControlComponent<P>(
     const propsRef = useRef(props);
     propsRef.current = props;
 
-    const ctorKey = config.ctorOnlyProps
-      ? stableStringify(config.ctorOnlyProps.map(k => (props as any)[k]))
-      : '';
-    const optionDefaultKey = config.optionProps
-      ? stableStringify(config.optionProps.map(k => (props as any)[k] == null))
-      : '';
+    const ctorKey = useMemo(
+      () => config.ctorOnlyProps
+        ? stableStringify(config.ctorOnlyProps.map(k => (props as any)[k]))
+        : '',
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      config.ctorOnlyProps ? config.ctorOnlyProps.map(k => (props as any)[k]) : [],
+    );
+    const optionDefaultKey = useMemo(
+      () => config.optionProps
+        ? stableStringify(config.optionProps.map(k => (props as any)[k] == null))
+        : '',
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      config.optionProps ? config.optionProps.map(k => (props as any)[k] == null) : [],
+    );
 
     useLayoutEffect(() => {
       if (!map || !driver) return;
@@ -369,13 +389,17 @@ export function createControlComponent<P>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [map, driver, ctorKey, optionDefaultKey]);
 
-    const optSnapshot = config.optionProps
-      ? config.optionProps.reduce<Record<string, unknown>>((acc, k) => {
-          if ((props as any)[k] !== undefined) acc[k] = (props as any)[k];
-          return acc;
-        }, {})
-      : {};
-    const optKey = stableStringify(optSnapshot);
+    const optSnapshot = useMemo<Record<string, unknown>>(
+      () => config.optionProps
+        ? config.optionProps.reduce<Record<string, unknown>>((acc, k) => {
+            if ((props as any)[k] !== undefined) acc[k] = (props as any)[k];
+            return acc;
+          }, {})
+        : {},
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      config.optionProps ? config.optionProps.map(k => (props as any)[k]) : [],
+    );
+    const optKey = useMemo(() => stableStringify(optSnapshot), [optSnapshot]);
     const firstRunRef = useRef(true);
     useEffect(() => {
       if (!ref.current || !driver || !config.optionProps) return;
@@ -392,8 +416,10 @@ export function createControlComponent<P>(
       else driver.showControl(ref.current);
     }, [driver, visible]);
 
-    const eventKey = stableStringify(
-      (config.events ?? []).map(e => `${e.sdk}:${typeof (props as any)[e.prop]}`),
+    const eventKey = useMemo(
+      () => stableStringify((config.events ?? []).map(e => `${e.sdk}:${typeof (props as any)[e.prop]}`)),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      (config.events ?? []).map(e => typeof (props as any)[e.prop]),
     );
     const handlersRef = useRef<Record<string, unknown>>({});
     (config.events ?? []).forEach(e => { handlersRef.current[e.prop] = (props as any)[e.prop]; });

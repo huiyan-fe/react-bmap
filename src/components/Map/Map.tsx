@@ -247,6 +247,8 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   }, [driver, status]);
 
   // ─── 受控同步：center（独立 effect + 循环抑制） ───
+  // deps 用 lng/lat 而非 center 对象：父组件传内联 center={{lng,lat}} 时对象每次渲染都是新引用，
+  // 直接放 center 会让本 effect 每次渲染空跑一遍（内部 pointEquals 虽能拦住真正的 setCenter）。
   useLayoutEffect(() => {
     if (!map || !driver || !center) return;
     const current = driver.getCenter(map);
@@ -258,7 +260,8 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
       }
       requestAnimationFrame(() => { internalUpdateRef.current = false; });
     }
-  }, [map, driver, center]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, driver, center?.lng, center?.lat]);
 
   // ─── 受控同步：zoom ───
   useLayoutEffect(() => {
