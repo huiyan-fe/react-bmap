@@ -11,7 +11,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["@baidumap/jsapi-v4-types", "react"],
+    "types": ["@baidumap/jsapi-v4-types", "react", "vitest/globals"],
     "strict": true,
     "strictNullChecks": false,
     "noUnusedLocals": false,
@@ -19,5 +19,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "examples"]
+  "exclude": ["node_modules", "dist", "examples", "**/*.test.ts", "**/*.test.tsx", "**/__tests__/**"]
 }

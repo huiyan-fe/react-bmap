@@ -9,6 +9,8 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
       outDir: 'dist',
+      // 测试文件不产 .d.ts（vite-plugin-dts 默认无 exclude，会把 src 下所有 .ts 生成声明）
+      exclude: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
       // 引用 ambient 类型包（@baidumap/jsapi-v4-types）时，插件会按解析到的每个声明
       // 文件各插一行 reference，同一指令会重复上百行。这里按行去重，只保留首次出现。
       beforeWriteFile(filePath, content) {
