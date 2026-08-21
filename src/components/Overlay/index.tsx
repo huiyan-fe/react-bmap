@@ -357,7 +357,8 @@ export { CustomOverlay } from './CustomOverlay';
 
 // ─── 4.0+ 覆盖物 ───
 // Marker3D — 3D 标注（v4+ WebGL only）
-// SDK: setPosition/setHeight/setFillColor/setFillOpacity 有 setter；shape/size 构造时设置但需 rAF 补调 setSize
+// SDK: setPosition/setHeight/setFillColor/setFillOpacity 有 setter；shape/size 无 setter，只能构造时设置
+// （走 ctorOnlyProps 重建）。且首帧 addOverlay 后 shape/size 不渲染，需等 GL 就绪后重建实例，见 createComponent.tsx
 export const Marker3D = createOverlayComponent<Marker3DProps>({
   displayName: 'Marker3D',
   factory: (d, p) => d.createMarker3D(p.position, p.height, p),

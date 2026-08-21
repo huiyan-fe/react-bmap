@@ -152,12 +152,20 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       if (factoryProps.visible === false) {
         driver.hideOverlay(handle);
       }
-      // Marker3D SDK bug: 首次 addOverlay 后 size/shape 不渲染（无 setSize/setShape 方法）
-      // 同一实例 removeOverlay+addOverlay 也不生效——SDK 构造时捕获了 WebGL 状态
-      // 必须：延迟创建全新实例并替换
+      // Marker3D SDK bug: 首次 addOverlay 后 size/shape 不渲染（shape/size 无 setter）。
+      // 同一实例 removeOverlay+addOverlay 也不生效——SDK 构造时捕获 WebGL 状态，
+      // 且要求 GL 首帧已渲染。必须：等 GL 就绪后创建全新实例并替换。
+      // 不再用固定 500ms 盲等：地图已 loaded 时走 rAF 尽快重建（几乎无闪烁），
+      // 未 loaded 时等 tilesloaded（GL 首帧渲染完成），并保留 500ms fallback 防事件丢失
+      // ——与 Map.tsx 的 markReady 同一套就绪判定。
       let reAddTimer: ReturnType<typeof setTimeout> | undefined;
+      let reAddRaf: ReturnType<typeof requestAnimationFrame> | undefined;
+      let unsubReady: (() => void) | undefined;
       if ((handle as any).type === 'marker3d') {
-        reAddTimer = setTimeout(() => {
+        let reAdded = false;
+        const doReAdd = () => {
+          if (reAdded) return;
+          reAdded = true;
           if (ref.current !== handle || !map) return;
           try {
             const newHandle = config.factory(driver, factoryProps as P);
@@ -182,11 +190,26 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
             }
             // 通知事件订阅 effect 重新绑到新实例上
             setInstanceVersion(v => v + 1);
-          } catch {}
-        }, 500);
+          } catch { /* ignore */ }
+        };
+        const glReady = (() => {
+          try { return driver.isLoaded(map); } catch { return false; }
+        })();
+        if (glReady) {
+          // GL 已就绪：双 rAF 确保跨过一次绘制后再重建，避免与本次挂载同帧
+          reAddRaf = requestAnimationFrame(() => {
+            reAddRaf = requestAnimationFrame(doReAdd);
+          });
+        } else {
+          // 等 GL 首帧渲染完成；fallback 防 tilesloaded 事件丢失卡死
+          try { unsubReady = driver.addEventListener(map, 'tilesloaded', doReAdd); } catch { /* ignore */ }
+          reAddTimer = setTimeout(doReAdd, 500);
+        }
       }
       return () => {
       if (reAddTimer) clearTimeout(reAddTimer);
+      if (reAddRaf) cancelAnimationFrame(reAddRaf);
+      if (unsubReady) unsubReady();
       // Marker3D 的延迟重建可能已经把 ref.current 换成了新实例，闭包里的 handle
       // 那时已被移除。必须以 ref.current 为准，否则新实例会永远留在地图上。
       const current = ref.current ?? handle;
