@@ -149,7 +149,12 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     // 第二类：destroy 之后 SDK 内部残留的瓦片/raf/setTimeout 回调仍会跑一次，读到已经被置空的
     // 内部引用 → "Cannot read properties of null (reading 'tileInfo' / 'style' …)"。这些回调不
     // 经过我们的调用栈，callRaw 的 try/catch 抓不到，只能在 teardown 窗口内按 error 事件吞掉。
-    // 收窄条件：仅 teardown 之后、仅 null 属性读取、且栈里没有本库/业务代码的帧。
+    // 第二类判定收紧（避免误伤宿主工程）：仅吞 teardown 窗口内、来源为百度地图 SDK
+    // 脚本本身（event.filename 命中百度 CDN/BMapGL）、且读取的是已知 SDK 内部属性的 null
+    // 错误；宿主工程抛出的同类错误（filename 非百度 CDN 或属性名不在白名单）一律放行。
+    const SDK_FILENAME = /baidu\.com|mapopen\.baidu|bmapgl|BMapGL/i;
+    const SDK_NULL_PROPS = /^(?:tileInfo|style|tile|tiles|layer|gl|ctx|canvas|texture|buffer|program|shader)$/i;
+    const OUR_MARK = /\.tsx|\.jsx|react-bmap/;
     let tearingDown = false;
     const glErrorHandler = (event: ErrorEvent) => {
       const msg = event.message || '';
@@ -159,7 +164,13 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
         event.stopPropagation();
         return;
       }
-      if (tearingDown && /Cannot read propert(?:y|ies) of null/.test(msg) && !/\.tsx|\.jsx|react-bmap/.test(stack)) {
+      const propMatch = msg.match(/Cannot read propert(?:y|ies) of null \(reading '([^']+)'\)/);
+      if (
+        tearingDown &&
+        SDK_FILENAME.test(event.filename || '') &&
+        SDK_NULL_PROPS.test(propMatch?.[1] || '') &&
+        !OUR_MARK.test(stack)
+      ) {
         event.preventDefault();
         event.stopPropagation();
       }
