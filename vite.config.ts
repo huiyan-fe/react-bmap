@@ -36,7 +36,7 @@ export default defineConfig({
       fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs'),
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: ['react', 'react-dom', 'react/jsx-runtime', '@baidumap/jsapi-loader'],
       output: {
         globals: {
           react: 'React',
@@ -45,5 +45,7 @@ export default defineConfig({
       },
     },
     sourcemap: true,
+    // lib 模式下 vite 默认不清空 outDir，旧产物会残留并被 files:["dist"] 一起发包
+    emptyOutDir: true,
   },
 });
