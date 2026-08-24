@@ -214,6 +214,40 @@ function Demo() {
 
 > 部分组件只在 4.0（WebGL）下可用（如 `Prism`、`MapMask`、`Marker3D`）。在不支持的版本使用时，默认会打印一条警告并跳过，不会让页面崩溃。
 
+### ThreeLayer 需要宿主自备 three.js
+
+`ThreeLayer` 不打包 three.js，也不把它写进依赖 —— 3D 场景由你自己搭，版本该由宿主工程决定。SDK 的构造函数第一件事就是检查 `window.THREE`，缺了会直接抛异常，所以必须把 three.js 挂到全局：
+
+```tsx
+import * as THREE from 'three';
+window.THREE = THREE;  // 或用 <script> 引 UMD 包
+```
+
+注意 r150 起 three.js 移除了 `build/three.min.js`，用 CDN 的话要么取 `three@0.137.5` 这类还带 UMD 全局的版本，要么自己 import 后赋值。异步加载时，等 `window.THREE` 就绪再渲染 `<ThreeLayer>`；检测不到时组件会打印一次警告并跳过创建。
+
+场景操作走 ref 拿到的命令式句柄：
+
+```tsx
+const layerRef = useRef<ThreeLayerRef>(null);
+
+<ThreeLayer
+  ref={layerRef}
+  antialias
+  onInit={(renderer, scene, camera, layer) => {
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(500, 500, 500),
+      new THREE.MeshBasicMaterial({ color: 0x1890ff }),
+    );
+    const [x, y] = layer.toWorld(center)!;  // 经纬度 → 图层世界坐标（单位约等于米）
+    mesh.position.set(x, y, 250);
+    layer.add(mesh);
+    layer.triggerRepaint();  // raf 循环在 needsUpdate 为假时会自己停，改完场景要补这一下
+  }}
+/>
+```
+
+只有 `alpha`、`antialias` 和「是否接了 `onRender`」是构造期参数，改它们会重建图层；`visible`、`minZoom`、`maxZoom`、`zIndex` 走 setter，改了不会销毁你的场景。图层级的 `opacity` 对 `ThreeLayer` 无效（SDK 从不读它），透明度请设在材质上。
+
 ## 常见问题
 
 **地图不显示？** 检查 `Map` 的容器是否有明确的宽高，`ak` 是否有效、是否配置了域名白名单。

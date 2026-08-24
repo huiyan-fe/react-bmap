@@ -617,7 +617,31 @@ export const API_DATA: Record<string, ApiProp[]> = {
   ],
   'pixel-layer': layerCommon,
   'baidu-layer': layerCommon,
-  'three-layer': layerCommon,
+  'three-layer': [
+    { name: 'alpha', type: 'boolean', required: false, description: '传给 THREE.WebGLRenderer 的 alpha，默认 false。构造期参数，变化会重建图层' },
+    { name: 'antialias', type: 'boolean', required: false, description: '传给 THREE.WebGLRenderer 的 antialias，默认 false。构造期参数，变化会重建图层' },
+    visible,
+    { name: 'minZoom', type: 'number', required: false, description: '最小显示级别，默认 3' },
+    { name: 'maxZoom', type: 'number', required: false, description: '最大显示级别，默认 21' },
+    { name: 'zIndex', type: 'number', required: false, description: '图层层级，默认 1' },
+    { name: 'referCenter', type: 'Point', required: false, description: '参考中心点。对 ThreeLayer 实际无效：render 取的 _updatePolyLayerMatrix() 不带 center，传了世界坐标反而对不上' },
+    { name: 'opacity', type: 'number', required: false, description: '已废弃。ThreeLayer.render 从不读它，透明度只能设在 three.js 材质上（material.transparent + material.opacity）；传了会在开发环境提醒一次' },
+    { name: 'onInit', type: 'ThreeLayerHook', required: false, description: 'GL 就绪、场景/相机/渲染器创建完成后调用，在这里往场景里加物体' },
+    { name: 'onRender', type: 'ThreeLayerHook', required: false, description: '接管渲染。接了它 SDK 就不再调默认的 renderer.render(scene, camera)，必须自己渲染；「有没有传」本身是构造期参数，从无到有会重建图层' },
+    { name: 'preRender', type: 'ThreeLayerHook', required: false, description: '每帧渲染前' },
+    { name: 'afterRender', type: 'ThreeLayerHook', required: false, description: '每帧渲染后' },
+    { name: 'onDestroy', type: 'ThreeLayerHook', required: false, description: '图层销毁前。SDK 随后会 dispose 场景与渲染器，场景里的物体不用自己清' },
+    { name: 'onHide', type: 'ThreeLayerHook', required: false, description: '因 visible 或缩放级别超出 [minZoom, maxZoom] 而隐藏时' },
+    { name: 'onShow', type: 'ThreeLayerHook', required: false, description: '从隐藏恢复显示时' },
+    // 回调签名与 ref 句柄：ThreeLayer 是手写组件，场景操作全靠句柄，不写出来没法用
+    { name: 'ThreeLayerHook', type: '(this: ThreeLayerInstance, renderer, scene, camera, layer: ThreeLayerRef) => void', required: false, description: 'SDK 以 hook.bind(this) 调用，普通函数里的 this 是 SDK 图层实例；第 4 个参数 layer 是组件句柄，箭头函数用它' },
+    { name: 'ref.raw / scene / camera / renderer', type: 'ThreeLayerInstance | ThreeObject | null', required: false, description: 'SDK 实例与 three.js 对象；GL 就绪（onInit 触发）前为 null' },
+    { name: 'ref.add() / remove()', type: '(object: ThreeObject) => void', required: false, description: '往场景加/移除物体；改完记得 triggerRepaint()' },
+    { name: 'ref.triggerRepaint() / triggerStop()', type: '() => void', required: false, description: '请求重绘 / 停止重绘循环。animate() 在 needsUpdate 为假时直接 return，场景变了必须自己触发一次' },
+    { name: 'ref.refreshMap()', type: '() => void', required: false, description: '重新同步地图状态（尺寸、视野变化后）' },
+    { name: 'ref.pick()', type: '(x: number, y: number) => ThreeObject[] | null', required: false, description: '按容器像素坐标拾取，内部走 THREE.Raycaster' },
+    { name: 'ref.toWorld()', type: '(point: Point) => [number, number] | null', required: false, description: '经纬度 → three.js 世界坐标（相对默认墨卡托基准点的偏移，单位约等于米）。走 map.toFormatCoords，绕开 v4 里坏掉的实例方法 convertLngLat' },
+  ],
 
   // ─── Service（下表均为 hook 的入参 options，不是组件 props） ───
   'local-search': [

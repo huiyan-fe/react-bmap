@@ -55,6 +55,7 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'point-icon-layer', name: 'PointIconLayer', category: 'Layer', description: '图标点图层' },
   { id: 'point-shape-layer', name: 'PointShapeLayer', category: 'Layer', description: '图形点图层' },
   { id: 'panorama-coverage-layer', name: 'PanoramaCoverageLayer', category: 'Layer', description: '全景覆盖图层' },
+  { id: 'three-layer', name: 'ThreeLayer', category: 'Layer', description: 'three.js 图层（4.0+，three.js 需宿主自备并挂到 window.THREE）' },
 
   // Service (15)
   { id: 'local-search', name: 'useLocalSearch', category: 'Service', description: '本地搜索' },

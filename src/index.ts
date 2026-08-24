@@ -141,6 +141,8 @@ export type {
   LineLayerOptions, PixelLayerOptions, BaiduLayerOptions, ThreeLayerOptions,
   FillLayerStyle, PointIconStyle, PointShapeStyle,
 } from './components/Layer';
+// ThreeLayer 的命令式句柄与生命周期回调类型
+export type { ThreeLayerRef, ThreeLayerInstance, ThreeLayerHook, ThreeObject } from './components/Layer';
 
 // ─── ContextMenu + MenuItem ───
 export { ContextMenu, MenuItem } from './components/Menu';

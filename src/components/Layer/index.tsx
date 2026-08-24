@@ -256,13 +256,8 @@ export interface BaiduLayerOptions {
 export type BaiduLayerProps = BaiduLayerOptions;
 export const BaiduLayer = createLayerComponent<BaiduLayerProps>({ displayName: 'BaiduLayer', factory: (d, p) => d.createBaiduLayer(p) });
 
-// ThreeLayer — Three.js 图层（需要 three.js 依赖）
-export interface ThreeLayerOptions {
-  visible?: boolean;
-  opacity?: number;
-  minZoom?: number;
-  maxZoom?: number;
-  zIndex?: number;
-}
-export type ThreeLayerProps = ThreeLayerOptions;
-export const ThreeLayer = createLayerComponent<ThreeLayerProps>({ displayName: 'ThreeLayer', factory: (d, p) => d.createThreeLayer(p) });
+// ThreeLayer — 手写组件（ctorKey 只含 alpha/antialias，其余走 setter；带 ref 句柄），见 ThreeLayer.tsx
+export { ThreeLayer } from './ThreeLayer';
+export type {
+  ThreeLayerProps, ThreeLayerOptions, ThreeLayerRef, ThreeLayerInstance, ThreeLayerHook, ThreeObject,
+} from './ThreeLayer';
