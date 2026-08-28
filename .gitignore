@@ -8,3 +8,5 @@ docs
 *.*~
 npm-debug.log
 package-lock.json
+.env.local
+.env.*.local

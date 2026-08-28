@@ -19,6 +19,11 @@
   overflow: hidden;
 }
 
+/* 官网通栏头 — 按自身内容占高，不参与 .app-body 的伸缩 */
+.app-lbs-header {
+  flex-shrink: 0;
+}
+
 .app-main {
   flex: 1;
   min-width: 0;
