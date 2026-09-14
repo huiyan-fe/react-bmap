@@ -7,6 +7,7 @@ import { MapRefImpl } from './MapRef';
 import type { MapRef } from './MapRef';
 import { useLatest } from '../../utils/useLatest';
 import { pointEquals } from '../../utils/pointEquals';
+import type { DisplayOptions } from '../../types/core';
 
 export interface MapProps {
   // 受控
@@ -21,6 +22,8 @@ export interface MapProps {
   defaultTilt?: number;
   // SDK MapOptions 透传（除受控字段）
   options?: Record<string, unknown>;
+  // 显示元素配置（仅 4.0+ 生效，低版本 noop+warn）
+  displayOptions?: DisplayOptions;
   // 样式（按版本选；不存在的版本会 throw/warn）
   mapStyle?: unknown;
   mapStyleV2?: unknown;
@@ -101,7 +104,7 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   const {
     center, zoom, heading, tilt,
     defaultCenter, defaultZoom, defaultHeading, defaultTilt,
-    options, mapStyle, mapStyleV2,
+    options, displayOptions, mapStyle, mapStyleV2,
     enableDragging, enableInertialDragging, enableScrollWheelZoom, enableContinuousZoom,
     enableResizeOnCenter, enableDoubleClickZoom, enableKeyboard, enablePinchToZoom,
     enableRotate, enableRotateGestures, enableTilt: enableTiltProp, enableTiltGestures,
@@ -376,6 +379,12 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     if (!map || !driver || theme === undefined) return;
     try { driver.setTheme(map, theme); } catch { /* ignore */ }
   }, [map, driver, theme]);
+
+  // ─── 显示元素配置 ───
+  useLayoutEffect(() => {
+    if (!map || !driver || displayOptions === undefined) return;
+    try { driver.setDisplayOptions(map, displayOptions); } catch { /* v3 不支持 */ }
+  }, [map, driver, displayOptions]);
 
   // ─── 样式 ───
   useEffect(() => {

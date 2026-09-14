@@ -129,6 +129,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'maxZoom', type: 'number', required: false, description: '最大缩放级别' },
     { name: 'mapType', type: 'string | number', required: false, description: '地图类型' },
     { name: 'options', type: 'Record<string, unknown>', required: false, description: 'SDK MapOptions 透传' },
+    { name: 'displayOptions', type: 'DisplayOptions', required: false, description: '显示元素配置（poi/building/indoor 等开关），4.0+，2.0.2 新增' },
     { name: 'mapStyle', type: 'unknown', required: false, description: '个性化样式 V1（v3）' },
     { name: 'mapStyleV2', type: 'unknown', required: false, description: '个性化样式 V2，4.0+' },
     { name: 'theme', type: 'string', required: false, description: '地图主题 ID' },

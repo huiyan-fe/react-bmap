@@ -109,6 +109,24 @@ describe('Map 编排', () => {
     expect(listenersAfter).toBe(0);
   });
 
+  it('displayOptions：受控更新调 setDisplayOptions', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const { rerender } = renderInBMapContext(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} displayOptions={{ poi: false }}>
+        <div>c</div>
+      </Map>,
+      { driver },
+    );
+    act(() => { driver.__emit('tilesloaded'); });
+    expect(driver.setDisplayOptions).toHaveBeenCalledWith(expect.anything(), { poi: false });
+    rerender(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} displayOptions={{ poi: true, building: false }}>
+        <div>c</div>
+      </Map>,
+    );
+    expect(driver.setDisplayOptions).toHaveBeenCalledWith(expect.anything(), { poi: true, building: false });
+  });
+
   it('status=error 渲染 errorFallback', () => {
     const driver = makeFakeDriver({ loaded: true });
     renderInBMapContext(
