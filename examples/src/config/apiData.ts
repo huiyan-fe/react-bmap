@@ -487,6 +487,11 @@ export const API_DATA: Record<string, ApiProp[]> = {
     visible,
   ],
 
+  'custom-control': [
+    anchor, offset, visible,
+    { name: 'children', type: 'ReactNode', required: false, description: '自定义控件内容，会被渲染到挂载在地图容器上的 DOM 节点内' },
+  ],
+
   // ─── Layer ───
   'tile-layer': [
     { name: 'tileUrlTemplate', type: 'string', required: false, description: '瓦片 URL 模板，如 http://.../{Z}/{X}/{Y}.png' },

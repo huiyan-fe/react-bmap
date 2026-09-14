@@ -9,4 +9,5 @@ export { PanoramaControlPage } from './PanoramaControlPage';
 export { ZoomControlPage } from './ZoomControlPage';
 export { CityListControlPage } from './CityListControlPage';
 export { LogoControlPage } from './LogoControlPage';
+export { CustomControlPage } from './CustomControlPage';
 

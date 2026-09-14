@@ -2,7 +2,7 @@ import React from 'react';
 import {
   NavigationControl, NavigationControl3D, ScaleControl, OverviewMapControl,
   MapTypeControl, CopyrightControl, GeolocationControl, PanoramaControl,
-  ZoomControl, CityListControl,
+  ZoomControl, CityListControl, CustomControl,
   Marker,
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT, BMAP_ANCHOR_BOTTOM_LEFT, BMAP_ANCHOR_BOTTOM_RIGHT,
 } from 'react-bmap';
@@ -153,4 +153,46 @@ registerDemo('city-list-control', {
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <CityListControl anchor={BMAP_ANCHOR_TOP_LEFT} />
 </Map>`,
+});
+
+// ─── CustomControl（2.0.2 新增） ───
+function CustomControlDemo() {
+  const [zoom, setZoom] = React.useState(11);
+  return (
+    <MapContainer center={C} zoom={zoom} style={{ height: '100%' }}>
+      <CustomControl anchor={BMAP_ANCHOR_TOP_RIGHT}>
+        <div style={{
+          background: '#fff', border: '1px solid #ccc', borderRadius: 4,
+          padding: '6px 10px', boxShadow: '0 1px 4px rgba(0,0,0,0.2)', fontSize: 13,
+          display: 'flex', gap: 8, alignItems: 'center',
+        }}>
+          <button onClick={() => setZoom(z => Math.min(z + 1, 19))}>放大</button>
+          <button onClick={() => setZoom(z => Math.max(z - 1, 3))}>缩小</button>
+          <span>zoom={zoom}</span>
+        </div>
+      </CustomControl>
+    </MapContainer>
+  );
+}
+registerDemo('custom-control', {
+  Component: CustomControlDemo,
+  code: `import { useState } from 'react';
+import { Map, CustomControl, BMAP_ANCHOR_TOP_RIGHT } from 'react-bmap';
+
+// CustomControl（2.0.2 新增）：把自定义 DOM/React 内容挂载到地图固定像素位置，
+// 通过内部按钮联动操作地图属性（zoom），演示自定义控件与地图状态的交互。
+function Demo() {
+  const [zoom, setZoom] = useState(11);
+  return (
+    <Map center={{ lng: 116.404, lat: 39.915 }} zoom={zoom}>
+      <CustomControl anchor={BMAP_ANCHOR_TOP_RIGHT}>
+        <div style={{ background: '#fff', border: '1px solid #ccc', borderRadius: 4, padding: '6px 10px', display: 'flex', gap: 8 }}>
+          <button onClick={() => setZoom(z => Math.min(z + 1, 19))}>放大</button>
+          <button onClick={() => setZoom(z => Math.max(z - 1, 3))}>缩小</button>
+          <span>zoom={zoom}</span>
+        </div>
+      </CustomControl>
+    </Map>
+  );
+}`,
 });

@@ -45,6 +45,7 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'panorama-control', name: 'PanoramaControl', category: 'Control', description: '全景控件' },
   { id: 'zoom-control', name: 'ZoomControl', category: 'Control', description: '缩放控件（4.0+）' },
   { id: 'city-list-control', name: 'CityListControl', category: 'Control', description: '城市列表控件' },
+  { id: 'custom-control', name: 'CustomControl', category: 'Control', description: '自定义控件（挂载任意 DOM/React 内容），2.0.2 新增', capability: false },
 
   // Layer (14)
   { id: 'geojson-layer', name: 'GeoJSONLayer', category: 'Layer', description: 'GeoJSON 图层' },
