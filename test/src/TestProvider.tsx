@@ -35,7 +35,10 @@ interface AppProviderProps {
  * 注意：version 由 URL 决定，运行时切换版本会触发页面刷新（JSAPI 全局单例，DESIGN.md §4.2）。
  */
 export function AppProvider({ children, version }: AppProviderProps) {
-  // 4.0+ 需要 globalConfig 才能正确初始化内部状态（language/coordType 等）
+  // 4.0+ 需要 globalConfig.apiVersion='4.0' 才能让 SDK 内部走「4.0 兼容模式」。
+  // SDK 脚本加载后 apiVersion 默认值是 'gl'（纯 GL 模式，与 URL 的 v=3.0/v=4.0 参数无关，
+  // 那个参数只决定加载哪份脚本文件），纯 GL 模式下 normalizeMapTypeRequest() 不会做
+  // hybrid→卫星图+路网层 的转换，导致 mapType=BMAP_HYBRID_MAP 静默不生效。
   const isV4 = version !== '3.0';
   return (
     <BMapProvider
@@ -43,7 +46,7 @@ export function AppProvider({ children, version }: AppProviderProps) {
       version={version}
       unsupportedBehavior="warn"
       timeout={15000}
-      // globalConfig={isV4 ? { apiVersion: 'gl', coordType: 'bd09ll' } : undefined}
+      globalConfig={isV4 ? { apiVersion: '4.0', coordType: 'bd09ll' } : undefined}
       fallback={<div style={{ padding: 24, textAlign: 'center' }}>加载地图 API（version={version}）中...</div>}
       errorFallback={<div style={{ padding: 24, color: 'red' }}>地图 API 加载失败（version={version}）</div>}
       onError={(err) => {
