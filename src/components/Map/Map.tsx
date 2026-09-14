@@ -11,6 +11,9 @@ import type { DisplayOptions } from '../../types/core';
 
 export interface MapProps {
   // 受控
+  // 仅支持坐标 { lng, lat }；按地名/城市名定位请用 ref.centerAndZoom(cityName) 或
+  // ref.setCenter(cityName)（原生 SDK 支持字符串，但字符串无法与受控状态做等值比较，
+  // 故此处不接受 string）。
   center?: Point;
   zoom?: number;
   heading?: number;

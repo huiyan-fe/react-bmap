@@ -117,7 +117,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
 
   // ─── Map ───
   map: [
-    { name: 'center', type: 'Point', required: false, description: '地图中心点' },
+    { name: 'center', type: 'Point', required: false, description: '地图中心点（仅支持坐标；按地名/城市名定位请用 ref.centerAndZoom(cityName)）' },
     { name: 'zoom', type: 'number', required: false, description: '缩放级别 (3-19)' },
     { name: 'heading', type: 'number', required: false, description: '地图朝向角度 (0-360)，4.0+' },
     { name: 'tilt', type: 'number', required: false, description: '地图倾斜角度 (0-73)，4.0+' },
