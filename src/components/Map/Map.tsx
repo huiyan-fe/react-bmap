@@ -184,11 +184,14 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     const handle = driver.createMap(containerRef.current, initial);
 
     // ★ 必须 centerAndZoom 初始化后地图才能用（dts 明确要求）
+    // 首次渲染的视角设置属于「初始化」而非「用户交互引起的移动」，原生 new BMap.Map(id, options)
+    // 传 center/zoom/heading/tilt 时是没有动画的；这里改用 API 补设，需显式传 noAnimation:true
+    // 才能还原原生构造函数的无动画效果，否则首帧会出现一次不必要的飞入动画。
     const initCenter = defaultCenter ?? center;
     const initZoom = defaultZoom ?? zoom ?? 11;
     if (initCenter) {
       try {
-        driver.centerAndZoom(handle, initCenter, initZoom);
+        driver.centerAndZoom(handle, initCenter, initZoom, { noAnimation: true });
       } catch (e) {
         console.warn('[react-bmap] centerAndZoom failed, map may be uninitialized', e);
       }
@@ -197,10 +200,10 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     const initHeading = defaultHeading ?? heading;
     const initTilt = defaultTilt ?? tilt;
     if (initHeading != null) {
-      try { driver.setHeading(handle, initHeading); } catch { /* ignore */ }
+      try { driver.setHeading(handle, initHeading, { noAnimation: true }); } catch { /* ignore */ }
     }
     if (initTilt != null) {
-      try { driver.setTilt(handle, initTilt); } catch { /* ignore */ }
+      try { driver.setTilt(handle, initTilt, { noAnimation: true }); } catch { /* ignore */ }
     }
 
     // 延迟暴露 map 实例：
