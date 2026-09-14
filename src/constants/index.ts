@@ -17,7 +17,11 @@ export type ControlAnchor = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 // ─── MapTypeId ───
 export const BMAP_NORMAL_MAP = 'B_NORMAL_MAP';
 export const BMAP_SATELLITE_MAP = 'B_SATELLITE_MAP';
-export const BMAP_HYBRID_MAP = 'B_HYBRID_MAP';
+// 注意：混合图内部并非独立类型，SDK 源码里 BMAP_HYBRID_MAP_ID = 'B_STREET_MAP'
+// （反查 jsapi-webgl-1-0/src/scripts/BMap/Map.js:522）。normalizeMapTypeRequest()
+// 在 4.0 兼容模式下会把 'B_STREET_MAP' 转换成「卫星图 + showStreetLayer: true」
+// 两个信号；纯 GL 模式（apiVersionIsGL() === true）下不转换，直接透传。
+export const BMAP_HYBRID_MAP = 'B_STREET_MAP';
 export const BMAP_EARTH_MAP = 'B_EARTH_MAP';
 export type MapTypeId = string;
 

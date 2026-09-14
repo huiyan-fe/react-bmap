@@ -35,8 +35,24 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     removeHotspot: (map, h) => { (map.raw as any).removeHotspot?.(h.raw); },
     clearHotspots: (map) => { (map.raw as any).clearHotspots?.(); },
 
-    // v3 的 setMapType 直接调用原生方法
-    setMapType: (map, t) => { (map.raw as any).setMapType?.(t); },
+    // v3 的 setMapType 直接调用原生方法。
+    // 3.0 的 map.mapType 存的是 MapType 实例，内部用 === 比较（this.mapType === mapType），
+    // 不是字符串比较；react-bmap 的 BMAP_NORMAL_MAP/BMAP_SATELLITE_MAP/BMAP_HYBRID_MAP
+    // 常量统一导出字符串（供 4.0/GL 使用，见 v4Driver 的 normalizeMapTypeRequest 逻辑），
+    // 3.0 收到字符串会跟内部 MapType 实例永远不相等，视觉上"看起来生效但内部状态错了"。
+    // 这里把三个约定字符串换成 3.0 SDK 挂在全局 window 上的真实 MapType 实例（反查
+    // jsapi-core-3-0/src/scripts/bmap/exports.js:147-152 的 exportSymbol(window, {...})
+    // 确认挂载位置是 window 顶层，不是 window.BMap 上）。
+    setMapType: (map, t) => {
+      const raw = map.raw as any;
+      if (typeof window !== 'undefined') {
+        const w = window as any;
+        if (t === 'B_NORMAL_MAP') t = w.BMAP_NORMAL_MAP ?? t;
+        else if (t === 'B_SATELLITE_MAP') t = w.BMAP_SATELLITE_MAP ?? t;
+        else if (t === 'B_STREET_MAP') t = w.BMAP_HYBRID_MAP ?? t;
+      }
+      raw.setMapType?.(t);
+    },
 
     // Hotspot 是 v3-only，v4Driver 的 createOverlayFactory 闭包捕获了 v4 能力矩阵
     // （Hotspot 不在 v4 矩阵中），所以必须在这里直接创建，绕过能力检查

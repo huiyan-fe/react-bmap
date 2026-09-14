@@ -20,6 +20,9 @@ describe('constants 全量常量值', () => {
   it('MapTypeId 为字符串枚举', () => {
     expect(constants.BMAP_NORMAL_MAP).toBe('B_NORMAL_MAP');
     expect(constants.BMAP_EARTH_MAP).toBe('B_EARTH_MAP');
+    // 混合图内部不是独立类型，SDK 源码里 BMAP_HYBRID_MAP_ID = 'B_STREET_MAP'，
+    // 4.0 兼容模式下 normalizeMapTypeRequest() 会转成「卫星图 + 显示路网」
+    expect(constants.BMAP_HYBRID_MAP).toBe('B_STREET_MAP');
   });
 
   it('PointDensityType 非连续值', () => {

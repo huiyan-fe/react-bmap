@@ -21,7 +21,6 @@ export {
   BMAP_DRIVING_POLICY_AVOID_HIGHWAYS_PAY, BMAP_DRIVING_POLICY_DISTANCE_PRIORITY, BMAP_DRIVING_POLICY_TIME_PRIORITY,
   BMAP_TRANSIT_POLICY_RECOMMEND, BMAP_TRANSIT_POLICY_LEAST_TRANSFER, BMAP_TRANSIT_POLICY_LEAST_WALKING,
   BMAP_TRANSIT_POLICY_AVOID_SUBWAYS, BMAP_TRANSIT_POLICY_LEAST_TIME, BMAP_TRANSIT_POLICY_FIRST_SUBWAYS,
-  BMAP_NORMAL_MAP, BMAP_PERSPECTIVE_MAP, BMAP_SATELLITE_MAP, BMAP_HYBRID_MAP,
   BMAP_ANIMATION_BOUNCE, BMAP_ANIMATION_DROP,
   BMAP_UNIT_METRIC, BMAP_UNIT_IMPERIAL,
   BMAP_LANG_CN, BMAP_LANG_EN,
@@ -30,9 +29,14 @@ export {
   BMAP_SHAPE_CIRCLE, BMAP_SHAPE_RECTANGLE,
   getSdkConstant,
 } from './const';
-export type { ControlAnchor, ServiceStatus, DrivingPolicy, TransitPolicy, MapType, Animation, LengthUnit, Language, NavigationControlType, MapTypeControlType, ShapeType } from './const';
+export type { ControlAnchor, ServiceStatus, DrivingPolicy, TransitPolicy, Animation, LengthUnit, Language, NavigationControlType, MapTypeControlType, ShapeType } from './const';
 // SymbolShapeType 来自 constants（正确的 1-14 范围，非 const 中的旧 0-8）
 export type { SymbolShapeType } from './constants';
+// MapType 系列常量（BMAP_NORMAL_MAP 等）改从 constants 导出：const.ts 里是历史遗留的
+// 数字版本（0/1/2/3），SDK 的 mapTypeId 实际只认字符串（'B_NORMAL_MAP' 等），数字版本
+// 传给 Map.mapType / MapTypeControl 等 API 时不会生效，是本仓库的一个历史 bug。
+export { BMAP_NORMAL_MAP, BMAP_SATELLITE_MAP, BMAP_HYBRID_MAP, BMAP_EARTH_MAP } from './constants';
+export type { MapTypeId } from './constants';
 
 // Context Hook（高级用法）
 export { useBMapContext } from './context/BMapContext';
