@@ -116,6 +116,10 @@ export type {
   CopyrightItem,
 } from './components/Control';
 
+// ─── CustomControl（自定义控件，2.0.2 新增） ───
+export { CustomControl } from './components/Control/CustomControl';
+export type { CustomControlProps } from './components/Control/CustomControl';
+
 // ─── Layer 组件（18 个） ───
 export {
   TileLayer, NormalLayer, GeoJSONLayer, DistrictLayer,

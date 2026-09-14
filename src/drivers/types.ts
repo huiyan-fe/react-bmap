@@ -359,6 +359,8 @@ export interface BMapDriver {
   createLocationControl(options?: unknown): ControlHandle | null;
   createLogoControl(options?: unknown): ControlHandle | null;
   createControl(options?: unknown): ControlHandle | null;
+  /** 自定义控件：domCreate 返回的 DOM 会被 initialize(map) 挂到地图容器上 */
+  createCustomControl(domCreate: () => HTMLElement, options?: unknown): ControlHandle | null;
 
   // ─────────────── 29. Layer 工厂 ───────────────
   createTileLayer(options?: unknown): LayerHandle | null;

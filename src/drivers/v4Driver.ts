@@ -1296,6 +1296,30 @@ export function createV4Driver(
     createLocationControl: (o) => createControlFactory('GeolocationControl', () => new rawSDK.GeolocationControl(toRawControlOptions(rawSDK, o)), 'geolocation'),
     createLogoControl: (o) => createControlFactory('LogoControl', () => new rawSDK.LogoControl(toRawControlOptions(rawSDK, o)), 'logo'),
     createControl: (o) => createControlFactory('Control', () => { const c = new rawSDK.Control(); Object.assign(c, toRawControlOptions(rawSDK, o)); return c; }, 'custom'),
+    createCustomControl: (domCreate, o) => createControlFactory('Control', () => {
+      // 动态继承 BMap.Control，重写 initialize：SDK 在 map.addControl() 时通过内部
+      // _i() 调用它——_i() 会先执行 initialize() 拿到 DOM 并赋给 this._container，
+      // *之后* 才用 `this._opts = this._opts || {printable:false}` 兜底初始化 _opts，
+      // 再调用 _setPosition()（内部即 this.setAnchor(this._opts.anchor)）。
+      //
+      // 所以 anchor/offset 不能在 initialize() 内部调用 setAnchor/setOffset——此刻
+      // _opts 还是 undefined，setAnchor 内部访问 this._opts.offset 会直接抛错。
+      // 必须把 _opts 的初始化提前到 initialize() 里、_i() 兜底赋值之前，这样 _i()
+      // 自带的 _setPosition() 会用到我们预置的 anchor，再显式补一次 setOffset
+      // （_setPosition 只处理 anchor，不处理 offset）。
+      const opts = toRawControlOptions(rawSDK, o);
+      class CustomControlImpl extends rawSDK.Control {
+        initialize(map: BMap.Map) {
+          const div = domCreate();
+          map.getContainer().appendChild(div);
+          this._opts = { printable: false, anchor: opts.anchor };
+          if (opts.offset !== undefined) this.setOffset(opts.offset);
+          return div;
+        }
+      }
+      const c = new CustomControlImpl();
+      return c;
+    }, 'custom'),
 
     // ─────────────── 29. Layer 工厂 ───────────────
     createTileLayer: (o) => createLayerFactory('TileLayer', () => new rawSDK.TileLayer(o), 'tile'),

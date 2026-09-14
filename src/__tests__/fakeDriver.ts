@@ -74,6 +74,7 @@ export function makeFakeDriver(options: MakeFakeDriverOptions = {}): FakeDriver 
     // ── 控件 / 图层 ──
     createNavigationControl: vi.fn(() => makeHandle('control')),
     createControl: vi.fn(() => makeHandle('control')),
+    createCustomControl: vi.fn(() => makeHandle('control')),
     addControl: vi.fn(),
     removeControl: vi.fn(),
     hideControl: vi.fn(),

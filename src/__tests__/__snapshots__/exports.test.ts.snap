@@ -162,6 +162,7 @@ exports[`public API 导出快照 > 主入口运行时导出集合稳定 1`] = `
   "CityListControl",
   "ContextMenu",
   "CopyrightControl",
+  "CustomControl",
   "CustomLayer",
   "CustomOverlay",
   "DOMLayer",
