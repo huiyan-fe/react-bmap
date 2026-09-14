@@ -127,6 +127,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'defaultTilt', type: 'number', required: false, description: '初始倾斜角度（非受控），4.0+' },
     { name: 'minZoom', type: 'number', required: false, description: '最小缩放级别' },
     { name: 'maxZoom', type: 'number', required: false, description: '最大缩放级别' },
+    { name: 'bounds', type: 'Bounds', required: false, description: '拖拽范围限制 { sw, ne }；原生 SDK 一旦设置就无法清除，故不接受 null，2.0.2 新增' },
     { name: 'mapType', type: 'string | number', required: false, description: '地图类型' },
     { name: 'options', type: 'Record<string, unknown>', required: false, description: 'SDK MapOptions 透传' },
     { name: 'displayOptions', type: 'DisplayOptions', required: false, description: '显示元素配置（poi/building/indoor 等开关），4.0+，2.0.2 新增' },

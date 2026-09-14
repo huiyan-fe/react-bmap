@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } fro
 import type { CSSProperties, ReactNode } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { MapContext } from '../../context/MapContext';
-import type { MapHandle, Point, MapMouseEvent, MapMoveEvent, MapZoomEvent, MapEvent } from '../../types';
+import type { MapHandle, Point, Bounds, MapMouseEvent, MapMoveEvent, MapZoomEvent, MapEvent } from '../../types';
 import { MapRefImpl } from './MapRef';
 import type { MapRef } from './MapRef';
 import { useLatest } from '../../utils/useLatest';
@@ -47,6 +47,10 @@ export interface MapProps {
   // 缩放范围
   minZoom?: number;
   maxZoom?: number;
+  // 拖拽范围限制（受控；undefined 不主动控制）。
+  // 注意：原生 SDK 的 restrictBounds 一旦设置过就没有官方 API 能撤销，
+  // 因此这里不接受 null（避免误导用户以为能借此清除限制）。
+  bounds?: Bounds;
   // 地图类型
   mapType?: string | number;
   // 光标
@@ -112,7 +116,7 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     enableResizeOnCenter, enableDoubleClickZoom, enableKeyboard, enablePinchToZoom,
     enableRotate, enableRotateGestures, enableTilt: enableTiltProp, enableTiltGestures,
     enableAutoResize,
-    minZoom, maxZoom, mapType, defaultCursor, draggingCursor, theme,
+    minZoom, maxZoom, bounds, mapType, defaultCursor, draggingCursor, theme,
     onReady, onCenterChange, onZoomChange, onHeadingChange, onTiltChange,
     onClick, onDblClick, onRightClick, onMouseMove, onMouseDown, onMouseUp, onMouseOver, onMouseOut,
     onDragStart, onDragging, onDragEnd, onMoveStart, onMoving, onMoveEnd,
@@ -359,6 +363,13 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     if (!map || !driver || maxZoom === undefined) return;
     try { driver.setMaxZoom(map, maxZoom); } catch { /* ignore */ }
   }, [map, driver, maxZoom]);
+
+  // ─── 拖拽范围限制 ───
+  useLayoutEffect(() => {
+    if (!map || !driver || bounds === undefined) return;
+    try { driver.restrictBounds(map, bounds); } catch { /* ignore */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, driver, bounds?.sw.lng, bounds?.sw.lat, bounds?.ne.lng, bounds?.ne.lat]);
 
   // ─── 地图类型 ───
   useLayoutEffect(() => {

@@ -127,6 +127,26 @@ describe('Map 编排', () => {
     expect(driver.setDisplayOptions).toHaveBeenCalledWith(expect.anything(), { poi: true, building: false });
   });
 
+  it('bounds：受控更新调 restrictBounds', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const b1 = { sw: { lng: 116, lat: 39 }, ne: { lng: 117, lat: 40 } };
+    const b2 = { sw: { lng: 100, lat: 30 }, ne: { lng: 110, lat: 35 } };
+    const { rerender } = renderInBMapContext(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} bounds={b1}>
+        <div>c</div>
+      </Map>,
+      { driver },
+    );
+    act(() => { driver.__emit('tilesloaded'); });
+    expect(driver.restrictBounds).toHaveBeenCalledWith(expect.anything(), b1);
+    rerender(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} bounds={b2}>
+        <div>c</div>
+      </Map>,
+    );
+    expect(driver.restrictBounds).toHaveBeenCalledWith(expect.anything(), b2);
+  });
+
   it('status=error 渲染 errorFallback', () => {
     const driver = makeFakeDriver({ loaded: true });
     renderInBMapContext(
