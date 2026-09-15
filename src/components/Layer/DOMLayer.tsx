@@ -18,6 +18,7 @@
  */
 import { memo, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMapContext } from '../../context/MapContext';
+import { useLatest } from '../../utils/useLatest';
 import { debugWarn } from '../../utils/debugWarn';
 
 export interface DOMLayerOptions {
@@ -52,6 +53,16 @@ export const DOMLayer = memo(function DOMLayer(props: DOMLayerProps) {
   const nextTick = props.nextTick ?? true;
   const { map, driver } = useMapContext();
   const rawRef = useRef<any>(null);
+  // createDOM 常被写成内联箭头函数（如 createDOM={p => createEl(p, onPick)}），每次父组件重渲染
+  // （例如点击回调里 setState）都是新引用。若把它放进创建 effect 的依赖，会导致整个图层销毁重建、
+  // 所有 DOM 重新创建 → 肉眼看到闪烁。这里用 useLatest 存最新 createDOM，并用一个引用稳定的
+  // wrapper 传给 SDK：既不因 createDOM 引用变化触发重建，wrapper 内部又始终调用到最新的 createDOM。
+  const createDOMRef = useLatest(createDOM);
+  const stableCreateDOMRef = useRef<((properties: object, point: { lng: number; lat: number }) => HTMLElement) | null>(null);
+  if (!stableCreateDOMRef.current) {
+    stableCreateDOMRef.current = (properties, point) => createDOMRef.current(properties, point);
+  }
+  const stableCreateDOM = stableCreateDOMRef.current;
   // 已经喂给当前 raw 的 data 指纹。建图层时会先 setData 一次，这里记下来让下面的 data effect
   // 跳过同一份数据的重复调用：SDK 的 setData 会重建子覆盖物，而 nextTick 定位是 setTimeout，
   // 第二次 setData 抹掉上一批 DOM 后定时器才回调，就会 Cannot read properties of null (reading 'style')。
@@ -62,7 +73,7 @@ export const DOMLayer = memo(function DOMLayer(props: DOMLayerProps) {
   const ctorKey = `${minZoom ?? ''}|${maxZoom ?? ''}|${zIndex ?? ''}|${offsetX ?? ''}|${offsetY ?? ''}|${anchors?.join(',') ?? ''}|${coordinate ?? ''}|${enableDraggingMap ?? ''}|${nextTick}|${visible ?? ''}`;
 
   useLayoutEffect(() => {
-    if (!map || !driver || !createDOM) return;
+    if (!map || !driver || !stableCreateDOM) return;
 
     const opts: Record<string, unknown> = { nextTick };
     if (minZoom !== undefined) opts.minZoom = minZoom;
@@ -75,7 +86,7 @@ export const DOMLayer = memo(function DOMLayer(props: DOMLayerProps) {
     if (enableDraggingMap !== undefined) opts.enableDraggingMap = enableDraggingMap;
     if (visible !== undefined) opts.visible = visible;
 
-    const handle = driver.createDOMLayer({ createDOM, ...opts });
+    const handle = driver.createDOMLayer({ createDOM: stableCreateDOM, ...opts });
     if (!handle) return;
     rawRef.current = (handle as any).raw;
     driver.addLayer(map, handle);
@@ -94,7 +105,7 @@ export const DOMLayer = memo(function DOMLayer(props: DOMLayerProps) {
       appliedDataKeyRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, driver, ctorKey, createDOM]);
+  }, [map, driver, ctorKey]);
 
   // data 变化 → setData（建图层时已喂过的同一份数据不再重复调用）
   useEffect(() => {
