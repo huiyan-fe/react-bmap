@@ -27,7 +27,11 @@ export interface MapProps {
   options?: Record<string, unknown>;
   // 显示元素配置（仅 4.0+ 生效，低版本 noop+warn）
   displayOptions?: DisplayOptions;
-  // 样式（按版本选；不存在的版本会 throw/warn）
+  // 样式（按版本选；不存在的版本会 throw/warn）。
+  // 首帧样式随地图构造参数传给 SDK，避免「先默认样式再切自定义」的配色闪烁（见下方创建逻辑）。
+  // 注意：React StrictMode 开发期会双重挂载（mount→unmount→mount），受百度 SDK 异步销毁 +
+  // 版权控件创建时序影响，自定义样式下 logo/版权文字可能短暂闪现一下；这是开发期现象，
+  // 生产构建（无双挂载）不受影响。
   mapStyle?: unknown;
   mapStyleV2?: unknown;
   // 交互开关（受控；undefined 表示不主动控制，由 SDK 默认值决定）
@@ -201,6 +205,12 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     // 构造 SDK 选项时**不带** center/zoom/heading/tilt
     const initial: Record<string, unknown> = { ...options };
     Object.keys(initial).forEach(k => initial[k] === undefined && delete initial[k]);
+    // 把首帧样式随构造选项一起传给 SDK（对应原生 new BMap.Map(id, {style: ...})）：
+    // 若等 createMap 完成后再调用 setMapStyle/setMapStyleV2，SDK 已经用默认样式渲染过
+    // 一帧甚至发出了默认样式的瓦片请求，肉眼会看到「先出现默认地图，再切换成自定义样式」
+    // 的闪烁。mapStyleV2 优先于 mapStyle（与下面运行时切换 effect 的优先级一致）。
+    const initialStyle = mapStyleV2 ?? mapStyle;
+    if (initialStyle !== undefined) initial.style = initialStyle;
 
     const handle = driver.createMap(containerRef.current, initial);
 
