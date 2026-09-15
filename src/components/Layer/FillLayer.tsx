@@ -59,78 +59,97 @@ export interface FillLayerOptions {
   style?: FillLayerStyle;
   idKey?: string;
   crs?: string;
+  isFlat?: boolean;
+  drawPart?: boolean;
   selectedIndex?: number;
   selectedColor?: string;
+  enablePicked?: boolean;
+  /** 拾取时是否自动切换 selectedIndex（配合 feature-state 高亮时通常设 false，自己控制状态） */
+  enableChangeSelectIndexByPick?: boolean;
+  autoSelect?: boolean;
+  popEvent?: boolean;
+  pickWidth?: number;
+  pickHeight?: number;
+  /** 命中要素时是否自动改变鼠标样式 */
+  mouseStyleChange?: boolean;
+  /** 参考中心点（Point） */
+  referCenter?: unknown;
+  isTop?: boolean;
+  isLowText?: boolean;
+  // ─── 受控选项（变化走对应 setter 平滑更新，不重建图层）───
   visible?: boolean;
   opacity?: number;
   minZoom?: number;
   maxZoom?: number;
   zIndex?: number;
-  enablePicked?: boolean;
-  autoSelect?: boolean;
-  popEvent?: boolean;
-  pickWidth?: number;
-  pickHeight?: number;
 }
 
 export interface FillLayerProps extends FillLayerOptions {
   /** GeoJSON 数据源，变化时调用 raw.setData() */
   data?: object;
+  /** setData 第二参（如 { changeCenter: true } 自动定位到数据范围） */
+  setDataParams?: object;
   /** 点击要素（需 enablePicked）。e.value.dataItem.properties 为选中要素属性 */
   onClick?: (e: FillLayerEvent) => void;
+  /** 双击要素（需 enablePicked） */
+  onDblClick?: (e: FillLayerEvent) => void;
   onRightClick?: (e: FillLayerEvent) => void;
-  onMouseOver?: (e: FillLayerEvent) => void;
-  onMouseOut?: (e: FillLayerEvent) => void;
+  /** 鼠标在要素上移动（需 enablePicked）。SDK 不派发 mouseover/mouseout */
   onMouseMove?: (e: FillLayerEvent) => void;
   /** 图层挂载后回调，拿到原生 FillLayer 实例做命令式操作（如 updateState/clearState） */
   onReady?: (layer: any) => void;
 }
 
-/** 图层拾取事件对象（enablePicked=true 时点击/悬停命中要素） */
+/** 图层拾取事件对象（enablePicked=true 时点击/命中要素） */
 export interface FillLayerEvent {
   value?: { dataIndex?: number; dataItem?: { properties?: Record<string, unknown>; [k: string]: unknown }; [k: string]: unknown };
   [k: string]: unknown;
 }
 
+// SDK LayerNormalMgr 只派发 onclick/ondblclick/onrightclick/onmousemove 四种，没有 mouseover/mouseout
 const LAYER_EVENTS: Array<{ sdk: string; prop: keyof FillLayerProps }> = [
   { sdk: 'click', prop: 'onClick' },
+  { sdk: 'dblclick', prop: 'onDblClick' },
   { sdk: 'rightclick', prop: 'onRightClick' },
-  { sdk: 'mouseover', prop: 'onMouseOver' },
-  { sdk: 'mouseout', prop: 'onMouseOut' },
   { sdk: 'mousemove', prop: 'onMouseMove' },
 ];
 
 export const FillLayer = memo(function FillLayer(props: FillLayerProps) {
-  const { border, style, idKey, crs, selectedIndex, selectedColor, visible, opacity, minZoom, maxZoom, zIndex, enablePicked, autoSelect, popEvent, pickWidth, pickHeight, data } = props;
+  const {
+    border, style, idKey, crs, isFlat, drawPart, selectedIndex, selectedColor,
+    enablePicked, enableChangeSelectIndexByPick, autoSelect, popEvent, pickWidth, pickHeight,
+    mouseStyleChange, referCenter, isTop, isLowText,
+    visible, opacity, minZoom, maxZoom, zIndex, data, setDataParams,
+  } = props;
   const { map, driver } = useMapContext();
   const rawRef = useRef<any>(null);
   // 事件 handler / onReady 用 ref 存最新：引用变化不重绑不重建图层
-  const handlersRef = useLatest({ onClick: props.onClick, onRightClick: props.onRightClick, onMouseOver: props.onMouseOver, onMouseOut: props.onMouseOut, onMouseMove: props.onMouseMove });
+  const handlersRef = useLatest({ onClick: props.onClick, onDblClick: props.onDblClick, onRightClick: props.onRightClick, onMouseMove: props.onMouseMove });
   const onReadyRef = useLatest(props.onReady);
+  const setDataParamsRef = useLatest(setDataParams);
 
-  // create + add（constructor 选项 + style 变化时重建，因为 setStyleOptions 可能不覆盖所有属性）
-  const styleKey = style ? JSON.stringify(style) : '';
-  const ctorKey = `${border ?? ''}|${idKey ?? ''}|${crs ?? ''}|${selectedIndex ?? ''}|${selectedColor ?? ''}|${visible ?? ''}|${opacity ?? ''}|${minZoom ?? ''}|${maxZoom ?? ''}|${zIndex ?? ''}|${enablePicked ?? ''}|${autoSelect ?? ''}|${popEvent ?? ''}|${pickWidth ?? ''}|${pickHeight ?? ''}|${styleKey}`;
+  // ctorKey 只含真正的构造期选项；style 与 visible/opacity/zIndex/minZoom/maxZoom 都走运行时更新，不进 ctorKey
+  const ctorKey = [
+    border, idKey, crs, isFlat, drawPart, selectedIndex, selectedColor,
+    enablePicked, enableChangeSelectIndexByPick, autoSelect, popEvent, pickWidth, pickHeight,
+    mouseStyleChange, isTop, isLowText,
+  ].map(v => v ?? '').join('|');
 
   useLayoutEffect(() => {
     if (!map || !driver) return;
     const opts: Record<string, unknown> = {};
-    if (border !== undefined) opts.border = border;
-    if (style !== undefined) opts.style = style;
-    if (idKey !== undefined) opts.idKey = idKey;
-    if (crs !== undefined) opts.crs = crs;
-    if (selectedIndex !== undefined) opts.selectedIndex = selectedIndex;
-    if (selectedColor !== undefined) opts.selectedColor = selectedColor;
-    if (visible !== undefined) opts.visible = visible;
-    if (opacity !== undefined) opts.opacity = opacity;
-    if (minZoom !== undefined) opts.minZoom = minZoom;
-    if (maxZoom !== undefined) opts.maxZoom = maxZoom;
-    if (zIndex !== undefined) opts.zIndex = zIndex;
-    if (enablePicked !== undefined) opts.enablePicked = enablePicked;
-    if (autoSelect !== undefined) opts.autoSelect = autoSelect;
-    if (popEvent !== undefined) opts.popEvent = popEvent;
-    if (pickWidth !== undefined) opts.pickWidth = pickWidth;
-    if (pickHeight !== undefined) opts.pickHeight = pickHeight;
+    const put = (k: string, v: unknown) => { if (v !== undefined) opts[k] = v; };
+    put('border', border); put('style', style);
+    put('idKey', idKey); put('crs', crs); put('isFlat', isFlat); put('drawPart', drawPart);
+    put('selectedIndex', selectedIndex); put('selectedColor', selectedColor);
+    put('enablePicked', enablePicked); put('enableChangeSelectIndexByPick', enableChangeSelectIndexByPick);
+    put('autoSelect', autoSelect); put('popEvent', popEvent);
+    put('pickWidth', pickWidth); put('pickHeight', pickHeight);
+    put('mouseStyleChange', mouseStyleChange); put('referCenter', referCenter);
+    put('isTop', isTop); put('isLowText', isLowText);
+    // 受控字段的初始值也随构造传入（后续变化走 setter）
+    put('visible', visible); put('opacity', opacity);
+    put('minZoom', minZoom); put('maxZoom', maxZoom); put('zIndex', zIndex);
 
     const handle = driver.createFillLayer(opts);
     if (!handle) return;
@@ -152,7 +171,7 @@ export const FillLayer = memo(function FillLayer(props: FillLayerProps) {
 
     // mount 后如果有 data，立即 setData
     if (data && rawRef.current) {
-      try { rawRef.current.setData?.(data); } catch (e) { debugWarn('FillLayer.setData', e); }
+      try { rawRef.current.setData?.(data, setDataParamsRef.current); } catch (e) { debugWarn('FillLayer.setData', e); }
     }
 
     // 暴露原生 layer 实例，供命令式调用
@@ -172,10 +191,27 @@ export const FillLayer = memo(function FillLayer(props: FillLayerProps) {
   const dataKey = data ? JSON.stringify(data) : '';
   useEffect(() => {
     if (!rawRef.current || !data) return;
-    try { rawRef.current.setData?.(data); } catch { /* noop */ }
+    try { rawRef.current.setData?.(data, setDataParamsRef.current); } catch { /* noop */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataKey]);
 
-  // style 变化已通过 ctorKey 重建处理，无需额外 setStyleOptions
+  // style 变化 → 运行时 setStyleOptions（不重建图层，与 LineLayer 对齐）
+  const styleKey = style ? JSON.stringify(style) : '';
+  useEffect(() => {
+    if (!rawRef.current || !style) return;
+    try {
+      rawRef.current.setStyleOptions?.(style);
+      rawRef.current.doOnceDraw?.();
+    } catch { /* noop */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [styleKey]);
+
+  // 受控选项 → 对应 setter 平滑更新，不重建图层
+  useEffect(() => { if (rawRef.current && visible !== undefined) try { rawRef.current.setVisible?.(visible); } catch { /* noop */ } }, [visible]);
+  useEffect(() => { if (rawRef.current && opacity !== undefined) try { rawRef.current.setOpacity?.(opacity); } catch { /* noop */ } }, [opacity]);
+  useEffect(() => { if (rawRef.current && zIndex !== undefined) try { rawRef.current.setZIndex?.(zIndex); } catch { /* noop */ } }, [zIndex]);
+  useEffect(() => { if (rawRef.current && minZoom !== undefined) try { rawRef.current.setMinZoom?.(minZoom); } catch { /* noop */ } }, [minZoom]);
+  useEffect(() => { if (rawRef.current && maxZoom !== undefined) try { rawRef.current.setMaxZoom?.(maxZoom); } catch { /* noop */ } }, [maxZoom]);
 
   return null;
 });

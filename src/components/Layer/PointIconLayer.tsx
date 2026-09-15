@@ -64,17 +64,18 @@ export interface PointIconLayerProps extends PointIconLayerOptions {
   data?: object;
   /** 点击要素（需 enablePicked）。e.value.dataItem.properties 为选中要素属性 */
   onClick?: (e: PointIconLayerEvent) => void;
+  /** 双击要素（需 enablePicked） */
+  onDblClick?: (e: PointIconLayerEvent) => void;
   onRightClick?: (e: PointIconLayerEvent) => void;
-  onMouseOver?: (e: PointIconLayerEvent) => void;
-  onMouseOut?: (e: PointIconLayerEvent) => void;
+  /** 鼠标在要素上移动（需 enablePicked）。SDK 不派发 mouseover/mouseout */
   onMouseMove?: (e: PointIconLayerEvent) => void;
 }
 
+// SDK LayerNormalMgr 只派发 onclick/ondblclick/onrightclick/onmousemove 四种，没有 mouseover/mouseout
 const LAYER_EVENTS: Array<{ sdk: string; prop: keyof PointIconLayerProps }> = [
   { sdk: 'click', prop: 'onClick' },
+  { sdk: 'dblclick', prop: 'onDblClick' },
   { sdk: 'rightclick', prop: 'onRightClick' },
-  { sdk: 'mouseover', prop: 'onMouseOver' },
-  { sdk: 'mouseout', prop: 'onMouseOut' },
   { sdk: 'mousemove', prop: 'onMouseMove' },
 ];
 
@@ -84,7 +85,7 @@ export const PointIconLayer = memo(function PointIconLayer(props: PointIconLayer
   const rawRef = useRef<any>(null);
   // 事件 handler 用 ref 存最新：handler 引用每次 render 变化时不重绑、不重建图层，
   // 绑定一次、调用时读最新（避免内联 onClick 导致重复挂载或闪烁）。
-  const handlersRef = useLatest({ onClick: props.onClick, onRightClick: props.onRightClick, onMouseOver: props.onMouseOver, onMouseOut: props.onMouseOut, onMouseMove: props.onMouseMove });
+  const handlersRef = useLatest({ onClick: props.onClick, onDblClick: props.onDblClick, onRightClick: props.onRightClick, onMouseMove: props.onMouseMove });
 
   // style + constructor 选项变化时重建
   const styleKey = style ? JSON.stringify(style) : '';
