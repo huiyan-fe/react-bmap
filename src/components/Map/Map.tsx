@@ -44,6 +44,12 @@ export interface MapProps {
   enableTilt?: boolean;
   enableTiltGestures?: boolean;
   enableAutoResize?: boolean;
+  /**
+   * 开启点击底图标注后自动展示信息窗口，同时会开启底图标注点击。
+   * 3.0 下没有自动弹窗能力，等价转发到 enableMapClick/disableMapClick（只让图标
+   * 可点击，不会弹出信息窗），是能力降级而非等价实现。
+   */
+  enableIconInfoWindow?: boolean;
   // 缩放范围
   minZoom?: number;
   maxZoom?: number;
@@ -115,7 +121,7 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     enableDragging, enableInertialDragging, enableScrollWheelZoom, enableContinuousZoom,
     enableResizeOnCenter, enableDoubleClickZoom, enableKeyboard, enablePinchToZoom,
     enableRotate, enableRotateGestures, enableTilt: enableTiltProp, enableTiltGestures,
-    enableAutoResize,
+    enableAutoResize, enableIconInfoWindow,
     minZoom, maxZoom, bounds, mapType, defaultCursor, draggingCursor, theme,
     onReady, onCenterChange, onZoomChange, onHeadingChange, onTiltChange,
     onClick, onDblClick, onRightClick, onMouseMove, onMouseDown, onMouseUp, onMouseOver, onMouseOut,
@@ -352,6 +358,7 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   toggleEffect(enableTiltProp, () => driver!.enableTilt(map!), () => driver!.disableTilt(map!));
   toggleEffect(enableTiltGestures, () => driver!.enableTiltGestures(map!), () => driver!.disableTiltGestures(map!));
   toggleEffect(enableAutoResize, () => driver!.enableAutoResize(map!), () => driver!.disableAutoResize(map!));
+  toggleEffect(enableIconInfoWindow, () => driver!.enableIconInfoWindow(map!), () => driver!.disableIconInfoWindow(map!));
 
   // ─── 缩放范围 ───
   useLayoutEffect(() => {

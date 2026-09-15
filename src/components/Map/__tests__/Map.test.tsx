@@ -92,6 +92,25 @@ describe('Map 编排', () => {
     expect(driver.disableScrollWheelZoom).toHaveBeenCalled();
   });
 
+  it('交互开关：enableIconInfoWindow=true 调 enable，切 false 调 disable', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const { rerender } = renderInBMapContext(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} enableIconInfoWindow>
+        <div>c</div>
+      </Map>,
+      { driver },
+    );
+    act(() => { driver.__emit('tilesloaded'); });
+    expect(driver.enableIconInfoWindow).toHaveBeenCalled();
+    expect(driver.disableIconInfoWindow).not.toHaveBeenCalled();
+    rerender(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} enableIconInfoWindow={false}>
+        <div>c</div>
+      </Map>,
+    );
+    expect(driver.disableIconInfoWindow).toHaveBeenCalled();
+  });
+
   it('卸载时完整清理：destroyMap 被调用，事件退订', () => {
     const driver = makeFakeDriver({ loaded: true });
     const { unmount } = renderInBMapContext(

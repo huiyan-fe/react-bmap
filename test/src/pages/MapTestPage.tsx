@@ -151,6 +151,7 @@ export function MapTestPage() {
   const [tiltEnable, setTiltEnable] = useState<boolean | undefined>(undefined);
   const [tiltGestures, setTiltGestures] = useState<boolean | undefined>(undefined);
   const [autoResize, setAutoResize] = useState<boolean | undefined>(undefined);
+  const [iconInfoWindow, setIconInfoWindow] = useState<boolean | undefined>(undefined);
 
   // 其它受控
   const [minZoom, setMinZoom] = useState<number | undefined>(undefined);
@@ -255,6 +256,7 @@ export function MapTestPage() {
     ['enableTilt', tiltEnable, setTiltEnable],
     ['enableTiltGestures', tiltGestures, setTiltGestures],
     ['enableAutoResize', autoResize, setAutoResize],
+    ['enableIconInfoWindow', iconInfoWindow, setIconInfoWindow],
   ];
 
   const resetAllInteractions = () => {
@@ -729,6 +731,7 @@ export function MapTestPage() {
           enableTilt={tiltEnable}
           enableTiltGestures={tiltGestures}
           enableAutoResize={autoResize}
+          enableIconInfoWindow={iconInfoWindow}
           minZoom={minZoom}
           maxZoom={maxZoom}
           mapType={mapType}

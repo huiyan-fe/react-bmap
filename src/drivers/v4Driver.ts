@@ -478,6 +478,8 @@ export function createV4Driver(
     disableTiltGestures: (map) => callRaw('Map.disableTiltGestures', () => rawMap(map).disableTiltGestures()),
     enableAutoResize: (map) => callRaw('Map.enableAutoResize', () => rawMap(map).enableAutoResize()),
     disableAutoResize: (map) => callRaw('Map.disableAutoResize', () => rawMap(map).disableAutoResize()),
+    enableIconInfoWindow: (map) => callRaw('Map.enableIconInfoWindow', () => rawMap(map).enableIconInfoWindow()),
+    disableIconInfoWindow: (map) => callRaw('Map.disableIconInfoWindow', () => rawMap(map).disableIconInfoWindow()),
 
     // ─────────────── 3. 视角 ───────────────
     setHeading: (map, h, o) => callRaw('Map.setHeading', () => rawMap(map).setHeading(h, o)),

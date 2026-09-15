@@ -149,6 +149,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'enableTilt', type: 'boolean', required: false, description: '启用倾斜（4.0+）' },
     { name: 'enableTiltGestures', type: 'boolean', required: false, description: '启用倾斜手势（4.0+）' },
     { name: 'enableAutoResize', type: 'boolean', required: false, description: '启用容器尺寸变化自适应' },
+    { name: 'enableIconInfoWindow', type: 'boolean', required: false, description: '开启点击底图标注后自动展示信息窗口，同时会开启底图标注点击；3.0 下等价于 enableMapClick' },
     { name: 'className', type: 'string', required: false, description: '容器 class' },
     { name: 'style', type: 'CSSProperties', required: false, description: '容器样式' },
     { name: 'errorFallback', type: 'ReactNode', required: false, description: '加载失败时的替代内容' },

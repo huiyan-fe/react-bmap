@@ -8,7 +8,7 @@ describe('CAPABILITY_MATRIX', () => {
   });
 
   it('全版本共有能力在两套矩阵里都存在', () => {
-    for (const cap of ['Map', 'Map.setCenter', 'Marker', 'NavigationControl', 'LocalSearch']) {
+    for (const cap of ['Map', 'Map.setCenter', 'Marker', 'NavigationControl', 'LocalSearch', 'Map.enableIconInfoWindow', 'Map.disableIconInfoWindow']) {
       expect(CAPABILITY_MATRIX['3.0'].has(cap)).toBe(true);
       expect(CAPABILITY_MATRIX['4.0'].has(cap)).toBe(true);
     }
