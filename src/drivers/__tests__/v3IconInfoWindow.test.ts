@@ -3,7 +3,7 @@ import { createDriver } from '../createDriver';
 import type { MapHandle } from '../../types';
 
 describe('v3Driver.enableIconInfoWindow/disableIconInfoWindow 转发到 enableMapClick/disableMapClick', () => {
-  it('enableIconInfoWindow 调用 raw.enableMapClick（3.0 没有自动弹窗能力，只能让图标可点击）', () => {
+  it('enableIconInfoWindow 调用 raw.enableMapClick（enableMapClick 内部会自动弹出信息窗，效果与 4.0 基本一致）', () => {
     const calls: string[] = [];
     const rawMap = {
       enableMapClick: () => calls.push('enableMapClick'),

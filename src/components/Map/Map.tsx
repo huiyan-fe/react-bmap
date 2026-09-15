@@ -46,8 +46,8 @@ export interface MapProps {
   enableAutoResize?: boolean;
   /**
    * 开启点击底图标注后自动展示信息窗口，同时会开启底图标注点击。
-   * 3.0 下没有自动弹窗能力，等价转发到 enableMapClick/disableMapClick（只让图标
-   * 可点击，不会弹出信息窗），是能力降级而非等价实现。
+   * 3.0 下等价转发到 enableMapClick/disableMapClick，其内部会自动弹出信息窗，
+   * 效果与 4.0 基本一致。
    */
   enableIconInfoWindow?: boolean;
   // 缩放范围

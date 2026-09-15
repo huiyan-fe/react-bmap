@@ -211,10 +211,11 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     disableTiltGestures: () => reportUnsupported('Map.disableTiltGestures', version, behavior),
     enableResizeOnCenter: () => reportUnsupported('Map.enableResizeOnCenter', version, behavior),
     disableResizeOnCenter: () => reportUnsupported('Map.disableResizeOnCenter', version, behavior),
-    // 3.0 没有"点击后自动弹出信息窗"的能力，只有 enableMapClick/disableMapClick 控制
-    // 底图标注是否可点击（对照 jsapi-core-3-0/src/scripts/bmap/Map.js:990-1011）。
-    // 这里转发到 enableMapClick 只能让图标变为可点击，不会弹窗，与 4.0 下
-    // enableIconInfoWindow 真正弹出信息窗的效果不完全对等，是能力降级而非等价实现。
+    // 3.0 没有独立的 enableIconInfoWindow API，但 enableMapClick 内部会异步加载
+    // mapclick 模块（对照 jsapi-core-3-0/src/scripts/bmap/services/Mapclick/
+    // Mapclick_Impl.js:441-475），点击底图标注时本身就会创建 InfoWindow 并弹出，
+    // 所以转发到 enableMapClick/disableMapClick 后效果与 4.0 基本等价（点击可点、
+    // 自动弹窗），不是能力降级。
     enableIconInfoWindow: (map) => { (map.raw as any).enableMapClick?.(); },
     disableIconInfoWindow: (map) => { (map.raw as any).disableMapClick?.(); },
     setTheme: () => reportUnsupported('Map.setTheme', version, behavior),

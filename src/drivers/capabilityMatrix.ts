@@ -113,9 +113,9 @@ const COMMON: Capability[] = [
   'Map.enableContinuousZoom', 'Map.disableContinuousZoom',
   'Map.enablePinchToZoom', 'Map.disablePinchToZoom',
   'Map.enableAutoResize', 'Map.disableAutoResize',
-  // enableIconInfoWindow/disableIconInfoWindow：全版本可调用，但 3.0 下只等价于
-  // enableMapClick/disableMapClick（只让图标可点击，不会弹出信息窗），是能力降级
-  // 而非等价实现，因此归入"全版本"而不是"4.0-only"，避免 v3 下被判定为不支持。
+  // enableIconInfoWindow/disableIconInfoWindow：全版本可调用。3.0 下转发到
+  // enableMapClick/disableMapClick，其内部会异步加载 mapclick 模块，点击底图
+  // 标注本身就会创建并弹出 InfoWindow，效果与 4.0 基本等价，归入"全版本"。
   'Map.enableIconInfoWindow', 'Map.disableIconInfoWindow',
   'Map.clearOverlays', 'Map.getOverlays', 'Map.addOverlay', 'Map.removeOverlay',
   // 覆盖物（全版本）
