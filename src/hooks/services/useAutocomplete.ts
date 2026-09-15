@@ -17,8 +17,10 @@ export interface AutocompleteOptions {
   /** renderOptions.map 非必传：`<Map>` 内部自动取当前地图，外层需显式传已就绪 handle；见 `useMap`/`useMapReady`。 */
   renderOptions?: { map?: unknown; panel?: string | HTMLElement };
   onSearchComplete?: (results: unknown) => void;
+  /** 用户选中某条建议项时触发（对应 SDK 构造项 onConfirm / 原生 onconfirm 事件） */
   onConfirm?: (item: unknown) => void;
-  onHighlight?: (item: unknown) => void;
+  /** 高亮项变化时触发（current, previous）（对应 SDK 构造项 onHighlight / 原生 onhighlight 事件） */
+  onHighlight?: (current: unknown, previous?: unknown) => void;
 }
 
 export interface AutocompleteHookResult {
@@ -52,8 +54,11 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
   useEffect(() => {
     if (!driver) return;
     const searchOpts: Record<string, unknown> = {};
+    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.Autocomplete({location: map}) 一致）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
+    } else if (renderMap) {
+      searchOpts.location = unwrapHandle(renderMap);
     }
     if (opts.types !== undefined) searchOpts.types = opts.types;
     if (opts.input !== undefined) searchOpts.input = opts.input;
@@ -64,6 +69,17 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
       searchOpts.renderOptions = ro;
     }
     searchOpts.onSearchComplete = (results: unknown) => { cbRef.current?.(results); callbacksRef.current.onSearchComplete?.(results); };
+    // onConfirm / onHighlight 走 4.0 推荐的构造项（addEventListener('onconfirm') 已废弃）；
+    // 用 callbacksRef 转发最新 handler，换回调无需重建实例。
+    searchOpts.onConfirm = (e: unknown) => {
+      // 归一化确认事件：构造项 onConfirm 传的是选中项本身（含 value），
+      // 而 addEventListener('onconfirm') 传的是 e.item.value。统一补齐成
+      // { ...e, value, item: { value } }，让上层始终可用 e.item.value / e.value。
+      const ev = (e && typeof e === 'object' ? e : {}) as Record<string, unknown>;
+      const value = (ev.item as { value?: unknown } | undefined)?.value ?? ev.value ?? e;
+      callbacksRef.current.onConfirm?.({ ...ev, value, item: ev.item ?? { value } });
+    };
+    searchOpts.onHighlight = (current: unknown, previous?: unknown) => callbacksRef.current.onHighlight?.(current, previous);
 
     const handle = driver.createAutocomplete(searchOpts);
     if (handle.isNull) {

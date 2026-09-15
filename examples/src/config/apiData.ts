@@ -700,13 +700,20 @@ export const API_DATA: Record<string, ApiProp[]> = {
   ],
   'driving-route': [
     { name: 'policy', type: 'number', required: false, description: '驾车策略（BMAP_DRIVING_POLICY_*）' },
+    { name: 'alternatives', type: 'boolean', required: false, description: '同时返回多条备选路线（SDK 构造项 alternatives，类型包未声明但运行时生效；仅驾车），2.0.2 新增' },
+    { name: 'renderOptions.enableDragging', type: 'boolean', required: false, description: '拖拽起终点重新规划（仅驾车/公交/货车；步行骑行 SDK 内部强制关闭），2.0.2 新增' },
     ...routeCommon,
   ],
   'walking-route': routeCommon,
   'riding-route': routeCommon,
   'transit-route': [
-    { name: 'policy', type: 'number', required: false, description: '公交策略（BMAP_TRANSIT_POLICY_*）' },
+    { name: 'policy', type: 'number', required: false, description: '市内公交换乘策略（BMAP_TRANSIT_POLICY_*）' },
+    { name: 'intercityPolicy', type: 'number', required: false, description: '跨城公交换乘策略（BMAP_INTERCITY_POLICY_*）；对应 setIntercityPolicy，2.0.2 新增' },
+    { name: 'transitTypePolicy', type: 'number', required: false, description: '跨城交通方式：火车/飞机/大巴（BMAP_TRANSIT_TYPE_POLICY_*）；对应 setTransitTypePolicy，2.0.2 新增' },
     ...routeCommon,
+    { name: '返回值.setPageCapacity()', type: '(n: number) => void', required: false, description: '设置每页方案数（1-5）' },
+    { name: '返回值.setIntercityPolicy()', type: '(policy: number) => void', required: false, description: '运行时设置跨城换乘策略，2.0.2 新增' },
+    { name: '返回值.setTransitTypePolicy()', type: '(policy: number) => void', required: false, description: '运行时设置跨城交通方式（火车/飞机/大巴），2.0.2 新增' },
   ],
 
   'bus-line-search': [
@@ -721,8 +728,8 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'input', type: 'string | HTMLElement', required: false, description: '绑定的 input 元素或其 id' },
     { name: 'renderOptions', type: '{ map?, panel? }', required: false, description: '渲染选项。map 非必传：hook 在 <Map> 内部自动取当前地图，外层才需显式传已就绪 handle（2.0.2 起）' },
     { name: 'onSearchComplete', type: '(results: unknown) => void', required: false, description: '检索完成回调' },
-    { name: 'onConfirm', type: '(item: unknown) => void', required: false, description: '选中某条建议时回调' },
-    { name: 'onHighlight', type: '(item: unknown) => void', required: false, description: '高亮某条建议时回调' },
+    { name: 'onConfirm', type: '(item: unknown) => void', required: false, description: '选中某条建议时回调（2.0.2 起真正接线到 SDK 构造项 onConfirm）' },
+    { name: 'onHighlight', type: '(current, previous?) => void', required: false, description: '高亮项变化时回调（2.0.2 起真正接线到 SDK 构造项 onHighlight）' },
   ],
   // useBoundary() 不接受任何参数，下表是返回值上的方法与状态
   boundary: [

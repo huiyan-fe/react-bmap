@@ -12,7 +12,9 @@ import { getSDK } from '../../utils/sdk';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
 import type { DrivingRouteResult } from '../../types/results';
 
-export type RidingRouteOptions = Omit<DrivingRouteOptions, 'policy'>;
+// 骑行不支持 policy / alternatives（SDK RidingRoute 构造函数不读 alternatives，
+// 且强制 this._enableDragging=false，故 renderOptions.enableDragging 对骑行无效）。
+export type RidingRouteOptions = Omit<DrivingRouteOptions, 'policy' | 'alternatives'>;
 export type RidingRouteHookResult = Omit<DrivingRouteHookResult, 'setPolicy'> & { setPolicy?: never };
 
 export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): RidingRouteHookResult {
@@ -37,8 +39,11 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
     if (renderMap) ro.map = unwrapHandle(renderMap);
     const searchOpts: Record<string, unknown> = {};
+    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.RidingRoute(map, ...) 一致）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
+    } else if (renderMap) {
+      searchOpts.location = unwrapHandle(renderMap);
     }
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
     searchOpts.onSearchComplete = (results: unknown) => { searchCbRef.current?.(results); };

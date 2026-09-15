@@ -13,7 +13,8 @@ import { getSDK } from '../../utils/sdk';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
 import type { DrivingRouteResult } from '../../types/results';
 
-export type TruckRouteOptions = DrivingRouteOptions;
+// 货车不支持 alternatives（SDK TruckRoute 构造函数不读 alternatives，仅 DrivingRoute 支持）。
+export type TruckRouteOptions = Omit<DrivingRouteOptions, 'alternatives'>;
 export type TruckRouteHookResult = DrivingRouteHookResult & { setPageCapacity: (n: number) => void };
 
 export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckRouteHookResult {
@@ -38,8 +39,11 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
     if (renderMap) ro.map = unwrapHandle(renderMap);
     const searchOpts: Record<string, unknown> = {};
+    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.TruckRoute(map, ...) 一致）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
+    } else if (renderMap) {
+      searchOpts.location = unwrapHandle(renderMap);
     }
     if (opts.policy !== undefined) searchOpts.policy = opts.policy;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;

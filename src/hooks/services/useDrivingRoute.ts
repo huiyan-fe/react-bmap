@@ -31,11 +31,25 @@ export interface DrivingRouteRenderOptions {
   selectFirstResult?: boolean;
   autoViewport?: boolean;
   viewportOptions?: { noAnimation?: boolean; margins?: number[]; zoomFactor?: number };
+  /**
+   * 拖拽起终点重新规划（仅驾车/公交/货车生效；步行、骑行 SDK 内部强制关闭）。
+   * 类型包未声明，但运行时 renderOptions.enableDragging 真实生效。2.0.2 新增。
+   */
+  enableDragging?: boolean;
 }
 
 export interface DrivingRouteOptions {
+  /**
+   * 检索上下文（城市/坐标/地图）。**非必传**：缺省时自动回退到当前 `<Map>`（或 `renderOptions.map`）——
+   * 与原生 `new BMap.DrivingRoute(map, {...})` 把 map 当第一参数一致。只在需要指定特定城市时才显式传。
+   */
   location?: string | MapHandle;
   policy?: number;
+  /**
+   * 是否同时返回多条备选路线（对应 SDK DrivingRoute 构造项 alternatives）。
+   * 类型包未声明，但运行时确有此项；开启后结果 plan 会含多条路线。仅驾车支持。2.0.2 新增。
+   */
+  alternatives?: boolean;
   renderOptions?: DrivingRouteRenderOptions;
   onSearchComplete?: (results: DrivingRouteResult) => void;
   onMarkersSet?: (pois: unknown[]) => void;
@@ -74,7 +88,7 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
   });
 
   const locKey = stableStringify(opts.location);
-  const optKey = stableStringify({ policy: opts.policy, ro: opts.renderOptions });
+  const optKey = stableStringify({ policy: opts.policy, alternatives: opts.alternatives, ro: opts.renderOptions });
 
   useEffect(() => {
     if (!driver) return;
@@ -83,10 +97,14 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     if (renderMap) ro.map = unwrapHandle(renderMap);
 
     const searchOpts: Record<string, unknown> = {};
+    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.DrivingRoute(map, ...) 一致）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
+    } else if (renderMap) {
+      searchOpts.location = unwrapHandle(renderMap);
     }
     if (opts.policy !== undefined) searchOpts.policy = opts.policy;
+    if (opts.alternatives !== undefined) searchOpts.alternatives = opts.alternatives;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
     searchOpts.onSearchComplete = (results: unknown) => { searchCbRef.current?.(results); };
     if (callbacksRef.current.onMarkersSet) searchOpts.onMarkersSet = (pois: unknown[]) => callbacksRef.current.onMarkersSet?.(pois);

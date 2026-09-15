@@ -13,8 +13,20 @@ import { getSDK } from '../../utils/sdk';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
 import type { DrivingRouteResult } from '../../types/results';
 
-export type TransitRouteOptions = DrivingRouteOptions;
-export type TransitRouteHookResult = DrivingRouteHookResult & { setPageCapacity: (n: number) => void };
+// 公交不支持 alternatives（仅 DrivingRoute 支持）；额外提供跨城策略/交通方式。
+export type TransitRouteOptions = Omit<DrivingRouteOptions, 'alternatives'> & {
+  /** 跨城公交换乘策略（BMAP_INTERCITY_POLICY_*） */
+  intercityPolicy?: number;
+  /** 跨城公交交通方式（BMAP_TRANSIT_TYPE_POLICY_*：火车/飞机/大巴） */
+  transitTypePolicy?: number;
+};
+export type TransitRouteHookResult = DrivingRouteHookResult & {
+  setPageCapacity: (n: number) => void;
+  /** 设置跨城换乘策略 */
+  setIntercityPolicy: (policy: number) => void;
+  /** 设置跨城交通方式（火车/飞机/大巴） */
+  setTransitTypePolicy: (policy: number) => void;
+};
 
 export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): TransitRouteHookResult {
   const { driver } = useBMapContext();
@@ -30,7 +42,7 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
   });
 
   const locKey = stableStringify(opts.location);
-  const optKey = stableStringify({ policy: opts.policy, ro: opts.renderOptions });
+  const optKey = stableStringify({ policy: opts.policy, intercityPolicy: opts.intercityPolicy, transitTypePolicy: opts.transitTypePolicy, ro: opts.renderOptions });
 
   useEffect(() => {
     if (!driver) return;
@@ -38,10 +50,15 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
     if (renderMap) ro.map = unwrapHandle(renderMap);
     const searchOpts: Record<string, unknown> = {};
+    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.TransitRoute(map, ...) 一致）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
+    } else if (renderMap) {
+      searchOpts.location = unwrapHandle(renderMap);
     }
     if (opts.policy !== undefined) searchOpts.policy = opts.policy;
+    if (opts.intercityPolicy !== undefined) searchOpts.intercityPolicy = opts.intercityPolicy;
+    if (opts.transitTypePolicy !== undefined) searchOpts.transitTypePolicy = opts.transitTypePolicy;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
     searchOpts.onSearchComplete = (results: unknown) => { searchCbRef.current?.(results); };
     if (callbacksRef.current.onMarkersSet) searchOpts.onMarkersSet = (pois: unknown[]) => callbacksRef.current.onMarkersSet?.(pois);
@@ -104,11 +121,13 @@ export function useTransitRoute<T = unknown>(opts: TransitRouteOptions = {}): Tr
   const disableAutoViewport = useCallback(() => { rawRef.current?.disableAutoViewport?.(); }, []);
   const setPolicy = useCallback((p: number) => { rawRef.current?.setPolicy?.(p); }, []);
   const setPageCapacity = useCallback((n: number) => { rawRef.current?.setPageCapacity?.(n); }, []);
+  const setIntercityPolicy = useCallback((p: number) => { rawRef.current?.setIntercityPolicy?.(p); }, []);
+  const setTransitTypePolicy = useCallback((p: number) => { rawRef.current?.setTransitTypePolicy?.(p); }, []);
   const setLocation = useCallback((location: unknown) => {
     rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);
 
-  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setPageCapacity, setLocation, getStatus, cancel };
+  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setPageCapacity, setIntercityPolicy, setTransitTypePolicy, setLocation, getStatus, cancel };
 }

@@ -46,7 +46,7 @@ export interface LocalSearchRenderOptions {
 }
 
 export interface LocalSearchOptions {
-  /** 搜索城市/区域，可为字符串、Point 或 Map */
+  /** 搜索城市/区域，可为字符串、Point 或 Map。**非必传**：缺省时自动回退到当前 `<Map>`（或 `renderOptions.map`），与原生 `new BMap.LocalSearch(map, {...})` 一致 */
   location?: string | Point | { __brand: string; raw: unknown };
   /** 每页结果数（1-100） */
   pageCapacity?: number;
@@ -118,8 +118,10 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     if (opts.pageNum !== undefined) searchOpts.pageNum = opts.pageNum;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
 
-    // 解包 location
-    const loc: unknown = unwrapHandle(opts.location ?? '');
+    // 解包 location；缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.LocalSearch(map, ...) 一致）
+    const loc: unknown = opts.location !== undefined
+      ? unwrapHandle(opts.location)
+      : (renderMap ? unwrapHandle(renderMap) : '');
 
     const handle = driver.createLocalSearch(loc, Object.keys(searchOpts).length > 0 ? searchOpts : undefined);
     svcRef.current = handle;

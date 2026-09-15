@@ -51,8 +51,11 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
     if (renderMap) ro.map = unwrapHandle(renderMap);
     const searchOpts: Record<string, unknown> = {};
+    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.BusLineSearch(map, ...) 一致）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
+    } else if (renderMap) {
+      searchOpts.location = unwrapHandle(renderMap);
     }
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
     // 构造时注册回调 — 通过 ref 调用最新回调
