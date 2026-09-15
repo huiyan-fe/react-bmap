@@ -246,3 +246,17 @@ export const BMAP_LINE_TYPE_TRAIN = 3;
 export const BMAP_LINE_TYPE_AIRPLANE = 4;
 export const BMAP_LINE_TYPE_COACH = 5;
 export type LineType = 0 | 1 | 2 | 3 | 4 | 5;
+
+// ─── Panorama POIType（4.0；Panorama.setPanoramaPOIType 用）───
+export const BMAP_PANORAMA_POI_HOTEL = 'hotel';
+export const BMAP_PANORAMA_POI_CATERING = 'catering';
+export const BMAP_PANORAMA_POI_MOVIE = 'movie';
+export const BMAP_PANORAMA_POI_TRANSIT = 'transit';
+export const BMAP_PANORAMA_POI_INDOOR_SCENE = 'indoor_scene';
+export const BMAP_PANORAMA_POI_NONE = 'none';
+export type PanoramaPOIType = 'hotel' | 'catering' | 'movie' | 'transit' | 'indoor_scene' | 'none';
+
+// ─── Panorama SceneType（getSceneType 返回值）───
+export const BMAP_PANORAMA_STREET_SCENE = 'street';
+export const BMAP_PANORAMA_INDOOR_SCENE = 'inter';
+export type PanoramaSceneType = 'street' | 'inter';

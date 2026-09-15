@@ -165,7 +165,7 @@ export type { ContextMenuProps, MenuItemProps } from './components/Menu';
 
 // ─── Panorama + PanoramaLabel ───
 export { Panorama, PanoramaLabel } from './components/Panorama';
-export type { PanoramaProps, PanoramaLabelProps } from './components/Panorama';
+export type { PanoramaProps, PanoramaLabelProps, PanoramaPov, PanoramaOptions, PanoramaRef } from './components/Panorama';
 
 // ─── Hooks ───
 export { useMap } from './hooks/useMap';

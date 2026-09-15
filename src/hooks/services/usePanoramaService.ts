@@ -1,6 +1,6 @@
 /**
  * usePanoramaService — 全景服务 Hook（手写）。
- * SDK 方法：getPanoramaById(id, callback) / getPanoramaByLocation(point, radius, callback)
+ * SDK 方法：getPanoramaById(id, cb) / getPanoramaByLocation(point, radius?, cb) / getPanoramaByPOIId(poiId, cb)
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
@@ -14,7 +14,10 @@ export interface PanoramaServiceHookResult {
   error: Error | null;
   supported: boolean;
   getPanoramaById: (id: string) => void;
-  getPanoramaByLocation: (point: Point, radius: number) => void;
+  /** radius 可选，缺省走 SDK 默认（约 50 米） */
+  getPanoramaByLocation: (point: Point, radius?: number) => void;
+  /** 按 POI id 查询全景（部分版本 SDK 支持；运行时不支持时置 error） */
+  getPanoramaByPOIId: (poiId: string) => void;
   cancel: () => void;
 }
 
@@ -59,12 +62,29 @@ export function usePanoramaService(): PanoramaServiceHookResult {
     });
   }, [doAction]);
 
-  const getPanoramaByLocation = useCallback((point: Point, radius: number) => {
+  const getPanoramaByLocation = useCallback((point: Point, radius?: number) => {
     const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
       const SDK = getSDK();
       const pt = new SDK.Point(point.lng, point.lat);
-      raw.getPanoramaByLocation?.(pt, radius, (data: any) => {
+      const cb = (data: any) => {
+        if (myRequestId !== requestIdRef.current) return;
+        setState({ data, loading: false, error: null, supported: true });
+      };
+      // radius 缺省时用二参重载，交给 SDK 默认半径
+      if (typeof radius === 'number') raw.getPanoramaByLocation?.(pt, radius, cb);
+      else raw.getPanoramaByLocation?.(pt, cb);
+    });
+  }, [doAction]);
+
+  const getPanoramaByPOIId = useCallback((poiId: string) => {
+    const myRequestId = ++requestIdRef.current;
+    doAction((raw) => {
+      if (typeof raw.getPanoramaByPOIId !== 'function') {
+        setState(s => ({ ...s, loading: false, error: new Error('getPanoramaByPOIId not supported by current SDK') }));
+        return;
+      }
+      raw.getPanoramaByPOIId(poiId, (data: any) => {
         if (myRequestId !== requestIdRef.current) return;
         setState({ data, loading: false, error: null, supported: true });
       });
@@ -76,5 +96,5 @@ export function usePanoramaService(): PanoramaServiceHookResult {
     setState(s => ({ ...s, loading: false }));
   }, []);
 
-  return { ...state, getPanoramaById, getPanoramaByLocation, cancel };
+  return { ...state, getPanoramaById, getPanoramaByLocation, getPanoramaByPOIId, cancel };
 }

@@ -1389,6 +1389,8 @@ export function createV4Driver(
       const labelOpts: Record<string, unknown> = {};
       if (opts?.position) labelOpts.position = toRawPoint(rawSDK, opts.position as Point);
       if (typeof opts?.altitude === 'number') labelOpts.altitude = opts.altitude;
+      if (typeof opts?.displayDistance === 'boolean') labelOpts.displayDistance = opts.displayDistance;
+      if (opts?.customStyle) labelOpts.customStyle = opts.customStyle;
       return createOverlayFactory('PanoramaLabel', () => new rawSDK.PanoramaLabel(content, labelOpts), 'panoramaLabel');
     },
     destroyPanorama: (handle) => { try { rawOf(handle).destroy?.(); } catch { /* ignore */ } },
