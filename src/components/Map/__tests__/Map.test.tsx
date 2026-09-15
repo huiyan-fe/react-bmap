@@ -111,6 +111,25 @@ describe('Map 编排', () => {
     expect(driver.disableIconInfoWindow).toHaveBeenCalled();
   });
 
+  it('enablePreferredLanguage：传字符串调 enable，传 false 调 disable', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const { rerender } = renderInBMapContext(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} enablePreferredLanguage="en">
+        <div>c</div>
+      </Map>,
+      { driver },
+    );
+    act(() => { driver.__emit('tilesloaded'); });
+    expect(driver.enablePreferredLanguage).toHaveBeenCalledWith(expect.anything(), 'en');
+    expect(driver.disablePreferredLanguage).not.toHaveBeenCalled();
+    rerender(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} enablePreferredLanguage={false}>
+        <div>c</div>
+      </Map>,
+    );
+    expect(driver.disablePreferredLanguage).toHaveBeenCalled();
+  });
+
   it('卸载时完整清理：destroyMap 被调用，事件退订', () => {
     const driver = makeFakeDriver({ loaded: true });
     const { unmount } = renderInBMapContext(

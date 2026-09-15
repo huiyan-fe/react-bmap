@@ -91,6 +91,9 @@ export interface BMapDriver {
   /** 开启点击底图标注后自动展示信息窗口，同时会开启底图标注点击（4.0+） */
   enableIconInfoWindow(map: MapHandle): void;
   disableIconInfoWindow(map: MapHandle): void;
+  /** 启用首选语言，language 使用 BMAP_LANGUAGE_* 常量（4.0+） */
+  enablePreferredLanguage(map: MapHandle, language?: string): void;
+  disablePreferredLanguage(map: MapHandle): void;
 
   // ─────────────── 3. 视角（4.0+） ───────────────
   setHeading(map: MapHandle, heading: number, options?: unknown): void;

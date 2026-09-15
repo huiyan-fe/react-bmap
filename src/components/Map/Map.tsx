@@ -50,6 +50,11 @@ export interface MapProps {
    * 效果与 4.0 基本一致。
    */
   enableIconInfoWindow?: boolean;
+  /**
+   * 启用首选语言（4.0+，3.0 不支持）。传 BMAP_LANGUAGE_* 常量；
+   * false 或 undefined 均表示不主动启用/不控制，false 时会调用 disablePreferredLanguage。
+   */
+  enablePreferredLanguage?: string | false;
   // 缩放范围
   minZoom?: number;
   maxZoom?: number;
@@ -121,7 +126,7 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     enableDragging, enableInertialDragging, enableScrollWheelZoom, enableContinuousZoom,
     enableResizeOnCenter, enableDoubleClickZoom, enableKeyboard, enablePinchToZoom,
     enableRotate, enableRotateGestures, enableTilt: enableTiltProp, enableTiltGestures,
-    enableAutoResize, enableIconInfoWindow,
+    enableAutoResize, enableIconInfoWindow, enablePreferredLanguage,
     minZoom, maxZoom, bounds, mapType, defaultCursor, draggingCursor, theme,
     onReady, onCenterChange, onZoomChange, onHeadingChange, onTiltChange,
     onClick, onDblClick, onRightClick, onMouseMove, onMouseDown, onMouseUp, onMouseOver, onMouseOut,
@@ -359,6 +364,15 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   toggleEffect(enableTiltGestures, () => driver!.enableTiltGestures(map!), () => driver!.disableTiltGestures(map!));
   toggleEffect(enableAutoResize, () => driver!.enableAutoResize(map!), () => driver!.disableAutoResize(map!));
   toggleEffect(enableIconInfoWindow, () => driver!.enableIconInfoWindow(map!), () => driver!.disableIconInfoWindow(map!));
+
+  // ─── 首选语言（非 boolean，单独处理：undefined 不控制，false 关闭，字符串启用） ───
+  useLayoutEffect(() => {
+    if (!map || !driver || enablePreferredLanguage === undefined) return;
+    try {
+      if (enablePreferredLanguage === false) driver.disablePreferredLanguage(map);
+      else driver.enablePreferredLanguage(map, enablePreferredLanguage);
+    } catch { /* ignore */ }
+  }, [map, driver, enablePreferredLanguage]);
 
   // ─── 缩放范围 ───
   useLayoutEffect(() => {
