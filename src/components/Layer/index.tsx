@@ -217,20 +217,9 @@ export const PanoramaCoverageLayer = createLayerComponent<PanoramaCoverageLayerP
 
 // ─── 4.0+ 额外图层（SDK 运行时存在，dts 无完整定义） ───
 
-// LineLayer — 线图层（继承 NormalLayer）
-export interface LineLayerOptions {
-  style?: unknown;
-  idKey?: string;
-  crs?: string;
-  visible?: boolean;
-  opacity?: number;
-  minZoom?: number;
-  maxZoom?: number;
-  zIndex?: number;
-  enablePicked?: boolean;
-}
-export type LineLayerProps = LineLayerOptions;
-export const LineLayer = createLayerComponent<LineLayerProps>({ displayName: 'LineLayer', factory: (d, p) => d.createLineLayer(p) });
+// LineLayer — 手写组件（支持 data/setData + 运行时 setStyleOptions），见 LineLayer.tsx
+export { LineLayer } from './LineLayer';
+export type { LineLayerProps, LineLayerOptions, LineLayerStyle } from './LineLayer';
 
 // PixelLayer — 像素图层
 export interface PixelLayerOptions {

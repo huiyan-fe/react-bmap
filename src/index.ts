@@ -154,7 +154,7 @@ export type {
   RasterTileLayerOptions, WMSLayerOptions, WMTSLayerOptions, XYZLayerOptions, MVTLayerOptions,
   FeatureLayerOptions, FillLayerOptions, DOMLayerOptions, PointIconLayerOptions, PointShapeLayerOptions,
   LineLayerOptions, PixelLayerOptions, BaiduLayerOptions, ThreeLayerOptions,
-  FillLayerStyle, PointIconStyle, PointShapeStyle,
+  FillLayerStyle, PointIconStyle, PointShapeStyle, LineLayerStyle,
 } from './components/Layer';
 // ThreeLayer 的命令式句柄与生命周期回调类型
 export type { ThreeLayerRef, ThreeLayerInstance, ThreeLayerHook, ThreeObject } from './components/Layer';

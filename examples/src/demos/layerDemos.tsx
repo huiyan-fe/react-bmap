@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   GeoJSONLayer, DistrictLayer, TrafficLayer,
-  FillLayer, DOMLayer,
+  FillLayer, DOMLayer, LineLayer,
   PointIconLayer, PointShapeLayer, PanoramaCoverageLayer,
   ThreeLayer,
 } from 'react-bmap';
@@ -298,11 +298,65 @@ const layerRef = useRef<ThreeLayerRef>(null);
 // layerRef.current.add(mesh) / .remove(mesh) / .pick(x, y) / .triggerRepaint()`,
 });
 
-// ─── LineLayer / PixelLayer / BaiduLayer ───（暂时下掉）
-// 这三个是 4.0+ 的额外图层，wrapper 由 createLayerComponent 生成，
-// Options 只有 visible/opacity/minZoom/maxZoom/zIndex（LineLayer 多 style/idKey/crs/enablePicked），
-// 既没有 data 属性、也不向外暴露原始实例，所以拿不到 setData 的入口——
-// 写成 <LineLayer /> 只会得到一张空地图，不如不给页面。
-// 恢复条件：先给这三个 wrapper 补上 data（参考 FeatureLayer 的 `data?: object` + rawRef.current.setData?.(data)），
-// 再照 point-icon-layer 的写法补 demo，并在 examples/src/config/components.ts 里加回条目。
-// 对应的 API 表已经在 examples/src/config/apiData.ts 就位（'line-layer' 等），无需重写。
+// ─── LineLayer ───
+const LINE_DATA = {
+  type: 'FeatureCollection',
+  features: [
+    { type: 'Feature', geometry: { type: 'LineString', coordinates: [[116.35, 39.90], [116.40, 39.925], [116.45, 39.91], [116.50, 39.93]] }, properties: { id: 1 } },
+    { type: 'Feature', geometry: { type: 'LineString', coordinates: [[116.36, 39.95], [116.42, 39.94], [116.47, 39.96]] }, properties: { id: 2 } },
+  ],
+};
+
+const LineLayerDemo: React.FC = () => {
+  const [dashed, setDashed] = useState(false);
+  const [weight, setWeight] = useState(6);
+  const [colorIdx, setColorIdx] = useState(0);
+  const colors = ['#2a6cf6', '#e7515a', '#1aa179'];
+  // 改 style prop 即声明式更新，组件内部走运行时 setStyleOptions，不重建图层
+  const style = {
+    strokeColor: colors[colorIdx],
+    strokeWeight: weight,
+    strokeStyle: dashed ? 'dashed' : 'solid',
+    dashArray: [20, 14],
+    strokeLineCap: 'round',
+    strokeLineJoin: 'round',
+  };
+  return (
+    <MapContainer center={{ lng: 116.42, lat: 39.925 }} zoom={12} style={{ height: '100%' }}>
+      <LineLayer style={style} data={LINE_DATA as any} />
+      <div style={{ position: 'absolute', left: 12, top: 12, zIndex: 10, display: 'flex', gap: 8, background: 'rgba(255,255,255,0.9)', padding: 8, borderRadius: 6, boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }}>
+        <button onClick={() => setDashed(d => !d)}>{dashed ? '实线' : '虚线'}</button>
+        <button onClick={() => setWeight(w => (w >= 12 ? 6 : w + 2))}>加粗（{weight}）</button>
+        <button onClick={() => setColorIdx(i => (i + 1) % colors.length)}>换色</button>
+      </div>
+    </MapContainer>
+  );
+};
+registerDemo('line-layer', {
+  Component: LineLayerDemo,
+  code: `import { useState } from 'react';
+import { Map, LineLayer } from 'react-bmap';
+
+const data = { type: 'FeatureCollection', features: [
+  { type: 'Feature', geometry: { type: 'LineString', coordinates: [[116.35, 39.90], [116.40, 39.925], [116.45, 39.91]] }, properties: { id: 1 } },
+]};
+
+function Demo() {
+  const [dashed, setDashed] = useState(false);
+  // 改 style prop 即可动态更新，组件内部走运行时 setStyleOptions，不重建图层
+  const style = { strokeColor: '#2a6cf6', strokeWeight: 6, strokeStyle: dashed ? 'dashed' : 'solid', dashArray: [20, 14] };
+  return (
+    <Map center={{ lng: 116.42, lat: 39.925 }} zoom={12}>
+      <LineLayer style={style} data={data} />
+      <button onClick={() => setDashed(d => !d)}>切换虚线</button>
+    </Map>
+  );
+}`,
+});
+
+// ─── PixelLayer / BaiduLayer ───（暂时下掉）
+// 这两个是 4.0+ 的额外图层，wrapper 由 createLayerComponent 生成，
+// Options 只有 visible/opacity/minZoom/maxZoom/zIndex，既没有 data 属性、也不向外暴露原始实例，
+// 所以拿不到 setData 的入口——写成 <PixelLayer /> 只会得到一张空地图，不如不给页面。
+// 恢复条件：先给 wrapper 补上 data（参考 FeatureLayer 的 `data?: object` + rawRef.current.setData?.(data)），
+// 再照 line-layer 的写法补 demo，并在 examples/src/config/components.ts 里加回条目。

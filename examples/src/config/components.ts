@@ -55,6 +55,7 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'traffic-layer', name: 'TrafficLayer', category: 'Layer', description: '交通路况图层' },
   { id: 'fill-layer', name: 'FillLayer', category: 'Layer', description: '填充图层' },
   { id: 'dom-layer', name: 'DOMLayer', category: 'Layer', description: 'DOM 图层' },
+  { id: 'line-layer', name: 'LineLayer', category: 'Layer', description: '线图层（支持 data 渲染 + 运行时改样式）' },
   { id: 'point-icon-layer', name: 'PointIconLayer', category: 'Layer', description: '图标点图层' },
   { id: 'point-shape-layer', name: 'PointShapeLayer', category: 'Layer', description: '图形点图层' },
   { id: 'panorama-coverage-layer', name: 'PanoramaCoverageLayer', category: 'Layer', description: '全景覆盖图层' },
