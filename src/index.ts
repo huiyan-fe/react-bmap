@@ -37,6 +37,13 @@ export type { SymbolShapeType } from './constants';
 // 传给 Map.mapType / MapTypeControl 等 API 时不会生效，是本仓库的一个历史 bug。
 export { BMAP_NORMAL_MAP, BMAP_SATELLITE_MAP, BMAP_HYBRID_MAP, BMAP_EARTH_MAP } from './constants';
 export type { MapTypeId } from './constants';
+// PointShapeLayer 的 style.shapeType 常量（对应 SDK PointShapeLayer.ShapeType，4.0+）
+export {
+  BMAP_POINT_SHAPE_LAYER_CIRCLE, BMAP_POINT_SHAPE_LAYER_SQUARE, BMAP_POINT_SHAPE_LAYER_TRIANGLE,
+  BMAP_POINT_SHAPE_LAYER_DIAMOND, BMAP_POINT_SHAPE_LAYER_CROSS, BMAP_POINT_SHAPE_LAYER_ARROW,
+  BMAP_POINT_SHAPE_LAYER_ARROW_TAIL, BMAP_POINT_SHAPE_LAYER_STAR, BMAP_POINT_SHAPE_LAYER_WATERDROP,
+} from './constants';
+export type { PointShapeLayerShapeType } from './constants';
 
 // Context Hook（高级用法）
 export { useBMapContext } from './context/BMapContext';

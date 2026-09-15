@@ -160,6 +160,19 @@ export const BMAP_POINT_SHAPE_SQUARE = 4;
 export const BMAP_POINT_SHAPE_RHOMBUS = 5;
 export type ShapeType = 1 | 2 | 3 | 4 | 5;
 
+// ─── PointShapeLayer ShapeType（4.0+；对应 SDK PointShapeLayer.ShapeType）───
+// 用于 PointShapeLayer 的 style.shapeType（注意与上面 PointCollection 的 BMAP_POINT_SHAPE_* 取值不同）
+export const BMAP_POINT_SHAPE_LAYER_CIRCLE = 0;
+export const BMAP_POINT_SHAPE_LAYER_SQUARE = 1;
+export const BMAP_POINT_SHAPE_LAYER_TRIANGLE = 2;
+export const BMAP_POINT_SHAPE_LAYER_DIAMOND = 3;
+export const BMAP_POINT_SHAPE_LAYER_CROSS = 4;
+export const BMAP_POINT_SHAPE_LAYER_ARROW = 5;
+export const BMAP_POINT_SHAPE_LAYER_ARROW_TAIL = 6;
+export const BMAP_POINT_SHAPE_LAYER_STAR = 7;
+export const BMAP_POINT_SHAPE_LAYER_WATERDROP = 9;
+export type PointShapeLayerShapeType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 9;
+
 // ─── SizeType (PointCollection) ───
 export const BMAP_POINT_SIZE_TINY = 1;
 export const BMAP_POINT_SIZE_SMALLER = 2;
