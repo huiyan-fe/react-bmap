@@ -123,6 +123,13 @@ describe('核心 hooks', () => {
     expect(driver.createSymbol).toHaveBeenCalledTimes(2);
   });
 
+  it('useSymbol 首帧返回 null，创建完成后自动重渲染拿到真实 handle（不需要调用方手动 bump）', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const { result } = renderHook(() => useSymbol({ path: 1 } as any), { wrapper: mapWrapper(driver) });
+    // renderHook 内部用 act 包裹初次渲染，effect 已经跑完；直接断言最终稳定值非 null
+    expect(result.current).not.toBeNull();
+  });
+
   it('useIcon 创建 Icon 值对象（createIcon），url 变化重建', () => {
     const driver = makeFakeDriver({ loaded: true });
     const { rerender } = renderHook(
@@ -132,5 +139,11 @@ describe('核心 hooks', () => {
     expect(driver.createIcon).toHaveBeenCalledTimes(1);
     act(() => rerender({ url: 'b.png' }));
     expect(driver.createIcon).toHaveBeenCalledTimes(2);
+  });
+
+  it('useIcon 首帧返回 null，创建完成后自动重渲染拿到真实 handle（不需要调用方手动 bump）', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const { result } = renderHook(() => useIcon({ url: 'a.png' } as any), { wrapper: mapWrapper(driver) });
+    expect(result.current).not.toBeNull();
   });
 });

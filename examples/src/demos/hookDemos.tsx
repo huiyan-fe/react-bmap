@@ -351,9 +351,8 @@ function StatusBar() {
 });
 
 // ─── useSymbol ───
-// 注意：useSymbol 在 useLayoutEffect 里建好对象后写进 ref 再 `return ref.current`，
-// 不走 state，所以首帧一定是 null 且不会自动重渲染。
-// 想让 Marker 拿到它，必须自己触发一次额外渲染。
+// useSymbol 内部用 useState 存 handle，创建完成后自动触发一次重渲染，
+// 不需要调用方手写额外的 bump 逻辑；首帧仍然是 null（同步创建不了 SDK 对象）。
 const SymbolMarker: React.FC = () => {
   const symbol = useSymbol({
     path: BMap_Symbol_SHAPE_STAR,
@@ -363,8 +362,6 @@ const SymbolMarker: React.FC = () => {
     strokeColor: '#fff',
     strokeWeight: 2,
   });
-  const [, bump] = useState(0);
-  useEffect(() => { bump(1); }, []);
 
   if (!symbol) return null;
   return <Marker position={C} icon={symbol} />;
@@ -377,21 +374,17 @@ registerDemo('use-symbol', {
       <SymbolMarker />
     </MapContainer>
   ),
-  code: `import { useEffect, useState } from 'react';
-import { Map, Marker, useSymbol, BMap_Symbol_SHAPE_STAR } from 'react-bmap';
+  code: `import { Map, Marker, useSymbol, BMap_Symbol_SHAPE_STAR } from 'react-bmap';
 
 function StarMarker() {
   // path 变化会重建 Symbol，其余选项走 setOverlayOptions 原地更新。
+  // 首帧 symbol 为 null（SDK 对象要等 effect 里才建好），创建完成后
+  // useSymbol 会自动触发一次重渲染，这里判空一下即可，不需要手动补渲染。
   const symbol = useSymbol({
     path: BMap_Symbol_SHAPE_STAR,
     fillColor: '#f5222d', fillOpacity: 0.9, scale: 7,
     strokeColor: '#fff', strokeWeight: 2,
   });
-
-  // useSymbol 把结果存在 ref 里，首帧返回 null 且不会自己重渲染，
-  // 所以这里补一次渲染让 Marker 能拿到句柄。
-  const [, bump] = useState(0);
-  useEffect(() => { bump(1); }, []);
 
   if (!symbol) return null;
   return <Marker position={{ lng: 116.404, lat: 39.915 }} icon={symbol} />;
@@ -403,14 +396,12 @@ function StarMarker() {
 });
 
 // ─── useIcon ───
-// 和 useSymbol 同一套机制：ref + 首帧 null，需要补一次渲染。
+// 和 useSymbol 同一套机制，创建完成后自动重渲染，无需手动 bump。
 const IconMarker: React.FC = () => {
   const icon = useIcon({
     url: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png',
     size: { width: 48, height: 48 },
   });
-  const [, bump] = useState(0);
-  useEffect(() => { bump(1); }, []);
 
   if (!icon) return null;
   return <Marker position={C} icon={icon} />;
@@ -423,8 +414,7 @@ registerDemo('use-icon', {
       <IconMarker />
     </MapContainer>
   ),
-  code: `import { useEffect, useState } from 'react';
-import { Map, Marker, useIcon } from 'react-bmap';
+  code: `import { Map, Marker, useIcon } from 'react-bmap';
 
 // 只有一个 Marker 时直接写 <Marker icon={{ url, size }} /> 更省事；
 // useIcon 的价值是把同一个 Icon 实例复用给多个 Marker。
@@ -434,10 +424,7 @@ function IconMarkers({ points }) {
     size: { width: 48, height: 48 },
   });
 
-  // 同 useSymbol：结果存在 ref 里，首帧为 null，补一次渲染。
-  const [, bump] = useState(0);
-  useEffect(() => { bump(1); }, []);
-
+  // 首帧 icon 为 null，创建完成后自动触发重渲染，判空即可。
   if (!icon) return null;
   return points.map((p, i) => <Marker key={i} position={p} icon={icon} />);
 }
@@ -446,4 +433,3 @@ function IconMarkers({ points }) {
   <IconMarkers points={[{ lng: 116.404, lat: 39.915 }]} />
 </Map>`,
 });
-
