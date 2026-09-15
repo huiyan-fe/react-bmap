@@ -46,12 +46,11 @@ registerDemo('marker', {
 });
 
 // ─── Label ───
-// styles 是键值对形式的 CSS，直接写在 SDK 生成的 DOM 上，所以样式都在这里调
+// styles 是键值对形式的 CSS，直接写在 SDK 生成的 DOM 上，所以样式都在这里调。
+// Label 文字默认单行显示（whiteSpace:nowrap），宽度自适应内容，无需再设 width。
 const labelBase: Record<string, string | number> = {
   padding: '6px 12px',
   fontSize: 16,
-  lineHeight: '24px',
-  textAlign: 'center',
   borderRadius: 4,
   backgroundColor: '#fff',
   borderColor: '#ccc',
@@ -62,13 +61,13 @@ registerDemo('label', {
   title: '基础用法',
   Component: () => (
     <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
-      <Label position={C} content="天安门" width={120} styles={labelBase} />
+      <Label position={C} content="天安门" styles={labelBase} />
     </MapContainer>
   ),
   code: `import { Map, Label } from 'react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
-  <Label position={{ lng: 116.404, lat: 39.915 }} content="天安门" width={120}
+  <Label position={{ lng: 116.404, lat: 39.915 }} content="天安门"
     styles={{ padding: '6px 12px', fontSize: 16, borderRadius: 4,
       backgroundColor: '#fff', borderColor: '#ccc', color: '#333' }} />
 </Map>`,
@@ -81,40 +80,37 @@ registerDemo('label', {
       <Label
         position={C}
         content="天安门"
-        width={100}
-        offset={{ width: -50, height: -38 }}
+        offset={{ width: 8, height: -8 }}
         styles={{ ...labelBase, color: '#1890ff', borderColor: '#1890ff' }}
       />
       <Label
         position={{ lng: 116.44, lat: 39.915 }}
         content="王府井"
-        width={100}
-        offset={{ width: -50, height: -38 }}
+        offset={{ width: 8, height: -8 }}
         styles={{ ...labelBase, color: '#52c41a', borderColor: '#52c41a' }}
       />
       <Label
         position={{ lng: 116.38, lat: 39.885 }}
         content="前门"
-        width={100}
-        offset={{ width: -50, height: -38 }}
+        offset={{ width: 8, height: -8 }}
         styles={{ ...labelBase, color: '#fff', backgroundColor: '#1890ff', borderColor: '#1890ff' }}
       />
     </MapContainer>
   ),
   code: `import { Map, Label } from 'react-bmap';
 
-// offset 以 position 为基准偏移，负值可把标签挪到点位上方居中
+// Label 宽度自适应内容、文字单行；offset 相对 position 做像素偏移
 const base = { padding: '6px 12px', fontSize: 16, borderRadius: 4, backgroundColor: '#fff' };
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
-  <Label position={{ lng: 116.404, lat: 39.915 }} content="天安门" width={100}
-    offset={{ width: -50, height: -38 }}
+  <Label position={{ lng: 116.404, lat: 39.915 }} content="天安门"
+    offset={{ width: 8, height: -8 }}
     styles={{ ...base, color: '#1890ff', borderColor: '#1890ff' }} />
-  <Label position={{ lng: 116.44, lat: 39.915 }} content="王府井" width={100}
-    offset={{ width: -50, height: -38 }}
+  <Label position={{ lng: 116.44, lat: 39.915 }} content="王府井"
+    offset={{ width: 8, height: -8 }}
     styles={{ ...base, color: '#52c41a', borderColor: '#52c41a' }} />
-  <Label position={{ lng: 116.38, lat: 39.885 }} content="前门" width={100}
-    offset={{ width: -50, height: -38 }}
+  <Label position={{ lng: 116.38, lat: 39.885 }} content="前门"
+    offset={{ width: 8, height: -8 }}
     styles={{ ...base, color: '#fff', backgroundColor: '#1890ff', borderColor: '#1890ff' }} />
 </Map>`,
 });

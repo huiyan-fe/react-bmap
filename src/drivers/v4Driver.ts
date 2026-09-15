@@ -789,7 +789,13 @@ export function createV4Driver(
       if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
       if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
       if (typeof raw?.width === 'number' && raw.width > 0) ctorOpts.width = raw.width;
-      if (raw?.styles) ctorOpts.styles = raw.styles;
+      // SDK 的 OverlayInternal.setConfig 对 styles 是「整体替换」而非合并，用户传 styles 会覆盖掉
+      // Label 默认的 whiteSpace:'nowrap'（单行），导致文字变多行。这里在用户未显式指定 whiteSpace 时
+      // 补回 nowrap，保持与原生 JSAPI 一致的单行显示（用户仍可显式传 whiteSpace:'normal' 换行）。
+      if (raw?.styles && typeof raw.styles === 'object') {
+        const s = raw.styles as Record<string, unknown>;
+        ctorOpts.styles = ('whiteSpace' in s) ? s : { whiteSpace: 'nowrap', ...s };
+      }
       const hasOpts = Object.keys(ctorOpts).length > 0;
       return createOverlayFactory('Label', () =>
         hasOpts ? new rawSDK.Label(c, ctorOpts) : new rawSDK.Label(c),
