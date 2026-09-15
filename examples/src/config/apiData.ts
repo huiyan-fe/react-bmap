@@ -617,6 +617,11 @@ export const API_DATA: Record<string, ApiProp[]> = {
     ...layerData,
     ...layerCommon,
     ...layerPick,
+    { name: 'onClick', type: '(e: PointIconLayerEvent) => void', required: false, description: '点击要素（需 enablePicked）；e.value.dataItem.properties 为选中要素属性，2.0.2 新增' },
+    { name: 'onRightClick', type: '(e: PointIconLayerEvent) => void', required: false, description: '右键点击要素（需 enablePicked），2.0.2 新增' },
+    { name: 'onMouseOver', type: '(e: PointIconLayerEvent) => void', required: false, description: '鼠标移入要素（需 enablePicked），2.0.2 新增' },
+    { name: 'onMouseOut', type: '(e: PointIconLayerEvent) => void', required: false, description: '鼠标移出要素（需 enablePicked），2.0.2 新增' },
+    { name: 'onMouseMove', type: '(e: PointIconLayerEvent) => void', required: false, description: '鼠标在要素上移动（需 enablePicked），2.0.2 新增' },
   ],
   'point-shape-layer': [
     { name: 'style', type: 'PointShapeStyle', required: false, description: '图形样式，见下方 PointShapeStyle' },

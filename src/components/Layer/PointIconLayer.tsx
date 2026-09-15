@@ -14,7 +14,15 @@
  */
 import { memo, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMapContext } from '../../context/MapContext';
+import { useLatest } from '../../utils/useLatest';
 import { debugWarn } from '../../utils/debugWarn';
+
+/** 图层拾取事件对象（enablePicked=true 时点击/悬停命中要素） */
+export interface PointIconLayerEvent {
+  /** 命中的要素：value.dataItem.properties 为该点的属性 */
+  value?: { dataItem?: { properties?: Record<string, unknown>; [k: string]: unknown }; [k: string]: unknown };
+  [k: string]: unknown;
+}
 
 export interface PointIconStyle {
   icon?: string;
@@ -54,12 +62,29 @@ export interface PointIconLayerOptions {
 export interface PointIconLayerProps extends PointIconLayerOptions {
   /** GeoJSON 数据源，变化时调用 raw.setData() */
   data?: object;
+  /** 点击要素（需 enablePicked）。e.value.dataItem.properties 为选中要素属性 */
+  onClick?: (e: PointIconLayerEvent) => void;
+  onRightClick?: (e: PointIconLayerEvent) => void;
+  onMouseOver?: (e: PointIconLayerEvent) => void;
+  onMouseOut?: (e: PointIconLayerEvent) => void;
+  onMouseMove?: (e: PointIconLayerEvent) => void;
 }
+
+const LAYER_EVENTS: Array<{ sdk: string; prop: keyof PointIconLayerProps }> = [
+  { sdk: 'click', prop: 'onClick' },
+  { sdk: 'rightclick', prop: 'onRightClick' },
+  { sdk: 'mouseover', prop: 'onMouseOver' },
+  { sdk: 'mouseout', prop: 'onMouseOut' },
+  { sdk: 'mousemove', prop: 'onMouseMove' },
+];
 
 export const PointIconLayer = memo(function PointIconLayer(props: PointIconLayerProps) {
   const { isFlat, isFixed, style, idKey, crs, selectedIndex, selectedColor, visible, opacity, minZoom, maxZoom, zIndex, enablePicked, autoSelect, popEvent, pickWidth, pickHeight, data } = props;
   const { map, driver } = useMapContext();
   const rawRef = useRef<any>(null);
+  // 事件 handler 用 ref 存最新：handler 引用每次 render 变化时不重绑、不重建图层，
+  // 绑定一次、调用时读最新（避免内联 onClick 导致重复挂载或闪烁）。
+  const handlersRef = useLatest({ onClick: props.onClick, onRightClick: props.onRightClick, onMouseOver: props.onMouseOver, onMouseOut: props.onMouseOut, onMouseMove: props.onMouseMove });
 
   // style + constructor 选项变化时重建
   const styleKey = style ? JSON.stringify(style) : '';
@@ -91,11 +116,27 @@ export const PointIconLayer = memo(function PointIconLayer(props: PointIconLayer
     rawRef.current = (handle as any).raw;
     driver.addLayer(map, handle);
 
+    // 绑定图层事件：handler 走 handlersRef 读最新，绑定一次，随图层重建（ctorKey）重绑
+    const raw = rawRef.current;
+    const bound: Array<{ sdk: string; fn: (e: PointIconLayerEvent) => void }> = [];
+    if (raw && typeof raw.addEventListener === 'function') {
+      for (const { sdk, prop } of LAYER_EVENTS) {
+        const fn = (e: PointIconLayerEvent) => {
+          const h = handlersRef.current[prop as keyof typeof handlersRef.current];
+          if (typeof h === 'function') h(e);
+        };
+        try { raw.addEventListener(sdk, fn); bound.push({ sdk, fn }); } catch { /* ignore */ }
+      }
+    }
+
     if (data && rawRef.current) {
       try { rawRef.current.setData?.(data); } catch (e) { debugWarn('PointIconLayer.setData', e); }
     }
 
     return () => {
+      for (const { sdk, fn } of bound) {
+        try { raw.removeEventListener?.(sdk, fn); } catch { /* ignore */ }
+      }
       driver.removeLayer(map, handle);
       rawRef.current = null;
     };
