@@ -10,7 +10,9 @@
  * - useRawOverlay：用户完全掌控 initialize/draw（原生 Overlay 子类），库只管挂载卸载。
  *
  * ```tsx
- * class MyOverlay extends BMapGL.Overlay { initialize(map){...} draw(){...} }
+ * // 原生命名空间用全局 BMap（loader 已把 v4 的 BMapGL 归一为 window.BMap）；
+ * // 想避开全局也可从 useDriver().rawSDK 取。
+ * class MyOverlay extends BMap.Overlay { initialize(map){...} draw(){...} }
  * function Demo() {
  *   const ref = useRawOverlay(() => new MyOverlay(point), [point]);
  *   // ref.current 可命令式调用

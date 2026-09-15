@@ -6,7 +6,9 @@
  * escape hatch，用户完全掌控 Control 子类的 initialize/DOM，库只管挂载卸载。
  *
  * ```tsx
- * class MyControl extends BMapGL.Control { initialize(map){ ...return dom; } }
+ * // 原生命名空间用全局 BMap（loader 已把 v4 的 BMapGL 归一为 window.BMap）；
+ * // 想避开全局也可从 useDriver().rawSDK 取。
+ * class MyControl extends BMap.Control { initialize(map){ ...return dom; } }
  * function Demo() {
  *   const ref = useRawControl(() => new MyControl(), []);
  *   return null;
