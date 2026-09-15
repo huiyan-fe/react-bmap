@@ -13,11 +13,19 @@ import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { isHandle, unwrapHandle } from '../../utils/handle';
+import { useRenderMap } from './useRenderMap';
 import { getSDK } from '../../utils/sdk';
 import type { Point, MapHandle } from '../../types';
 import type { DrivingRouteResult } from '../../types/results';
 
 export interface DrivingRouteRenderOptions {
+  /**
+   * 在地图上渲染路线用的 MapHandle。**非必传**：
+   * - hook 用在 `<Map>` **内部**（子树里）时，不传会自动取当前地图；
+   * - hook 用在 `<Map>` **外层**时，context 取不到，需显式传**已就绪**的 handle（非 null）。
+   *   拿就绪 handle：用 `<Map onReady={setMap}>`，或在 `<Map>` 内放 `useMapReady` 把 handle 上提到外层 state。
+   * 显式传入始终优先于自动获取。
+   */
   map?: MapHandle;
   panel?: string | HTMLElement;
   selectFirstResult?: boolean;
@@ -54,6 +62,7 @@ export interface DrivingRouteHookResult {
 
 export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHookResult {
   const { driver } = useBMapContext();
+  const renderMap = useRenderMap(opts.renderOptions?.map);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
   const callbacksRef = useRef(opts);
@@ -70,10 +79,8 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
   useEffect(() => {
     if (!driver) return;
     const ro: Record<string, unknown> = {};
-    if (opts.renderOptions) {
-      Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map) ro.map = unwrapHandle(opts.renderOptions.map);
-    }
+    if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+    if (renderMap) ro.map = unwrapHandle(renderMap);
 
     const searchOpts: Record<string, unknown> = {};
     if (opts.location !== undefined) {
@@ -107,7 +114,7 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
       searchCbRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, locKey, optKey]);
+  }, [driver, locKey, optKey, renderMap]);
 
   const search = useCallback((start: unknown, end: unknown, options?: { waypoints?: unknown[] }) => {
     if (!rawRef.current) return;

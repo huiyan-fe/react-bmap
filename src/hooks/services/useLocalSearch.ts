@@ -26,6 +26,7 @@ import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { isHandle, unwrapHandle } from '../../utils/handle';
+import { useRenderMap } from './useRenderMap';
 import { getSDK } from '../../utils/sdk';
 import type { BMapDriver } from '../../drivers/types';
 import type { ServiceHandle, Point, Bounds } from '../../types';
@@ -33,6 +34,10 @@ import type { ServiceHandle, Point, Bounds } from '../../types';
 // ─── 类型 ───
 
 export interface LocalSearchRenderOptions {
+  /**
+   * 在地图上渲染结果用的 MapHandle。**非必传**：hook 在 `<Map>` 内部会自动取当前地图；
+   * 在 `<Map>` 外层则需显式传**已就绪**的 handle（用 `<Map onReady>` 或 `useMapReady` 拿）。显式传入优先。
+   */
   map?: { __brand: string; raw: unknown };
   panel?: string | HTMLElement;
   selectFirstResult?: boolean;
@@ -82,6 +87,7 @@ export interface LocalSearchHookResult<T = unknown> {
 
 export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): LocalSearchHookResult<T> {
   const { driver } = useBMapContext();
+  const renderMap = useRenderMap(opts.renderOptions?.map);
   const svcRef = useRef<ServiceHandle | null>(null);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
@@ -102,14 +108,10 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
   useEffect(() => {
     if (!driver) return;
 
-    // 构造 renderOptions，把 MapRef 解包成 raw
+    // 构造 renderOptions，把 MapHandle 解包成 raw（显式传入优先，否则回退到 <Map> 内的 context map）
     const ro: Record<string, unknown> = {};
-    if (opts.renderOptions) {
-      Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && isHandle(opts.renderOptions.map)) {
-        ro.map = opts.renderOptions.map.raw;
-      }
-    }
+    if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+    if (renderMap) ro.map = unwrapHandle(renderMap);
 
     const searchOpts: Record<string, unknown> = {};
     if (opts.pageCapacity !== undefined) searchOpts.pageCapacity = opts.pageCapacity;
@@ -158,7 +160,7 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
       rawRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, locKey, optKey]);
+  }, [driver, locKey, optKey, renderMap]);
 
   // 内部：执行搜索 + 请求保护
   const doSearch = useCallback((action: () => void) => {

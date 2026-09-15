@@ -79,7 +79,7 @@ const layerData: ApiProp[] = [
 // 注意：这些是传给 hook 的入参，不是组件 props
 const routeCommon: ApiProp[] = [
   { name: 'location', type: 'string | MapHandle', required: false, description: '检索城市名或地图实例' },
-  { name: 'renderOptions', type: 'DrivingRouteRenderOptions', required: false, description: '渲染选项：map / panel / selectFirstResult / autoViewport / viewportOptions' },
+  { name: 'renderOptions', type: 'DrivingRouteRenderOptions', required: false, description: '渲染选项：map / panel / selectFirstResult / autoViewport / viewportOptions。map 非必传：hook 在 <Map> 内部自动取当前地图，用在 <Map> 外层才需显式传已就绪 handle（2.0.2 起）' },
   { name: 'onSearchComplete', type: '(results: unknown) => void', required: false, description: '检索完成回调' },
   { name: 'onMarkersSet', type: '(pois: unknown[]) => void', required: false, description: '标注添加完成回调' },
   { name: 'onInfoHtmlSet', type: '(poi: unknown, html: HTMLElement) => void', required: false, description: '信息窗内容设置回调' },
@@ -684,7 +684,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'location', type: 'string | Point | MapHandle', required: false, description: '检索城市/区域，可为城市名、坐标或地图实例' },
     { name: 'pageCapacity', type: 'number', required: false, description: '每页结果数 (1-100)' },
     { name: 'pageNum', type: 'number', required: false, description: '页码（v4+ 支持）' },
-    { name: 'renderOptions', type: 'LocalSearchRenderOptions', required: false, description: '渲染选项：map / panel / selectFirstResult / autoViewport / viewportOptions' },
+    { name: 'renderOptions', type: 'LocalSearchRenderOptions', required: false, description: '渲染选项：map / panel / selectFirstResult / autoViewport / viewportOptions。map 非必传：hook 在 <Map> 内部自动取当前地图，用在 <Map> 外层才需显式传已就绪 handle（2.0.2 起）' },
     { name: 'onSearchComplete', type: '(results: unknown) => void', required: false, description: '检索完成回调' },
     { name: 'onMarkersSet', type: '(pois: unknown[]) => void', required: false, description: '标注添加完成回调' },
     { name: 'onInfoHtmlSet', type: '(poi: unknown, html: HTMLElement) => void', required: false, description: '信息窗内容设置回调' },
@@ -711,7 +711,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
 
   'bus-line-search': [
     { name: 'location', type: 'string | MapHandle', required: false, description: '检索城市名或地图实例' },
-    { name: 'renderOptions', type: '{ map?, panel?, autoViewport? }', required: false, description: '渲染选项' },
+    { name: 'renderOptions', type: '{ map?, panel?, autoViewport? }', required: false, description: '渲染选项。map 非必传：hook 在 <Map> 内部自动取当前地图，外层才需显式传已就绪 handle（2.0.2 起）' },
     { name: 'onGetBusListComplete', type: '(results: unknown) => void', required: false, description: '线路列表检索完成回调' },
     { name: 'onGetBusLineComplete', type: '(results: unknown) => void', required: false, description: '线路详情检索完成回调' },
   ],
@@ -719,7 +719,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'location', type: 'unknown', required: false, description: '检索城市（城市名或坐标）' },
     { name: 'types', type: 'string[]', required: false, description: '返回结果类型限定' },
     { name: 'input', type: 'string | HTMLElement', required: false, description: '绑定的 input 元素或其 id' },
-    { name: 'renderOptions', type: '{ map?, panel? }', required: false, description: '渲染选项' },
+    { name: 'renderOptions', type: '{ map?, panel? }', required: false, description: '渲染选项。map 非必传：hook 在 <Map> 内部自动取当前地图，外层才需显式传已就绪 handle（2.0.2 起）' },
     { name: 'onSearchComplete', type: '(results: unknown) => void', required: false, description: '检索完成回调' },
     { name: 'onConfirm', type: '(item: unknown) => void', required: false, description: '选中某条建议时回调' },
     { name: 'onHighlight', type: '(item: unknown) => void', required: false, description: '高亮某条建议时回调' },
@@ -798,6 +798,12 @@ export const API_DATA: Record<string, ApiProp[]> = {
   'use-map': [
     { name: '（无入参）', type: '—', required: false, description: 'useMap() 不接受参数，需在 <Map> 子树内调用' },
     { name: '返回值', type: 'MapHandle | null', required: false, description: '地图句柄；地图未就绪时为 null。它只是 { __brand, raw } 包装，本身没有方法——想操作地图请用 useMapRef，这个 hook 的价值在于 raw 是取原生地图实例的唯一入口' },
+  ],
+  // useMapReady：解决「service hook 在 <Map> 外层、需要一个已就绪 handle」的时序问题。
+  // 与 <Map onReady> 等价，区别是它写在 JSX 子树里当哨兵，而不是挂在 <Map> 的 props 上。
+  'use-map-ready': [
+    { name: 'onReady', type: '(map: MapHandle) => void', required: true, description: '地图就绪时回调（handle 非 null）。无需 useCallback，内部用 ref 取最新值。需在 <Map> 子树内调用，2.0.2 新增' },
+    { name: '返回值', type: 'void', required: false, description: '无返回值。典型用法：在 <Map> 内放一个 <MapReady onReady={setMap}/> 哨兵，把就绪 handle 上提到外层 state，再传给 service hook 的 renderOptions.map。等价于 <Map onReady={setMap}>' },
   ],
   'use-driver': [
     { name: '（无入参）', type: '—', required: false, description: 'useDriver() 不接受参数，只需在 <BMapProvider> 内调用（不要求有 <Map>）' },

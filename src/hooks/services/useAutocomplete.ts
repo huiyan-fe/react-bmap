@@ -7,12 +7,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
-import { isHandle, unwrapHandle } from '../../utils/handle';
+import { unwrapHandle } from '../../utils/handle';
+import { useRenderMap } from './useRenderMap';
 
 export interface AutocompleteOptions {
   location?: unknown;
   types?: string[];
   input?: string | HTMLElement;
+  /** renderOptions.map 非必传：`<Map>` 内部自动取当前地图，外层需显式传已就绪 handle；见 `useMap`/`useMapReady`。 */
   renderOptions?: { map?: unknown; panel?: string | HTMLElement };
   onSearchComplete?: (results: unknown) => void;
   onConfirm?: (item: unknown) => void;
@@ -33,6 +35,7 @@ export interface AutocompleteHookResult {
 
 export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHookResult {
   const { driver } = useBMapContext();
+  const renderMap = useRenderMap(opts.renderOptions?.map);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
   const callbacksRef = useRef(opts);
@@ -54,10 +57,10 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
     }
     if (opts.types !== undefined) searchOpts.types = opts.types;
     if (opts.input !== undefined) searchOpts.input = opts.input;
-    if (opts.renderOptions) {
+    if (opts.renderOptions || renderMap) {
       const ro: Record<string, unknown> = {};
-      Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && isHandle(opts.renderOptions.map)) ro.map = opts.renderOptions.map.raw;
+      if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+      if (renderMap) ro.map = unwrapHandle(renderMap);
       searchOpts.renderOptions = ro;
     }
     searchOpts.onSearchComplete = (results: unknown) => { cbRef.current?.(results); callbacksRef.current.onSearchComplete?.(results); };
@@ -75,7 +78,7 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
     setState(s => ({ ...s, supported: true, error: null }));
     return () => { rawRef.current = null; cbRef.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, locKey, optKey]);
+  }, [driver, locKey, optKey, renderMap]);
 
   const search = useCallback((keywords: string) => {
     if (!rawRef.current) return;

@@ -86,6 +86,7 @@ export const COMPONENTS: ComponentMeta[] = [
   // Hook (8) —— 均为 React Hook，不受版本能力矩阵约束，故统一 capability: false
   // useMapRef / useDriver / useMap 三者分工见各自页面说明，日常操作地图只需要 useMapRef
   { id: 'use-map', name: 'useMap', category: 'Hook', description: '拿地图句柄；唯一能取到原生地图实例（map.raw）的逃生口，日常操作请用 useMapRef', capability: false },
+  { id: 'use-map-ready', name: 'useMapReady', category: 'Hook', description: '在 <Map> 内当哨兵，地图就绪后回调把 handle 上提到外层，供 service hook 用（2.0.2 新增）', capability: false },
   { id: 'use-driver', name: 'useDriver', category: 'Hook', description: '拿当前版本的 driver：做版本/能力分支，或用 rawSDK 取原生命名空间', capability: false },
   { id: 'use-map-ref', name: 'useMapRef', category: 'Hook', description: '命令式操作地图；已转发 driver 的全量方法，是日常首选', capability: false },
   { id: 'use-capabilities', name: 'useCapabilities', category: 'Hook', description: '读取能力集合', capability: false },

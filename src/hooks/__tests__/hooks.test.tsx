@@ -10,6 +10,8 @@ import { makeFakeDriver } from '../../__tests__/fakeDriver';
 import type { FakeDriver } from '../../__tests__/fakeDriver';
 import type { MapHandle } from '../../types';
 import { useMap } from '../useMap';
+import { useMapReady } from '../useMapReady';
+import { useRenderMap } from '../services/useRenderMap';
 import { useDriver } from '../useDriver';
 import { useCapabilities } from '../useCapabilities';
 import { useMapEvent } from '../useMapEvent';
@@ -47,6 +49,35 @@ describe('核心 hooks', () => {
     const driver = makeFakeDriver({ loaded: true });
     const { result } = renderHook(() => useMap(), { wrapper: mapWrapper(driver) });
     expect(result.current).toBe(fakeMap);
+  });
+
+  it('useMapReady 在 map 就绪时回调 handle；未就绪(null)不回调', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const cbNull = vi.fn();
+    renderHook(() => useMapReady(cbNull), { wrapper: mapWrapper(driver, null as unknown as MapHandle) });
+    expect(cbNull).not.toHaveBeenCalled();
+
+    const cbReady = vi.fn();
+    renderHook(() => useMapReady(cbReady), { wrapper: mapWrapper(driver) });
+    expect(cbReady).toHaveBeenCalledTimes(1);
+    expect(cbReady).toHaveBeenCalledWith(fakeMap);
+  });
+
+  it('useRenderMap 显式传入优先，其次回退 context map，都没有则 undefined', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const explicit = { __brand: 'map', raw: {} } as unknown as MapHandle;
+
+    // 显式传入优先（即使在 <Map> 内）
+    const { result: r1 } = renderHook(() => useRenderMap(explicit), { wrapper: mapWrapper(driver) });
+    expect(r1.current).toBe(explicit);
+
+    // 未显式传入 → 回退到 <Map> context map
+    const { result: r2 } = renderHook(() => useRenderMap(), { wrapper: mapWrapper(driver) });
+    expect(r2.current).toBe(fakeMap);
+
+    // <Map> 外且未显式传入 → undefined
+    const { result: r3 } = renderHook(() => useRenderMap());
+    expect(r3.current).toBeUndefined();
   });
 
   it('useDriver 返回 BMapContext 的 driver', () => {

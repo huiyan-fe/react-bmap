@@ -30,10 +30,10 @@ function blockWheel(el: HTMLElement | null) {
 function LocalSearchInner() {
   const [query, setQuery] = useState('餐厅');
   const [panelEl, setPanelEl] = useState<HTMLElement | null>(null);
-  const { map } = useMapContext();
   const { data, loading, search } = useLocalSearch({
     location: '北京',
-    renderOptions: { map: map!, panel: panelEl ?? undefined, autoViewport: true },
+    // 在 <Map> 内部使用，renderOptions 无需传 map —— hook 自动取当前地图
+    renderOptions: { panel: panelEl ?? undefined, autoViewport: true },
   });
   return (
     <div style={panelStyle}>
@@ -54,13 +54,13 @@ registerDemo('local-search', {
       <LocalSearchInner />
     </MapContainer>
   ),
-  code: `import { Map, useLocalSearch, useMapContext } from 'react-bmap';
+  code: `import { Map, useLocalSearch } from 'react-bmap';
 
+// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 function Search() {
-  const { map } = useMapContext();
   const { search } = useLocalSearch({
     location: '北京',
-    renderOptions: { map, panel: el, autoViewport: true },
+    renderOptions: { panel: el, autoViewport: true },
   });
   return <input onKeyDown={e => e.key === 'Enter' && search('餐厅')} />;
 }`,
@@ -99,13 +99,13 @@ getPoint('天安门'); // 地址→坐标`,
 
 // ─── useDrivingRoute ───
 function DrivingRouteInner() {
-  const { map } = useMapContext();
   const [from, setFrom] = useState('116.404,39.915');
   const [to, setTo] = useState('116.501,39.937');
   const [panelEl, setPanelEl] = useState<HTMLElement | null>(null);
   const { loading, search } = useDrivingRoute({
     location: '北京',
-    renderOptions: { map: map!, panel: panelEl ?? undefined, autoViewport: true },
+    // 在 <Map> 内部使用，renderOptions 无需传 map —— hook 自动取当前地图
+    renderOptions: { panel: panelEl ?? undefined, autoViewport: true },
   });
   return (
     <div style={panelStyle}>
@@ -123,23 +123,23 @@ registerDemo('driving-route', {
       <DrivingRouteInner />
     </MapContainer>
   ),
-  code: `import { useDrivingRoute, useMapContext } from 'react-bmap';
+  code: `import { useDrivingRoute } from 'react-bmap';
 
-const { map } = useMapContext();
+// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useDrivingRoute({
   location: '北京',
-  renderOptions: { map, panel: el, autoViewport: true },
+  renderOptions: { panel: el, autoViewport: true },
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.501, lat: 39.937 });`,
 });
 
 // ─── useWalkingRoute ───
 function WalkingRouteInner() {
-  const { map } = useMapContext();
   const [panelEl, setPanelEl] = useState<HTMLElement | null>(null);
   const { loading, search } = useWalkingRoute({
     location: '北京',
-    renderOptions: { map: map!, panel: panelEl ?? undefined, autoViewport: true },
+    // 在 <Map> 内部使用，renderOptions 无需传 map —— hook 自动取当前地图
+    renderOptions: { panel: panelEl ?? undefined, autoViewport: true },
   });
   return (
     <div style={panelStyle}>
@@ -157,23 +157,23 @@ registerDemo('walking-route', {
       <WalkingRouteInner />
     </MapContainer>
   ),
-  code: `import { useWalkingRoute, useMapContext } from 'react-bmap';
+  code: `import { useWalkingRoute } from 'react-bmap';
 
-const { map } = useMapContext();
+// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useWalkingRoute({
   location: '北京',
-  renderOptions: { map, panel: el, autoViewport: true },
+  renderOptions: { panel: el, autoViewport: true },
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.417, lat: 39.928 });`,
 });
 
 // ─── useRidingRoute ───
 function RidingRouteInner() {
-  const { map } = useMapContext();
   const [panelEl, setPanelEl] = useState<HTMLElement | null>(null);
   const { loading, search } = useRidingRoute({
     location: '北京',
-    renderOptions: { map: map!, panel: panelEl ?? undefined, autoViewport: true },
+    // 在 <Map> 内部使用，renderOptions 无需传 map —— hook 自动取当前地图
+    renderOptions: { panel: panelEl ?? undefined, autoViewport: true },
   });
   return (
     <div style={panelStyle}>
@@ -191,25 +191,25 @@ registerDemo('riding-route', {
       <RidingRouteInner />
     </MapContainer>
   ),
-  code: `import { useRidingRoute, useMapContext } from 'react-bmap';
+  code: `import { useRidingRoute } from 'react-bmap';
 
-const { map } = useMapContext();
+// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useRidingRoute({
   location: '北京',
-  renderOptions: { map, panel: el, autoViewport: true },
+  renderOptions: { panel: el, autoViewport: true },
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.45, lat: 39.93 });`,
 });
 
 // ─── useTransitRoute ───
 function TransitRouteInner() {
-  const { map } = useMapContext();
   const [from, setFrom] = useState('116.404,39.915');
   const [to, setTo] = useState('116.326,39.989');
   const [panelEl, setPanelEl] = useState<HTMLElement | null>(null);
   const { loading, search } = useTransitRoute({
     location: '北京',
-    renderOptions: { map: map!, panel: panelEl ?? undefined, autoViewport: true },
+    // 在 <Map> 内部使用，renderOptions 无需传 map —— hook 自动取当前地图
+    renderOptions: { panel: panelEl ?? undefined, autoViewport: true },
   });
   return (
     <div style={panelStyle}>
@@ -231,24 +231,24 @@ registerDemo('transit-route', {
       <TransitRouteInner />
     </MapContainer>
   ),
-  code: `import { useTransitRoute, useMapContext } from 'react-bmap';
+  code: `import { useTransitRoute } from 'react-bmap';
 
-const { map } = useMapContext();
+// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useTransitRoute({
   location: '北京',
-  renderOptions: { map, panel: el, autoViewport: true },
+  renderOptions: { panel: el, autoViewport: true },
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.326, lat: 39.989 });`,
 });
 
 // ─── useBusLineSearch ───
 function BusLineInner() {
-  const { map } = useMapContext();
   const [line, setLine] = useState('1路');
   const [panelEl, setPanelEl] = useState<HTMLElement | null>(null);
   const { data, loading, getBusList } = useBusLineSearch({
     location: '北京',
-    renderOptions: { map: map!, panel: panelEl ?? undefined, autoViewport: true },
+    // 在 <Map> 内部使用，renderOptions 无需传 map —— hook 自动取当前地图
+    renderOptions: { panel: panelEl ?? undefined, autoViewport: true },
   });
   return (
     <div style={panelStyle}>
@@ -471,11 +471,11 @@ getPanoramaByLocation({ lng: 116.404, lat: 39.915 }, 100);`,
 
 // ─── useTruckRoute ───
 function TruckRouteInner() {
-  const { map } = useMapContext();
   const [panelEl, setPanelEl] = useState<HTMLElement | null>(null);
   const { loading, error, data, search } = useTruckRoute({
     location: '北京',
-    renderOptions: { map: map!, panel: panelEl ?? undefined, autoViewport: true },
+    // 在 <Map> 内部使用，renderOptions 无需传 map —— hook 自动取当前地图
+    renderOptions: { panel: panelEl ?? undefined, autoViewport: true },
   });
   return (
     <div style={panelStyle}>
@@ -497,12 +497,12 @@ registerDemo('truck-route', {
       <TruckRouteInner />
     </MapContainer>
   ),
-  code: `import { useTruckRoute, useMapContext } from 'react-bmap';
+  code: `import { useTruckRoute } from 'react-bmap';
 
-const { map } = useMapContext();
+// 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useTruckRoute({
   location: '北京',
-  renderOptions: { map, panel: el, autoViewport: true },
+  renderOptions: { panel: el, autoViewport: true },
 });
 search({ lng: 116.404, lat: 39.915 }, { lng: 116.501, lat: 39.937 });`,
 });

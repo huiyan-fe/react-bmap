@@ -7,10 +7,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
-import { isHandle, unwrapHandle } from '../../utils/handle';
+import { unwrapHandle } from '../../utils/handle';
+import { useRenderMap } from './useRenderMap';
 
 export interface BusLineSearchOptions {
   location?: unknown;
+  /** renderOptions.map 非必传：`<Map>` 内部自动取当前地图，外层需显式传已就绪 handle；见 `useMap`/`useMapReady`。 */
   renderOptions?: { map?: unknown; panel?: string | HTMLElement; autoViewport?: boolean };
   onGetBusListComplete?: (results: unknown) => void;
   onGetBusLineComplete?: (results: unknown) => void;
@@ -29,6 +31,7 @@ export interface BusLineSearchHookResult {
 
 export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearchHookResult {
   const { driver } = useBMapContext();
+  const renderMap = useRenderMap(opts.renderOptions?.map);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
   const callbacksRef = useRef(opts);
@@ -45,10 +48,8 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
   useEffect(() => {
     if (!driver) return;
     const ro: Record<string, unknown> = {};
-    if (opts.renderOptions) {
-      Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map && isHandle(opts.renderOptions.map)) ro.map = opts.renderOptions.map.raw;
-    }
+    if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+    if (renderMap) ro.map = unwrapHandle(renderMap);
     const searchOpts: Record<string, unknown> = {};
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
@@ -74,7 +75,7 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
     setState(s => ({ ...s, supported: true, error: null }));
     return () => { rawRef.current = null; cbRef.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, locKey, optKey]);
+  }, [driver, locKey, optKey, renderMap]);
 
   const getBusList = useCallback((keyword: string) => {
     if (!rawRef.current) return;

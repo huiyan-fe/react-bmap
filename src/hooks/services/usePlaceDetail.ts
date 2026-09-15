@@ -12,6 +12,7 @@ export interface PlaceDetailOptions {
   container?: HTMLElement;
   compact?: boolean;
   renderOptions?: unknown;
+  /** 必须传**已就绪**的 MapHandle（非 null）；见 `useMap`/`useMapReady` 时序说明。 */
   map?: unknown;
 }
 

@@ -7,6 +7,7 @@ import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { isHandle, unwrapHandle } from '../../utils/handle';
+import { useRenderMap } from './useRenderMap';
 import { getSDK } from '../../utils/sdk';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
 import type { DrivingRouteResult } from '../../types/results';
@@ -16,6 +17,7 @@ export type WalkingRouteHookResult = Omit<DrivingRouteHookResult, 'setPolicy'> &
 
 export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): WalkingRouteHookResult {
   const { driver } = useBMapContext();
+  const renderMap = useRenderMap(opts.renderOptions?.map);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
   const callbacksRef = useRef(opts);
@@ -32,10 +34,8 @@ export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): Wa
   useEffect(() => {
     if (!driver) return;
     const ro: Record<string, unknown> = {};
-    if (opts.renderOptions) {
-      Object.assign(ro, opts.renderOptions);
-      if (opts.renderOptions.map) ro.map = unwrapHandle(opts.renderOptions.map);
-    }
+    if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
+    if (renderMap) ro.map = unwrapHandle(renderMap);
     const searchOpts: Record<string, unknown> = {};
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
@@ -65,7 +65,7 @@ export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): Wa
       searchCbRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver, locKey, optKey]);
+  }, [driver, locKey, optKey, renderMap]);
 
   const search = useCallback((start: unknown, end: unknown, _options?: { waypoints?: unknown[] }) => {
     if (!rawRef.current) return;

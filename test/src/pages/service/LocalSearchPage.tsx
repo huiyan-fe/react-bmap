@@ -11,14 +11,13 @@
  * - pageCapacity / renderOptions（panel / autoViewport）配置
  * - onSearchComplete / onMarkersSet 回调
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, useLocalSearch, useCapabilities, useMapContext } from 'react-bmap';
+import { useCallback, useRef, useState } from 'react';
+import { Map, useLocalSearch, useCapabilities, useMapReady } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 /** 在 <Map> 内捕获 map handle，传给外部 */
 function MapHandleCapture({ onMap }: { onMap: (map: unknown) => void }) {
-  const { map } = useMapContext();
-  useEffect(() => { if (map) onMap(map); }, [map, onMap]);
+  useMapReady(onMap);
   return null;
 }
 

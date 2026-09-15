@@ -1,12 +1,11 @@
 /** useDrivingRoute 测试页 — 驾车路线规划，完整覆盖 SDK dts。 */
 import React, { useCallback, useState } from 'react';
-import { Map, useDrivingRoute, useCapabilities, useMapContext } from 'react-bmap';
+import { Map, useDrivingRoute, useCapabilities, useMapReady } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { safeStringifySdkResult } from '../../utils/sdkResult';
 
 function MapHandleCapture({ onMap }: { onMap: (map: unknown) => void }) {
-  const { map } = useMapContext();
-  React.useEffect(() => { if (map) onMap(map); }, [map, onMap]);
+  useMapReady(onMap);
   return null;
 }
 

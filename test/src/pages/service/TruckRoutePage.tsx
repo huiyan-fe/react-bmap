@@ -1,12 +1,11 @@
 /** useTruckRoute 测试页 — 货车路线规划。 */
 import React, { useCallback, useState } from 'react';
-import { Map, useTruckRoute, useCapabilities, useMapContext } from 'react-bmap';
+import { Map, useTruckRoute, useCapabilities, useMapReady } from 'react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { safeStringifySdkResult } from '../../utils/sdkResult';
 
 function MapHandleCapture({ onMap }: { onMap: (map: unknown) => void }) {
-  const { map } = useMapContext();
-  React.useEffect(() => { if (map) onMap(map); }, [map, onMap]);
+  useMapReady(onMap);
   return null;
 }
 

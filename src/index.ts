@@ -169,6 +169,7 @@ export type { PanoramaProps, PanoramaLabelProps } from './components/Panorama';
 
 // ─── Hooks ───
 export { useMap } from './hooks/useMap';
+export { useMapReady } from './hooks/useMapReady';
 export { useDriver } from './hooks/useDriver';
 export { CAPABILITY_MATRIX } from './drivers/capabilityMatrix';
 export { useMapRef } from './hooks/useMapRef';
