@@ -5,6 +5,7 @@ import {
   InfoWindow, Symbol, Icon, IconSequence, CustomOverlay,
   Marker3D, MapMask, SimpleInfoWindow, PlaceDetail,
   ScaleControl,
+  RawOverlay,
   useDriver,
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT,
   BMAP_POINT_SHAPE_CIRCLE,
@@ -581,5 +582,76 @@ registerDemo('place-detail-overlay', {
   <Marker position={{ lng: 116.404, lat: 39.915 }}>
     <PlaceDetail uid="06d2dffda107b0ef89f15db6" open={true} />
   </Marker>
+</Map>`,
+});
+
+// ─── RawOverlay（逃生舱：挂载任意继承 Overlay 的原生实例） ───
+const RawOverlayDemo: React.FC = () => {
+  const driver = useDriver();
+  const rawSDK = (driver as any)?.rawSDK;
+  if (!rawSDK) return null;
+  const create = () => {
+    class CircleOverlay extends rawSDK.Overlay {
+      point: any; map: any = null; _div: HTMLDivElement | null = null;
+      constructor(point: any) { super(); this.point = point; }
+      initialize(map: any) {
+        this.map = map;
+        const div = document.createElement('div');
+        div.style.cssText = 'position:absolute;width:28px;height:28px;border-radius:50%;background:#ff4d4f;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);';
+        const panes = map.getPanes();
+        (panes.markerPane || panes.labelPane || panes.floatPane).appendChild(div);
+        this._div = div;
+        return div;
+      }
+      draw() {
+        if (!this._div) return;
+        const px = this.map.pointToOverlayPixel(this.point);
+        this._div.style.left = (px.x - 14) + 'px';
+        this._div.style.top = (px.y - 14) + 'px';
+      }
+    }
+    return new CircleOverlay(new rawSDK.Point(C.lng, C.lat));
+  };
+  return <RawOverlay create={create} deps={[]} />;
+};
+
+registerDemo('raw-overlay', {
+  Component: () => (
+    <MapContainer center={C} zoom={13} style={{ height: '100%' }}>
+      <RawOverlayDemo />
+    </MapContainer>
+  ),
+  code: `import { Map, RawOverlay, useDriver } from 'react-bmap';
+
+// 用户自己写继承 BMap.Overlay 的类（掌控 initialize/draw），库负责挂载卸载
+function CircleOverlayDemo() {
+  const driver = useDriver();
+  const rawSDK = (driver as any)?.rawSDK;
+  if (!rawSDK) return null;
+  const create = () => {
+    class CircleOverlay extends rawSDK.Overlay {
+      constructor(point) { super(); this.point = point; }
+      initialize(map) {
+        this.map = map;
+        const div = document.createElement('div');
+        div.style.cssText = 'position:absolute;width:28px;height:28px;border-radius:50%;background:#ff4d4f;border:3px solid #fff;';
+        map.getPanes().markerPane.appendChild(div);
+        this._div = div;
+        return div;
+      }
+      draw() {
+        const px = this.map.pointToOverlayPixel(this.point);
+        this._div.style.left = (px.x - 14) + 'px';
+        this._div.style.top = (px.y - 14) + 'px';
+      }
+    }
+    return new CircleOverlay(new rawSDK.Point(116.404, 39.915));
+  };
+  // deps 控制重建时机；create 内联函数引用变化不会重建
+  return <RawOverlay create={create} deps={[]} />;
+}
+
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={13}>
+  <CircleOverlayDemo />
 </Map>`,
 });

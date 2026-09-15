@@ -176,6 +176,13 @@ export { useCapabilities } from './hooks/useCapabilities';
 export { useMapEvent } from './hooks/useMapEvent';
 export { useMapStatus } from './hooks/useMapStatus';
 export type { MapSnapshot } from './hooks/useMapStatus';
+// ─── 原生逃生舱：挂载任意继承 Overlay/Control 的原生实例，库统一管理生命周期 ───
+export { useRawOverlay } from './hooks/useRawOverlay';
+export { useRawControl } from './hooks/useRawControl';
+export { RawOverlay } from './components/Overlay/RawOverlay';
+export type { RawOverlayProps } from './components/Overlay/RawOverlay';
+export { RawControl } from './components/Control/RawControl';
+export type { RawControlProps } from './components/Control/RawControl';
 
 // ─── 值对象 Hooks（Symbol/Icon 等值对象，用作 Marker icon 参数） ───
 export { useSymbol } from './hooks/useSymbol';

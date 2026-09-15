@@ -3,6 +3,7 @@ import {
   NavigationControl, NavigationControl3D, ScaleControl, OverviewMapControl,
   MapTypeControl, CopyrightControl, GeolocationControl, PanoramaControl,
   ZoomControl, CityListControl, CustomControl,
+  RawControl, useDriver,
   Marker,
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT, BMAP_ANCHOR_BOTTOM_LEFT, BMAP_ANCHOR_BOTTOM_RIGHT,
 } from 'react-bmap';
@@ -195,4 +196,69 @@ function Demo() {
     </Map>
   );
 }`,
+});
+
+// ─── RawControl（逃生舱：挂载任意继承 Control 的原生实例） ───
+const RawControlDemo: React.FC = () => {
+  const driver = useDriver();
+  const rawSDK = (driver as any)?.rawSDK;
+  if (!rawSDK) return null;
+  const create = () => {
+    class ActionControl extends rawSDK.Control {
+      defaultAnchor: any; defaultOffset: any;
+      constructor() {
+        super();
+        this.defaultAnchor = BMAP_ANCHOR_BOTTOM_LEFT;
+        this.defaultOffset = new rawSDK.Size(10, 10);
+      }
+      initialize(map: any) {
+        const div = document.createElement('div');
+        div.style.cssText = 'padding:6px 12px;background:#1890ff;color:#fff;border-radius:4px;font-size:12px;cursor:pointer;';
+        div.textContent = '放大一级';
+        div.addEventListener('click', () => map.setZoom(map.getZoom() + 1));
+        map.getContainer().appendChild(div);
+        return div;
+      }
+    }
+    return new ActionControl();
+  };
+  return <RawControl create={create} deps={[]} />;
+};
+registerDemo('raw-control', {
+  Component: () => (
+    <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
+      <RawControlDemo />
+    </MapContainer>
+  ),
+  code: `import { Map, RawControl, useDriver, BMAP_ANCHOR_BOTTOM_LEFT } from 'react-bmap';
+
+// 用户自己写继承 BMap.Control 的类（掌控 initialize/DOM），库负责挂载卸载
+function ActionControlDemo() {
+  const driver = useDriver();
+  const rawSDK = (driver as any)?.rawSDK;
+  if (!rawSDK) return null;
+  const create = () => {
+    class ActionControl extends rawSDK.Control {
+      constructor() {
+        super();
+        this.defaultAnchor = BMAP_ANCHOR_BOTTOM_LEFT;
+        this.defaultOffset = new rawSDK.Size(10, 10);
+      }
+      initialize(map) {
+        const div = document.createElement('div');
+        div.style.cssText = 'padding:6px 12px;background:#1890ff;color:#fff;border-radius:4px;cursor:pointer;';
+        div.textContent = '放大一级';
+        div.addEventListener('click', () => map.setZoom(map.getZoom() + 1));
+        map.getContainer().appendChild(div);
+        return div;
+      }
+    }
+    return new ActionControl();
+  };
+  return <RawControl create={create} deps={[]} />;
+}
+
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
+  <ActionControlDemo />
+</Map>`,
 });

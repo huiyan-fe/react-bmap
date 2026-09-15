@@ -383,6 +383,11 @@ export const API_DATA: Record<string, ApiProp[]> = {
     visible,
     onClick, onMouseOver, onMouseOut,
   ],
+  'raw-overlay': [
+    { name: 'create', type: '() => T', required: true, description: '创建原生 Overlay 实例（继承 BMap.Overlay，自行实现 initialize/draw）的工厂；仅在挂载 / deps 变化时调用' },
+    { name: 'deps', type: 'DependencyList', required: false, description: '重建依赖（语义同 useEffect deps），变化时销毁旧实例并用 create 重建；默认 [] 只挂载一次。create 引用变化不会触发重建' },
+    { name: 'onReady', type: '(instance: T) => void', required: false, description: '实例创建并挂载后回调，用于拿到实例做命令式操作' },
+  ],
   'marker-3d': [
     position,
     { name: 'height', type: 'number', required: true, description: '3D 高度（米）' },
@@ -492,6 +497,11 @@ export const API_DATA: Record<string, ApiProp[]> = {
   'custom-control': [
     anchor, offset, visible,
     { name: 'children', type: 'ReactNode', required: false, description: '自定义控件内容，会被渲染到挂载在地图容器上的 DOM 节点内' },
+  ],
+  'raw-control': [
+    { name: 'create', type: '() => T', required: true, description: '创建原生 Control 实例（继承 BMap.Control，自行实现 initialize）的工厂；仅在挂载 / deps 变化时调用' },
+    { name: 'deps', type: 'DependencyList', required: false, description: '重建依赖（语义同 useEffect deps），变化时销毁旧实例并用 create 重建；默认 [] 只挂载一次。create 引用变化不会触发重建' },
+    { name: 'onReady', type: '(instance: T) => void', required: false, description: '实例创建并挂载后回调，用于拿到实例做命令式操作' },
   ],
 
   // ─── Layer ───

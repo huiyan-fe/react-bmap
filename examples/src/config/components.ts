@@ -33,6 +33,7 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'map-mask', name: 'MapMask', category: 'Overlay', description: '地图遮罩' },
   { id: 'simple-info-window', name: 'SimpleInfoWindow', category: 'Overlay', description: '简单信息窗口' },
   { id: 'place-detail-overlay', name: 'PlaceDetail', category: 'Overlay', description: '地点详情' },
+  { id: 'raw-overlay', name: 'RawOverlay', category: 'Overlay', description: '挂载任意继承 BMap.Overlay 的原生实例，库统一管理 add/removeOverlay 生命周期（逃生舱），2.0.2 新增', capability: false },
 
   // Control (11)
   { id: 'navigation-control', name: 'NavigationControl', category: 'Control', description: '缩放平移控件' },
@@ -46,6 +47,7 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'zoom-control', name: 'ZoomControl', category: 'Control', description: '缩放控件（4.0+）' },
   { id: 'city-list-control', name: 'CityListControl', category: 'Control', description: '城市列表控件' },
   { id: 'custom-control', name: 'CustomControl', category: 'Control', description: '自定义控件（挂载任意 DOM/React 内容），2.0.2 新增', capability: false },
+  { id: 'raw-control', name: 'RawControl', category: 'Control', description: '挂载任意继承 BMap.Control 的原生实例，库统一管理 add/removeControl 生命周期（逃生舱），2.0.2 新增', capability: false },
 
   // Layer (14)
   { id: 'geojson-layer', name: 'GeoJSONLayer', category: 'Layer', description: 'GeoJSON 图层' },
