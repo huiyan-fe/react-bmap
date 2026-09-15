@@ -54,6 +54,54 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
       raw.setMapType?.(t);
     },
 
+    // 3.0 的自定义控件：不复用 v4Driver 的 ES6 class extends 实现——3.0 的 Control
+    // 用 baidu.lang.inherits(subClass, superClass) 构建原型链（反查
+    // jsapi-core-3-0/lib/tangram.js:1282-1299 确认，只是把 superClass.prototype 塞进
+    // 一个空函数的 prototype 再 new 出来，subClass.prototype 上的自身属性逐个拷贝过去，
+    // 不走标准的 constructor 调用链），跟 ES6 class 语义不完全兼容，直接 extends 容易在
+    // 字段初始化时序上出问题。这里改用 Object.create 手动搭原型链，贴近 3.0 自身写法：
+    // new 一个空构造函数、prototype 指向 Control.prototype，再显式调用 Control.call(inst)
+    // 跑一遍构造函数体（对照 Control.js:15-42，设置 _map/_container/_type 等字段）。
+    createCustomControl: (domCreate, o) => {
+      try {
+        // 不依赖 v4Driver 内部私有的 toRawControlOptions（其逻辑覆盖 4.0-only 字段，
+        // 3.0 自定义控件只需要 anchor/offset），自己取这两个字段。
+        const raw = (o ?? {}) as Record<string, unknown>;
+        const anchor = raw.anchor;
+        const offsetRaw = raw.offset as { width: number; height: number } | undefined;
+        const ControlCtor = rawSDK.Control as new () => any;
+        const SizeCtor = rawSDK.Size as new (w: number, h: number) => unknown;
+        const offset = offsetRaw ? new SizeCtor(offsetRaw.width, offsetRaw.height) : undefined;
+
+        const proto = Object.create(ControlCtor.prototype);
+        proto.initialize = function (map: any) {
+          const container = map?.container ?? map?.getContainer?.();
+          if (!container) return undefined;
+          const div = domCreate();
+          container.appendChild(div);
+          // 必须先赋 _container、再调用 setAnchor()/setOffset() 让 SDK 自身方法完成
+          // 校验 + DOM 定位；手动摸 this._opts 内部结构会导致 anchor 值不生效
+          // （_setPosition 最终读到的值不对，实测确认过）。
+          this._container = div;
+          this.setAnchor(anchor);
+          if (offset !== undefined) this.setOffset(offset);
+          return div;
+        };
+        // defaultAnchor/defaultOffset：3.0 的 setAnchor/setOffset 内部用
+        // `this._opts.offset || this["defaultOffset"]` 兜底，不设置的话在没传
+        // offset 时会读 undefined.width 报错（对照 Control.js:150/157）。
+        proto.defaultAnchor = 0; // BMAP_ANCHOR_TOP_LEFT
+        proto.defaultOffset = new SizeCtor(0, 0);
+
+        const instance = Object.create(proto);
+        ControlCtor.call(instance);
+        return { __brand: 'ControlHandle' as const, raw: instance, type: 'custom' };
+      } catch (e) {
+        reportCallFailure('Control', version, behavior, e);
+        return null;
+      }
+    },
+
     // Hotspot 是 v3-only，v4Driver 的 createOverlayFactory 闭包捕获了 v4 能力矩阵
     // （Hotspot 不在 v4 矩阵中），所以必须在这里直接创建，绕过能力检查
     createHotspot: (p, o) => {

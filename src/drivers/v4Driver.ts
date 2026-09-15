@@ -1307,8 +1307,14 @@ export function createV4Driver(
       // 必须把 _opts 的初始化提前到 initialize() 里、_i() 兜底赋值之前，这样 _i()
       // 自带的 _setPosition() 会用到我们预置的 anchor，再显式补一次 setOffset
       // （_setPosition 只处理 anchor，不处理 offset）。
+      //
+      // defaultAnchor/defaultOffset 必须显式设置：Control.d.ts 明确要求"自定义控件时
+      // 需提供此属性"，原生 setAnchor 内部用 `this._opts.offset || this.defaultOffset`
+      // 兜底——不传 offset 时若 defaultOffset 也是 undefined，会读 undefined.width 报错。
       const opts = toRawControlOptions(rawSDK, o);
       class CustomControlImpl extends rawSDK.Control {
+        defaultAnchor = 0; // BMAP_ANCHOR_TOP_LEFT
+        defaultOffset = new rawSDK.Size(0, 0);
         initialize(map: BMap.Map) {
           const div = domCreate();
           map.getContainer().appendChild(div);
