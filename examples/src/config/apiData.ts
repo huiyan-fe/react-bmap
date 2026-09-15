@@ -590,11 +590,17 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'autoSelect', type: 'boolean', required: false, description: '拾取后是否自动高亮选中' },
   ],
   'fill-layer': [
-    { name: 'style', type: 'FillLayerStyle', required: false, description: '填充/描边样式，见下方 FillLayerStyle' },
+    { name: 'style', type: 'FillLayerStyle', required: false, description: '填充/描边样式；fillColor/strokeColor/strokeWeight/borderColor 等支持数据驱动表达式（如 ["match", ["get","name"], "海淀区", "red", "#aecde8"]、case/feature-state），2.0.2 起' },
     { name: 'border', type: 'boolean', required: false, description: '是否绘制边线' },
     ...layerData,
     ...layerCommon,
     ...layerPick,
+    { name: 'onClick', type: '(e: FillLayerEvent) => void', required: false, description: '点击要素（需 enablePicked）；e.value.dataItem.properties 为选中要素属性，2.0.2 新增' },
+    { name: 'onRightClick', type: '(e: FillLayerEvent) => void', required: false, description: '右键点击要素（需 enablePicked），2.0.2 新增' },
+    { name: 'onMouseOver', type: '(e: FillLayerEvent) => void', required: false, description: '鼠标移入要素（需 enablePicked），2.0.2 新增' },
+    { name: 'onMouseOut', type: '(e: FillLayerEvent) => void', required: false, description: '鼠标移出要素（需 enablePicked），2.0.2 新增' },
+    { name: 'onMouseMove', type: '(e: FillLayerEvent) => void', required: false, description: '鼠标在要素上移动（需 enablePicked），2.0.2 新增' },
+    { name: 'onReady', type: '(layer: any) => void', required: false, description: '图层挂载后回调，拿到原生 FillLayer 实例做命令式操作（如 updateState/clearState），2.0.2 新增' },
   ],
   'dom-layer': [
     { name: 'createDOM', type: '(properties: object, point: Point) => HTMLElement', required: true, description: '为每个数据点创建 DOM 元素的回调' },
