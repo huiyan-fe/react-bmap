@@ -68,7 +68,6 @@ const V4_MAP_UTIL: Capability[] = [
   'Map.addSpots', 'Map.getSpots', 'Map.removeSpots', 'Map.clearSpots', 'Map.hightlightSpotByUid',
   'Map.addMapLabels', 'Map.removeMapLabels',
   'Map.enablePreferredLanguage', 'Map.disablePreferredLanguage',
-  'Map.setMapStyleV2',     // 4.0+ 个性化样式 V2
   'Marker.openInfoWindow', // 4.0+ Marker 打开信息窗口
   'Map.destroy',           // 4.0+ 显式销毁
   'Map.checkResize',       // 4.0+ resize API
@@ -81,18 +80,17 @@ const V3_MAP_ONLY: Capability[] = [
   'Map.highResolutionEnabled',
   'Map.setCurrentCity',
   'Map.setPanorama', 'Map.getPanorama',
-  // Hotspot v4 也支持（publicListForMap.js 导出 + SpotManager）
-  'Map.setMapStyle',       // 3.0-only 个性化样式 V1
+  // Hotspot v4 也支持（publicListForMap.js 导出 + SpotManager），故归 COMMON 而非此处
   'Map.openInfoWindow',    // 3.0-only map.openInfoWindow（v4 移到 Marker）
   'Map.closeInfoWindow',
   'Map.addTileLayer', 'Map.removeTileLayer', 'Map.getTileLayer',
-  'Map.addControl', 'Map.removeControl',
 ];
 
 // ── 3.0-only 覆盖物/图层 ──
 const V3_OVERLAY_ONLY: Capability[] = [
   'CustomLayer',           // v4 无此类（对应物是 CustomHtmlLayer/DOMLayer）
   'PanoramaFlashInterface',// v3 publish.js:82 导出，v4 无
+  'PointCollection',       // @removed 4.0，仅 v3（@baidumap/jsapi-v4-types 无此类）
 ];
 
 // ── 全版本共有（隐式：v3 与 v4 共有） ──
@@ -117,11 +115,16 @@ const COMMON: Capability[] = [
   // enableMapClick/disableMapClick，其内部会异步加载 mapclick 模块，点击底图
   // 标注本身就会创建并弹出 InfoWindow，效果与 4.0 基本等价，归入"全版本"。
   'Map.enableIconInfoWindow', 'Map.disableIconInfoWindow',
+  // addControl/removeControl：v3 与 v4 均有（@baidumap/jsapi-v4-types core/Map.d.ts:730/743 确认 v4 存在）
+  'Map.addControl', 'Map.removeControl',
+  // 个性化样式：setMapStyle 两版本均有（v4 types core/Map.d.ts:870 确认）；
+  // setMapStyleV2 v3Driver 实测可用，v4 同名转发，归 COMMON
+  'Map.setMapStyle', 'Map.setMapStyleV2',
   'Map.clearOverlays', 'Map.getOverlays', 'Map.addOverlay', 'Map.removeOverlay',
   // 覆盖物（全版本）
   'Overlay', // 公开抽象基类
   'Marker', 'Label', 'Polyline', 'Polygon', 'Circle',
-  'GroundOverlay', 'InfoWindow', 'Symbol', 'Icon', 'IconSequence', 'PointCollection',
+  'GroundOverlay', 'InfoWindow', 'Symbol', 'Icon', 'IconSequence',
   'Hotspot',
   // 控件（全版本）
   'Control', // 公开抽象基类
