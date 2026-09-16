@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
  * 官网通栏头部。
  *
  * LbsHeader 不是 npm 包，而是由 lbs-module-sdk 脚本挂到全局变量 `lbsModuleSDK` 上的，
- * 所以只能运行时插 <script> 再取全局。脚本地址见 examples/.env 的 VITE_LBS_HEADER_URL。
+ * 所以只能运行时插 <script> 再取全局。脚本地址见仓库根目录 .env 的 VITE_LBS_HEADER_URL。
  *
  * 该脚本是 UMD，且把 React/ReactDOM 当**外部依赖**从全局取（脚本头部
  * `e.lbsModuleSDK = t(e.React, e.ReactDOM)`），所以必须在插入 script 之前
