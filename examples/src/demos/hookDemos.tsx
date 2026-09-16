@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import {
   Marker,
   useMap, useDriver, useMapRef, useCapabilities, useMapEvent, useMapStatus,
-  useSymbol, useIcon,
+  useSymbol, useIcon, useMapReady, useDrivingRoute,
   BMap_Symbol_SHAPE_STAR,
 } from 'react-bmap';
+import type { MapHandle } from 'react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
 
@@ -103,6 +104,86 @@ function Escape() {
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Escape />
 </Map>`,
+});
+
+// ─── useMapReady ───
+// 哨兵 hook：service hook（useDrivingRoute 等）挂在 <Map> 外层时，它的 renderOptions.map
+// 需要一个「已就绪」的 handle。在外层直接 useMap() 首帧是 null，且就绪后不保证重渲染外层，
+// 所以在 <Map> 里放一个 <MapReady> 哨兵，就绪时把 handle 上提到外层 state 再喂给 service hook。
+// 与 <Map onReady={setMap}> 等价，区别是它写在 JSX 子树里而不是挂在 <Map> 的 props 上。
+const MapReady: React.FC<{ onReady: (m: MapHandle) => void }> = ({ onReady }) => {
+  useMapReady(onReady);
+  return null;
+};
+
+const MapReadyDemo: React.FC = () => {
+  // useDrivingRoute 在 <Map> 外层调用，必须显式传就绪 handle，否则结果画不到地图上
+  const [map, setMap] = useState<MapHandle | null>(null);
+  const [panelEl, setPanelEl] = useState<HTMLElement | null>(null);
+  const { loading, search } = useDrivingRoute({
+    location: '北京',
+    renderOptions: { map: map ?? undefined, panel: panelEl ?? undefined, autoViewport: true },
+  });
+
+  return (
+    <div style={{ height: '100%', position: 'relative' }}>
+      <MapContainer center={C} zoom={11} style={{ height: '100%' }}>
+        {/* 哨兵：地图就绪后把 handle 上提到外层 */}
+        <MapReady onReady={setMap} />
+      </MapContainer>
+      <div style={panelStyle}>
+        <div style={{ marginBottom: 6, color: '#666', lineHeight: 1.7 }}>
+          <code>useDrivingRoute</code> 挂在 <code>&lt;Map&gt;</code> 外层，
+          需要就绪 handle；哨兵就绪后把它上提到外层 state。
+        </div>
+        <div>map handle：{map ? '已就绪（哨兵已上提）' : '未就绪'}</div>
+        <button
+          style={{ ...btnStyle, marginTop: 8 }}
+          disabled={!map || loading}
+          onClick={() => search(C, GUOMAO)}
+        >
+          {loading ? '搜索中...' : '驾车：天安门 → 国贸'}
+        </button>
+        <div ref={setPanelEl} className="svc-result-panel" />
+      </div>
+    </div>
+  );
+};
+
+registerDemo('use-map-ready', {
+  title: '哨兵：把就绪 handle 上提给外层 service hook',
+  Component: MapReadyDemo,
+  code: `import { useState } from 'react';
+import { Map, useMapReady, useDrivingRoute } from 'react-bmap';
+
+// service hook 挂在 <Map> 外层时，renderOptions.map 需要一个「已就绪」的 handle。
+// useMapReady 在 <Map> 内部当哨兵，就绪后把 handle 上提到外层 state。
+function MapReady({ onReady }) {
+  useMapReady(onReady); // 需在 <Map> 子树内调用；无需 useCallback，内部用 ref 取最新值
+  return null;
+}
+
+function RoutePlanner() {
+  const [map, setMap] = useState(null);
+  // useDrivingRoute 在 <Map> 外层，必须显式传就绪 handle，否则结果画不到地图上
+  const { search } = useDrivingRoute({
+    location: '北京',
+    renderOptions: { map },
+  });
+
+  return (
+    <>
+      <button disabled={!map} onClick={() => search({ lng: 116.404, lat: 39.915 }, { lng: 116.461, lat: 39.914 })}>
+        驾车路线
+      </button>
+      <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
+        <MapReady onReady={setMap} />
+      </Map>
+    </>
+  );
+}
+
+// 等价写法：直接用 <Map onReady={setMap}>，二选一即可`,
 });
 
 // ─── useDriver ───

@@ -12,6 +12,7 @@ import type { MapHandle } from '../../types';
 import { useMap } from '../useMap';
 import { useMapReady } from '../useMapReady';
 import { useRenderMap } from '../services/useRenderMap';
+import { useServiceTimeout } from '../services/useServiceTimeout';
 import { useDriver } from '../useDriver';
 import { useCapabilities } from '../useCapabilities';
 import { useMapEvent } from '../useMapEvent';
@@ -61,6 +62,24 @@ describe('核心 hooks', () => {
     renderHook(() => useMapReady(cbReady), { wrapper: mapWrapper(driver) });
     expect(cbReady).toHaveBeenCalledTimes(1);
     expect(cbReady).toHaveBeenCalledWith(fakeMap);
+  });
+
+  it('useServiceTimeout arm 触发 onTimeout；clear 后旧定时器不触发', () => {
+    vi.useFakeTimers();
+    try {
+      const { result } = renderHook(() => useServiceTimeout());
+      const onTimeout = vi.fn();
+      act(() => { result.current.arm(onTimeout, 100); });
+      act(() => { vi.advanceTimersByTime(100); });
+      expect(onTimeout).toHaveBeenCalledTimes(1);
+
+      const cleared = vi.fn();
+      act(() => { result.current.arm(cleared, 100); result.current.clear(); });
+      act(() => { vi.advanceTimersByTime(300); });
+      expect(cleared).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('useRenderMap 显式传入优先，其次回退 context map，都没有则 undefined', () => {

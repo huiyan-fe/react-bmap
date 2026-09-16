@@ -48,18 +48,19 @@ function Demo() {
 }`,
 });
 
-// ─── Panorama ───
+// ─── Panorama ───（3.0/4.0/GL 均可用；point 需落在有街景覆盖的位置，否则 SDK 会隐藏画布）
+const PANO_POINT = { lng: 116.316169, lat: 40.005567 };
 registerDemo('panorama', {
   Component: () => (
     <div style={{ height: '100%', position: 'relative' }}>
-      <Panorama point={C} style={{ width: '100%', height: '100%' }} />
+      <Panorama point={PANO_POINT} style={{ width: '100%', height: '100%' }} />
     </div>
   ),
   code: `import { Panorama } from 'react-bmap';
 
 <Panorama
-  point={{ lng: 116.404, lat: 39.915 }}
-  style={{ width: '100%', height: 400 }}
+  point={{ lng: 116.316169, lat: 40.005567 }}
+  style={{ width: '100%', height: '100%' }}
 />`,
 });
 

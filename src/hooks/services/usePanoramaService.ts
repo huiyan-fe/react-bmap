@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { getSDK } from '../../utils/sdk';
+import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import type { Point } from '../../types';
 
 export interface PanoramaServiceHookResult {
@@ -25,6 +26,7 @@ export function usePanoramaService(): PanoramaServiceHookResult {
   const { driver } = useBMapContext();
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
+  const { arm, clear } = useServiceTimeout();
 
   const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
@@ -44,23 +46,30 @@ export function usePanoramaService(): PanoramaServiceHookResult {
 
   const doAction = useCallback((fn: (raw: any) => void) => {
     if (!rawRef.current) return;
+    const myRequestId = requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    arm(() => {
+      if (myRequestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     try {
       fn(rawRef.current);
     } catch (e) {
+      clear();
       setState(s => ({ ...s, loading: false, error: e as Error }));
     }
-  }, []);
+  }, [arm, clear]);
 
   const getPanoramaById = useCallback((id: string) => {
     const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
       raw.getPanoramaById?.(id, (data: any) => {
         if (myRequestId !== requestIdRef.current) return;
+        clear();
         setState({ data, loading: false, error: null, supported: true });
       });
     });
-  }, [doAction]);
+  }, [doAction, clear]);
 
   const getPanoramaByLocation = useCallback((point: Point, radius?: number) => {
     const myRequestId = ++requestIdRef.current;
@@ -69,32 +78,36 @@ export function usePanoramaService(): PanoramaServiceHookResult {
       const pt = new SDK.Point(point.lng, point.lat);
       const cb = (data: any) => {
         if (myRequestId !== requestIdRef.current) return;
+        clear();
         setState({ data, loading: false, error: null, supported: true });
       };
       // radius 缺省时用二参重载，交给 SDK 默认半径
       if (typeof radius === 'number') raw.getPanoramaByLocation?.(pt, radius, cb);
       else raw.getPanoramaByLocation?.(pt, cb);
     });
-  }, [doAction]);
+  }, [doAction, clear]);
 
   const getPanoramaByPOIId = useCallback((poiId: string) => {
     const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
       if (typeof raw.getPanoramaByPOIId !== 'function') {
+        clear();
         setState(s => ({ ...s, loading: false, error: new Error('getPanoramaByPOIId not supported by current SDK') }));
         return;
       }
       raw.getPanoramaByPOIId(poiId, (data: any) => {
         if (myRequestId !== requestIdRef.current) return;
+        clear();
         setState({ data, loading: false, error: null, supported: true });
       });
     });
-  }, [doAction]);
+  }, [doAction, clear]);
 
   const cancel = useCallback(() => {
     requestIdRef.current++;
+    clear();
     setState(s => ({ ...s, loading: false }));
-  }, []);
+  }, [clear]);
 
   return { ...state, getPanoramaById, getPanoramaByLocation, getPanoramaByPOIId, cancel };
 }

@@ -9,6 +9,7 @@ import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { unwrapHandle } from '../../utils/handle';
 import { useRenderMap } from './useRenderMap';
+import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 
 export interface BusLineSearchOptions {
   location?: unknown;
@@ -34,6 +35,7 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
   const renderMap = useRenderMap(opts.renderOptions?.map);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
+  const { arm, clear } = useServiceTimeout();
   const callbacksRef = useRef(opts);
   callbacksRef.current = opts;
   const cbRef = useRef<((results: unknown) => void) | null>(null);
@@ -84,30 +86,40 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    arm(() => {
+      if (requestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     const raw = rawRef.current;
     cbRef.current = (results: unknown) => {
       if (requestId !== requestIdRef.current) return;
+      clear();
       setState({ data: results, loading: false, error: null, supported: true });
     };
     try { raw.getBusList?.(keyword); }
-    catch (e) { if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
-  }, []);
+    catch (e) { clear(); if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
+  }, [arm, clear]);
 
   const getBusLine = useCallback((item: unknown) => {
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    arm(() => {
+      if (requestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     const raw = rawRef.current;
     cbRef.current = (results: unknown) => {
       if (requestId !== requestIdRef.current) return;
+      clear();
       setState({ data: results, loading: false, error: null, supported: true });
     };
     try { raw.getBusLine?.(item); }
-    catch (e) { if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
-  }, []);
+    catch (e) { clear(); if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
+  }, [arm, clear]);
 
   const clearResults = useCallback(() => { try { rawRef.current?.clearResults?.(); } catch { /* noop */ } setState(s => ({ ...s, data: undefined, loading: false })); }, []);
-  const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);
+  const cancel = useCallback(() => { requestIdRef.current++; clear(); setState(s => ({ ...s, loading: false })); }, [clear]);
 
   return { ...state, getBusList, getBusLine, clearResults, cancel };
 }

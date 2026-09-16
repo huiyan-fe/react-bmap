@@ -14,6 +14,7 @@ import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { isHandle, unwrapHandle } from '../../utils/handle';
 import { useRenderMap } from './useRenderMap';
+import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import { getSDK } from '../../utils/sdk';
 import type { Point, MapHandle } from '../../types';
 import type { DrivingRouteResult } from '../../types/results';
@@ -79,6 +80,7 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
   const renderMap = useRenderMap(opts.renderOptions?.map);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
+  const { arm, clear } = useServiceTimeout();
   const callbacksRef = useRef(opts);
   callbacksRef.current = opts;
   const searchCbRef = useRef<((results: unknown) => void) | null>(null);
@@ -138,10 +140,15 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    arm(() => {
+      if (requestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     const raw = rawRef.current;
 
     const cb = (results: unknown) => {
       if (requestId !== requestIdRef.current) return;
+      clear();
       let actual = results;
       if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
         try { actual = raw.getResults?.(); } catch { /* noop */ }
@@ -166,8 +173,8 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     const e = toPoint(end);
     const opts = options?.waypoints ? { waypoints: options.waypoints.map(toPoint) } : undefined;
     try { raw.search?.(s, e, opts); }
-    catch (e) { if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
-  }, []);
+    catch (e) { clear(); if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
+  }, [arm, clear]);
 
   const clearResults = useCallback(() => {
     try { rawRef.current?.clearResults?.(); } catch { /* SDK clearResults may crash if map state is stale */ }
@@ -181,7 +188,7 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
-  const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);
+  const cancel = useCallback(() => { requestIdRef.current++; clear(); setState(s => ({ ...s, loading: false })); }, [clear]);
 
   return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, getStatus, cancel };
 }

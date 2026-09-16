@@ -90,9 +90,21 @@ const routeCommon: ApiProp[] = [
 // ─── 无入参 Service Hook 的公共返回值片段（data 的类型各不相同，逐个单独写） ───
 const serviceState: ApiProp[] = [
   { name: '返回值.loading', type: 'boolean', required: false, description: '请求进行中' },
-  { name: '返回值.error', type: 'Error | null', required: false, description: '出错时的错误对象；当前版本不支持该服务时为 UnsupportedCapabilityError' },
+  { name: '返回值.error', type: 'Error | null', required: false, description: '出错时的错误对象；当前版本不支持该服务时为 UnsupportedCapabilityError；请求 10s 未返回（如 AK 未开通该服务、被拒或网络异常，SDK 不回调）时为超时 Error（2.0.2 起）' },
   { name: '返回值.supported', type: 'boolean', required: false, description: '当前 JSAPI 版本是否支持该服务' },
   { name: '返回值.cancel()', type: '() => void', required: false, description: '丢弃进行中请求的回调结果，并把 loading 置回 false' },
+];
+
+// ─── 路线检索 hook 的公共返回值（方法 + 状态）；setPolicy/分页等按路线单独补 ───
+const routeReturn: ApiProp[] = [
+  { name: '返回值.search()', type: '(start: Point, end: Point, opts?: { waypoints?: Point[] }) => void', required: false, description: '发起检索；start/end 为坐标点（也可传起终点 POI）' },
+  { name: '返回值.clearResults()', type: '() => void', required: false, description: '清除结果与地图上的路线/标注' },
+  { name: '返回值.enableAutoViewport()', type: '() => void', required: false, description: '开启检索后自动调整视野' },
+  { name: '返回值.disableAutoViewport()', type: '() => void', required: false, description: '关闭自动调整视野' },
+  { name: '返回值.setLocation()', type: '(location: string | MapHandle) => void', required: false, description: '设置检索所在城市/地图' },
+  { name: '返回值.getStatus()', type: '() => number | undefined', required: false, description: '最近一次检索的状态码（BMAP_STATUS_*）' },
+  { name: '返回值.data', type: 'unknown', required: false, description: '最近一次检索结果（含路线方案）' },
+  ...serviceState,
 ];
 
 
@@ -689,6 +701,13 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'onMarkersSet', type: '(pois: unknown[]) => void', required: false, description: '标注添加完成回调' },
     { name: 'onInfoHtmlSet', type: '(poi: unknown, html: HTMLElement) => void', required: false, description: '信息窗内容设置回调' },
     { name: 'onResultsHtmlSet', type: '(container: HTMLElement) => void', required: false, description: '结果面板渲染回调' },
+    { name: '返回值.search()', type: '(keyword: string | string[], opt?: { forceLocal?: boolean }) => void', required: false, description: '普通检索（可多关键词）' },
+    { name: '返回值.searchNearby()', type: '(keyword, center: string | Point, radius: number) => void', required: false, description: '周边检索' },
+    { name: '返回值.searchInBounds()', type: '(keyword, bounds) => void', required: false, description: '范围检索' },
+    { name: '返回值.gotoPage()', type: '(page: number) => void', required: false, description: '翻页' },
+    { name: '返回值.clearResults()', type: '() => void', required: false, description: '清空结果与地图标注' },
+    { name: '返回值.data', type: 'T | undefined', required: false, description: '检索结果（可用 getPois()/getNumPois() 读取）' },
+    ...serviceState,
   ],
   // useGeocoder() 不接受任何参数，下表是返回值上的方法与状态
   geocoder: [
@@ -703,17 +722,21 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'alternatives', type: 'boolean', required: false, description: '同时返回多条备选路线（SDK 构造项 alternatives，类型包未声明但运行时生效；仅驾车），2.0.2 新增' },
     { name: 'renderOptions.enableDragging', type: 'boolean', required: false, description: '拖拽起终点重新规划（仅驾车/公交/货车；步行骑行 SDK 内部强制关闭），2.0.2 新增' },
     ...routeCommon,
+    { name: '返回值.setPolicy()', type: '(policy: number) => void', required: false, description: '运行时设置驾车策略' },
+    ...routeReturn,
   ],
-  'walking-route': routeCommon,
-  'riding-route': routeCommon,
+  'walking-route': [...routeCommon, ...routeReturn],
+  'riding-route': [...routeCommon, ...routeReturn],
   'transit-route': [
     { name: 'policy', type: 'number', required: false, description: '市内公交换乘策略（BMAP_TRANSIT_POLICY_*）' },
     { name: 'intercityPolicy', type: 'number', required: false, description: '跨城公交换乘策略（BMAP_INTERCITY_POLICY_*）；对应 setIntercityPolicy，2.0.2 新增' },
     { name: 'transitTypePolicy', type: 'number', required: false, description: '跨城交通方式：火车/飞机/大巴（BMAP_TRANSIT_TYPE_POLICY_*）；对应 setTransitTypePolicy，2.0.2 新增' },
     ...routeCommon,
+    { name: '返回值.setPolicy()', type: '(policy: number) => void', required: false, description: '运行时设置市内公交换乘策略' },
     { name: '返回值.setPageCapacity()', type: '(n: number) => void', required: false, description: '设置每页方案数（1-5）' },
     { name: '返回值.setIntercityPolicy()', type: '(policy: number) => void', required: false, description: '运行时设置跨城换乘策略，2.0.2 新增' },
     { name: '返回值.setTransitTypePolicy()', type: '(policy: number) => void', required: false, description: '运行时设置跨城交通方式（火车/飞机/大巴），2.0.2 新增' },
+    ...routeReturn,
   ],
 
   'bus-line-search': [
@@ -721,6 +744,11 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'renderOptions', type: '{ map?, panel?, autoViewport? }', required: false, description: '渲染选项。map 非必传：hook 在 <Map> 内部自动取当前地图，外层才需显式传已就绪 handle（2.0.2 起）' },
     { name: 'onGetBusListComplete', type: '(results: unknown) => void', required: false, description: '线路列表检索完成回调' },
     { name: 'onGetBusLineComplete', type: '(results: unknown) => void', required: false, description: '线路详情检索完成回调' },
+    { name: '返回值.getBusList()', type: '(keyword: string) => void', required: false, description: '按关键词检索公交线路列表' },
+    { name: '返回值.getBusLine()', type: '(item: unknown) => void', required: false, description: '取某条线路详情（传 getBusList 结果里的线路项）' },
+    { name: '返回值.clearResults()', type: '() => void', required: false, description: '清空结果与地图标注' },
+    { name: '返回值.data', type: 'unknown', required: false, description: '最近一次检索结果' },
+    ...serviceState,
   ],
   autocomplete: [
     { name: 'location', type: 'unknown', required: false, description: '检索城市（城市名或坐标）' },
@@ -730,6 +758,12 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'onSearchComplete', type: '(results: unknown) => void', required: false, description: '检索完成回调' },
     { name: 'onConfirm', type: '(item: unknown) => void', required: false, description: '选中某条建议时回调（2.0.2 起真正接线到 SDK 构造项 onConfirm）' },
     { name: 'onHighlight', type: '(current, previous?) => void', required: false, description: '高亮项变化时回调（2.0.2 起真正接线到 SDK 构造项 onHighlight）' },
+    { name: '返回值.search()', type: '(keywords: string) => void', required: false, description: '主动发起一次输入提示检索' },
+    { name: '返回值.show()', type: '() => void', required: false, description: '显示提示下拉' },
+    { name: '返回值.hide()', type: '() => void', required: false, description: '隐藏提示下拉' },
+    { name: '返回值.getResults()', type: '() => unknown', required: false, description: '取当前提示结果' },
+    { name: '返回值.data', type: 'unknown', required: false, description: '最近一次提示结果' },
+    ...serviceState,
   ],
   // useBoundary() 不接受任何参数，下表是返回值上的方法与状态
   boundary: [
@@ -740,6 +774,12 @@ export const API_DATA: Record<string, ApiProp[]> = {
   ],
   geolocation: [
     { name: 'enableSDKLocation', type: 'boolean', required: false, description: '创建时启用 SDK 定位（对应 SDKLocation: true），仅创建时生效' },
+    { name: '返回值.getCurrentPosition()', type: '(options?: unknown) => void', required: false, description: '发起浏览器/SDK 定位' },
+    { name: '返回值.getStatus()', type: '() => number | undefined', required: false, description: '最近一次定位的状态码' },
+    { name: '返回值.enableSDKLocation()', type: '() => void', required: false, description: '运行时开启 SDK 定位' },
+    { name: '返回值.disableSDKLocation()', type: '() => void', required: false, description: '运行时关闭 SDK 定位' },
+    { name: '返回值.data', type: 'unknown', required: false, description: '定位结果（含坐标/精度等）' },
+    ...serviceState,
   ],
   // useLocalCity() 不接受任何参数，下表是返回值上的方法与状态
   'local-city': [
@@ -753,6 +793,13 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'compact', type: 'boolean', required: false, description: '是否使用紧凑样式' },
     { name: 'renderOptions', type: 'unknown', required: false, description: '渲染选项' },
     { name: 'map', type: 'unknown', required: false, description: '关联的地图实例' },
+    { name: '返回值.render()', type: '(uid: string) => void', required: false, description: '按 POI uid 渲染详情（异步请求）' },
+    { name: '返回值.rerender()', type: '() => void', required: false, description: '重新渲染当前详情' },
+    { name: '返回值.dispose()', type: '() => void', required: false, description: '销毁详情实例并清空结果' },
+    { name: '返回值.data', type: 'unknown', required: false, description: '当前详情数据（render 后异步填充）' },
+    { name: '返回值.loading', type: 'boolean', required: false, description: '请求进行中' },
+    { name: '返回值.error', type: 'Error | null', required: false, description: '出错时的错误对象' },
+    { name: '返回值.supported', type: 'boolean', required: false, description: '当前 JSAPI 版本是否支持' },
   ],
   // useConvertor() 不接受任何参数，下表是返回值上的方法与状态
   convertor: [
@@ -773,6 +820,9 @@ export const API_DATA: Record<string, ApiProp[]> = {
   'truck-route': [
     { name: 'policy', type: 'number', required: false, description: '货车路线策略' },
     ...routeCommon,
+    { name: '返回值.setPolicy()', type: '(policy: number) => void', required: false, description: '运行时设置货车路线策略' },
+    { name: '返回值.setPageCapacity()', type: '(n: number) => void', required: false, description: '设置每页方案数' },
+    ...routeReturn,
   ],
 
 
@@ -785,6 +835,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'MenuItem.iconWidth', type: 'number', required: false, description: '菜单项左侧图标区域的宽度（像素），原样透传给 SDK 的 MenuItem 选项' },
   ],
   panorama: [
+    { name: '💡 覆盖说明', type: '—', required: false, description: '3.0（BMap）与 4.0/GL 均可渲染。point 须落在有街景覆盖的位置，否则 SDK 拿不到全景数据会把画布层置 display:none（表现为黑屏/空白）——换一个有覆盖的坐标即可，非组件缺陷。' },
     { name: 'point', type: 'Point', required: false, description: '全景初始位置（注意这里叫 point，不是 position）→ setPosition' },
     { name: 'id', type: 'string', required: false, description: '按全景 id 展示（与 point 二选一）→ setId，2.0.2 新增' },
     { name: 'pov', type: '{ heading: number; pitch?: number }', required: false, description: '视角：heading 水平角（正北 0/正东 90…），pitch 垂直角 → setPov，2.0.2 新增' },

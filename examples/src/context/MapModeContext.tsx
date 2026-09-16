@@ -4,8 +4,11 @@ import type { BMapVersion } from 'react-bmap';
 
 export type MapVersion = BMapVersion;
 
-/** demo 用的公开 ak（BMapProvider 示例里也要用同一个，保证 loadKey 一致、复用已加载的 SDK） */
-export const EXAMPLE_AK = 'mbKnRu5DQqM420lpbt7tbtm7WK6jiQln';
+/**
+ * demo 用的公开 ak（BMapProvider 示例里也要用同一个，保证 loadKey 一致、复用已加载的 SDK）。
+ * 唯一来源：仓库根目录 .env 的 VITE_BMAP_AK（本地可用 .env.local 覆盖）；不再在源码里散写 ak。
+ */
+export const EXAMPLE_AK = (import.meta as any).env?.VITE_BMAP_AK as string;
 
 const MapModeContext = createContext<{
   version: MapVersion;

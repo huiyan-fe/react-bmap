@@ -27,6 +27,7 @@ import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { isHandle, unwrapHandle } from '../../utils/handle';
 import { useRenderMap } from './useRenderMap';
+import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import { getSDK } from '../../utils/sdk';
 import type { BMapDriver } from '../../drivers/types';
 import type { ServiceHandle, Point, Bounds } from '../../types';
@@ -91,6 +92,7 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
   const svcRef = useRef<ServiceHandle | null>(null);
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
+  const { arm, clear } = useServiceTimeout();
 
   const [state, setState] = useState<{
     data: T | undefined; loading: boolean; error: Error | null; supported: boolean;
@@ -169,11 +171,16 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    arm(() => {
+      if (requestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     // 先注册回调，再调搜索（SDK 要求回调在 search 之前注册）
     const raw = rawRef.current;
     if (raw && typeof raw.setSearchCompleteCallback === 'function') {
       raw.setSearchCompleteCallback((results: unknown) => {
         if (requestId !== requestIdRef.current) return;
+        clear();
         callbacksRef.current.onSearchComplete?.(results);
         setState({ data: results as T, loading: false, error: null, supported: true });
       });
@@ -181,11 +188,12 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     try {
       action();
     } catch (e) {
+      clear();
       if (requestId === requestIdRef.current) {
         setState(s => ({ ...s, loading: false, error: e as Error }));
       }
     }
-  }, []);
+  }, [arm, clear]);
 
   const search = useCallback((keyword: string | string[], option?: { forceLocal?: boolean }) => {
     if (!rawRef.current) return;
@@ -259,8 +267,9 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
 
   const cancel = useCallback(() => {
     requestIdRef.current++;
+    clear();
     setState(s => ({ ...s, loading: false }));
-  }, []);
+  }, [clear]);
 
   return { ...state, search, searchNearby, searchInBounds, gotoPage, clearResults, cancel };
 }

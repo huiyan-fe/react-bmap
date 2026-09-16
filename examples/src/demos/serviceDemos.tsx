@@ -69,7 +69,7 @@ function Search() {
 // ─── useGeocoder ───
 function GeocoderInner() {
   const [addr, setAddr] = useState('天安门');
-  const { data, loading, getPoint } = useGeocoder();
+  const { data, loading, error, getPoint } = useGeocoder();
   return (
     <div style={panelStyle}>
       <div style={{ display: 'flex', gap: 4 }}>
@@ -79,8 +79,12 @@ function GeocoderInner() {
           {loading ? '...' : '编码'}
         </button>
       </div>
-      <div style={{ marginTop: 6, color: '#666', wordBreak: 'break-all' }}>
-        {data ? (() => { try { return JSON.stringify(data, (k, v) => typeof v === 'function' ? '<fn>' : v).slice(0, 300); } catch { return String(data); } })() : '输入地址'}
+      <div style={{ marginTop: 6, color: error ? '#f5222d' : '#666', wordBreak: 'break-all' }}>
+        {error
+          ? `❌ ${error.message}`
+          : data
+            ? (() => { try { return JSON.stringify(data, (k, v) => typeof v === 'function' ? '<fn>' : v).slice(0, 300); } catch { return String(data); } })()
+            : '输入地址'}
       </div>
     </div>
   );

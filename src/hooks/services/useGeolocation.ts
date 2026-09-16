@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
+import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 
 export interface GeolocationHookResult {
   data: unknown;
@@ -22,6 +23,7 @@ export function useGeolocation(opts?: { enableSDKLocation?: boolean }): Geolocat
   const { driver } = useBMapContext();
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
+  const { arm, clear } = useServiceTimeout();
   const optKey = JSON.stringify(opts ?? {});
 
   const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
@@ -48,19 +50,25 @@ export function useGeolocation(opts?: { enableSDKLocation?: boolean }): Geolocat
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    arm(() => {
+      if (requestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     try {
       const cb = (result: any) => {
         if (requestId !== requestIdRef.current) return;
+        clear();
         setState({ data: result, loading: false, error: null, supported: true });
       };
       if (options !== undefined) rawRef.current.getCurrentPosition?.(cb, options);
       else rawRef.current.getCurrentPosition?.(cb);
     } catch (e) {
+      clear();
       if (requestId === requestIdRef.current) {
         setState(s => ({ ...s, loading: false, error: e as Error }));
       }
     }
-  }, []);
+  }, [arm, clear]);
 
   const getStatus = useCallback(() => {
     return rawRef.current?.getStatus?.();
@@ -76,8 +84,9 @@ export function useGeolocation(opts?: { enableSDKLocation?: boolean }): Geolocat
 
   const cancel = useCallback(() => {
     requestIdRef.current++;
+    clear();
     setState(s => ({ ...s, loading: false }));
-  }, []);
+  }, [clear]);
 
   return { ...state, getCurrentPosition, getStatus, enableSDKLocation, disableSDKLocation, cancel };
 }

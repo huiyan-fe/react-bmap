@@ -7,6 +7,7 @@ import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { getSDK } from '../../utils/sdk';
+import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import type { Point } from '../../types';
 import type { GeocoderResult } from '../../types/results';
 
@@ -26,6 +27,7 @@ export function useGeocoder(): GeocoderHookResult {
   const { driver } = useBMapContext();
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
+  const { arm, clear } = useServiceTimeout();
 
   const [state, setState] = useState<{ data: GeocoderResult | Point | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
@@ -45,25 +47,33 @@ export function useGeocoder(): GeocoderHookResult {
 
   const doAction = useCallback((fn: (raw: any) => void) => {
     if (!rawRef.current) return;
+    const myRequestId = requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    // 兜底：SDK 在鉴权失败等场景下可能不触发回调，超时后把 loading 收回并抛错
+    arm(() => {
+      if (myRequestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     try {
       fn(rawRef.current);
     } catch (e) {
+      clear();
       setState(s => ({ ...s, loading: false, error: e as Error }));
     }
-  }, []);
+  }, [arm, clear]);
 
   const getPoint = useCallback((address: string, city?: string) => {
     const myRequestId = ++requestIdRef.current;
     doAction((raw) => {
       const cb = (result: any) => {
         if (myRequestId !== requestIdRef.current) return;
+        clear();
         setState({ data: result, loading: false, error: null, supported: true });
       };
       if (city !== undefined) raw.getPoint?.(address, cb, city);
       else raw.getPoint?.(address, cb);
     });
-  }, [doAction]);
+  }, [doAction, clear]);
 
   const getLocation = useCallback((point: Point, options?: unknown) => {
     const myRequestId = ++requestIdRef.current;
@@ -72,17 +82,19 @@ export function useGeocoder(): GeocoderHookResult {
       const pt = new SDK.Point(point.lng, point.lat);
       const cb = (result: any) => {
         if (myRequestId !== requestIdRef.current) return;
+        clear();
         setState({ data: result, loading: false, error: null, supported: true });
       };
       if (options !== undefined) raw.getLocation?.(pt, cb, options);
       else raw.getLocation?.(pt, cb);
     });
-  }, [doAction]);
+  }, [doAction, clear]);
 
   const cancel = useCallback(() => {
     requestIdRef.current++;
+    clear();
     setState(s => ({ ...s, loading: false }));
-  }, []);
+  }, [clear]);
 
   return { ...state, getPoint, getLocation, cancel };
 }

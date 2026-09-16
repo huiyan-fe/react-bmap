@@ -3,7 +3,8 @@ import { BMapProvider } from 'react-bmap';
 import type { BMapVersion } from 'react-bmap';
 import { DEFAULT_VERSION } from './config';
 
-export const TEST_AK = 'mbKnRu5DQqM420lpbt7tbtm7WK6jiQln';
+// 测试用 ak：唯一来源为仓库根目录 .env 的 VITE_BMAP_AK（本地可用 .env.local 覆盖），不在源码里散写
+export const TEST_AK = (import.meta as any).env?.VITE_BMAP_AK as string;
 export const BEIJING = { lng: 116.402544, lat: 39.928216 };
 
 /** 从 URL query 读取版本（fallback localStorage，再 fallback default） */

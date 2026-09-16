@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
+import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import type { BoundaryResult } from '../../types/results';
 
 export interface BoundaryHookResult {
@@ -20,6 +21,7 @@ export function useBoundary(): BoundaryHookResult {
   const { driver } = useBMapContext();
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
+  const { arm, clear } = useServiceTimeout();
 
   const [state, setState] = useState<{ data: BoundaryResult | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
@@ -41,22 +43,29 @@ export function useBoundary(): BoundaryHookResult {
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    arm(() => {
+      if (requestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     try {
       rawRef.current.get?.(name, (result: any) => {
         if (requestId !== requestIdRef.current) return;
+        clear();
         setState({ data: result, loading: false, error: null, supported: true });
       });
     } catch (e) {
+      clear();
       if (requestId === requestIdRef.current) {
         setState(s => ({ ...s, loading: false, error: e as Error }));
       }
     }
-  }, []);
+  }, [arm, clear]);
 
   const cancel = useCallback(() => {
     requestIdRef.current++;
+    clear();
     setState(s => ({ ...s, loading: false }));
-  }, []);
+  }, [clear]);
 
   return { ...state, get, cancel };
 }

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
 import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { getSDK } from '../../utils/sdk';
+import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import type { Point } from '../../types';
 import type { TranslateResults } from '../../types/results';
 
@@ -22,6 +23,7 @@ export function useConvertor(): ConvertorHookResult {
   const { driver } = useBMapContext();
   const rawRef = useRef<any>(null);
   const requestIdRef = useRef(0);
+  const { arm, clear } = useServiceTimeout();
 
   const [state, setState] = useState<{ data: TranslateResults | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
@@ -43,25 +45,32 @@ export function useConvertor(): ConvertorHookResult {
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
+    arm(() => {
+      if (requestId !== requestIdRef.current) return;
+      setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
+    });
     try {
       const SDK = getSDK();
       const pts = points.map(p => new SDK.Point(p.lng, p.lat));
       const cb = (result: any) => {
         if (requestId !== requestIdRef.current) return;
+        clear();
         setState({ data: result, loading: false, error: null, supported: true });
       };
       rawRef.current.translate?.(pts, from, to, cb);
     } catch (e) {
+      clear();
       if (requestId === requestIdRef.current) {
         setState(s => ({ ...s, loading: false, error: e as Error }));
       }
     }
-  }, []);
+  }, [arm, clear]);
 
   const cancel = useCallback(() => {
     requestIdRef.current++;
+    clear();
     setState(s => ({ ...s, loading: false }));
-  }, []);
+  }, [clear]);
 
   return { ...state, translate, cancel };
 }
