@@ -310,7 +310,7 @@ export interface BMapDriver {
   createMarker(position: Point, options?: unknown): OverlayHandle | null;
   createLabel(content: unknown, options?: unknown): OverlayHandle | null;
   createPolyline(path: Point[], options?: unknown): OverlayHandle | null;
-  createPolygon(path: Point[], options?: unknown): OverlayHandle | null;
+  createPolygon(path: Point[] | Point[][], options?: unknown): OverlayHandle | null;
   createCircle(center: Point, radius: number, options?: unknown): OverlayHandle | null;
   createRectangle(bounds: Bounds, options?: unknown): OverlayHandle | null;
   /** controlPoints 为 SDK 必填位置参数：每两个路径点之间 1~2 个控制点，组数 = path.length - 1 */
@@ -333,7 +333,7 @@ export interface BMapDriver {
 
   // ─────────────── 27. Overlay 属性 setter ───────────────
   setOverlayPosition(overlay: OverlayHandle, position: Point): void;
-  setOverlayPath(overlay: OverlayHandle, path: Point[]): void;
+  setOverlayPath(overlay: OverlayHandle, path: Point[] | Point[][]): void;
   setOverlayOptions(overlay: OverlayHandle, options: unknown): void;
   /**
    * 读取 overlay 当前 option 的原始值快照，用于 prop 从有值变回 undefined 时还原。

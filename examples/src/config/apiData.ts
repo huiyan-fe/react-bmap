@@ -250,7 +250,8 @@ export const API_DATA: Record<string, ApiProp[]> = {
     onMouseDown, onMouseUp, onMouseMove, onRemove, onLineUpdate, ...lineEditEvents,
   ],
   polygon: [
-    path, ...strokeProps, ...strokeExtras, linkRight, ...fillProps, enableMassClear, enableEditing, enableClicking, visible,
+    { name: 'path', type: 'Point[] | Point[][]', required: true, description: '坐标点数组。单坐标串 Point[] 为普通多边形；多坐标串 Point[][] 表示带洞/多环（首环外边界、后续环镂空），对齐 JSAPI。多坐标串（镂空/多环）仅 4.0/GL 支持，3.0 不渲染，2.0.3 新增' },
+    ...strokeProps, ...strokeExtras, linkRight, ...fillProps, enableMassClear, enableEditing, enableClicking, visible,
     onClick, onMouseOver, onMouseOut, onDoubleClick, onRightClick, onRightDoubleClick,
     onMouseDown, onMouseUp, onMouseMove, onRemove, onLineUpdate, ...lineEditEvents,
   ],

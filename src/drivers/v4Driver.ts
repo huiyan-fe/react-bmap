@@ -856,8 +856,10 @@ export function createV4Driver(
       if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
       if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
       const hasOpts = Object.keys(ctorOpts).length > 0;
+      // path 支持单坐标串 Point[] 或多坐标串 Point[][]（镂空/多环，对齐 JSAPI）
+      const rawPath = toRawPathOrPaths(rawSDK, p as Point[] | Point[][]);
       return createOverlayFactory('Polygon', () =>
-        hasOpts ? new rawSDK.Polygon(toRawPoints(rawSDK, p), ctorOpts) : new rawSDK.Polygon(toRawPoints(rawSDK, p)),
+        hasOpts ? new rawSDK.Polygon(rawPath, ctorOpts) : new rawSDK.Polygon(rawPath),
       'polygon');
     },
     createCircle: (c, r, o) => {
@@ -1144,12 +1146,18 @@ export function createV4Driver(
     },
     setOverlayPath: (ov, path) => {
       try {
-        // SDK 的 setPath() 只接受单坐标串。Prism 支持用多坐标串（Point[][]）构造，
-        // 这种形式无法通过 setPath 更新，交由 ctorOnlyProps/key 重建处理。
-        if (isNestedPath(path)) return;
         // PointCollection 用 setPoints 而非 setPath
-        if (ov.type === 'pointCollection') rawOf(ov).setPoints?.(toRawPoints(rawSDK, path as Point[]));
-        else rawOf(ov).setPath?.(toRawPoints(rawSDK, path));
+        if (ov.type === 'pointCollection') {
+          rawOf(ov).setPoints?.(toRawPoints(rawSDK, path as Point[]));
+          return;
+        }
+        if (isNestedPath(path)) {
+          // 只有 Polygon 的 setPath 支持多坐标串（Point[][]，镂空/多环，对齐 JSAPI）。
+          // 其余（如 Prism）无法用多坐标串更新，交由 ctorOnlyProps/key 重建处理。
+          if (ov.type === 'polygon') rawOf(ov).setPath?.(toRawPointGroups(rawSDK, path));
+          return;
+        }
+        rawOf(ov).setPath?.(toRawPoints(rawSDK, path as Point[]));
       } catch { /* ignore */ }
     },
     setOverlayOptions: (ov, options) => {

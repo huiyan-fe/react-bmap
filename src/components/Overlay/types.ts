@@ -423,7 +423,12 @@ export interface PolylineProps extends PolylineOptions, OverlayReactProps {
 }
 
 export interface PolygonProps extends PolygonOptions, OverlayReactProps {
-  path: Point[];
+  /**
+   * 多边形坐标点。单坐标串 Point[] 为普通多边形；
+   * 多坐标串 Point[][] 表示带洞/多环（第一环为外边界，后续环为镂空孔洞），对齐 JSAPI。
+   * 注意：多坐标串（镂空/多环）仅 4.0/GL 支持；3.0 传入多坐标串不渲染。
+   */
+  path: Point[] | Point[][];
   onClick?: (point: Point, raw: unknown) => void;
   onDoubleClick?: (point: Point, raw: unknown) => void;
   onRightClick?: (point: Point, raw: unknown) => void;
