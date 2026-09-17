@@ -732,6 +732,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'renderOptions.enableDragging', type: 'boolean', required: false, description: '拖拽起终点重新规划（仅驾车/公交/货车；步行骑行 SDK 内部强制关闭），2.0.2 新增' },
     ...routeCommon,
     { name: '返回值.setPolicy()', type: '(policy: number) => void', required: false, description: '运行时设置驾车策略' },
+    { name: '💡 取消选中/关方案弹窗', type: '—', required: false, description: 'SDK 的 DrivingRoute.clearSelected() 在 4.0/GL 是空实现（调了无效果），故本 hook 未透传。要取消选中方案、关掉路线弹窗：关掉信息窗（地图 closeInfoWindow 或 <InfoWindow open={false}>），或用返回值.clearResults() 清空后重新 search' },
     ...routeReturn,
   ],
   'walking-route': [...routeCommon, ...routeReturn],
