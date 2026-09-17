@@ -636,6 +636,20 @@ export function createV4Driver(
     },
     getOverlays: (map) => getRaw('Map.getOverlays', () => (rawMap(map).getOverlays() ?? []).map((o: any) => overlayHandle(o, inferOverlayType(o))), []),
 
+    // Label 挂到 Marker：marker.setLabel 会把 label 定位到 marker 的 point，并随 marker 定位/拖拽跟随。
+    setMarkerLabel: (marker, label) => callRaw('Marker.setLabel', () => rawOf(marker)?.setLabel?.(rawOf(label))),
+    // SDK 没有官方「解除 label」API（setLabel(null) 会因 instanceof 检查被忽略）：
+    // 兜底隐藏 label 实例并清掉 marker 内部引用，避免 label 组件卸载后残留在 marker 上。
+    removeMarkerLabel: (marker, label) => {
+      try {
+        rawOf(label)?.hide?.();
+        const m = rawOf(marker);
+        if (m?._config && m._config.label === rawOf(label)) m._config.label = null;
+        // 触发 marker 重绘，让清掉的 label 立即从画面消失
+        try { m?.setPoint?.(m.getPosition?.() ?? m.point); } catch { /* ignore */ }
+      } catch { /* ignore */ }
+    },
+
     // ─────────────── 15. 图层 ───────────────
     addLayer: (map, l) => {
       if (isOverlayLikeLayer(l)) { callRaw('Map.addOverlay', () => rawMap(map).addOverlay(rawOf(l))); return; }

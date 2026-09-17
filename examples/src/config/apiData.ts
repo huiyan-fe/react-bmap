@@ -225,6 +225,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'onDragStart', type: '(point: Point, raw: unknown) => void', required: false, description: '拖拽开始' },
     { name: 'onDragging', type: '(point: Point, raw: unknown) => void', required: false, description: '拖拽中' },
     { name: 'onDragEnd', type: '(point: Point, raw: unknown) => void', required: false, description: '拖拽结束' },
+    { name: 'children', type: 'ReactNode', required: false, description: '可嵌套以下组件作为子元素，自动锚定到本 Marker：<Label>（marker.setLabel，随 marker 定位/拖拽跟随，2.0.3 新增）、<InfoWindow>（marker.openInfoWindow，随 open 开关）、<PlaceDetail>（marker.openPlaceDetail）、<ContextMenu>（右键菜单挂到 marker 而非地图）' },
   ],
   label: [
     position,

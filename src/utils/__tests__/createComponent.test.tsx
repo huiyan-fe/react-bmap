@@ -120,6 +120,30 @@ describe('createOverlayComponent 工厂', () => {
     expect(driver.addOverlay).not.toHaveBeenCalled();
   });
 
+  it('Label 作为 Marker 子元素：走 setMarkerLabel 而非 addOverlay，卸载走 removeMarkerLabel', () => {
+    const Marker = makeMarker({ supportsChildren: true, childTargetType: 'marker' });
+    const Label = createOverlayComponent<MarkerLikeProps>({
+      factory: (driver, props) => driver.createLabel('x', props),
+      positionProp: 'position',
+      attachToMarkerAsLabel: true,
+      displayName: 'Label',
+    });
+    const driver = makeFakeDriver({ loaded: true });
+    const { unmount } = renderInMapContext(
+      <Marker position={{ lng: 1, lat: 2 }}>
+        <Label />
+      </Marker>,
+      { driver },
+    );
+    const markerHandle = driver.createMarker.mock.results[0].value;
+    const labelHandle = driver.createLabel.mock.results.at(-1)!.value;
+    // label 通过 marker.setLabel 挂载，且没有被当作普通 overlay 加到地图
+    expect(driver.setMarkerLabel).toHaveBeenCalledWith(markerHandle, labelHandle);
+    expect(driver.addOverlay).toHaveBeenCalledTimes(1); // 只有 marker 自己
+    act(() => unmount());
+    expect(driver.removeMarkerLabel).toHaveBeenCalledWith(markerHandle, expect.anything());
+  });
+
   it('卸载：调 removeOverlay 清理', () => {
     const Marker = makeMarker();
     const driver = makeFakeDriver({ loaded: true });

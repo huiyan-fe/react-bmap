@@ -43,6 +43,16 @@ export interface OverlayComponentConfig<P> {
   ctorOnlyProps?: Array<keyof P & string>;
   /** 是否支持 children 嵌套（如 Marker 嵌 InfoWindow） */
   supportsChildren?: boolean;
+  /**
+   * children 嵌套时提供给子组件的 target 类型（默认 'overlay'）。
+   * Marker 设为 'marker'，好让 Label 子元素（attachToMarkerAsLabel）识别父级并走 setLabel。
+   */
+  childTargetType?: OverlayTargetStore['type'];
+  /**
+   * 作为 Marker 子元素时，通过 marker.setLabel 挂载（随 marker 定位/拖拽跟随），
+   * 而非 map.addOverlay。仅 Label 使用；不在 Marker 内时按普通 overlay 挂到地图。
+   */
+  attachToMarkerAsLabel?: boolean;
   /** overlay 级事件订阅（SDK 事件 → prop 回调） */
   events?: Array<{ sdk: string; prop: keyof P & string }>;
   /** 组件显示名（用于 React DevTools） */
@@ -76,7 +86,7 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
     const targetRef = useRef<OverlayHandle | null>(null);
     const listenersRef = useRef<Set<() => void>>(new Set());
     const store = useMemo<OverlayTargetStore>(() => ({
-      type: 'overlay' as const,
+      type: config.childTargetType ?? 'overlay',
       subscribe: (cb: () => void) => {
         listenersRef.current.add(cb);
         return () => { listenersRef.current.delete(cb); };
@@ -120,10 +130,18 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
       targetRef.current = handle;
       notify();
       // 值对象（Symbol/Icon 等）不调 addOverlay
+      // Label 作为 Marker 子元素：走 marker.setLabel 挂载（随 marker 定位/拖拽跟随），而非 addOverlay。
+      // marker handle 尚未就绪时先不挂——父 Marker 的 store 通知后本 effect 会带着 handle 重跑。
+      const markerLabelTarget = (config.attachToMarkerAsLabel && target?.type === 'marker')
+        ? (target.target as OverlayHandle | null)
+        : null;
+      const attachToMarker = config.attachToMarkerAsLabel && target?.type === 'marker';
       if (!config.skipMount) {
         // Hotspot 不是标准 Overlay，用 addHotspot 代替 addOverlay
         if ((handle as any).type === 'hotspot') {
           driver.addHotspot?.(map, handle);
+        } else if (attachToMarker) {
+          if (markerLabelTarget) driver.setMarkerLabel(markerLabelTarget, handle);
         } else if (target?.addOverlay) target.addOverlay(handle);
         else driver.addOverlay(map, handle);
       }
@@ -218,6 +236,8 @@ export function createOverlayComponent<P extends { children?: ReactNode }>(
         // Hotspot 用 removeHotspot 代替 removeOverlay
         if ((current as any)?.type === 'hotspot') {
           driver.removeHotspot?.(map, current);
+        } else if (attachToMarker) {
+          if (markerLabelTarget) driver.removeMarkerLabel(markerLabelTarget, current);
         } else if (target?.removeOverlay) target.removeOverlay(current);
         else if (map) driver.removeOverlay(map, current);
       }

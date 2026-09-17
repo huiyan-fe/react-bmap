@@ -39,6 +39,8 @@ export const Marker = createOverlayComponent<MarkerProps>({
     { sdk: 'remove', prop: 'onRemove' },
   ],
   supportsChildren: true,
+  // 让 Label 子元素识别父级为 Marker，走 marker.setLabel 挂载
+  childTargetType: 'marker',
 });
 
 // ─── 文本标注 ───
@@ -48,6 +50,8 @@ export const Label = createOverlayComponent<LabelProps>({
   positionProp: 'position',
   optionProps: ['content', 'offset', 'enableMassClear', 'styles', 'opacity', 'title', 'zIndex'],
   ctorOnlyProps: ['enableClicking', 'width', 'anchor'],
+  // 作为 Marker 子元素时通过 marker.setLabel 挂载（随 marker 跟随）；否则按普通 overlay 挂到地图
+  attachToMarkerAsLabel: true,
   events: [
     { sdk: 'click', prop: 'onClick' },
     { sdk: 'dblclick', prop: 'onDoubleClick' },

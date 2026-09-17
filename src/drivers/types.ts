@@ -201,6 +201,10 @@ export interface BMapDriver {
   removeOverlay(map: MapHandle, overlay: OverlayHandle): void;
   clearOverlays(map: MapHandle): void;
   getOverlays(map: MapHandle): OverlayHandle[];
+  /** 把 Label 挂到 Marker 上（marker.setLabel），随 marker 定位/拖拽跟随（4.0/GL 与 3.0 均支持） */
+  setMarkerLabel(marker: OverlayHandle, label: OverlayHandle): void;
+  /** 解除 Marker 上的 Label（SDK 无官方清除 API，兜底隐藏并清引用） */
+  removeMarkerLabel(marker: OverlayHandle, label: OverlayHandle): void;
 
   // ─────────────── 15. 图层 ───────────────
   addLayer(map: MapHandle, layer: LayerHandle): void;
