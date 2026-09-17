@@ -174,6 +174,18 @@ describe('Map 编排', () => {
     expect(driver.setCustomArea).toHaveBeenCalledWith(expect.anything(), { area, style: { styleJson: [] } });
   });
 
+  it('mapType：首帧同步应用（tilesloaded 之前），避免先普通图再切类型的闪烁', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    renderInBMapContext(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} mapType="B_SATELLITE_MAP">
+        <div>c</div>
+      </Map>,
+      { driver },
+    );
+    // ★ 不 emit tilesloaded：创建时就应已下发地图类型
+    expect(driver.setMapType).toHaveBeenCalledWith(expect.anything(), 'B_SATELLITE_MAP');
+  });
+
   it('卸载时完整清理：destroyMap 被调用，事件退订', () => {
     const driver = makeFakeDriver({ loaded: true });
     const { unmount } = renderInBMapContext(

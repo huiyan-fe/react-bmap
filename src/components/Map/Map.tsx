@@ -255,6 +255,14 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
       try { driver.setTilt(handle, initTilt, { noAnimation: true }); } catch { /* ignore */ }
     }
 
+    // 地图类型：首帧同步应用（centerAndZoom 之后、tilesloaded 暴露 map 之前），避免
+    // 「先默认普通图、再切卫星/混合/地球」的闪烁。此刻瓦片刚随 centerAndZoom 开始加载、
+    // 尚未真正绘制，先把类型定好，首批瓦片即为目标类型。复用 driver.setMapType 的版本归一化
+    // （v3 把 B_* 字符串换成 SDK 实例；GL 内部 normalizeMapTypeRequest 处理 B_STREET_MAP 等）。
+    if (mapType !== undefined) {
+      try { driver.setMapType(handle, mapType); } catch { /* ignore */ }
+    }
+
     // 个性化生效区域（customArea）：首帧同步应用，避免「先默认建筑样式、再切区域个性化」的闪烁。
     // 与 initial.style 同理——但 setCustomArea/setMapStyle 只能在 createMap 之后以方法调用，
     // 所以放在这里（centerAndZoom 初始化之后、tilesloaded 暴露 map 之前）尽早下发。
