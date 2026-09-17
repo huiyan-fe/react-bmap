@@ -33,7 +33,7 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
     content, open = true, position,
     onOpen, onClose, onClickClose, onMaximize, onRestore, onResize,
     width, height, maxWidth, offset, title,
-    enableAutoPan, enableCloseOnClick, enableMessage, message, maxContent, enableMaximize,
+    enableAutoPan, enableCloseOnClick, enableMessage, message, maxContent, enableMaximize, enableSearchTool,
   } = props;
 
   const iwRef = useRef<OverlayHandle | null>(null);
@@ -52,14 +52,14 @@ export const InfoWindow = memo(function InfoWindow(props: InfoWindowProps) {
   cbRefs.resize.current = onResize;
 
   // 有 setter 的属性通过 setter 更新，不重建
-  // 无 setter 的属性变化才重建：maxWidth, offset, enableCloseOnClick, enableMessage, message
-  const ctorOnlyOptsKey = stableStringify({ maxWidth, offset, enableCloseOnClick, enableMessage, message });
+  // 无 setter 的属性变化才重建：maxWidth, offset, enableCloseOnClick, enableMessage, message, enableSearchTool
+  const ctorOnlyOptsKey = stableStringify({ maxWidth, offset, enableCloseOnClick, enableMessage, message, enableSearchTool });
 
   // 1. 创建 InfoWindow 实例（仅 ctor-only 属性变化时重建）
   useLayoutEffect(() => {
     if (!driver) return;
     const opts: Record<string, unknown> = {};
-    const raw = { width, height, maxWidth, offset, title, enableAutoPan, enableCloseOnClick, enableMessage, message, maxContent, enableMaximize };
+    const raw = { width, height, maxWidth, offset, title, enableAutoPan, enableCloseOnClick, enableMessage, message, maxContent, enableMaximize, enableSearchTool };
     for (const [k, v] of Object.entries(raw)) {
       if (v !== undefined && v !== null) opts[k] = v;
     }

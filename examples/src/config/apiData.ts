@@ -344,6 +344,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'message', type: 'string', required: false, description: '短信内容（仅 v3）' },
     { name: 'maxContent', type: 'string', required: false, description: '最大化时的内容' },
     { name: 'enableMaximize', type: 'boolean', required: false, description: '是否启用最大化' },
+    { name: 'enableSearchTool', type: 'boolean', required: false, description: '是否开启信息窗内的搜索工具（查看周边等），4.0/GL；构造时生效，2.0.3 新增' },
     visible,
     { name: 'onOpen', type: '(raw: unknown) => void', required: false, description: '打开回调' },
     { name: 'onClose', type: '(raw: unknown) => void', required: false, description: '关闭回调（含 X 按钮关闭）' },

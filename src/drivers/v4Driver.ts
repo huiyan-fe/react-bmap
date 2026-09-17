@@ -1034,6 +1034,7 @@ export function createV4Driver(
       if (typeof raw?.message === 'string') ctorOpts.message = raw.message;
       if (typeof raw?.maxContent === 'string') ctorOpts.maxContent = raw.maxContent;
       if (typeof raw?.enableMaximize === 'boolean') ctorOpts.enableMaximize = raw.enableMaximize;
+      if (typeof raw?.enableSearchTool === 'boolean') ctorOpts.enableSearchTool = raw.enableSearchTool;
       const hasOpts = Object.keys(ctorOpts).length > 0;
       return createOverlayFactory('InfoWindow', () =>
         hasOpts ? new rawSDK.InfoWindow(c, ctorOpts) : new rawSDK.InfoWindow(c),

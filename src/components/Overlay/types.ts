@@ -264,6 +264,8 @@ export interface InfoWindowOptions {
   maxContent?: string;
   /** 开启最大化功能 @default false */
   enableMaximize?: boolean;
+  /** 是否开启信息窗内的搜索工具（查看周边等），4.0/GL；构造时生效 @default false，2.0.3 新增 */
+  enableSearchTool?: boolean;
 }
 /**
  * Symbol 构造函数的可选参数。
