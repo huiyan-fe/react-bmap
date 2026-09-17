@@ -9,6 +9,7 @@ import { installFakeSDK, uninstallFakeSDK } from '../../../__tests__/fakeSDK';
 import { UnsupportedCapabilityError } from '../../../drivers/unsupported';
 import { useGeocoder } from '../useGeocoder';
 import { useDrivingRoute } from '../useDrivingRoute';
+import { useTruckRoute } from '../useTruckRoute';
 
 // L4：service hook 契约层。
 // 组件从 useBMapContext() 拿 driver，driver.createXxx() 返回 { isNull, raw } 句柄。
@@ -142,5 +143,27 @@ describe('useDrivingRoute', () => {
     act(() => capturedOpts.onSearchComplete({ routes: ['stale'] }));
     expect(result.current.data).toBeUndefined();
     expect(result.current.loading).toBe(false);
+  });
+});
+
+describe('useTruckRoute', () => {
+  it('waypoints 透传：search 第三参 { waypoints } 转 Point 后作为第 3 个实参传给 raw.search', () => {
+    const sdk = installFakeSDK();
+    const raw = { search: vi.fn(), getResults: vi.fn(() => ({ routes: ['r'] })), setSearchCompleteCallback: vi.fn() };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createTruckRoute = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useTruckRoute(), { wrapper: bmapWrapper(driver) });
+    expect(result.current.supported).toBe(true);
+
+    act(() => result.current.search(
+      { lng: 116, lat: 39 },
+      { lng: 117, lat: 40 },
+      { waypoints: [{ lng: 116.5, lat: 39.5 }] },
+    ));
+    // 途经点也被转成 Point
+    expect(sdk.Point).toHaveBeenCalledWith(116.5, 39.5);
+    const call = raw.search.mock.calls[0];
+    expect(call).toHaveLength(3);
+    expect(call[2]).toEqual({ waypoints: [expect.anything()] });
   });
 });

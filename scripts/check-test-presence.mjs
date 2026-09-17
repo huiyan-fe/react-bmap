@@ -40,7 +40,6 @@ const ALLOWLIST = new Set([
   'usePlaceDetail',
   'useRidingRoute',
   'useTransitRoute',
-  'useTruckRoute',
   'useWalkingRoute',
   // 原生逃生舱 hook：仅做实例创建 + addOverlay/addControl 生命周期转发，
   // 逻辑已被 RawOverlay/RawControl 组件测试间接覆盖，暂列为已知技术债。

@@ -1,6 +1,6 @@
 /**
  * useTruckRoute — 货车路线规划 Hook（手写）。
- * SDK 方法：search(start, end) / getResults / clearResults / setPolicy / setPageCapacity
+ * SDK 方法：search(start, end, { waypoints? }) / getResults / clearResults / setPolicy / setPageCapacity
  * / setIntercityPolicy / setTransitTypePolicy / setLocation / getStatus
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -77,7 +77,7 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driver, locKey, optKey, renderMap]);
 
-  const search = useCallback((start: unknown, end: unknown, _options?: { waypoints?: unknown[] }) => {
+  const search = useCallback((start: unknown, end: unknown, options?: { waypoints?: unknown[] }) => {
     if (!rawRef.current) return;
     const requestId = ++requestIdRef.current;
     setState(s => ({ ...s, loading: true, error: null }));
@@ -108,7 +108,7 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
       }
       return v;
     };
-    try { raw.search?.(toPoint(start), toPoint(end)); }
+    try { raw.search?.(toPoint(start), toPoint(end), options?.waypoints ? { waypoints: options.waypoints.map(toPoint) } : undefined); }
     catch (e) { clear(); if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
   }, [arm, clear]);
 
