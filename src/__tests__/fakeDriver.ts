@@ -52,6 +52,7 @@ export function makeFakeDriver(options: MakeFakeDriverOptions = {}): FakeDriver 
     setTheme: vi.fn(),
     setMapStyle: vi.fn(),
     setMapStyleV2: vi.fn(),
+    setCustomArea: vi.fn(),
 
     // ── Overlay 生命周期 ──
     createMarker: vi.fn(() => makeHandle('marker')),

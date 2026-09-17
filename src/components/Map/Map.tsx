@@ -9,6 +9,16 @@ import { useLatest } from '../../utils/useLatest';
 import { pointEquals } from '../../utils/pointEquals';
 import type { DisplayOptions } from '../../types/core';
 
+/** 个性化生效区域配置（setCustomArea，4.0+，2.0.3 新增）。 */
+export interface MapCustomArea {
+  /** 生效区域边界点（普通经纬度 { lng, lat }，组件内部转成原生 Point） */
+  area: Point[];
+  /** 区域内个性化样式，形如 { styleJson: [...] } */
+  style: unknown;
+  /** 生效前的全局个性化调用参数，默认 { styleJson: [] }（setCustomArea 依赖全局个性化管线已初始化） */
+  globalStyle?: unknown;
+}
+
 export interface MapProps {
   // 受控
   // 仅支持坐标 { lng, lat }；按地名/城市名定位请用 ref.centerAndZoom(cityName) 或
@@ -34,6 +44,14 @@ export interface MapProps {
   // 生产构建（无双挂载）不受影响。
   mapStyle?: unknown;
   mapStyleV2?: unknown;
+  /**
+   * 个性化生效区域（setCustomArea，4.0+，3.0 不支持，2.0.3 新增）。传 false/undefined 不设置。
+   * 只在指定多边形区域内应用一套个性化样式，区域外维持全局样式。
+   * setCustomArea 依赖全局个性化管线，应用前组件会先调用一次 setMapStyle（默认空样式，可用 globalStyle 覆盖）。
+   * 首帧随地图创建同步下发（在 tilesloaded 暴露 map 之前），避免「先默认建筑样式再切区域个性化」的闪烁。
+   * 从对象切到 false：SDK 无官方清除 API，组件会对上一次区域重新下发空样式（styleJson: []）使其恢复默认渲染。
+   */
+  customArea?: MapCustomArea | false;
   // 交互开关（受控；undefined 表示不主动控制，由 SDK 默认值决定）
   enableDragging?: boolean;
   enableInertialDragging?: boolean;
@@ -126,7 +144,7 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   const {
     center, zoom, heading, tilt,
     defaultCenter, defaultZoom, defaultHeading, defaultTilt,
-    options, displayOptions, mapStyle, mapStyleV2,
+    options, displayOptions, mapStyle, mapStyleV2, customArea,
     enableDragging, enableInertialDragging, enableScrollWheelZoom, enableContinuousZoom,
     enableResizeOnCenter, enableDoubleClickZoom, enableKeyboard, enablePinchToZoom,
     enableRotate, enableRotateGestures, enableTilt: enableTiltProp, enableTiltGestures,
@@ -235,6 +253,17 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     }
     if (initTilt != null) {
       try { driver.setTilt(handle, initTilt, { noAnimation: true }); } catch { /* ignore */ }
+    }
+
+    // 个性化生效区域（customArea）：首帧同步应用，避免「先默认建筑样式、再切区域个性化」的闪烁。
+    // 与 initial.style 同理——但 setCustomArea/setMapStyle 只能在 createMap 之后以方法调用，
+    // 所以放在这里（centerAndZoom 初始化之后、tilesloaded 暴露 map 之前）尽早下发。
+    // customArea 取创建时的闭包值即可（首帧初值）；后续变化由下方运行时 effect 处理。
+    if (customArea) {
+      try {
+        driver.setMapStyle(handle, customArea.globalStyle ?? { styleJson: [] });
+        driver.setCustomArea(handle, { area: customArea.area, style: customArea.style });
+      } catch { /* v3 不支持 */ }
     }
 
     // 延迟暴露 map 实例：
@@ -441,6 +470,31 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     if (!map || !driver || mapStyleV2 === undefined) return;
     driver.setMapStyleV2(map, mapStyleV2);
   }, [map, driver, mapStyleV2]);
+
+  // ─── 个性化生效区域（setCustomArea，4.0+；2.0.3 新增） ───
+  // setCustomArea 依赖全局个性化管线，需先 setMapStyle 一次（默认空样式，可用 globalStyle 覆盖）再设区域。
+  // SDK 没有官方「清除」API：customArea 从对象切到 false 时，对上一次的区域重新下发**空样式**
+  // （styleJson: []），让区域内建筑恢复默认渲染，达到"取消个性化"的效果。
+  const lastCustomAreaRef = useRef<Point[] | null>(null);
+  const customAreaKey = useMemo(
+    () => (customArea ? JSON.stringify(customArea) : customArea === false ? 'false' : ''),
+    [customArea],
+  );
+  useEffect(() => {
+    if (!map || !driver) return;
+    if (customArea) {
+      try {
+        driver.setMapStyle(map, customArea.globalStyle ?? { styleJson: [] });
+        driver.setCustomArea(map, { area: customArea.area, style: customArea.style });
+        lastCustomAreaRef.current = customArea.area;
+      } catch { /* v3 不支持 */ }
+    } else if (customArea === false && lastCustomAreaRef.current) {
+      try {
+        driver.setCustomArea(map, { area: lastCustomAreaRef.current, style: { styleJson: [] } });
+      } catch { /* v3 不支持 */ }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, driver, customAreaKey]);
 
   // ─── 事件订阅（React 方式：onClick / onZoomEnd 等 prop） ───
   const eventProps = {

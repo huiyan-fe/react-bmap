@@ -130,6 +130,50 @@ describe('Map 编排', () => {
     expect(driver.disablePreferredLanguage).toHaveBeenCalled();
   });
 
+  it('customArea：首帧同步应用（tilesloaded 之前），先 setMapStyle 兜底再 setCustomArea', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const area = [
+      { lng: 116.31, lat: 40.06 },
+      { lng: 116.32, lat: 40.05 },
+      { lng: 116.30, lat: 40.04 },
+    ];
+    const style = { styleJson: [{ featureType: 'building', elementType: 'geometry.topfill', stylers: { color: '#6dd5edcc' } }] };
+    renderInBMapContext(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} customArea={{ area, style }}>
+        <div>c</div>
+      </Map>,
+      { driver },
+    );
+    // ★ 不 emit tilesloaded：首帧（创建时）就应已同步下发，避免闪烁
+    expect(driver.setMapStyle).toHaveBeenCalledWith(expect.anything(), { styleJson: [] });
+    expect(driver.setCustomArea).toHaveBeenCalledWith(expect.anything(), { area, style });
+  });
+
+  it('customArea：切到 false 时对上次区域重发空样式以恢复默认', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    const area = [
+      { lng: 116.31, lat: 40.06 },
+      { lng: 116.32, lat: 40.05 },
+      { lng: 116.30, lat: 40.04 },
+    ];
+    const style = { styleJson: [{ featureType: 'building', elementType: 'geometry.topfill', stylers: { color: '#6dd5edcc' } }] };
+    const { rerender } = renderInBMapContext(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} customArea={{ area, style }}>
+        <div>c</div>
+      </Map>,
+      { driver },
+    );
+    act(() => { driver.__emit('tilesloaded'); });
+    (driver.setCustomArea as ReturnType<typeof vi.fn>).mockClear();
+    rerender(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} customArea={false}>
+        <div>c</div>
+      </Map>,
+    );
+    // 无官方清除 API：对同一区域重发空样式
+    expect(driver.setCustomArea).toHaveBeenCalledWith(expect.anything(), { area, style: { styleJson: [] } });
+  });
+
   it('卸载时完整清理：destroyMap 被调用，事件退订', () => {
     const driver = makeFakeDriver({ loaded: true });
     const { unmount } = renderInBMapContext(

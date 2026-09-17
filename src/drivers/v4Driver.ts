@@ -733,7 +733,12 @@ export function createV4Driver(
     getPrivateRegions: (map) => getRaw('Map.getPrivateRegions', () => rawMap(map).getPrivateRegions?.() ?? [], []),
     setPrivateStatus: (map, s) => callRaw('Map.setPrivateStatus', () => rawMap(map).setPrivateStatus?.(s)),
     getPrivateStatus: (map) => getRaw('Map.getPrivateStatus', () => rawMap(map).getPrivateStatus?.() ?? false, false),
-    setCustomArea: (map, c) => callRaw('Map.setCustomArea', () => rawMap(map).setCustomArea?.(c)),
+    setCustomArea: (map, c) => callRaw('Map.setCustomArea', () => {
+      const cfg = (c ?? {}) as { area?: Point[]; [k: string]: unknown };
+      // area 用普通经纬度传入，这里转成原生 Point（已是 Point 实例则原样返回）
+      const rawCfg = Array.isArray(cfg.area) ? { ...cfg, area: toRawPoints(rawSDK, cfg.area) } : cfg;
+      return rawMap(map).setCustomArea?.(rawCfg);
+    }),
     addFocusMask: (map, m) => callRaw('Map.addFocusMask', () => rawMap(map).addFocusMask?.(m)),
     removeFocusMask: (map, m) => callRaw('Map.removeFocusMask', () => rawMap(map).removeFocusMask?.(m)),
     clearFocusMasks: (map) => callRaw('Map.clearFocusMasks', () => rawMap(map).clearFocusMasks?.()),

@@ -55,7 +55,7 @@ export type { OverlayTargetContextValue } from './context/OverlayTargetContext';
 
 // Map 容器
 export { Map } from './components/Map';
-export type { MapProps } from './components/Map';
+export type { MapProps, MapCustomArea } from './components/Map';
 export type { MapRef } from './components/Map';
 
 // ─── Overlay 组件（18 个） ───

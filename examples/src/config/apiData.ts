@@ -145,6 +145,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'displayOptions', type: 'DisplayOptions', required: false, description: '显示元素配置（poi/building/indoor 等开关），4.0+，2.0.2 新增' },
     { name: 'mapStyle', type: 'unknown', required: false, description: '个性化样式 V1（3.0）；首帧随地图构造参数应用，避免默认样式闪烁，2.0.2 起' },
     { name: 'mapStyleV2', type: 'unknown', required: false, description: '个性化样式 V2（4.0+），传 { styleJson } 或 { styleId }；首帧随地图构造参数应用避免配色闪烁，2.0.2 起。注意：React StrictMode 开发期会双重挂载组件（mount→unmount→mount），受百度 SDK 异步销毁 + 版权控件时序影响，logo/版权文字可能短暂闪现，属开发期现象，生产构建不受影响' },
+    { name: 'customArea', type: '{ area: Point[]; style: unknown; globalStyle?: unknown } | false', required: false, description: '个性化生效区域，4.0+，2.0.3 新增）。只在 area 多边形内应用 style 个性化，区域外维持全局样式；area 传普通 { lng, lat }[]，组件内部转原生 Point。传 false 会对上次区域重发空样式以恢复默认' },
     { name: 'theme', type: 'string', required: false, description: '地图主题 ID' },
     { name: 'defaultCursor', type: 'string', required: false, description: '默认光标' },
     { name: 'draggingCursor', type: 'string', required: false, description: '拖拽时光标' },
