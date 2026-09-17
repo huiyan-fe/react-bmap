@@ -255,6 +255,11 @@ function isNestedPath(path: unknown): path is Point[][] {
 function toRawPathOrPaths(SDK: BMapSDK, path: Point[] | Point[][] | null | undefined): BMap.Point[] | BMap.Point[][] {
   return isNestedPath(path) ? toRawPointGroups(SDK, path) : toRawPoints(SDK, path as Point[]);
 }
+/** 编辑态节点图标 node/nodeT：把 {url,size} 图标配置转成 SDK Icon 实例写入 ctorOpts（enableEditing 时生效） */
+function applyEditNodeIcons(SDK: BMapSDK, raw: Record<string, unknown> | undefined, ctorOpts: Record<string, unknown>): void {
+  if (raw?.node) ctorOpts.node = toRawIcon(SDK, raw.node);
+  if (raw?.nodeT) ctorOpts.nodeT = toRawIcon(SDK, raw.nodeT);
+}
 function toRawPixel(SDK: BMapSDK, p: Pixel | null | undefined): BMap.Pixel {
   if (!p) return p as unknown as BMap.Pixel;
   if (p instanceof SDK.Pixel) return p;
@@ -838,6 +843,7 @@ export function createV4Driver(
       if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
       if (raw?.strokeTexture) ctorOpts.strokeTexture = raw.strokeTexture;
       if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      applyEditNodeIcons(rawSDK, raw, ctorOpts);
       const hasOpts = Object.keys(ctorOpts).length > 0;
       return createOverlayFactory('Polyline', () =>
         hasOpts ? new rawSDK.Polyline(toRawPoints(rawSDK, p), ctorOpts) : new rawSDK.Polyline(toRawPoints(rawSDK, p)),
@@ -855,6 +861,7 @@ export function createV4Driver(
       if (typeof raw?.coordType === 'string') ctorOpts.coordType = raw.coordType;
       if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
       if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      applyEditNodeIcons(rawSDK, raw, ctorOpts);
       const hasOpts = Object.keys(ctorOpts).length > 0;
       // path 支持单坐标串 Point[] 或多坐标串 Point[][]（镂空/多环，对齐 JSAPI）
       const rawPath = toRawPathOrPaths(rawSDK, p as Point[] | Point[][]);
@@ -877,6 +884,7 @@ export function createV4Driver(
       if (typeof raw?.coordType === 'string') ctorOpts.coordType = raw.coordType;
       if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
       if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      applyEditNodeIcons(rawSDK, raw, ctorOpts);
       const hasOpts = Object.keys(ctorOpts).length > 0;
       return createOverlayFactory('Circle', () => {
         const inst = hasOpts
@@ -903,6 +911,7 @@ export function createV4Driver(
       if (typeof raw?.coordType === 'string') ctorOpts.coordType = raw.coordType;
       if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
       if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      applyEditNodeIcons(rawSDK, raw, ctorOpts);
       const hasOpts = Object.keys(ctorOpts).length > 0;
       return createOverlayFactory('Rectangle', () =>
         hasOpts
@@ -926,8 +935,10 @@ export function createV4Driver(
       for (const f of fields) { if (raw?.[f] !== undefined) ctorOpts[f] = raw[f]; }
       if (typeof raw?.enableMassClear === 'boolean') ctorOpts.enableMassClear = raw.enableMassClear;
       if (typeof raw?.enableClicking === 'boolean') ctorOpts.enableClicking = raw.enableClicking;
+      if (typeof raw?.enableEditing === 'boolean') ctorOpts.enableEditing = raw.enableEditing;
       if (raw?.dashArray) ctorOpts.dashArray = raw.dashArray;
       if (typeof raw?.zIndex === 'number') ctorOpts.zIndex = raw.zIndex;
+      applyEditNodeIcons(rawSDK, raw, ctorOpts);
       const hasOpts = Object.keys(ctorOpts).length > 0;
       // controlPoints 是第 2 个位置参数，opts 是第 3 个，顺序不能省
       return createOverlayFactory('BezierCurve', () =>

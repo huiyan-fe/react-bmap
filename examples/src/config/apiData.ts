@@ -48,6 +48,11 @@ const coordTypeProp: ApiProp = { name: 'coordType', type: 'string', required: fa
 const linkRight: ApiProp = { name: 'linkRight', type: 'boolean', required: false, description: '跨 180 度经线时取最短路径' };
 const zIndexProp: ApiProp = { name: 'zIndex', type: 'number', required: false, description: '覆盖物层级' };
 const strokeExtras: ApiProp[] = [strokeLineCap, strokeLineJoin, dashArray, coordTypeProp, zIndexProp];
+// 编辑态节点图标（enableEditing 时生效，4.0/GL，2.0.3 新增）：所有可编辑覆盖物通用
+const editNodeProps: ApiProp[] = [
+  { name: 'node', type: '{ url: string; size?: Size }', required: false, description: '编辑态端点(顶点)图标；enableEditing 时生效，4.0/GL，2.0.3 新增' },
+  { name: 'nodeT', type: '{ url: string; size?: Size }', required: false, description: '编辑态中间点(拖出可新增顶点)图标；enableEditing 时生效，4.0/GL，2.0.3 新增' },
+];
 
 // ─── 图层公共 prop 片段 ───
 // visible / opacity / minZoom / maxZoom / zIndex：NormalLayer 系图层通用
@@ -241,7 +246,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     onClick, onMouseOver, onMouseOut, onDoubleClick, onRightClick, onMouseDown, onMouseUp, onRemove,
   ],
   polyline: [
-    path, ...strokeProps, ...strokeExtras, linkRight, enableMassClear, enableEditing, enableClicking, visible,
+    path, ...strokeProps, ...strokeExtras, linkRight, enableMassClear, enableEditing, enableClicking, visible, ...editNodeProps,
     { name: 'geodesic', type: 'boolean', required: false, description: '是否大地线' },
     { name: 'clip', type: 'boolean', required: false, description: '是否裁剪' },
     { name: 'strokeTexture', type: '{ url: string; width?: number; height?: number }', required: false, description: '纹理贴线' },
@@ -251,7 +256,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
   ],
   polygon: [
     { name: 'path', type: 'Point[] | Point[][]', required: true, description: '坐标点数组。单坐标串 Point[] 为普通多边形；多坐标串 Point[][] 表示带洞/多环（首环外边界、后续环镂空），对齐 JSAPI。多坐标串（镂空/多环）仅 4.0/GL 支持，3.0 不渲染，2.0.3 新增' },
-    ...strokeProps, ...strokeExtras, linkRight, ...fillProps, enableMassClear, enableEditing, enableClicking, visible,
+    ...strokeProps, ...strokeExtras, linkRight, ...fillProps, enableMassClear, enableEditing, enableClicking, visible, ...editNodeProps,
     onClick, onMouseOver, onMouseOut, onDoubleClick, onRightClick, onRightDoubleClick,
     onMouseDown, onMouseUp, onMouseMove, onRemove, onLineUpdate, ...lineEditEvents,
   ],
@@ -259,21 +264,21 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'center', type: 'Point', required: true, description: '圆心坐标 { lng, lat }' },
     { name: 'radius', type: 'number', required: true, description: '半径（米）' },
     // Circle 不支持 strokeLineCap / strokeLineJoin / linkRight
-    ...strokeProps, dashArray, coordTypeProp, zIndexProp, ...fillProps, enableMassClear, enableEditing, enableClicking, visible,
+    ...strokeProps, dashArray, coordTypeProp, zIndexProp, ...fillProps, enableMassClear, enableEditing, enableClicking, visible, ...editNodeProps,
     onClick, onMouseOver, onMouseOut, onDoubleClick, onRightClick, onRightDoubleClick,
     onMouseDown, onMouseUp, onMouseMove, onRemove, onLineUpdate, ...lineEditEvents,
   ],
   rectangle: [
     { name: 'bounds', type: 'Bounds', required: true, description: '矩形边界 { sw, ne }' },
     // Rectangle 不支持 strokeLineCap / strokeLineJoin
-    ...strokeProps, dashArray, coordTypeProp, zIndexProp, linkRight, ...fillProps, enableMassClear, enableEditing, enableClicking, visible,
+    ...strokeProps, dashArray, coordTypeProp, zIndexProp, linkRight, ...fillProps, enableMassClear, enableEditing, enableClicking, visible, ...editNodeProps,
     onClick, onMouseOver, onMouseOut, onDoubleClick, onRightClick, onRightDoubleClick,
     onMouseDown, onMouseUp, onMouseMove, onRemove, onLineUpdate, ...lineEditEvents,
   ],
   'bezier-curve': [
     path,
     { name: 'controlPoints', type: 'Point[][]', required: true, description: '控制点数组，二阶贝塞尔每段一个控制点，组数 = path.length - 1' },
-    ...strokeProps, dashArray, enableMassClear, enableClicking, visible, zIndexProp,
+    ...strokeProps, dashArray, enableMassClear, enableClicking, visible, zIndexProp, ...editNodeProps,
     onClick, onMouseOver, onMouseOut, onDoubleClick, onRightClick, onRightDoubleClick,
     onMouseDown, onMouseUp, onMouseMove, onRemove, onLineUpdate,
   ],

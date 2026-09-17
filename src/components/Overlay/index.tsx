@@ -72,7 +72,7 @@ export const Polyline = createOverlayComponent<PolylineProps>({
   // 有 setter 的字段
   optionProps: ['strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'enableEditing', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
-  ctorOnlyProps: ['enableClicking', 'strokeLineCap', 'strokeLineJoin', 'geodesic', 'linkRight', 'clip', 'coordType', 'icons', 'dashArray', 'strokeTexture'],
+  ctorOnlyProps: ['enableClicking', 'strokeLineCap', 'strokeLineJoin', 'geodesic', 'linkRight', 'clip', 'coordType', 'icons', 'dashArray', 'strokeTexture', 'node', 'nodeT'],
   events: [
     { sdk: 'click', prop: 'onClick' },
     { sdk: 'dblclick', prop: 'onDoubleClick' },
@@ -106,7 +106,7 @@ export const Polygon = createOverlayComponent<PolygonProps>({
   ],
   ctorOnlyProps: [
     'enableClicking', 'strokeLineCap', 'strokeLineJoin',
-    'linkRight', 'coordType', 'dashArray',
+    'linkRight', 'coordType', 'dashArray', 'node', 'nodeT',
   ],
   events: [
     { sdk: 'click', prop: 'onClick' },
@@ -137,7 +137,7 @@ export const Circle = createOverlayComponent<CircleProps>({
   optionProps: ['radius', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
   // enableEditing: SDK 的 enableEditing() 对 Circle 有 null 访问 bug，用 ctorOnlyProps + rAF 延迟处理
-  ctorOnlyProps: ['enableEditing', 'enableClicking', 'coordType', 'dashArray'],
+  ctorOnlyProps: ['enableEditing', 'enableClicking', 'coordType', 'dashArray', 'node', 'nodeT'],
   events: [
     { sdk: 'click', prop: 'onClick' },
     { sdk: 'dblclick', prop: 'onDoubleClick' },
@@ -166,7 +166,7 @@ export const Rectangle = createOverlayComponent<RectangleProps>({
   // bounds 走 setBounds（在 setOverlayOptions 内按 type 分发），没有 positionProp/pathProp
   optionProps: ['bounds', 'strokeColor', 'fillColor', 'strokeWeight', 'strokeOpacity', 'fillOpacity', 'strokeStyle', 'enableEditing', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建。
-  ctorOnlyProps: ['enableClicking', 'linkRight', 'coordType', 'dashArray'],
+  ctorOnlyProps: ['enableClicking', 'linkRight', 'coordType', 'dashArray', 'node', 'nodeT'],
   events: [
     { sdk: 'click', prop: 'onClick' },
     { sdk: 'dblclick', prop: 'onDoubleClick' },
@@ -196,7 +196,7 @@ export const BezierCurve = createOverlayComponent<BezierCurveProps>({
   // controlPoints 走 setControlPoints（在 setOverlayOptions 内按 type 分发）
   optionProps: ['controlPoints', 'strokeColor', 'strokeWeight', 'strokeOpacity', 'strokeStyle', 'enableMassClear', 'zIndex'],
   // SDK 无 setter，只能 constructor 设置；变化时框架自动重建
-  ctorOnlyProps: ['enableClicking', 'dashArray'],
+  ctorOnlyProps: ['enableClicking', 'enableEditing', 'dashArray', 'node', 'nodeT'],
   // BezierCurveEventMap 不含编辑相关事件（SDK 无 enableEditing）
   events: [
     { sdk: 'click', prop: 'onClick' },

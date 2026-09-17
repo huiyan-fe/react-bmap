@@ -16,6 +16,18 @@ export interface PlainIcon extends IconOptions {
   size?: Size;
 }
 
+/**
+ * 编辑态节点图标（enableEditing 时生效，4.0/GL，2.0.3 新增）。
+ * 所有可编辑覆盖物（Polyline/Polygon/Circle/Rectangle/BezierCurve）均支持，
+ * 传 { url, size } 图标配置，框架自动转成 SDK Icon 实例。
+ */
+export interface EditNodeStyleOptions {
+  /** 编辑态端点（顶点）图标 */
+  node?: PlainIcon | OverlayHandle;
+  /** 编辑态中间点（拖出可新增顶点）图标 */
+  nodeT?: PlainIcon | OverlayHandle;
+}
+
 /** 矢量图标（Symbol 变体）— 作为 Marker icon 使用，框架自动转 SDK Symbol 实例 */
 export interface SymbolIcon {
   symbol: {
@@ -148,6 +160,8 @@ export interface BezierCurveOptions {
   strokeColor?: string; strokeWeight?: number; strokeOpacity?: number;
   strokeStyle?: 'solid' | 'dashed' | 'dotted';
   enableMassClear?: boolean; enableClicking?: boolean;
+  /** 是否启用编辑（拖拽顶点/控制点），4.0/GL */
+  enableEditing?: boolean;
   /** 虚线样式 [实线长, 间隙长]，默认实线与空隙均为线宽的 2 倍 */
   dashArray?: number[];
   zIndex?: number;
@@ -395,7 +409,7 @@ export interface LabelProps extends LabelOptions, OverlayReactProps {
   onMouseUp?: (point: Point, raw: unknown) => void;
   onRemove?: (point: Point, raw: unknown) => void;
 }
-export interface PolylineProps extends PolylineOptions, OverlayReactProps {
+export interface PolylineProps extends PolylineOptions, EditNodeStyleOptions, OverlayReactProps {
   path: Point[];
   onClick?: (point: Point, raw: unknown) => void;
   onDoubleClick?: (point: Point, raw: unknown) => void;
@@ -424,7 +438,7 @@ export interface PolylineProps extends PolylineOptions, OverlayReactProps {
   onLineVertexDel?: (raw: unknown) => void;
 }
 
-export interface PolygonProps extends PolygonOptions, OverlayReactProps {
+export interface PolygonProps extends PolygonOptions, EditNodeStyleOptions, OverlayReactProps {
   /**
    * 多边形坐标点。单坐标串 Point[] 为普通多边形；
    * 多坐标串 Point[][] 表示带洞/多环（第一环为外边界，后续环为镂空孔洞），对齐 JSAPI。
@@ -457,7 +471,7 @@ export interface PolygonProps extends PolygonOptions, OverlayReactProps {
   /** 删除编辑节点 @since 4.0 */
   onLineVertexDel?: (raw: unknown) => void;
 }
-export interface CircleProps extends CircleOptions, OverlayReactProps {
+export interface CircleProps extends CircleOptions, EditNodeStyleOptions, OverlayReactProps {
   center: Point;
   radius: number;
   onClick?: (point: Point, raw: unknown) => void;
@@ -487,7 +501,7 @@ export interface CircleProps extends CircleOptions, OverlayReactProps {
   onLineVertexDel?: (raw: unknown) => void;
 }
 /** Rectangle 事件对照 RectangleEventMap = GraphEventMap<Rectangle>（整体 @since 4.0） */
-export interface RectangleProps extends RectangleOptions, OverlayReactProps {
+export interface RectangleProps extends RectangleOptions, EditNodeStyleOptions, OverlayReactProps {
   bounds: Bounds;
   onClick?: (point: Point, raw: unknown) => void;
   onDoubleClick?: (point: Point, raw: unknown) => void;
@@ -519,7 +533,7 @@ export interface RectangleProps extends RectangleOptions, OverlayReactProps {
  * = Omit<GraphEventMap<BezierCurve>, editstart|editend|linevertex*>（整体 @since 4.0）。
  * 即：无编辑相关事件。
  */
-export interface BezierCurveProps extends BezierCurveOptions, OverlayReactProps {
+export interface BezierCurveProps extends BezierCurveOptions, EditNodeStyleOptions, OverlayReactProps {
   /** 路径点数组，至少两个点 */
   path: Point[];
   /** 控制点数组，每两个路径点之间 1~2 个控制点，组数应为 path.length - 1，如 [[cp1, cp2], [cp3]] */
