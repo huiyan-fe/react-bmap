@@ -10,8 +10,6 @@ import {
   ScaleControl,
   BMAP_ANCHOR_TOP_LEFT,
   BMAP_ANCHOR_BOTTOM_LEFT,
-  BMAP_LANGUAGE_ZH,
-  BMAP_LANGUAGE_EN,
 } from 'react-bmap';
 import type { MapRef, MapSnapshot, Point } from 'react-bmap';
 import { BEIJING } from '../TestProvider';
@@ -161,8 +159,6 @@ export function MapTestPage() {
   const [mapType, setMapType] = useState<number | undefined>(undefined);
   const [defaultCursor, setDefaultCursor] = useState<string | undefined>(undefined);
   const [draggingCursor, setDraggingCursor] = useState<string | undefined>(undefined);
-  // 首选语言（4.0+）：undefined=不控制，string=启用对应语言，false=主动关闭
-  const [language, setLanguage] = useState<string | false | undefined>(undefined);
 
   // 受控样式（React 方式，不通过 ref）
   const [theme, setTheme] = useState<string | undefined>(undefined);
@@ -736,7 +732,6 @@ export function MapTestPage() {
           enableTiltGestures={tiltGestures}
           enableAutoResize={autoResize}
           enableIconInfoWindow={iconInfoWindow}
-          enablePreferredLanguage={language}
           minZoom={minZoom}
           maxZoom={maxZoom}
           mapType={mapType}
@@ -1190,35 +1185,6 @@ export function MapTestPage() {
             {c.name}
           </button>
         ))}
-        {/* 语言切换（enablePreferredLanguage，4.0+；3.0 不支持） */}
-        <span style={{ width: 1, alignSelf: 'stretch', background: 'rgba(0,0,0,0.12)', margin: '0 6px' }} />
-        <span style={{ fontSize: 12, color: '#5f6368', alignSelf: 'center', marginRight: 2 }}>
-          语言{version === '3.0' && ' (v4+)'}
-        </span>
-        <button
-          className={`mp-city-btn ${language === BMAP_LANGUAGE_ZH ? 'active' : ''} ${version === '3.0' ? 'danger' : ''}`}
-          onClick={() => setLanguage(BMAP_LANGUAGE_ZH)}
-          disabled={version === '3.0'}
-          title="首选语言：中文（map.enablePreferredLanguage(BMAP_LANGUAGE_ZH)）"
-        >
-          中文
-        </button>
-        <button
-          className={`mp-city-btn ${language === BMAP_LANGUAGE_EN ? 'active' : ''} ${version === '3.0' ? 'danger' : ''}`}
-          onClick={() => setLanguage(BMAP_LANGUAGE_EN)}
-          disabled={version === '3.0'}
-          title="Preferred language: English（map.enablePreferredLanguage(BMAP_LANGUAGE_EN)）"
-        >
-          EN
-        </button>
-        <button
-          className={`mp-city-btn ${language === false ? 'active' : ''}`}
-          onClick={() => setLanguage(false)}
-          disabled={version === '3.0'}
-          title="关闭首选语言（map.disablePreferredLanguage）"
-        >
-          默认
-        </button>
       </div>
     </div>
   );

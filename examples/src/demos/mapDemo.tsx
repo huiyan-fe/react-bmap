@@ -1,6 +1,5 @@
 import React from 'react';
-import { BMapProvider, Marker, ScaleControl, Polygon, useBMapContext } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import { BMapProvider, Marker, ScaleControl, useBMapContext } from 'react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { EXAMPLE_AK, useMapVersion } from '../context/MapModeContext';
 import { registerDemo } from './index';
@@ -32,65 +31,6 @@ function Demo() {
 }
 
 registerDemo('map', { Component: Demo, code });
-
-// ─── customArea：个性化生效区域（setCustomArea，4.0+，2.0.3 新增） ───
-
-const CUSTOM_AREA: Point[] = [
-  { lng: 116.3128444483749, lat: 40.060273106485894 },
-  { lng: 116.31577741586499, lat: 40.060797716323314 },
-  { lng: 116.31685538247696, lat: 40.05968636697625 },
-  { lng: 116.31824775601743, lat: 40.058757927582654 },
-  { lng: 116.31431766941127, lat: 40.057360067270174 },
-];
-
-const CUSTOM_AREA_STYLE = [
-  { featureType: 'building', elementType: 'geometry.topfill', stylers: { color: '#6dd5edcc' } },
-  { featureType: 'building', elementType: 'geometry.sidefill', stylers: { color: '#2c7fb8b3' } },
-];
-
-const customAreaCode = `import { Map, Polygon } from 'react-bmap';
-
-// 个性化生效区域边界（普通经纬度即可，组件内部转成原生 Point）
-const area = [
-  { lng: 116.3128444483749, lat: 40.060273106485894 },
-  { lng: 116.31577741586499, lat: 40.060797716323314 },
-  { lng: 116.31685538247696, lat: 40.05968636697625 },
-  { lng: 116.31824775601743, lat: 40.058757927582654 },
-  { lng: 116.31431766941127, lat: 40.057360067270174 },
-];
-// 区域内建筑个性化：顶面浅青蓝、侧面深蓝
-const areaStyle = [
-  { featureType: 'building', elementType: 'geometry.topfill', stylers: { color: '#6dd5edcc' } },
-  { featureType: 'building', elementType: 'geometry.sidefill', stylers: { color: '#2c7fb8b3' } },
-];
-
-// customArea prop 内部会先 setMapStyle 兜底、再 setCustomArea（4.0+；3.0 不支持）
-<Map
-  center={{ lng: 116.3156, lat: 40.0594 }}
-  zoom={19}
-  tilt={55}
-  customArea={{ area, style: { styleJson: areaStyle } }}
-  style={{ height: 400 }}
->
-  {/* 画出边界，直观看到区域范围 */}
-  <Polygon path={area} strokeColor="#1b8eec" strokeWeight={4} strokeStyle="dashed" fillOpacity={0} />
-</Map>`;
-
-function CustomAreaDemo() {
-  return (
-    <MapContainer
-      defaultCenter={{ lng: 116.3156, lat: 40.0594 }}
-      defaultZoom={19}
-      tilt={55}
-      customArea={{ area: CUSTOM_AREA, style: { styleJson: CUSTOM_AREA_STYLE } }}
-      style={{ height: '100%' }}
-    >
-      <Polygon path={CUSTOM_AREA} strokeColor="#1b8eec" strokeWeight={4} strokeStyle="dashed" fillOpacity={0} />
-    </MapContainer>
-  );
-}
-
-registerDemo('map', { title: 'customArea 个性化生效区域（4.0+）', Component: CustomAreaDemo, code: customAreaCode });
 
 // ─── BMapProvider ───
 
