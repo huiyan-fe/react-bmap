@@ -31,6 +31,8 @@ export interface GeocoderHookResult {
   getPoints: (addresses: string[], city?: string) => Promise<(Point | null)[]>;
   /** 并发批量坐标转地址；按入参顺序返回，失败位为 null。直接返回 Promise，不经过 data/loading/error */
   getLocations: (points: Point[], options?: unknown) => Promise<(GeocoderResult | null)[]>;
+  /** 设置地理编码选项（如 language 语言等），对应 SDK setOptions，2.0.4 新增 */
+  setOptions: (options: Record<string, unknown>) => void;
   cancel: () => void;
 }
 
@@ -107,6 +109,10 @@ export function useGeocoder(): GeocoderHookResult {
     setState(s => ({ ...s, loading: false }));
   }, [clear]);
 
+  const setOptions = useCallback((options: Record<string, unknown>) => {
+    rawRef.current?.setOptions?.(options);
+  }, []);
+
   // 并发批量：每项各发一次请求、各自回调 + 超时兜底，Promise.all 保序汇总；
   // 不动 data/loading/error（单值状态表达不了 N 个结果），失败/超时位为 null
   const getPoints = useCallback((addresses: string[], city?: string): Promise<(Point | null)[]> => {
@@ -145,5 +151,5 @@ export function useGeocoder(): GeocoderHookResult {
     })));
   }, []);
 
-  return { ...state, getPoint, getLocation, getPoints, getLocations, cancel };
+  return { ...state, getPoint, getLocation, getPoints, getLocations, setOptions, cancel };
 }

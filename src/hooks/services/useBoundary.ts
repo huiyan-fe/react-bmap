@@ -14,6 +14,8 @@ export interface BoundaryHookResult {
   error: Error | null;
   supported: boolean;
   get: (name: string) => void;
+  /** 把 SDK 返回的边界字符串（"lng,lat;lng,lat;…"）解析成点集，对应 SDK parsebdStr，2.0.4 新增 */
+  parsebdStr: (boundaryStr: string) => unknown;
   cancel: () => void;
 }
 
@@ -61,11 +63,13 @@ export function useBoundary(): BoundaryHookResult {
     }
   }, [arm, clear]);
 
+  const parsebdStr = useCallback((boundaryStr: string): unknown => rawRef.current?.parsebdStr?.(boundaryStr), []);
+
   const cancel = useCallback(() => {
     requestIdRef.current++;
     clear();
     setState(s => ({ ...s, loading: false }));
   }, [clear]);
 
-  return { ...state, get, cancel };
+  return { ...state, get, parsebdStr, cancel };
 }

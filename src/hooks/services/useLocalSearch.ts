@@ -69,6 +69,8 @@ export interface LocalSearchOptions {
   onInfoHtmlSet?: (poi: unknown, html: HTMLElement) => void;
   /** 结果面板回调 */
   onResultsHtmlSet?: (container: HTMLElement) => void;
+  /** 折线添加完成回调（对应 setPolylinesSetCallback） */
+  onPolylinesSet?: (polylines: unknown[]) => void;
 }
 
 export interface LocalSearchHookResult<T = unknown> {
@@ -86,6 +88,24 @@ export interface LocalSearchHookResult<T = unknown> {
   gotoPage: (page: number) => void;
   /** 清空结果 */
   clearResults: () => void;
+  /** 选中/高亮某条结果并打开其信息窗；index 为结果索引 */
+  select: (index: number) => void;
+  /** 取消选中：关掉信息窗 + 清结果列表选中态 */
+  clearSelected: () => void;
+  /** 运行时设置检索城市/区域（字符串 / Point / Map） */
+  setLocation: (location: string | Point | { __brand: string; raw: unknown }) => void;
+  /** 开启检索后自动调整视野 */
+  enableAutoViewport: () => void;
+  /** 关闭自动调整视野 */
+  disableAutoViewport: () => void;
+  /** 开启「自动选中第一个结果」 */
+  enableFirstResultSelection: () => void;
+  /** 关闭「自动选中第一个结果」 */
+  disableFirstResultSelection: () => void;
+  /** 运行时设置每页结果数（1-100） */
+  setPageCapacity: (n: number) => void;
+  /** 最近一次检索的状态码（BMAP_STATUS_*） */
+  getStatus: () => number | undefined;
   /** 取消当前请求 */
   cancel: () => void;
 }
@@ -174,6 +194,11 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     if (typeof raw.setResultsHtmlSetCallback === 'function' && callbacksRef.current.onResultsHtmlSet) {
       raw.setResultsHtmlSetCallback((container: HTMLElement) => {
         callbacksRef.current.onResultsHtmlSet?.(container);
+      });
+    }
+    if (typeof raw.setPolylinesSetCallback === 'function' && callbacksRef.current.onPolylinesSet) {
+      raw.setPolylinesSetCallback((polylines: unknown[]) => {
+        callbacksRef.current.onPolylinesSet?.(polylines);
       });
     }
 
@@ -291,5 +316,40 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
     setState(s => ({ ...s, loading: false }));
   }, [clear]);
 
-  return { ...state, search, searchNearby, searchInBounds, gotoPage, clearResults, cancel };
+  const select = useCallback((index: number) => {
+    try { rawRef.current?.select?.(index); } catch { /* noop */ }
+  }, []);
+
+  const clearSelected = useCallback(() => {
+    try { rawRef.current?.clearSelected?.(); } catch { /* noop */ }
+  }, []);
+
+  const setLocation = useCallback((location: string | Point | { __brand: string; raw: unknown }) => {
+    if (!rawRef.current) return;
+    let l: unknown = location;
+    if (isHandle(l)) {
+      l = l.raw;
+    } else if (l && typeof l === 'object' && 'lng' in l) {
+      const p = l as { lng: number; lat: number };
+      const SDK = getSDK();
+      l = new SDK.Point(p.lng, p.lat);
+    }
+    rawRef.current.setLocation?.(l);
+  }, []);
+
+  const enableAutoViewport = useCallback(() => { rawRef.current?.enableAutoViewport?.(); }, []);
+  const disableAutoViewport = useCallback(() => { rawRef.current?.disableAutoViewport?.(); }, []);
+  const enableFirstResultSelection = useCallback(() => { rawRef.current?.enableFirstResultSelection?.(); }, []);
+  const disableFirstResultSelection = useCallback(() => { rawRef.current?.disableFirstResultSelection?.(); }, []);
+  const setPageCapacity = useCallback((n: number) => { rawRef.current?.setPageCapacity?.(n); }, []);
+  const getStatus = useCallback((): number | undefined => rawRef.current?.getStatus?.(), []);
+
+  return {
+    ...state,
+    search, searchNearby, searchInBounds, gotoPage, clearResults,
+    select, clearSelected, setLocation,
+    enableAutoViewport, disableAutoViewport,
+    enableFirstResultSelection, disableFirstResultSelection,
+    setPageCapacity, getStatus, cancel,
+  };
 }

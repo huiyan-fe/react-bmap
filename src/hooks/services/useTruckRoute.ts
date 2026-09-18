@@ -125,7 +125,8 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
     rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
+  const setPolylineStyle = useCallback((style: Record<string, unknown>) => { rawRef.current?.setPolylineStyle?.(style); }, []);
   const cancel = useCallback(() => { requestIdRef.current++; clear(); setState(s => ({ ...s, loading: false })); }, [clear]);
 
-  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setPageCapacity, setLocation, getStatus, cancel };
+  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setPageCapacity, setLocation, setPolylineStyle, getStatus, cancel };
 }

@@ -1,7 +1,8 @@
 /**
  * useBusLineSearch — 公交线路搜索 Hook（手写）。
- * SDK：getBusList(keyword) / getBusLine(item) / clearResults / enableAutoViewport / disableAutoViewport / setLocation / getStatus
+ * SDK：getBusList(keyword) / getBusLine(item) / enableAutoViewport / disableAutoViewport / setLocation / getStatus
  * 回调：setGetBusListCompleteCallback / setGetBusLineCompleteCallback
+ * 注意：SDK 的 BusLineSearch 没有原生 clearResults，clearResults() 只清 hook 的 data 状态（地图渲染不受影响）。
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBMapContext } from '../../context/BMapContext';
@@ -29,7 +30,16 @@ export interface BusLineSearchHookResult {
   supported: boolean;
   getBusList: (keyword: string) => void;
   getBusLine: (item: unknown) => void;
+  /** 只清 hook 的 data 状态；SDK 无原生 clear，地图上已渲染的线路不受影响 */
   clearResults: () => void;
+  /** 开启检索后自动调整视野，2.0.4 新增 */
+  enableAutoViewport: () => void;
+  /** 关闭自动调整视野，2.0.4 新增 */
+  disableAutoViewport: () => void;
+  /** 运行时设置检索城市/区域，2.0.4 新增 */
+  setLocation: (location: unknown) => void;
+  /** 最近一次检索的状态码（BMAP_STATUS_*），2.0.4 新增 */
+  getStatus: () => number | undefined;
   cancel: () => void;
 }
 
@@ -125,7 +135,11 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
   }, [arm, clear]);
 
   const clearResults = useCallback(() => { try { rawRef.current?.clearResults?.(); } catch { /* noop */ } setState(s => ({ ...s, data: undefined, loading: false })); }, []);
+  const enableAutoViewport = useCallback(() => { rawRef.current?.enableAutoViewport?.(); }, []);
+  const disableAutoViewport = useCallback(() => { rawRef.current?.disableAutoViewport?.(); }, []);
+  const setLocation = useCallback((location: unknown) => { rawRef.current?.setLocation?.(unwrapHandle(location)); }, []);
+  const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; clear(); setState(s => ({ ...s, loading: false })); }, [clear]);
 
-  return { ...state, getBusList, getBusLine, clearResults, cancel };
+  return { ...state, getBusList, getBusLine, clearResults, enableAutoViewport, disableAutoViewport, setLocation, getStatus, cancel };
 }

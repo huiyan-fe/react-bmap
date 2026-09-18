@@ -120,7 +120,8 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
     rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
+  const setPolylineStyle = useCallback((style: Record<string, unknown>) => { rawRef.current?.setPolylineStyle?.(style); }, []);
   const cancel = useCallback(() => { requestIdRef.current++; clear(); setState(s => ({ ...s, loading: false })); }, [clear]);
   const setPolicy = useCallback((_p: number) => {}, []);
-  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, getStatus, cancel } as unknown as RidingRouteHookResult;
+  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, setPolylineStyle, getStatus, cancel } as unknown as RidingRouteHookResult;
 }

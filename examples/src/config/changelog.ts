@@ -11,6 +11,17 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '2.0.4',
+    date: '2026-09-18',
+    changes: [
+      'useLocalSearch：补齐 select / clearSelected / setLocation / enableAutoViewport / disableAutoViewport / enableFirstResultSelection / disableFirstResultSelection / setPageCapacity / getStatus 方法 + onPolylinesSet 回调',
+      '路线 hook（Driving/Walking/Riding/Transit/Truck）：补 setPolylineStyle（运行时改路线折线样式）',
+      'useBusLineSearch：补 enableAutoViewport / disableAutoViewport / setLocation / getStatus（clearResults 说明：SDK 无原生 clear，仅清 data 状态）',
+      'useAutocomplete：补 setInputValue / setTypes / setLocation / getStatus',
+      'useGeocoder：补 setOptions；useBoundary：补 parsebdStr',
+    ],
+  },
+  {
     version: '2.0.3',
     date: '2026-09-18',
     changes: [

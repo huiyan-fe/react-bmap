@@ -78,6 +78,8 @@ export interface DrivingRouteHookResult {
   disableAutoViewport: () => void;
   setPolicy: (policy: number) => void;
   setLocation: (location: string | MapHandle) => void;
+  /** 运行时设置路线折线样式（strokeColor / strokeWeight / strokeOpacity 等），2.0.4 新增 */
+  setPolylineStyle: (style: Record<string, unknown>) => void;
   getStatus: () => number | undefined;
   cancel: () => void;
 }
@@ -197,8 +199,9 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
   const setLocation = useCallback((location: unknown) => {
     rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
+  const setPolylineStyle = useCallback((style: Record<string, unknown>) => { rawRef.current?.setPolylineStyle?.(style); }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; clear(); setState(s => ({ ...s, loading: false })); }, [clear]);
 
-  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, getStatus, cancel };
+  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, setPolylineStyle, getStatus, cancel };
 }

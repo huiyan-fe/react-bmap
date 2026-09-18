@@ -12,6 +12,8 @@ import { useDrivingRoute } from '../useDrivingRoute';
 import { useTruckRoute } from '../useTruckRoute';
 import { useLocalSearch } from '../useLocalSearch';
 import { useConvertor } from '../useConvertor';
+import { useBusLineSearch } from '../useBusLineSearch';
+import { useAutocomplete } from '../useAutocomplete';
 
 // L4：service hook 契约层。
 // 组件从 useBMapContext() 拿 driver，driver.createXxx() 返回 { isNull, raw } 句柄。
@@ -236,6 +238,35 @@ describe('useLocalSearch', () => {
     renderHook(() => useLocalSearch({ renderOptions: { map: mapHandle as any } }), { wrapper: bmapWrapper(driver) });
     expect(sopts?.renderOptions?.map).toBe(mapHandle.raw);
   });
+
+  it('补齐的透传方法：clearSelected/select/setLocation/enableAutoViewport/setPageCapacity/getStatus 调到原生实例', () => {
+    installFakeSDK();
+    const raw = {
+      setSearchCompleteCallback: vi.fn(),
+      clearSelected: vi.fn(), select: vi.fn(), setLocation: vi.fn(),
+      enableAutoViewport: vi.fn(), disableAutoViewport: vi.fn(),
+      enableFirstResultSelection: vi.fn(), disableFirstResultSelection: vi.fn(),
+      setPageCapacity: vi.fn(), getStatus: vi.fn(() => 0),
+    };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createLocalSearch = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useLocalSearch(), { wrapper: bmapWrapper(driver) });
+
+    act(() => result.current.clearSelected());
+    act(() => result.current.select(2));
+    act(() => result.current.setLocation('上海'));
+    act(() => result.current.enableAutoViewport());
+    act(() => result.current.setPageCapacity(20));
+    let status: number | undefined;
+    act(() => { status = result.current.getStatus(); });
+
+    expect(raw.clearSelected).toHaveBeenCalled();
+    expect(raw.select).toHaveBeenCalledWith(2);
+    expect(raw.setLocation).toHaveBeenCalledWith('上海');
+    expect(raw.enableAutoViewport).toHaveBeenCalled();
+    expect(raw.setPageCapacity).toHaveBeenCalledWith(20);
+    expect(status).toBe(0);
+  });
 });
 
 describe('useConvertor', () => {
@@ -289,5 +320,48 @@ describe('useConvertor', () => {
     const { result } = renderHook(() => useConvertor(), { wrapper: bmapWrapper(driver) });
     expect(result.current.supported).toBe(false);
     expect(result.current.error).toBeInstanceOf(UnsupportedCapabilityError);
+  });
+});
+
+describe('service hook 补齐方法（2.0.4）', () => {
+  it('useDrivingRoute.setPolylineStyle 透传到原生实例', () => {
+    installFakeSDK();
+    const raw = { search: vi.fn(), getResults: vi.fn(() => ({})), setPolylineStyle: vi.fn() };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createDrivingRoute = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useDrivingRoute(), { wrapper: bmapWrapper(driver) });
+    act(() => result.current.setPolylineStyle({ strokeColor: '#f00', strokeWeight: 8 }));
+    expect(raw.setPolylineStyle).toHaveBeenCalledWith({ strokeColor: '#f00', strokeWeight: 8 });
+  });
+
+  it('useBusLineSearch 补齐 enableAutoViewport/setLocation/getStatus 透传', () => {
+    const raw = {
+      setGetBusListCompleteCallback: vi.fn(), setGetBusLineCompleteCallback: vi.fn(),
+      enableAutoViewport: vi.fn(), disableAutoViewport: vi.fn(),
+      setLocation: vi.fn(), getStatus: vi.fn(() => 0),
+    };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createBusLineSearch = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useBusLineSearch(), { wrapper: bmapWrapper(driver) });
+    act(() => result.current.enableAutoViewport());
+    act(() => result.current.setLocation('上海'));
+    let st: number | undefined;
+    act(() => { st = result.current.getStatus(); });
+    expect(raw.enableAutoViewport).toHaveBeenCalled();
+    expect(raw.setLocation).toHaveBeenCalledWith('上海');
+    expect(st).toBe(0);
+  });
+
+  it('useAutocomplete 补齐 setInputValue/setTypes/setLocation 透传', () => {
+    const raw = { setInputValue: vi.fn(), setTypes: vi.fn(), setLocation: vi.fn(), getStatus: vi.fn(() => 0) };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createAutocomplete = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useAutocomplete(), { wrapper: bmapWrapper(driver) });
+    act(() => result.current.setInputValue('天安'));
+    act(() => result.current.setTypes(['city']));
+    act(() => result.current.setLocation('北京'));
+    expect(raw.setInputValue).toHaveBeenCalledWith('天安');
+    expect(raw.setTypes).toHaveBeenCalledWith(['city']);
+    expect(raw.setLocation).toHaveBeenCalledWith('北京');
   });
 });

@@ -119,10 +119,11 @@ export function useWalkingRoute<T = unknown>(opts: WalkingRouteOptions = {}): Wa
   const setLocation = useCallback((location: unknown) => {
     rawRef.current?.setLocation?.(unwrapHandle(location));
   }, []);
+  const setPolylineStyle = useCallback((style: Record<string, unknown>) => { rawRef.current?.setPolylineStyle?.(style); }, []);
   const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; clear(); setState(s => ({ ...s, loading: false })); }, [clear]);
 
   // setPolicy 不适用于 WalkingRoute
   const setPolicy = useCallback((_p: number) => {}, []);
-  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, getStatus, cancel } as unknown as WalkingRouteHookResult;
+  return { ...state, search, clearResults, enableAutoViewport, disableAutoViewport, setPolicy, setLocation, setPolylineStyle, getStatus, cancel } as unknown as WalkingRouteHookResult;
 }

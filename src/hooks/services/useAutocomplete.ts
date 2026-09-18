@@ -32,6 +32,14 @@ export interface AutocompleteHookResult {
   show: () => void;
   hide: () => void;
   getResults: () => unknown;
+  /** 设置绑定输入框的值，2.0.4 新增 */
+  setInputValue: (value: string) => void;
+  /** 运行时设置返回结果类型限定，2.0.4 新增 */
+  setTypes: (types: string[]) => void;
+  /** 运行时设置检索城市/区域，2.0.4 新增 */
+  setLocation: (location: unknown) => void;
+  /** 最近一次的状态码，2.0.4 新增 */
+  getStatus: () => number | undefined;
   cancel: () => void;
 }
 
@@ -113,7 +121,11 @@ export function useAutocomplete(opts: AutocompleteOptions = {}): AutocompleteHoo
   const show = useCallback(() => { rawRef.current?.show?.(); }, []);
   const hide = useCallback(() => { rawRef.current?.hide?.(); }, []);
   const getResults = useCallback(() => rawRef.current?.getResults?.(), []);
+  const setInputValue = useCallback((value: string) => { rawRef.current?.setInputValue?.(value); }, []);
+  const setTypes = useCallback((types: string[]) => { rawRef.current?.setTypes?.(types); }, []);
+  const setLocation = useCallback((location: unknown) => { rawRef.current?.setLocation?.(unwrapHandle(location)); }, []);
+  const getStatus = useCallback(() => rawRef.current?.getStatus?.(), []);
   const cancel = useCallback(() => { requestIdRef.current++; setState(s => ({ ...s, loading: false })); }, []);
 
-  return { ...state, search, show, hide, getResults, cancel };
+  return { ...state, search, show, hide, getResults, setInputValue, setTypes, setLocation, getStatus, cancel };
 }
