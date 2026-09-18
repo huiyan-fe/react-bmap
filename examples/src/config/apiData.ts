@@ -726,6 +726,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: '返回值.getPoint()', type: '(address: string, city?: string) => void', required: false, description: '地址转坐标；city 用来把检索限定在某个城市' },
     { name: '返回值.getLocation()', type: '(point: Point, options?: unknown) => void', required: false, description: '坐标转地址（逆地理编码）' },
     { name: '返回值.data', type: 'GeocoderResult | Point | undefined', required: false, description: 'getLocation() 得到 GeocoderResult（point / address / addressComponents / surroundingPoi / business）；getPoint() 得到的是 Point' },
+    { name: '💡 批量编码', type: '—', required: false, description: 'hook 是单飞语义：data/loading 只反映最近一次调用，并发调 getPoint 只会保留最后一个结果。要批量地理编码多个地址，请自行串行（await 上一个完成再发下一个），或直接 new BMap.Geocoder() 建多个实例并发。' },
     ...serviceState,
   ],
   'driving-route': [
@@ -817,8 +818,8 @@ export const API_DATA: Record<string, ApiProp[]> = {
   // useConvertor() 不接受任何参数，下表是返回值上的方法与状态
   convertor: [
     { name: '（无入参）', type: '—', required: false, description: 'useConvertor() 不接受参数，需在 <BMapProvider> 内调用' },
-    { name: '返回值.translate()', type: '(points: Point[], from?: number, to?: number) => void', required: false, description: '批量转换坐标；from / to 是坐标系编号，常用 1 = GPS(WGS84)、3 = 火星坐标(GCJ02)、5 = 百度(BD09)' },
-    { name: '返回值.data', type: 'TranslateResults | undefined', required: false, description: '{ status?, points? }：status 为 0 表示成功，points 是转换后的坐标数组' },
+    { name: '返回值.translate()', type: '(points: Point[], from?: number, to?: number) => void', required: false, description: '批量转换坐标；from / to 是坐标系编号，常用 1 = GPS(WGS84)、3 = 火星坐标(GCJ02)、5 = 百度(BD09)。百度接口单次上限 100 点，hook 内部自动按 100 分批、串行请求再按顺序合并，>100 点也可直接传（2.0.3 起）' },
+    { name: '返回值.data', type: 'TranslateResults | undefined', required: false, description: '{ status?, points? }：status 为 0 表示成功，points 是转换后的坐标数组（多批时已合并；单批时原样透传 SDK 结果，保留 size()）' },
     ...serviceState,
   ],
   // usePanoramaService() 不接受任何参数，下表是返回值上的方法与状态

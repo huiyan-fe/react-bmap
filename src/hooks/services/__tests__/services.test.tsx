@@ -11,6 +11,7 @@ import { useGeocoder } from '../useGeocoder';
 import { useDrivingRoute } from '../useDrivingRoute';
 import { useTruckRoute } from '../useTruckRoute';
 import { useLocalSearch } from '../useLocalSearch';
+import { useConvertor } from '../useConvertor';
 
 // L4：service hook 契约层。
 // 组件从 useBMapContext() 拿 driver，driver.createXxx() 返回 { isNull, raw } 句柄。
@@ -193,5 +194,59 @@ describe('useLocalSearch', () => {
     driver.createLocalSearch = vi.fn((_l: any, o: any) => { sopts = o; return { isNull: false, raw }; });
     renderHook(() => useLocalSearch({ renderOptions: { map: mapHandle as any } }), { wrapper: bmapWrapper(driver) });
     expect(sopts?.renderOptions?.map).toBe(mapHandle.raw);
+  });
+});
+
+describe('useConvertor', () => {
+  it('分批：>100 点按 100 串行分批请求，结果按顺序合并', () => {
+    installFakeSDK();
+    // 假 translate：同步回调，回显本批点，模拟 SDK 成功返回
+    const raw = {
+      translate: vi.fn((pts: any[], _from: number, _to: number, cb: (r: unknown) => void) => {
+        cb({ status: 0, points: pts });
+      }),
+    };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createConvertor = vi.fn(() => ({ isNull: false, raw }));
+
+    const points = Array.from({ length: 250 }, (_v, i) => ({ lng: 116 + i * 0.001, lat: 39 }));
+    const { result } = renderHook(() => useConvertor(), { wrapper: bmapWrapper(driver) });
+    expect(result.current.supported).toBe(true);
+
+    act(() => result.current.translate(points, 1, 5));
+    // 250 → 100 + 100 + 50 = 3 批
+    expect(raw.translate).toHaveBeenCalledTimes(3);
+    expect(raw.translate.mock.calls[0][0]).toHaveLength(100);
+    expect(raw.translate.mock.calls[1][0]).toHaveLength(100);
+    expect(raw.translate.mock.calls[2][0]).toHaveLength(50);
+    // from/to 透传
+    expect(raw.translate.mock.calls[0][1]).toBe(1);
+    expect(raw.translate.mock.calls[0][2]).toBe(5);
+    // 合并后共 250 点
+    expect(result.current.data?.points).toHaveLength(250);
+    expect(result.current.loading).toBe(false);
+  });
+
+  it('单批：≤100 点原样透传 SDK 结果（保留 size 等）', () => {
+    installFakeSDK();
+    const sdkResult = { status: 0, points: [{ lng: 1, lat: 2 }], size: () => 1 };
+    const raw = {
+      translate: vi.fn((_pts: any[], _from: number, _to: number, cb: (r: unknown) => void) => { cb(sdkResult); }),
+    };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createConvertor = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useConvertor(), { wrapper: bmapWrapper(driver) });
+    act(() => result.current.translate([{ lng: 1, lat: 2 }]));
+    expect(raw.translate).toHaveBeenCalledTimes(1);
+    // 原样透传，data 就是 SDK 结果对象本身
+    expect(result.current.data).toBe(sdkResult);
+  });
+
+  it('unsupported：createConvertor.isNull → UnsupportedCapabilityError, supported=false', () => {
+    const driver = makeFakeDriver({ loaded: true, version: '3.0' });
+    driver.createConvertor = vi.fn(() => ({ isNull: true }));
+    const { result } = renderHook(() => useConvertor(), { wrapper: bmapWrapper(driver) });
+    expect(result.current.supported).toBe(false);
+    expect(result.current.error).toBeInstanceOf(UnsupportedCapabilityError);
   });
 });
