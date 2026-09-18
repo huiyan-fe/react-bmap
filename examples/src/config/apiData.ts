@@ -250,8 +250,8 @@ export const API_DATA: Record<string, ApiProp[]> = {
     path, ...strokeProps, ...strokeExtras, linkRight, enableMassClear, enableEditing, enableClicking, visible, ...editNodeProps,
     { name: 'geodesic', type: 'boolean', required: false, description: '是否大地线' },
     { name: 'clip', type: 'boolean', required: false, description: '是否裁剪' },
-    { name: 'strokeTexture', type: '{ url: string; width?: number; height?: number }', required: false, description: '纹理贴线' },
-    { name: 'icons', type: 'IconSequenceOptions[]', required: false, description: '图标序列' },
+    { name: 'strokeTexture', type: '{ url: string; width?: number; height?: number }', required: false, description: '纹理贴线（4.0 折线纹理/箭头推荐用法，替代已废弃的 IconSequence）' },
+    { name: 'icons', type: '(IconSequenceHandle | ...)[]', required: false, description: '折线循环图标（方向箭头等）。元素用 driver.createIconSequence 返回的 handle。注意 IconSequence 在纯 4.0/GL 下不渲染（已废弃），4.0 请优先用 strokeTexture' },
     onClick, onMouseOver, onMouseOut, onDoubleClick, onRightClick, onRightDoubleClick,
     onMouseDown, onMouseUp, onMouseMove, onRemove, onLineUpdate, ...lineEditEvents,
   ],
@@ -381,6 +381,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'srcset', type: "{ '2x': string }", required: false, description: '高清屏图片' },
   ],
   'icon-sequence': [
+    { name: '💡 用法', type: '—', required: false, description: '折线方向箭头/循环图标。用 driver.createIconSequence 拿 handle 塞进 <Polyline icons>。IconSequence 在 4.0 已废弃、纯 GL 下不渲染（SDK _drawIcons 会抛错、被 driver 兜成告警，需 v3 或 apiVersion=4.0 兼容模式）；4.0 折线纹理/箭头优先用 Polyline#strokeTexture' },
     { name: 'symbol', type: 'unknown', required: false, description: '符号样式（useSymbol 返回值或 SDK Symbol 实例）' },
     { name: 'offset', type: 'string', required: false, description: '符号相对线起点的位置，百分比（如 "50%"）或像素值' },
     { name: 'repeat', type: 'string', required: false, description: '符号重复间距，百分比或像素值；与 offset 同时设置时以 repeat 为准' },

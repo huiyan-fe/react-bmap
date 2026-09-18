@@ -61,6 +61,7 @@ export function makeFakeDriver(options: MakeFakeDriverOptions = {}): FakeDriver 
     createPolyline: vi.fn(() => makeHandle('polyline')),
     createIcon: vi.fn(() => makeHandle('icon')),
     createSymbol: vi.fn(() => makeHandle('symbol')),
+    createIconSequence: vi.fn(() => makeHandle('iconSequence')),
     addOverlay: vi.fn(),
     removeOverlay: vi.fn(),
     setMarkerLabel: vi.fn(),

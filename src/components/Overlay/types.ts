@@ -84,6 +84,8 @@ export interface LabelOptions {
   /** 层叠顺序（对应 SDK setZIndex） */
   zIndex?: number;
 }
+/** IconSequence 值对象句柄：driver.createIconSequence / <IconSequence> 产出，放进 Polyline#icons */
+export type IconSequenceHandle = OverlayHandle;
 export interface PolylineOptions {
   strokeColor?: string; strokeWeight?: number; strokeOpacity?: number;
   strokeStyle?: 'solid' | 'dashed' | 'dotted';
@@ -100,8 +102,8 @@ export interface PolylineOptions {
   clip?: boolean;
   /** 输入坐标类型 @since 4.0 */
   coordType?: 'BMAP_COORD_BD09' | 'BMAP_COORD_GCJ02' | 'BMAP_COORD_WGS84';
-  /** 配置贴合折线的图标 */
-  icons?: unknown[];
+  /** 配置贴合折线的图标（方向箭头/循环图标）；元素用 driver.createIconSequence 返回的 handle，也兼容 SDK IconSequence 实例。4.0 折线纹理优先用 strokeTexture */
+  icons?: Array<IconSequenceHandle | object>;
   /** 虚线样式 [实线长, 间隙长] @since 4.0 */
   dashArray?: number[];
   /** 线纹理配置 @since 4.0 */

@@ -92,7 +92,7 @@ export type { SymbolProps } from './components/Overlay';
 export { Icon } from './components/Overlay';
 export type { IconProps } from './components/Overlay';
 export { IconSequence } from './components/Overlay';
-export type { IconSequenceProps } from './components/Overlay';
+export type { IconSequenceProps, IconSequenceHandle } from './components/Overlay';
 export { Hotspot } from './components/Overlay';
 export type { HotspotProps } from './components/Overlay';
 export { CustomOverlay } from './components/Overlay';

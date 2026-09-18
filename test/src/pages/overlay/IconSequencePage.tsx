@@ -159,16 +159,25 @@ export function IconSequencePage() {
         <section>
           <h3>说明 {deprecatedTag}</h3>
           <p className="muted small">
-            IconSequence 是值对象（非 Overlay），用于在 Polyline 上重复显示符号。
+            IconSequence 是值对象（非 Overlay），用于在 Polyline 上重复显示符号（方向箭头/循环图标）。
             constructor: new BMap.IconSequence(symbol, offset, repeat, fixedRotation)。
             全部参数无 setter，变化时重建 IconSequence + Polyline。
-            4.0 已废弃，建议用 PolylineOptions#strokeTexture 替代。
+            4.0 已废弃，折线纹理优先用 <code>Polyline strokeTexture={'{ url, width, height }'}</code> 替代。
           </p>
           <p className="muted small" style={{ marginTop: 4 }}>
             <strong>已知限制：</strong>
             repeat 非空时 offset 被忽略（SDK 行为，非 bug）；
             v4 上 scale 变化需等 rAF 重建，旧图标可能短暂残留；
             v4 对废弃功能支持不完整，建议切 v3 测试。
+          </p>
+        </section>
+
+        <section>
+          <h3>写法</h3>
+          <p className="muted small">
+            driver.createSymbol + createIconSequence 手动拼，再传给 &lt;Polyline icons&gt;。
+            注意：IconSequence 在纯 4.0/GL 下不渲染（已废弃，SDK _drawIcons 会抛错、被 driver 兜成告警），
+            需 v3 或 apiVersion=4.0 兼容模式；4.0 折线纹理/箭头请用 Polyline strokeTexture。
           </p>
         </section>
 

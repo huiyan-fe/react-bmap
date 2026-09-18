@@ -8,7 +8,7 @@ export type {
   RectangleProps, BezierCurveProps, PrismProps, GroundOverlayProps,
   GroundPointProps, PointCollectionProps, InfoWindowProps, SymbolProps,
   IconProps, IconSequenceProps, HotspotProps, CustomOverlayProps,
-  Marker3DProps, Marker3DOptions,
+  Marker3DProps, Marker3DOptions, IconSequenceHandle,
 } from './types';
 import type {
   MarkerProps, LabelProps, PolylineProps, PolygonProps, CircleProps,
@@ -334,8 +334,8 @@ export const Icon = createOverlayComponent<IconProps>({
 });
 
 // ─── 图标序列（折线循环图标） ───
-// IconSequence 是值对象（非 Overlay），@deprecated 4.0。无 setter/无事件，
-// skipMount: 不调 addOverlay；推荐用 driver API 创建后传给 Polyline icons。
+// IconSequence 是值对象（非 Overlay），@deprecated 4.0（纯 GL 下不渲染，用 Polyline#strokeTexture 替代）。
+// 无 setter/无事件，skipMount: 不调 addOverlay；用 driver.createIconSequence 拿 handle 传给 Polyline icons。
 export const IconSequence = createOverlayComponent<IconSequenceProps>({
   displayName: 'IconSequence',
   factory: (d, p) => d.createIconSequence(p.symbol as any, p.offset, p.repeat, p.fixedRotation),
