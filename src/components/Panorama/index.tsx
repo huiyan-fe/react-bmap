@@ -173,7 +173,15 @@ export const Panorama = memo(forwardRef<PanoramaRef, PanoramaProps>(function Pan
   useEffect(() => {
     if (!pano || !options) return;
     const raw = (pano as any).raw;
-    try { raw?.setOptions?.(options); }
+    // SDK 坑：albumsControl:false 与 albumsControlOptions 一起下发时，相册控件的 setOptions
+    // 末尾会 renderByPid 把相册重新渲染出来，导致「隐藏」失效。故关闭相册时剔除 albumsControlOptions。
+    let toApply: PanoramaOptions = options;
+    if (options.albumsControl === false && options.albumsControlOptions !== undefined) {
+      const { albumsControlOptions: _drop, ...rest } = options;
+      void _drop;
+      toApply = rest;
+    }
+    try { raw?.setOptions?.(toApply); }
     catch (e) { debugWarn('Panorama.setOptions', e); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pano, optionsKey]);
