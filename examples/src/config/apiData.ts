@@ -723,10 +723,12 @@ export const API_DATA: Record<string, ApiProp[]> = {
   // useGeocoder() 不接受任何参数，下表是返回值上的方法与状态
   geocoder: [
     { name: '（无入参）', type: '—', required: false, description: 'useGeocoder() 不接受参数，需在 <BMapProvider> 内调用' },
-    { name: '返回值.getPoint()', type: '(address: string, city?: string) => void', required: false, description: '地址转坐标；city 用来把检索限定在某个城市' },
-    { name: '返回值.getLocation()', type: '(point: Point, options?: unknown) => void', required: false, description: '坐标转地址（逆地理编码）' },
-    { name: '返回值.data', type: 'GeocoderResult | Point | undefined', required: false, description: 'getLocation() 得到 GeocoderResult（point / address / addressComponents / surroundingPoi / business）；getPoint() 得到的是 Point' },
-    { name: '💡 批量编码', type: '—', required: false, description: 'hook 是单飞语义：data/loading 只反映最近一次调用，并发调 getPoint 只会保留最后一个结果。要批量地理编码多个地址，请自行串行（await 上一个完成再发下一个），或直接 new BMap.Geocoder() 建多个实例并发。' },
+    { name: '返回值.getPoint()', type: '(address: string, city?: string) => void', required: false, description: '单发地址转坐标；结果落到 data。city 用来把检索限定在某个城市' },
+    { name: '返回值.getLocation()', type: '(point: Point, options?: unknown) => void', required: false, description: '单发坐标转地址（逆地理编码）；结果落到 data' },
+    { name: '返回值.getPoints()', type: '(addresses: string[], city?: string) => Promise<(Point|null)[]>', required: false, description: '并发批量地址转坐标；直接返回 Promise（不经过 data/loading），按入参顺序返回、失败位为 null。2.0.3 新增' },
+    { name: '返回值.getLocations()', type: '(points: Point[], options?: unknown) => Promise<(GeocoderResult|null)[]>', required: false, description: '并发批量坐标转地址；直接返回 Promise（不经过 data/loading），按入参顺序返回、失败位为 null。2.0.3 新增' },
+    { name: '返回值.data', type: 'GeocoderResult | Point | undefined', required: false, description: '仅单发 getPoint/getLocation 的结果：getLocation() 得到 GeocoderResult（point / address / addressComponents / surroundingPoi / business）；getPoint() 得到的是 Point。批量方法不写 data' },
+    { name: '💡 单发 vs 批量', type: '—', required: false, description: 'getPoint/getLocation 是单飞：data/loading 只反映最近一次，同一实例连发多次只保留最后一个结果（requestId 防竞态），适合搜索框「只要最新」的场景。要一次解析多个 → 用 getPoints/getLocations，内部并发 + Promise.all 保序、每项各带 10s 超时兜底（失败/超时位为 null）。底层 Geocoder 实例并发安全，一个实例即可' },
     ...serviceState,
   ],
   'driving-route': [
@@ -818,8 +820,9 @@ export const API_DATA: Record<string, ApiProp[]> = {
   // useConvertor() 不接受任何参数，下表是返回值上的方法与状态
   convertor: [
     { name: '（无入参）', type: '—', required: false, description: 'useConvertor() 不接受参数，需在 <BMapProvider> 内调用' },
-    { name: '返回值.translate()', type: '(points: Point[], from?: number, to?: number) => void', required: false, description: '批量转换坐标；from / to 是坐标系编号，常用 1 = GPS(WGS84)、3 = 火星坐标(GCJ02)、5 = 百度(BD09)。百度接口单次上限 100 点，hook 内部自动按 100 分批、串行请求再按顺序合并，>100 点也可直接传（2.0.3 起）' },
-    { name: '返回值.data', type: 'TranslateResults | undefined', required: false, description: '{ status?, points? }：status 为 0 表示成功，points 是转换后的坐标数组（多批时已合并；单批时原样透传 SDK 结果，保留 size()）' },
+    { name: '返回值.translate()', type: '(points: Point[], from?: number, to?: number) => void', required: false, description: '批量转换坐标；from / to 是坐标系编号，常用 1 = GPS(WGS84)、3 = 火星坐标(GCJ02)、5 = 百度(BD09)。>100 点也可直接传，hook 内部会自动分批（见下方差异说明）' },
+    { name: '💡 与原生 SDK 差异', type: '—', required: false, description: '原生 Convertor.translate 把所有点拼进一个 URL 发一个请求、不分批：coords 服务端上限约 100 点且点多会撞 URL 长度，>100 点会静默失败。本 hook 在其之上按 100 自动分批、并发请求再按 index 顺序合并（JSONP 回调名随机不串扰，script 标签受浏览器同域并发上限天然限流），对外仍是一次 translate(points)。2.0.3 起' },
+    { name: '返回值.data', type: 'TranslateResults | undefined', required: false, description: '{ status?, points? }：status 为 0 表示成功，points 是转换后的坐标数组。≤100 点（单批）时原样透传 SDK 结果（保留 size() 等原生字段）；>100 点（多批）时合并为 { status, points }，任一批非 0 status 会带出到 status' },
     ...serviceState,
   ],
   // usePanoramaService() 不接受任何参数，下表是返回值上的方法与状态

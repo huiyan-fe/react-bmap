@@ -22,10 +22,22 @@ export function ConvertorPage() {
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(5);
   const { data, loading, error, translate, cancel } = useConvertor();
+  const [batchN, setBatchN] = useState(250);
 
   const handleRun = () => {
     translate([{ lng: Number(lng), lat: Number(lat) } as Point], from, to);
   };
+
+  // 生成 N 个点，演示 >100 自动分批（原生 translate 单请求上限 100，本 hook 内部按 100 分批并发再合并）
+  const runBatch = () => {
+    const pts: Point[] = Array.from({ length: batchN }, (_v, i) => ({
+      lng: 116.3 + (i % 50) * 0.002,
+      lat: 39.8 + Math.floor(i / 50) * 0.002,
+    }));
+    translate(pts, from, to);
+  };
+
+  const outCount = (data as { points?: unknown[] } | undefined)?.points?.length ?? 0;
 
   return (
     <div className="test-page">
@@ -62,9 +74,21 @@ export function ConvertorPage() {
         <section>
           <h3>操作</h3>
           <div className="btn-group">
-            <button onClick={handleRun} disabled={!supported || loading}>{loading ? 'converting...' : 'translate'}</button>
+            <button onClick={handleRun} disabled={!supported || loading}>{loading ? 'converting...' : 'translate（单点）'}</button>
             <button onClick={cancel}>cancel</button>
           </div>
+        </section>
+        <section>
+          <h3>批量（&gt;100 点自动分批）</h3>
+          <div className="input-row">
+            <label>点数</label>
+            <input type="number" min={1} max={2000} value={batchN} onChange={e => setBatchN(Number(e.target.value))} style={{ width: 80 }} />
+            <button onClick={runBatch} disabled={!supported || loading}>{loading ? 'converting...' : `转换 ${batchN} 个点`}</button>
+          </div>
+          <p className="muted small">
+            原生 translate 单请求上限约 100 点、&gt;100 会静默失败；本 hook 内部按 100 分批、并发请求再按序合并。
+            当前结果点数：<code>{outCount}</code>
+          </p>
         </section>
         <section>
           <h3>状态</h3>
@@ -89,7 +113,10 @@ export function ConvertorPage() {
 
 const { translate, data, loading, cancel } = useConvertor();
 // from=1 (WGS84), to=5 (BD09)
-translate([{ lng: 116.404, lat: 39.915 }], 1, 5);`}
+translate([{ lng: 116.404, lat: 39.915 }], 1, 5);
+
+// >100 点也可直接传：hook 内部按 100 自动分批、并发再合并
+translate(manyPoints /* 例如 250 个点 */, 1, 5);`}
           </pre>
         </section>
       </div>

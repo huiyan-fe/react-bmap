@@ -96,6 +96,47 @@ describe('useGeocoder', () => {
     expect(result.current.data).toBeUndefined();
     expect(result.current.loading).toBe(false);
   });
+
+  it('批量 getPoints：并发多地址、各自回调，按序返回、失败位 null', async () => {
+    // 每个地址各自回调：能查到的回坐标，"未知" 回 null
+    const raw = {
+      getPoint: vi.fn((address: string, cb: (r: unknown) => void) => {
+        cb(address === '未知' ? null : { lng: 116 + address.length, lat: 39 });
+      }),
+    };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createGeocoder = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useGeocoder(), { wrapper: bmapWrapper(driver) });
+
+    let out: (unknown | null)[] = [];
+    await act(async () => { out = await result.current.getPoints(['甲', '未知', '丙丁']); });
+    expect(raw.getPoint).toHaveBeenCalledTimes(3);
+    // 保序：第 2 个是 null（未找到），其余是坐标
+    expect(out[0]).toEqual({ lng: 117, lat: 39 });
+    expect(out[1]).toBeNull();
+    expect(out[2]).toEqual({ lng: 118, lat: 39 });
+    // 批量不写单值 data
+    expect(result.current.data).toBeUndefined();
+  });
+
+  it('批量 getLocations：经 getSDK 造 Point、并发逆编码，按序返回', async () => {
+    const sdk = installFakeSDK();
+    const raw = {
+      getLocation: vi.fn((pt: any, cb: (r: unknown) => void) => { cb({ address: `addr@${pt.lng}` }); }),
+    };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createGeocoder = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useGeocoder(), { wrapper: bmapWrapper(driver) });
+
+    let out: any[] = [];
+    await act(async () => {
+      out = await result.current.getLocations([{ lng: 116, lat: 39 }, { lng: 117, lat: 40 }]);
+    });
+    expect(sdk.Point).toHaveBeenCalledWith(116, 39);
+    expect(sdk.Point).toHaveBeenCalledWith(117, 40);
+    expect(out[0]).toEqual({ address: 'addr@116' });
+    expect(out[1]).toEqual({ address: 'addr@117' });
+  });
 });
 
 describe('useDrivingRoute', () => {
