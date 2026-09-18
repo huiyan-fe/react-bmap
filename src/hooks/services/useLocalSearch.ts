@@ -53,6 +53,12 @@ export interface LocalSearchOptions {
   pageCapacity?: number;
   /** 页码（v4+） */
   pageNum?: number;
+  /**
+   * 是否自动在地图上渲染检索结果（默认 true，与原生一致）。
+   * 传 `false`＝**仅取数据**：不把地图注入 renderOptions.map，且缺省 location 时用地图中心点（而非 Map 实例）
+   * 作检索区域——避免 SDK 因拿到 Map 引用而自动画默认标注。适合"取数据后自绘标注"（如门店选址）。2.0.3 新增。
+   */
+  autoRender?: boolean;
   /** 渲染选项 */
   renderOptions?: LocalSearchRenderOptions;
   /** 搜索完成回调 */
@@ -104,26 +110,40 @@ export function useLocalSearch<T = unknown>(opts: LocalSearchOptions = {}): Loca
 
   // 构造参数 key（location/pageCapacity/pageNum/renderOptions 变化时重建）
   const locKey = stableStringify(opts.location);
-  const optKey = stableStringify({ pc: opts.pageCapacity, pn: opts.pageNum, ro: opts.renderOptions });
+  const optKey = stableStringify({ pc: opts.pageCapacity, pn: opts.pageNum, ro: opts.renderOptions, ar: opts.autoRender });
 
   // create service
   useEffect(() => {
     if (!driver) return;
 
     // 构造 renderOptions，把 MapHandle 解包成 raw（显式传入优先，否则回退到 <Map> 内的 context map）
+    const dataOnly = opts.autoRender === false;
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
-    if (renderMap) ro.map = unwrapHandle(renderMap);
+    if (dataOnly) delete ro.map;                       // 仅取数据：不注入地图 → 不自动渲染
+    else if (renderMap) ro.map = unwrapHandle(renderMap);
 
     const searchOpts: Record<string, unknown> = {};
     if (opts.pageCapacity !== undefined) searchOpts.pageCapacity = opts.pageCapacity;
     if (opts.pageNum !== undefined) searchOpts.pageNum = opts.pageNum;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
 
-    // 解包 location；缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.LocalSearch(map, ...) 一致）
-    const loc: unknown = opts.location !== undefined
-      ? unwrapHandle(opts.location)
-      : (renderMap ? unwrapHandle(renderMap) : '');
+    // 解包 location；缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.LocalSearch(map, ...) 一致）。
+    // 但 dataOnly 时不能把 Map 当 location——SDK 拿到 Map 会自动把结果标注画上去；改用地图中心点作检索区域。
+    let loc: unknown = '';
+    if (opts.location !== undefined) {
+      loc = unwrapHandle(opts.location);
+    } else if (renderMap) {
+      if (dataOnly) {
+        try {
+          const c = driver.getCenter(renderMap);
+          const SDK = getSDK();
+          loc = (c && SDK?.Point) ? new SDK.Point(c.lng, c.lat) : '';
+        } catch { loc = ''; }
+      } else {
+        loc = unwrapHandle(renderMap);
+      }
+    }
 
     const handle = driver.createLocalSearch(loc, Object.keys(searchOpts).length > 0 ? searchOpts : undefined);
     svcRef.current = handle;

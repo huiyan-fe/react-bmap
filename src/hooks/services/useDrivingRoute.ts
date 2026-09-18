@@ -14,6 +14,7 @@ import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { isHandle, unwrapHandle } from '../../utils/handle';
 import { useRenderMap } from './useRenderMap';
+import { fallbackLocation } from './renderHelpers';
 import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import { getSDK } from '../../utils/sdk';
 import type { Point, MapHandle } from '../../types';
@@ -51,6 +52,12 @@ export interface DrivingRouteOptions {
    * 类型包未声明，但运行时确有此项；开启后结果 plan 会含多条路线。仅驾车支持。2.0.2 新增。
    */
   alternatives?: boolean;
+  /**
+   * 是否自动在地图上渲染路线（默认 true）。传 `false`＝**仅取数据**：不注入 renderOptions.map，
+   * 缺省 location 时用地图中心点（而非 Map 实例）作检索上下文，避免 SDK 因拿到 Map 引用而自动画路线。
+   * 适合"取路线数据后自绘"。2.0.3 新增。（walking/riding/transit/truck 继承本项）
+   */
+  autoRender?: boolean;
   renderOptions?: DrivingRouteRenderOptions;
   onSearchComplete?: (results: DrivingRouteResult) => void;
   onMarkersSet?: (pois: unknown[]) => void;
@@ -90,20 +97,23 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
   });
 
   const locKey = stableStringify(opts.location);
-  const optKey = stableStringify({ policy: opts.policy, alternatives: opts.alternatives, ro: opts.renderOptions });
+  const optKey = stableStringify({ policy: opts.policy, alternatives: opts.alternatives, ar: opts.autoRender, ro: opts.renderOptions });
 
   useEffect(() => {
     if (!driver) return;
+    const dataOnly = opts.autoRender === false;
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
-    if (renderMap) ro.map = unwrapHandle(renderMap);
+    if (dataOnly) delete ro.map;                       // 仅取数据：不注入地图 → 不自动渲染路线
+    else if (renderMap) ro.map = unwrapHandle(renderMap);
 
     const searchOpts: Record<string, unknown> = {};
-    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.DrivingRoute(map, ...) 一致）
+    // location 缺省时回退到当前 <Map>（dataOnly 用中心点而非 Map，避免自动渲染）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
-    } else if (renderMap) {
-      searchOpts.location = unwrapHandle(renderMap);
+    } else {
+      const loc = fallbackLocation(driver, renderMap, dataOnly);
+      if (loc !== '') searchOpts.location = loc;
     }
     if (opts.policy !== undefined) searchOpts.policy = opts.policy;
     if (opts.alternatives !== undefined) searchOpts.alternatives = opts.alternatives;

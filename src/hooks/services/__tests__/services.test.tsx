@@ -10,6 +10,7 @@ import { UnsupportedCapabilityError } from '../../../drivers/unsupported';
 import { useGeocoder } from '../useGeocoder';
 import { useDrivingRoute } from '../useDrivingRoute';
 import { useTruckRoute } from '../useTruckRoute';
+import { useLocalSearch } from '../useLocalSearch';
 
 // L4：service hook 契约层。
 // 组件从 useBMapContext() 拿 driver，driver.createXxx() 返回 { isNull, raw } 句柄。
@@ -165,5 +166,32 @@ describe('useTruckRoute', () => {
     const call = raw.search.mock.calls[0];
     expect(call).toHaveLength(3);
     expect(call[2]).toEqual({ waypoints: [expect.anything()] });
+  });
+});
+
+describe('useLocalSearch', () => {
+  const mapHandle = { __brand: 'map', raw: { MOCK_MAP: true } };
+
+  it('autoRender:false → 不注入 renderOptions.map，location 用中心点而非 Map（仅取数据）', () => {
+    installFakeSDK();
+    let loc: any; let sopts: any;
+    const raw = { setSearchCompleteCallback: vi.fn(), search: vi.fn(), clearResults: vi.fn() };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createLocalSearch = vi.fn((l: any, o: any) => { loc = l; sopts = o; return { isNull: false, raw }; });
+    renderHook(() => useLocalSearch({ renderOptions: { map: mapHandle as any }, autoRender: false }), { wrapper: bmapWrapper(driver) });
+    // 没把地图注入 renderOptions.map
+    expect(sopts?.renderOptions?.map).toBeUndefined();
+    // location 不是原生 map（改用了地图中心点 Point）
+    expect(loc).not.toBe(mapHandle.raw);
+  });
+
+  it('默认（未传 autoRender）→ 注入 map 到 renderOptions.map（自动渲染）', () => {
+    installFakeSDK();
+    let sopts: any;
+    const raw = { setSearchCompleteCallback: vi.fn() };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createLocalSearch = vi.fn((_l: any, o: any) => { sopts = o; return { isNull: false, raw }; });
+    renderHook(() => useLocalSearch({ renderOptions: { map: mapHandle as any } }), { wrapper: bmapWrapper(driver) });
+    expect(sopts?.renderOptions?.map).toBe(mapHandle.raw);
   });
 });

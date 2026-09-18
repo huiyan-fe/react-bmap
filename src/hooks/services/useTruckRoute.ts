@@ -9,6 +9,7 @@ import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { isHandle, unwrapHandle } from '../../utils/handle';
 import { useRenderMap } from './useRenderMap';
+import { fallbackLocation } from './renderHelpers';
 import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 import { getSDK } from '../../utils/sdk';
 import type { DrivingRouteOptions, DrivingRouteHookResult } from './useDrivingRoute';
@@ -33,19 +34,22 @@ export function useTruckRoute<T = unknown>(opts: TruckRouteOptions = {}): TruckR
   });
 
   const locKey = stableStringify(opts.location);
-  const optKey = stableStringify({ policy: opts.policy, ro: opts.renderOptions });
+  const optKey = stableStringify({ policy: opts.policy, ar: opts.autoRender, ro: opts.renderOptions });
 
   useEffect(() => {
     if (!driver) return;
+    const dataOnly = opts.autoRender === false;
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
-    if (renderMap) ro.map = unwrapHandle(renderMap);
+    if (dataOnly) delete ro.map;
+    else if (renderMap) ro.map = unwrapHandle(renderMap);
     const searchOpts: Record<string, unknown> = {};
-    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.TruckRoute(map, ...) 一致）
+    // location 缺省时回退到当前 <Map>（dataOnly 用中心点而非 Map，避免自动渲染）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
-    } else if (renderMap) {
-      searchOpts.location = unwrapHandle(renderMap);
+    } else {
+      const loc = fallbackLocation(driver, renderMap, dataOnly);
+      if (loc !== '') searchOpts.location = loc;
     }
     if (opts.policy !== undefined) searchOpts.policy = opts.policy;
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;

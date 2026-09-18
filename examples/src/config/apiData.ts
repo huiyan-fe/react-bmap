@@ -84,6 +84,7 @@ const layerData: ApiProp[] = [
 // 注意：这些是传给 hook 的入参，不是组件 props
 const routeCommon: ApiProp[] = [
   { name: 'location', type: 'string | MapHandle', required: false, description: '检索城市名或地图实例' },
+  { name: 'autoRender', type: 'boolean', required: false, description: '是否自动在地图上渲染路线结果（默认 true）。传 false＝仅取数据：不注入地图、缺省 location 改用地图中心点，避免 SDK 自动画路线/标注，适合"取数据后自绘"（如自定义路线样式）。2.0.3 新增' },
   { name: 'renderOptions', type: 'DrivingRouteRenderOptions', required: false, description: '渲染选项：map / panel / selectFirstResult / autoViewport / viewportOptions。map 非必传：hook 在 <Map> 内部自动取当前地图，用在 <Map> 外层才需显式传已就绪 handle（2.0.2 起）' },
   { name: 'onSearchComplete', type: '(results: unknown) => void', required: false, description: '检索完成回调' },
   { name: 'onMarkersSet', type: '(pois: unknown[]) => void', required: false, description: '标注添加完成回调' },
@@ -705,6 +706,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
     { name: 'location', type: 'string | Point | MapHandle', required: false, description: '检索城市/区域，可为城市名、坐标或地图实例' },
     { name: 'pageCapacity', type: 'number', required: false, description: '每页结果数 (1-100)' },
     { name: 'pageNum', type: 'number', required: false, description: '页码（v4+ 支持）' },
+    { name: 'autoRender', type: 'boolean', required: false, description: '是否自动在地图上渲染检索结果（默认 true）。传 false＝仅取数据：不注入地图、缺省 location 改用地图中心点，避免 SDK 自动画默认标注，适合"取数据后自绘"（如门店选址）。2.0.3 新增' },
     { name: 'renderOptions', type: 'LocalSearchRenderOptions', required: false, description: '渲染选项：map / panel / selectFirstResult / autoViewport / viewportOptions。map 非必传：hook 在 <Map> 内部自动取当前地图，用在 <Map> 外层才需显式传已就绪 handle（2.0.2 起）' },
     { name: 'onSearchComplete', type: '(results: unknown) => void', required: false, description: '检索完成回调' },
     { name: 'onMarkersSet', type: '(pois: unknown[]) => void', required: false, description: '标注添加完成回调' },
@@ -751,6 +753,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
 
   'bus-line-search': [
     { name: 'location', type: 'string | MapHandle', required: false, description: '检索城市名或地图实例' },
+    { name: 'autoRender', type: 'boolean', required: false, description: '是否自动在地图上渲染线路结果（默认 true）。传 false＝仅取数据：不注入地图、缺省 location 改用地图中心点，避免 SDK 自动画线路/站点，适合"取数据后自绘"。2.0.3 新增' },
     { name: 'renderOptions', type: '{ map?, panel?, autoViewport? }', required: false, description: '渲染选项。map 非必传：hook 在 <Map> 内部自动取当前地图，外层才需显式传已就绪 handle（2.0.2 起）' },
     { name: 'onGetBusListComplete', type: '(results: unknown) => void', required: false, description: '线路列表检索完成回调' },
     { name: 'onGetBusLineComplete', type: '(results: unknown) => void', required: false, description: '线路详情检索完成回调' },

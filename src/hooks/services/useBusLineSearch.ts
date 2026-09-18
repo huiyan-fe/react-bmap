@@ -9,12 +9,15 @@ import { UnsupportedCapabilityError } from '../../drivers/unsupported';
 import { stableStringify } from '../../utils/stableStringify';
 import { unwrapHandle } from '../../utils/handle';
 import { useRenderMap } from './useRenderMap';
+import { fallbackLocation } from './renderHelpers';
 import { useServiceTimeout, serviceTimeoutError } from './useServiceTimeout';
 
 export interface BusLineSearchOptions {
   location?: unknown;
   /** renderOptions.map 非必传：`<Map>` 内部自动取当前地图，外层需显式传已就绪 handle；见 `useMap`/`useMapReady`。 */
   renderOptions?: { map?: unknown; panel?: string | HTMLElement; autoViewport?: boolean };
+  /** 是否自动在地图上渲染线路（默认 true）。传 false＝仅取数据：不注入地图、缺省 location 用中心点，避免自动画线路。2.0.3 新增。 */
+  autoRender?: boolean;
   onGetBusListComplete?: (results: unknown) => void;
   onGetBusLineComplete?: (results: unknown) => void;
 }
@@ -45,19 +48,22 @@ export function useBusLineSearch(opts: BusLineSearchOptions = {}): BusLineSearch
   });
 
   const locKey = stableStringify(opts.location);
-  const optKey = stableStringify({ ro: opts.renderOptions });
+  const optKey = stableStringify({ ar: opts.autoRender, ro: opts.renderOptions });
 
   useEffect(() => {
     if (!driver) return;
+    const dataOnly = opts.autoRender === false;
     const ro: Record<string, unknown> = {};
     if (opts.renderOptions) Object.assign(ro, opts.renderOptions);
-    if (renderMap) ro.map = unwrapHandle(renderMap);
+    if (dataOnly) delete ro.map;
+    else if (renderMap) ro.map = unwrapHandle(renderMap);
     const searchOpts: Record<string, unknown> = {};
-    // location 缺省时回退到当前 <Map>/renderOptions.map（与原生 new BMap.BusLineSearch(map, ...) 一致）
+    // location 缺省时回退到当前 <Map>（dataOnly 用中心点而非 Map，避免自动渲染）
     if (opts.location !== undefined) {
       searchOpts.location = unwrapHandle(opts.location);
-    } else if (renderMap) {
-      searchOpts.location = unwrapHandle(renderMap);
+    } else {
+      const loc = fallbackLocation(driver, renderMap, dataOnly);
+      if (loc !== '') searchOpts.location = loc;
     }
     if (Object.keys(ro).length > 0) searchOpts.renderOptions = ro;
     // 构造时注册回调 — 通过 ref 调用最新回调
