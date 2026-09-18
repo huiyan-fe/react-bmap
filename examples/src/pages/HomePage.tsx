@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { COMPONENTS, CATEGORIES } from '../config/components';
+import { CHANGELOG } from '../config/changelog';
 
 const FEATURES = [
   {
@@ -97,6 +98,25 @@ export function HomePage() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      <section className="home-section">
+        <h2 className="home-section-title">更新日志</h2>
+        <div className="home-changelog">
+          {CHANGELOG.map((entry) => (
+            <div key={entry.version} className="home-changelog-entry" style={{ marginBottom: 20 }}>
+              <h3 className="home-category-title" style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                <span>{entry.version}</span>
+                {entry.date && <span style={{ fontSize: 12, fontWeight: 400, color: '#888' }}>{entry.date}</span>}
+              </h3>
+              <ul style={{ margin: '6px 0 0', paddingLeft: 20, lineHeight: 1.9, fontSize: 13, color: '#444' }}>
+                {entry.changes.map((c, i) => (
+                  <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
 
