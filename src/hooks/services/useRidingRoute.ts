@@ -28,6 +28,8 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
   const callbacksRef = useRef(opts);
   callbacksRef.current = opts;
   const searchCbRef = useRef<((results: unknown) => void) | null>(null);
+  const autoRenderRef = useRef(false);
+  const primedRef = useRef(false);
 
   const [state, setState] = useState<{ data: unknown; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
@@ -64,6 +66,8 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
       return;
     }
     rawRef.current = handle.raw;
+    autoRenderRef.current = ro.map != null;
+    primedRef.current = false;
     const raw = rawRef.current;
     if (typeof raw.setSearchCompleteCallback === 'function') {
       raw.setSearchCompleteCallback((results: unknown) => { searchCbRef.current?.(results); });
@@ -87,18 +91,6 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
       setState(s => ({ ...s, loading: false, error: serviceTimeoutError() }));
     });
     const raw = rawRef.current;
-    const cb = (results: unknown) => {
-      if (requestId !== requestIdRef.current) return;
-      clear();
-      let actual = results;
-      if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
-        try { actual = raw.getResults?.(); } catch { /* noop */ }
-      }
-      callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
-      setState({ data: actual ?? results, loading: false, error: null, supported: true });
-    };
-    searchCbRef.current = cb;
-    if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(cb);
     const SDK = getSDK();
     const toPoint = (v: unknown) => {
       if (!v) return v;
@@ -109,7 +101,26 @@ export function useRidingRoute<T = unknown>(opts: RidingRouteOptions = {}): Ridi
       }
       return v;
     };
-    try { raw.search?.(toPoint(start), toPoint(end)); }
+    const s = toPoint(start);
+    const e = toPoint(end);
+    const cb = (results: unknown) => {
+      if (requestId !== requestIdRef.current) return;
+      clear();
+      let actual = results;
+      if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
+        try { actual = raw.getResults?.(); } catch { /* noop */ }
+      }
+      callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
+      setState({ data: actual ?? results, loading: false, error: null, supported: true });
+      // 首搜渲染竞态兜底：自动渲染实例首次完成后同参补搜一次，确保首帧出线（每实例一次）。
+      if (autoRenderRef.current && !primedRef.current) {
+        primedRef.current = true;
+        try { raw.search?.(s, e); } catch { /* noop */ }
+      }
+    };
+    searchCbRef.current = cb;
+    if (typeof raw.setSearchCompleteCallback === 'function') raw.setSearchCompleteCallback(cb);
+    try { raw.search?.(s, e); }
     catch (e) { clear(); if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
   }, [arm, clear]);
 

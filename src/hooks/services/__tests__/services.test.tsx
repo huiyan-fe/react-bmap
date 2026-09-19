@@ -189,6 +189,38 @@ describe('useDrivingRoute', () => {
     expect(result.current.data).toBeUndefined();
     expect(result.current.loading).toBe(false);
   });
+
+  it('首搜渲染兜底：自动渲染实例首次完成后同参补搜一次', () => {
+    installFakeSDK();
+    let capturedOpts: any;
+    const raw = { search: vi.fn(), getResults: vi.fn(() => ({ routes: ['r'] })), setSearchCompleteCallback: vi.fn() };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createDrivingRoute = vi.fn((o: any) => { capturedOpts = o; return { isNull: false, raw }; });
+    const mapHandle = { __brand: 'map', raw: { MOCK: true } };
+    const { result } = renderHook(() => useDrivingRoute({ renderOptions: { map: mapHandle as any } }), { wrapper: bmapWrapper(driver) });
+    act(() => result.current.search({ lng: 1, lat: 1 }, { lng: 2, lat: 2 }));
+    // 首搜只发一次；渲染尚未完成，暂不补发
+    expect(raw.search).toHaveBeenCalledTimes(1);
+    // SDK 首次完成 → 补发一次
+    act(() => capturedOpts.onSearchComplete({ routes: ['r'] }));
+    expect(raw.search).toHaveBeenCalledTimes(2);
+    // 补发完成再回调 → 不再补发（每实例只补一次）
+    act(() => capturedOpts.onSearchComplete({ routes: ['r'] }));
+    expect(raw.search).toHaveBeenCalledTimes(2);
+  });
+
+  it('autoRender:false：不补发（纯取数据无渲染步骤）', () => {
+    installFakeSDK();
+    let capturedOpts: any;
+    const raw = { search: vi.fn(), getResults: vi.fn(() => ({ routes: ['r'] })), setSearchCompleteCallback: vi.fn() };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createDrivingRoute = vi.fn((o: any) => { capturedOpts = o; return { isNull: false, raw }; });
+    const mapHandle = { __brand: 'map', raw: { MOCK: true } };
+    const { result } = renderHook(() => useDrivingRoute({ renderOptions: { map: mapHandle as any }, autoRender: false }), { wrapper: bmapWrapper(driver) });
+    act(() => result.current.search({ lng: 1, lat: 1 }, { lng: 2, lat: 2 }));
+    act(() => capturedOpts.onSearchComplete({ routes: ['r'] }));
+    expect(raw.search).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('useTruckRoute', () => {

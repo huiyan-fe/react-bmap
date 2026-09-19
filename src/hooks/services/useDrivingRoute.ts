@@ -93,6 +93,13 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
   const callbacksRef = useRef(opts);
   callbacksRef.current = opts;
   const searchCbRef = useRef<((results: unknown) => void) | null>(null);
+  // 首搜渲染竞态兜底：自动渲染模式下，复用的服务实例「首次 search」渲染器可能未落地
+  // （React effect 创建服务的时机与 search 解耦，非 StrictMode 也复现）。
+  // 兜底策略：首次检索「完成」后同参补搜一次——此时 SDK 渲染器已完整走过一次绘制周期，
+  // 第二次检索必定出线。相比"下一帧 rAF 补发"更确定，不受真机 GL 时序影响。
+  // autoRenderRef 标记该服务是否带渲染 map；primedRef 保证每个服务实例只补发一次。
+  const autoRenderRef = useRef(false);
+  const primedRef = useRef(false);
 
   const [state, setState] = useState<{ data: DrivingRouteResult | undefined; loading: boolean; error: Error | null; supported: boolean }>({
     data: undefined, loading: false, error: null, supported: true,
@@ -132,6 +139,9 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
       return;
     }
     rawRef.current = handle.raw;
+    // 新服务实例：记录是否自动渲染（带 map）、重置补发标记
+    autoRenderRef.current = ro.map != null;
+    primedRef.current = false;
     // 也通过 setSearchCompleteCallback 注册（SDK 可能用其中之一）
     const raw = rawRef.current;
     if (typeof raw.setSearchCompleteCallback === 'function') {
@@ -158,18 +168,6 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     });
     const raw = rawRef.current;
 
-    const cb = (results: unknown) => {
-      if (requestId !== requestIdRef.current) return;
-      clear();
-      let actual = results;
-      if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
-        try { actual = raw.getResults?.(); } catch { /* noop */ }
-      }
-      callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
-      setState({ data: (actual ?? results) as DrivingRouteResult, loading: false, error: null, supported: true });
-    };
-    searchCbRef.current = cb;
-
     // 解包 start/end（可能是 MapHandle 或 plain {lng,lat}）
     const SDK = getSDK();
     const toPoint = (v: unknown): unknown => {
@@ -184,6 +182,24 @@ export function useDrivingRoute(opts: DrivingRouteOptions = {}): DrivingRouteHoo
     const s = toPoint(start);
     const e = toPoint(end);
     const opts = options?.waypoints ? { waypoints: options.waypoints.map(toPoint) } : undefined;
+
+    const cb = (results: unknown) => {
+      if (requestId !== requestIdRef.current) return;
+      clear();
+      let actual = results;
+      if (!actual || (typeof actual === 'object' && Object.keys(actual as object).length === 0)) {
+        try { actual = raw.getResults?.(); } catch { /* noop */ }
+      }
+      callbacksRef.current.onSearchComplete?.(actual as DrivingRouteResult);
+      setState({ data: (actual ?? results) as DrivingRouteResult, loading: false, error: null, supported: true });
+      // 自动渲染实例首次完成后同参补搜一次，确保首帧出线（详见上方 autoRenderRef 注释）。
+      if (autoRenderRef.current && !primedRef.current) {
+        primedRef.current = true;
+        try { raw.search?.(s, e, opts); } catch { /* noop */ }
+      }
+    };
+    searchCbRef.current = cb;
+
     try { raw.search?.(s, e, opts); }
     catch (e) { clear(); if (requestId === requestIdRef.current) setState(s => ({ ...s, loading: false, error: e as Error })); }
   }, [arm, clear]);

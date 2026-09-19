@@ -19,6 +19,7 @@ export const CHANGELOG: ChangelogEntry[] = [
       'useBusLineSearch：补 enableAutoViewport / disableAutoViewport / setLocation / getStatus（clearResults 说明：SDK 无原生 clear，仅清 data 状态）',
       'useAutocomplete：补 setInputValue / setTypes / setLocation / getStatus',
       'useGeocoder：补 setOptions；useBoundary：补 parsebdStr',
+      'fix：路线 hook 首次 search 首帧不渲染的竞态（自动渲染模式下复用服务实例首搜不出线，现在首搜完成后同参补搜一次兜底，确保首帧出线；autoRender:false 不受影响）',
     ],
   },
   {

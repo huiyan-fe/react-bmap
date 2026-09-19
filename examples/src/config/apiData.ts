@@ -103,7 +103,7 @@ const serviceState: ApiProp[] = [
 
 // ─── 路线检索 hook 的公共返回值（方法 + 状态）；setPolicy/分页等按路线单独补 ───
 const routeReturn: ApiProp[] = [
-  { name: '返回值.search()', type: '(start: Point, end: Point, opts?: { waypoints?: Point[] }) => void', required: false, description: '发起检索；start/end 为坐标点（也可传起终点 POI）' },
+  { name: '返回值.search()', type: '(start: Point, end: Point, opts?: { waypoints?: Point[] }) => void', required: false, description: '发起检索；start/end 为坐标点（也可传起终点 POI）。自动渲染模式下框架已内部兜底首帧渲染竞态，首次 search 即出线，无需自行 setTimeout 重搜（2.0.4）' },
   { name: '返回值.clearResults()', type: '() => void', required: false, description: '清除结果与地图上的路线/标注' },
   { name: '返回值.enableAutoViewport()', type: '() => void', required: false, description: '开启检索后自动调整视野' },
   { name: '返回值.disableAutoViewport()', type: '() => void', required: false, description: '关闭自动调整视野' },
