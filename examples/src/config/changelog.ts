@@ -12,7 +12,7 @@ export interface ChangelogEntry {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     version: '2.0.4',
-    date: '2026-09-19',
+    date: '2026-09-20',
     changes: [
       'useLocalSearch：补齐 select / clearSelected / setLocation / enableAutoViewport / disableAutoViewport / enableFirstResultSelection / disableFirstResultSelection / setPageCapacity / getStatus 方法 + onPolylinesSet 回调',
       '路线 hook（Driving/Walking/Riding/Transit/Truck）：补 setPolylineStyle（运行时改路线折线样式）',
