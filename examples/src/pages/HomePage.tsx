@@ -31,7 +31,7 @@ export function HomePage() {
           基于百度地图 JavaScript API 封装的 React 组件库
         </p>
         <p className="home-desc">
-          使用声明式组件方式开发百度地图应用，兼容 BMap (JSAPI 3.0) 与 BMapGL (4.0 WebGL)，可按需选择配置。
+          使用声明式组件方式开发百度地图应用，同时支持百度地图 JSAPI 3.0（2D）与 4.0（WebGL），可按需选择配置。
           提供地图容器、覆盖物、控件、图层、路线规划、输入提示等一系列组件与 Hooks。
         </p>
       </header>
