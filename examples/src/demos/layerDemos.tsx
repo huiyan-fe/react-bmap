@@ -4,8 +4,8 @@ import {
   FillLayer, DOMLayer, LineLayer,
   PointIconLayer, PointShapeLayer, PanoramaCoverageLayer,
   ThreeLayer,
-} from 'react-bmap';
-import type { ThreeLayerRef } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ThreeLayerRef } from '@baidumap/react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
 
@@ -42,7 +42,7 @@ registerDemo('geojson-layer', {
       />
     </MapContainer>
   ),
-  code: `import { Map, GeoJSONLayer } from 'react-bmap';
+  code: `import { Map, GeoJSONLayer } from '@baidumap/react-bmap';
 
 const data = { type: 'FeatureCollection', features: [...] };
 
@@ -61,7 +61,7 @@ registerDemo('district-layer', {
       <DistrictLayer name="北京市" strokeColor="#1890ff" fillColor="#1890ff22" />
     </MapContainer>
   ),
-  code: `import { Map, DistrictLayer } from 'react-bmap';
+  code: `import { Map, DistrictLayer } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={8}>
   <DistrictLayer name="北京市" strokeColor="#1890ff" fillColor="#1890ff22" />
@@ -75,7 +75,7 @@ registerDemo('traffic-layer', {
       <TrafficLayer />
     </MapContainer>
   ),
-  code: `import { Map, TrafficLayer } from 'react-bmap';
+  code: `import { Map, TrafficLayer } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <TrafficLayer />
@@ -95,7 +95,7 @@ registerDemo('fill-layer', {
       />
     </MapContainer>
   ),
-  code: `import { Map, FillLayer } from 'react-bmap';
+  code: `import { Map, FillLayer } from '@baidumap/react-bmap';
 
 const data = { type: 'FeatureCollection', features: [
   { type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[...]]] }, properties: { id: 1 } },
@@ -123,7 +123,7 @@ registerDemo('dom-layer', {
       </MapContainer>
     );
   },
-  code: `import { Map, DOMLayer } from 'react-bmap';
+  code: `import { Map, DOMLayer } from '@baidumap/react-bmap';
 
 const data = { type: 'FeatureCollection', features: [
   { type: 'Feature', geometry: { type: 'Point', coordinates: [116.404, 39.915] }, properties: { name: '天安门' } },
@@ -151,7 +151,7 @@ registerDemo('point-icon-layer', {
       />
     </MapContainer>
   ),
-  code: `import { Map, PointIconLayer } from 'react-bmap';
+  code: `import { Map, PointIconLayer } from '@baidumap/react-bmap';
 
 const data = { type: 'FeatureCollection', features: [...] };
 
@@ -173,7 +173,7 @@ registerDemo('point-shape-layer', {
       />
     </MapContainer>
   ),
-  code: `import { Map, PointShapeLayer } from 'react-bmap';
+  code: `import { Map, PointShapeLayer } from '@baidumap/react-bmap';
 
 // shapeType: 1=圆形 2=三角形 3=方形 4=菱形 5=六边形 7=五角星
 const data = { type: 'FeatureCollection', features: [...] };
@@ -192,7 +192,7 @@ registerDemo('panorama-coverage-layer', {
       <PanoramaCoverageLayer />
     </MapContainer>
   ),
-  code: `import { Map, PanoramaCoverageLayer } from 'react-bmap';
+  code: `import { Map, PanoramaCoverageLayer } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <PanoramaCoverageLayer />
@@ -265,8 +265,8 @@ registerDemo('three-layer', {
     );
   },
   code: `import { useRef } from 'react';
-import { Map, ThreeLayer } from 'react-bmap';
-import type { ThreeLayerRef } from 'react-bmap';
+import { Map, ThreeLayer } from '@baidumap/react-bmap';
+import type { ThreeLayerRef } from '@baidumap/react-bmap';
 
 // three.js 由宿主工程自己引入，且必须挂到 window.THREE 上（SDK 直接读全局）
 import * as THREE from 'three';
@@ -335,7 +335,7 @@ const LineLayerDemo: React.FC = () => {
 registerDemo('line-layer', {
   Component: LineLayerDemo,
   code: `import { useState } from 'react';
-import { Map, LineLayer } from 'react-bmap';
+import { Map, LineLayer } from '@baidumap/react-bmap';
 
 const data = { type: 'FeatureCollection', features: [
   { type: 'Feature', geometry: { type: 'LineString', coordinates: [[116.35, 39.90], [116.40, 39.925], [116.45, 39.91]] }, properties: { id: 1 } },

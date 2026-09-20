@@ -2,7 +2,7 @@
  * 图层测试页公共件 — 页面骨架、NormalLayer 系公共参数控件、SDK 类存在性探测。
  */
 import React, { useState } from 'react';
-import { Map, useCapabilities, useDriver } from 'react-bmap';
+import { Map, useCapabilities, useDriver } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export { PropsView } from '../control/shared';

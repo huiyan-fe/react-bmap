@@ -7,8 +7,8 @@
  * 场景操作走 ref 拿到的命令式句柄，不再需要页面本地补类型。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ThreeLayer } from 'react-bmap';
-import type { ThreeLayerProps, ThreeLayerRef } from 'react-bmap';
+import { ThreeLayer } from '@baidumap/react-bmap';
+import type { ThreeLayerProps, ThreeLayerRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { EventLog, logEvent } from '../control/shared';
 import { DEFAULT_BASE_OPTIONS, LayerBaseOptionControls, LayerPageLayout, PropsView } from './shared';

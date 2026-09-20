@@ -1,5 +1,5 @@
 import React from 'react';
-import { Map } from 'react-bmap';
+import { Map } from '@baidumap/react-bmap';
 import { useMapVersion } from '../context/MapModeContext';
 
 /**

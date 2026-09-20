@@ -1,6 +1,6 @@
 import React from 'react';
-import { BMapProvider } from 'react-bmap';
-import type { BMapVersion } from 'react-bmap';
+import { BMapProvider } from '@baidumap/react-bmap';
+import type { BMapVersion } from '@baidumap/react-bmap';
 import { DEFAULT_VERSION } from './config';
 
 // 测试用 ak：唯一来源为仓库根目录 .env 的 VITE_BMAP_AK（本地可用 .env.local 覆盖），不在源码里散写

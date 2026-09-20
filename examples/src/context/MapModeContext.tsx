@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { BMapProvider } from 'react-bmap';
-import type { BMapVersion } from 'react-bmap';
+import { BMapProvider } from '@baidumap/react-bmap';
+import type { BMapVersion } from '@baidumap/react-bmap';
 
 export type MapVersion = BMapVersion;
 

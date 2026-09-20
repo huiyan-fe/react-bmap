@@ -2,7 +2,7 @@
  * DistrictLayer 测试页 — v4+。行政区划图层。
  */
 import React, { useState } from 'react';
-import { Map, DistrictLayer, useCapabilities } from 'react-bmap';
+import { Map, DistrictLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const PRESETS = [

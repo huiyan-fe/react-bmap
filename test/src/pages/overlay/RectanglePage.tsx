@@ -3,8 +3,8 @@
  * Rectangle 整体 @since 4.0，v3 下 driver 返回 null（不渲染）。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, Rectangle, useCapabilities } from 'react-bmap';
-import type { Bounds, MapRef } from 'react-bmap';
+import { Map, Rectangle, useCapabilities } from '@baidumap/react-bmap';
+import type { Bounds, MapRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_BOUNDS: Bounds = {

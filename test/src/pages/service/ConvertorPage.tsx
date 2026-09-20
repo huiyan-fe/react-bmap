@@ -3,8 +3,8 @@
  * 覆盖：translate(points, from, to)
  */
 import React, { useState } from 'react';
-import { Map, useConvertor, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import { Map, useConvertor, useCapabilities } from '@baidumap/react-bmap';
+import type { Point } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const COORD_TYPES = [
@@ -109,7 +109,7 @@ export function ConvertorPage() {
         <section>
           <h3>代码示例</h3>
           <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
-{`import { useConvertor } from 'react-bmap';
+{`import { useConvertor } from '@baidumap/react-bmap';
 
 const { translate, data, loading, cancel } = useConvertor();
 // from=1 (WGS84), to=5 (BD09)

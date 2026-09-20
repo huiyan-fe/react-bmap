@@ -4,7 +4,7 @@
  * 和 WMSLayer 一样受 CORS 限制。
  */
 import React, { useState } from 'react';
-import { Map, WMTSLayer, useCapabilities } from 'react-bmap';
+import { Map, WMTSLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_URL = '';

@@ -14,8 +14,8 @@ import {
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT, BMAP_ANCHOR_BOTTOM_LEFT,
   BMAP_ANCHOR_BOTTOM_RIGHT, BMAP_ANCHOR_TOP_CENTER, BMAP_ANCHOR_BOTTOM_CENTER,
   BMAP_ANCHOR_CENTER,
-} from 'react-bmap';
-import type { Point, MapRef } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { Point, MapRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const ANCHORS = [

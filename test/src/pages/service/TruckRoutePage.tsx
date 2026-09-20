@@ -1,6 +1,6 @@
 /** useTruckRoute 测试页 — 货车路线规划。 */
 import React, { useCallback, useState } from 'react';
-import { Map, useTruckRoute, useCapabilities, useMapReady } from 'react-bmap';
+import { Map, useTruckRoute, useCapabilities, useMapReady } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { safeStringifySdkResult } from '../../utils/sdkResult';
 

@@ -8,7 +8,7 @@
  * TileLayer 的 tileUrlTemplate 只用于自定义瓦片服务。
  */
 import React, { useState } from 'react';
-import { Map, TileLayer, useCapabilities } from 'react-bmap';
+import { Map, TileLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_URL = 'https://maponline0.bdimg.com/tile/?qt=tile&x={X}&y={Y}&z={Z}&styles=pl&scaler=1&udt=20230815';

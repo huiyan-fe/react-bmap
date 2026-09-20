@@ -6,8 +6,8 @@
  * <FillLayer border style={{ fillColor, strokeColor }} data={geojson} enablePicked />
  */
 import React, { useMemo, useState } from 'react';
-import { Map, FillLayer, useCapabilities } from 'react-bmap';
-import type { FillLayerStyle } from 'react-bmap';
+import { Map, FillLayer, useCapabilities } from '@baidumap/react-bmap';
+import type { FillLayerStyle } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 // demo GeoJSON — 多边形

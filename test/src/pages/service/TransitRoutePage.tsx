@@ -1,6 +1,6 @@
 /** useTransitRoute 测试页 — 公交路线规划，完整覆盖。 */
 import React, { useCallback, useState } from 'react';
-import { Map, useTransitRoute, useCapabilities, useMapReady } from 'react-bmap';
+import { Map, useTransitRoute, useCapabilities, useMapReady } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { safeStringifySdkResult } from '../../utils/sdkResult';
 

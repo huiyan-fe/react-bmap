@@ -6,7 +6,7 @@ import {
   RawControl, useDriver,
   Marker,
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT, BMAP_ANCHOR_BOTTOM_LEFT, BMAP_ANCHOR_BOTTOM_RIGHT,
-} from 'react-bmap';
+} from '@baidumap/react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
 
@@ -19,7 +19,7 @@ registerDemo('navigation-control', {
       <NavigationControl anchor={BMAP_ANCHOR_TOP_LEFT} />
     </MapContainer>
   ),
-  code: `import { Map, NavigationControl, BMAP_ANCHOR_TOP_LEFT } from 'react-bmap';
+  code: `import { Map, NavigationControl, BMAP_ANCHOR_TOP_LEFT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <NavigationControl anchor={BMAP_ANCHOR_TOP_LEFT} />
@@ -33,7 +33,7 @@ registerDemo('navigation-control-3d', {
       <NavigationControl3D anchor={BMAP_ANCHOR_TOP_LEFT} />
     </MapContainer>
   ),
-  code: `import { Map, NavigationControl3D, BMAP_ANCHOR_TOP_LEFT } from 'react-bmap';
+  code: `import { Map, NavigationControl3D, BMAP_ANCHOR_TOP_LEFT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} tilt={60}>
   <NavigationControl3D anchor={BMAP_ANCHOR_TOP_LEFT} />
@@ -47,7 +47,7 @@ registerDemo('scale-control', {
       <ScaleControl anchor={BMAP_ANCHOR_BOTTOM_LEFT} />
     </MapContainer>
   ),
-  code: `import { Map, ScaleControl, BMAP_ANCHOR_BOTTOM_LEFT } from 'react-bmap';
+  code: `import { Map, ScaleControl, BMAP_ANCHOR_BOTTOM_LEFT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <ScaleControl anchor={BMAP_ANCHOR_BOTTOM_LEFT} />
@@ -61,7 +61,7 @@ registerDemo('overview-map-control', {
       <OverviewMapControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
     </MapContainer>
   ),
-  code: `import { Map, OverviewMapControl, BMAP_ANCHOR_BOTTOM_RIGHT } from 'react-bmap';
+  code: `import { Map, OverviewMapControl, BMAP_ANCHOR_BOTTOM_RIGHT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <OverviewMapControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
@@ -75,7 +75,7 @@ registerDemo('map-type-control', {
       <MapTypeControl anchor={BMAP_ANCHOR_TOP_RIGHT} />
     </MapContainer>
   ),
-  code: `import { Map, MapTypeControl, BMAP_ANCHOR_TOP_RIGHT } from 'react-bmap';
+  code: `import { Map, MapTypeControl, BMAP_ANCHOR_TOP_RIGHT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <MapTypeControl anchor={BMAP_ANCHOR_TOP_RIGHT} />
@@ -92,7 +92,7 @@ registerDemo('copyright-control', {
       />
     </MapContainer>
   ),
-  code: `import { Map, CopyrightControl, BMAP_ANCHOR_BOTTOM_LEFT } from 'react-bmap';
+  code: `import { Map, CopyrightControl, BMAP_ANCHOR_BOTTOM_LEFT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <CopyrightControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT}
@@ -107,7 +107,7 @@ registerDemo('geolocation-control', {
       <GeolocationControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
     </MapContainer>
   ),
-  code: `import { Map, GeolocationControl, BMAP_ANCHOR_BOTTOM_RIGHT } from 'react-bmap';
+  code: `import { Map, GeolocationControl, BMAP_ANCHOR_BOTTOM_RIGHT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <GeolocationControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
@@ -121,7 +121,7 @@ registerDemo('panorama-control', {
       <PanoramaControl anchor={BMAP_ANCHOR_TOP_LEFT} />
     </MapContainer>
   ),
-  code: `import { Map, PanoramaControl, BMAP_ANCHOR_TOP_LEFT } from 'react-bmap';
+  code: `import { Map, PanoramaControl, BMAP_ANCHOR_TOP_LEFT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <PanoramaControl anchor={BMAP_ANCHOR_TOP_LEFT} />
@@ -135,7 +135,7 @@ registerDemo('zoom-control', {
       <ZoomControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
     </MapContainer>
   ),
-  code: `import { Map, ZoomControl, BMAP_ANCHOR_BOTTOM_RIGHT } from 'react-bmap';
+  code: `import { Map, ZoomControl, BMAP_ANCHOR_BOTTOM_RIGHT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <ZoomControl anchor={BMAP_ANCHOR_BOTTOM_RIGHT} />
@@ -149,7 +149,7 @@ registerDemo('city-list-control', {
       <CityListControl anchor={BMAP_ANCHOR_TOP_LEFT} />
     </MapContainer>
   ),
-  code: `import { Map, CityListControl, BMAP_ANCHOR_TOP_LEFT } from 'react-bmap';
+  code: `import { Map, CityListControl, BMAP_ANCHOR_TOP_LEFT } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <CityListControl anchor={BMAP_ANCHOR_TOP_LEFT} />
@@ -178,7 +178,7 @@ function CustomControlDemo() {
 registerDemo('custom-control', {
   Component: CustomControlDemo,
   code: `import { useState } from 'react';
-import { Map, CustomControl, BMAP_ANCHOR_TOP_RIGHT } from 'react-bmap';
+import { Map, CustomControl, BMAP_ANCHOR_TOP_RIGHT } from '@baidumap/react-bmap';
 
 // CustomControl（2.0.2 新增）：把自定义 DOM/React 内容挂载到地图固定像素位置，
 // 通过内部按钮联动操作地图属性（zoom），演示自定义控件与地图状态的交互。
@@ -230,7 +230,7 @@ registerDemo('raw-control', {
       <RawControlDemo />
     </MapContainer>
   ),
-  code: `import { Map, RawControl, useDriver, BMAP_ANCHOR_BOTTOM_LEFT } from 'react-bmap';
+  code: `import { Map, RawControl, useDriver, BMAP_ANCHOR_BOTTOM_LEFT } from '@baidumap/react-bmap';
 
 // 用户自己写继承 BMap.Control 的类（掌控 initialize/DOM），库负责挂载卸载
 function ActionControlDemo() {

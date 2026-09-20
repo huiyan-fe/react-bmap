@@ -1,6 +1,6 @@
 /** MapMask 测试页 */
 import React, { useState } from 'react';
-import { Map, MapMask, useCapabilities } from 'react-bmap';
+import { Map, MapMask, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 // 不规则多边形遮罩路径（三角形示例）

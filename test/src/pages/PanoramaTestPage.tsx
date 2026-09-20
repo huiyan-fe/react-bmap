@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Panorama, PanoramaLabel, useCapabilities } from 'react-bmap';
-import type { PanoramaRef } from 'react-bmap';
+import { Panorama, PanoramaLabel, useCapabilities } from '@baidumap/react-bmap';
+import type { PanoramaRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../TestProvider';
 
 const PRESET_POINTS = [

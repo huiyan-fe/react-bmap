@@ -3,8 +3,8 @@
  * 覆盖：getPoint（地址→坐标）/ getLocation（坐标→地址）/ 批量 getPoints·getLocations（并发）
  */
 import React, { useState } from 'react';
-import { Map, Marker, useGeocoder, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import { Map, Marker, useGeocoder, useCapabilities } from '@baidumap/react-bmap';
+import type { Point } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const PRESET_ADDRESSES = [
@@ -167,7 +167,7 @@ export function GeocoderPage() {
         <section>
           <h3>代码示例</h3>
           <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
-{`import { useGeocoder } from 'react-bmap';
+{`import { useGeocoder } from '@baidumap/react-bmap';
 
 const { getPoint, getLocation, getPoints, getLocations, data, loading, cancel } = useGeocoder();
 getPoint('北京市天安门');              // 单发 地址→坐标（结果落 data）

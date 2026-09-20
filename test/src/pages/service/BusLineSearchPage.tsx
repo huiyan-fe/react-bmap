@@ -1,6 +1,6 @@
 /** useBusLineSearch 测试页 — 公交线路搜索。覆盖 getBusList/getBusLine/clearResults */
 import React, { useCallback, useState } from 'react';
-import { Map, useBusLineSearch, useCapabilities, useMapReady } from 'react-bmap';
+import { Map, useBusLineSearch, useCapabilities, useMapReady } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { safeStringifySdkResult } from '../../utils/sdkResult';
 

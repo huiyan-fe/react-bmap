@@ -1,7 +1,7 @@
 /** LineLayer 测试页 — v4+。线图层（继承 NormalLayer）。 */
 import React, { useMemo, useState } from 'react';
-import { LineLayer } from 'react-bmap';
-import type { LineLayerProps } from 'react-bmap';
+import { LineLayer } from '@baidumap/react-bmap';
+import type { LineLayerProps } from '@baidumap/react-bmap';
 import { DEFAULT_BASE_OPTIONS, LayerBaseOptionControls, LayerPageLayout, PropsView } from './shared';
 
 const STYLE_PRESETS: Array<{ label: string; value: string }> = [

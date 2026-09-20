@@ -3,7 +3,7 @@
  * 覆盖：getCurrentPosition / getStatus / enableSDKLocation / disableSDKLocation
  */
 import React, { useState } from 'react';
-import { Map, useGeolocation, useCapabilities } from 'react-bmap';
+import { Map, useGeolocation, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function GeolocationPage() {
@@ -57,7 +57,7 @@ export function GeolocationPage() {
         <section>
           <h3>代码示例</h3>
           <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
-{`import { useGeolocation } from 'react-bmap';
+{`import { useGeolocation } from '@baidumap/react-bmap';
 
 const { getCurrentPosition, getStatus, enableSDKLocation, disableSDKLocation, data, cancel } = useGeolocation();
 getCurrentPosition(); // 获取当前位置

@@ -3,7 +3,7 @@
  * 覆盖：get()
  */
 import React from 'react';
-import { Map, useLocalCity, useCapabilities } from 'react-bmap';
+import { Map, useLocalCity, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function LocalCityPage() {
@@ -49,7 +49,7 @@ export function LocalCityPage() {
         <section>
           <h3>代码示例</h3>
           <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
-{`import { useLocalCity } from 'react-bmap';
+{`import { useLocalCity } from '@baidumap/react-bmap';
 
 const { get, data, loading, error, cancel } = useLocalCity();
 get(); // 获取当前城市`}

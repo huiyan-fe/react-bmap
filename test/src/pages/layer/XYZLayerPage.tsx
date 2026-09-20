@@ -4,7 +4,7 @@
  * 支持 tileUrlTemplate（[z]/[x]/[y] 占位符）和 tms 模式。
  */
 import React, { useState } from 'react';
-import { Map, XYZLayer, useCapabilities } from 'react-bmap';
+import { Map, XYZLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const TILE_PRESETS = [

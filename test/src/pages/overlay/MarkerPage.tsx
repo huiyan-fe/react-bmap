@@ -19,8 +19,8 @@ import {
   BMAP_ANCHOR_BOTTOM_RIGHT, BMAP_ANCHOR_TOP_CENTER, BMAP_ANCHOR_BOTTOM_CENTER,
   BMAP_ANCHOR_CENTER,
   BMAP_ANIMATION_DROP, BMAP_ANIMATION_BOUNCE,
-} from 'react-bmap';
-import type { Point, MapRef } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { Point, MapRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const ICON_URL = 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png';

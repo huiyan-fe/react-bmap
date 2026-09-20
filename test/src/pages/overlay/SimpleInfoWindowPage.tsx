@@ -1,6 +1,6 @@
 /** SimpleInfoWindow 测试页 */
 import React, { useState } from 'react';
-import { Map, SimpleInfoWindow, useCapabilities } from 'react-bmap';
+import { Map, SimpleInfoWindow, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function SimpleInfoWindowPage() {

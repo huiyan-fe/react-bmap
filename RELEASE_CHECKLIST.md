@@ -31,7 +31,7 @@ npm run preflight
 
 ### 4. 包出口自检
 - [ ] `package.json` 的 `main`/`module`/`types`/`exports` 指向的产物真实存在
-- [ ] 冒烟：`import { Map, BMapProvider } from 'react-bmap'` 可解析
+- [ ] 冒烟：`import { Map, BMapProvider } from '@baidumap/react-bmap'` 可解析
 - [ ] （可选）`publint` + `@arethetypeswrong/cli`
 
 ### 5. 真实浏览器 E2E（L5 · 人工，不进 CI）

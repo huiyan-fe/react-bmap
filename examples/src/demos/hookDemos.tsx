@@ -4,8 +4,8 @@ import {
   useMap, useDriver, useMapRef, useCapabilities, useMapEvent, useMapStatus,
   useSymbol, useIcon, useMapReady, useDrivingRoute,
   BMap_Symbol_SHAPE_STAR,
-} from 'react-bmap';
-import type { MapHandle } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { MapHandle } from '@baidumap/react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
 
@@ -70,7 +70,7 @@ registerDemo('use-map', {
       <RawEscapePanel />
     </MapContainer>
   ),
-  code: `import { Map, useMap, useDriver, useMapRef } from 'react-bmap';
+  code: `import { Map, useMap, useDriver, useMapRef } from '@baidumap/react-bmap';
 
 // 先明确分工：
 //   操作地图 → useMapRef（driver 的方法它都转发了，不用自己拼 driver + map）
@@ -154,7 +154,7 @@ registerDemo('use-map-ready', {
   title: '哨兵：把就绪 handle 上提给外层 service hook',
   Component: MapReadyDemo,
   code: `import { useState } from 'react';
-import { Map, useMapReady, useDrivingRoute } from 'react-bmap';
+import { Map, useMapReady, useDrivingRoute } from '@baidumap/react-bmap';
 
 // service hook 挂在 <Map> 外层时，renderOptions.map 需要一个「已就绪」的 handle。
 // useMapReady 在 <Map> 内部当哨兵，就绪后把 handle 上提到外层 state。
@@ -210,7 +210,7 @@ registerDemo('use-driver', {
       <DriverPanel />
     </MapContainer>
   ),
-  code: `import { Map, useDriver } from 'react-bmap';
+  code: `import { Map, useDriver } from '@baidumap/react-bmap';
 
 // useDriver 只需要 <BMapProvider>，不要求在 <Map> 内部。
 // driver 是封装层的逃生门：wrapper 没覆盖到的 SDK 能力可以自己调。
@@ -265,7 +265,7 @@ registerDemo('use-map-ref', {
       <MapRefPanel />
     </MapContainer>
   ),
-  code: `import { Map, useMapRef } from 'react-bmap';
+  code: `import { Map, useMapRef } from '@baidumap/react-bmap';
 
 // 和 <Map ref={...} /> 拿到的是同一种句柄，区别是这个能在子组件里直接取。
 function Toolbar() {
@@ -312,7 +312,7 @@ registerDemo('use-capabilities', {
       <CapabilitiesPanel />
     </MapContainer>
   ),
-  code: `import { Map, Prism, Polygon, useCapabilities } from 'react-bmap';
+  code: `import { Map, Prism, Polygon, useCapabilities } from '@baidumap/react-bmap';
 
 // 3.0 没有 Prism，用 has() 提前分支，而不是等 driver 报 unsupported。
 function Building({ path }) {
@@ -365,7 +365,7 @@ registerDemo('use-map-event', {
     </MapContainer>
   ),
   code: `import { useState } from 'react';
-import { Map, useMapEvent } from 'react-bmap';
+import { Map, useMapEvent } from '@baidumap/react-bmap';
 
 // 传内联函数不会导致重订阅（handler 内部用 ref 持有最新值）。
 // 注意 raw 是没做归一化的 SDK 原生事件
@@ -410,7 +410,7 @@ registerDemo('use-map-status', {
       <StatusPanel />
     </MapContainer>
   ),
-  code: `import { Map, useMapStatus } from 'react-bmap';
+  code: `import { Map, useMapStatus } from '@baidumap/react-bmap';
 
 // 基于 useSyncExternalStore：拖动/缩放/resize 时自动更新，
 // 值没变就不会返回新对象（不会触发多余渲染）。
@@ -455,7 +455,7 @@ registerDemo('use-symbol', {
       <SymbolMarker />
     </MapContainer>
   ),
-  code: `import { Map, Marker, useSymbol, BMap_Symbol_SHAPE_STAR } from 'react-bmap';
+  code: `import { Map, Marker, useSymbol, BMap_Symbol_SHAPE_STAR } from '@baidumap/react-bmap';
 
 function StarMarker() {
   // path 变化会重建 Symbol，其余选项走 setOverlayOptions 原地更新。
@@ -495,7 +495,7 @@ registerDemo('use-icon', {
       <IconMarker />
     </MapContainer>
   ),
-  code: `import { Map, Marker, useIcon } from 'react-bmap';
+  code: `import { Map, Marker, useIcon } from '@baidumap/react-bmap';
 
 // 只有一个 Marker 时直接写 <Marker icon={{ url, size }} /> 更省事；
 // useIcon 的价值是把同一个 Icon 实例复用给多个 Marker。

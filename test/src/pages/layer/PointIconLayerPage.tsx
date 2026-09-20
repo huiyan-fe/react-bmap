@@ -6,8 +6,8 @@
  * <PointIconLayer style={{ icon: 'url', width: 25, height: 25 }} data={geojson} />
  */
 import React, { useMemo, useState } from 'react';
-import { Map, PointIconLayer, useCapabilities } from 'react-bmap';
-import type { PointIconStyle } from 'react-bmap';
+import { Map, PointIconLayer, useCapabilities } from '@baidumap/react-bmap';
+import type { PointIconStyle } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const ICON_URL = 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png';

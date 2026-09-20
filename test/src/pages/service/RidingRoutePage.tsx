@@ -1,6 +1,6 @@
 /** useRidingRoute 测试页 — 骑行路线规划，完整覆盖。 */
 import React, { useCallback, useState } from 'react';
-import { Map, useRidingRoute, useCapabilities, useMapReady } from 'react-bmap';
+import { Map, useRidingRoute, useCapabilities, useMapReady } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { safeStringifySdkResult } from '../../utils/sdkResult';
 

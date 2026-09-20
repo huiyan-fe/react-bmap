@@ -3,7 +3,7 @@
  * 通过条件渲染显示/隐藏面板，uid 变化自动 render。
  */
 import React, { useState } from 'react';
-import { Map, PlaceDetailPanel, useCapabilities } from 'react-bmap';
+import { Map, PlaceDetailPanel, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../TestProvider';
 
 const PRESET_UIDS = [

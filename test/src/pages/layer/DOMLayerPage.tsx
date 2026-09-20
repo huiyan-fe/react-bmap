@@ -6,7 +6,7 @@
  * <DOMLayer createDOM={(props, point) => { ... return HTMLElement; }} data={geojson} />
  */
 import React, { useCallback, useState } from 'react';
-import { Map, DOMLayer, useCapabilities } from 'react-bmap';
+import { Map, DOMLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEMO_DATA = {

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Map, useCapabilities } from 'react-bmap';
-import type { ControlAnchor, Size } from 'react-bmap';
+import { Map, useCapabilities } from '@baidumap/react-bmap';
+import type { ControlAnchor, Size } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export const ANCHOR_OPTIONS: Array<{ label: string; value: ControlAnchor }> = [

@@ -8,7 +8,7 @@
  * setColors / setEdge 在组件内部实现（TrafficLayer.tsx），通过 props 驱动。
  */
 import React, { useState } from 'react';
-import { Map, TrafficLayer, useCapabilities } from 'react-bmap';
+import { Map, TrafficLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_COLORS = ['#00ff00', '#ffff00', '#ff8800', '#ff0000'];

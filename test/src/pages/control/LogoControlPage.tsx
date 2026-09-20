@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
   BMAP_ANCHOR_BOTTOM_LEFT,
   LogoControl,
-} from 'react-bmap';
-import type { ControlAnchor, LogoControlProps } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, LogoControlProps } from '@baidumap/react-bmap';
 import { AnchorSelect, ControlPageLayout, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function LogoControlPage() {

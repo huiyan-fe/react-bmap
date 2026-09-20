@@ -7,8 +7,8 @@ import {
   BMAP_NAVIGATION_CONTROL_SMALL,
   BMAP_NAVIGATION_CONTROL_ZOOM,
   NavigationControl,
-} from 'react-bmap';
-import type { ControlAnchor, NavigationControlProps } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, NavigationControlProps } from '@baidumap/react-bmap';
 import { AnchorSelect, BooleanRow, ControlPageLayout, DEFAULT_CONTROL_OFFSET, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function NavigationControlPage() {

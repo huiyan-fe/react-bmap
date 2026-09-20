@@ -7,7 +7,7 @@
  * 如需自定义图标，请用 driver.createIcon() 创建后通过 driver 方式调用。
  */
 import React, { useState } from 'react';
-import { Map, GeoJSONLayer, useCapabilities } from 'react-bmap';
+import { Map, GeoJSONLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 // ─── 数据预设 ───

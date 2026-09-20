@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
   BMAP_ANCHOR_TOP_RIGHT,
   NavigationControl3D,
-} from 'react-bmap';
-import type { ControlAnchor, NavigationControl3DProps } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, NavigationControl3DProps } from '@baidumap/react-bmap';
 import { AnchorSelect, ControlPageLayout, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function NavigationControl3DPage() {

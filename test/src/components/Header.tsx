@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useBMapContext } from 'react-bmap';
-import type { BMapVersion } from 'react-bmap';
+import { useBMapContext } from '@baidumap/react-bmap';
+import type { BMapVersion } from '@baidumap/react-bmap';
 import { VERSIONS, type TestPage } from '../config';
 import { switchVersion } from '../TestProvider';
 

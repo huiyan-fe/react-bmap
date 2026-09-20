@@ -1,5 +1,5 @@
 import React from 'react';
-import { Map, ContextMenu, MenuItem } from 'react-bmap';
+import { Map, ContextMenu, MenuItem } from '@baidumap/react-bmap';
 import { BEIJING } from '../TestProvider';
 
 export function ContextMenuTestPage() {

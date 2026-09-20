@@ -4,8 +4,8 @@
  * 注意：SDK 无 enableEditing，BezierCurveEventMap 也不含编辑相关事件。
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Map, BezierCurve, Marker, useCapabilities } from 'react-bmap';
-import type { Point, MapRef } from 'react-bmap';
+import { Map, BezierCurve, Marker, useCapabilities } from '@baidumap/react-bmap';
+import type { Point, MapRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 /** 预设路径点（2/3/4 点） */

@@ -5,8 +5,8 @@
  * 无事件（Symbol 不是 Overlay，没有 addEventListener）。
  */
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Map, useMapContext } from 'react-bmap';
-import type { OverlayHandle, Point, Size } from 'react-bmap';
+import { Map, useMapContext } from '@baidumap/react-bmap';
+import type { OverlayHandle, Point, Size } from '@baidumap/react-bmap';
 import {
   BMap_Symbol_SHAPE_CIRCLE,
   BMap_Symbol_SHAPE_RECTANGLE,
@@ -20,7 +20,7 @@ import {
   BMap_Symbol_SHAPE_WARNING,
   BMap_Symbol_SHAPE_SMILE,
   BMap_Symbol_SHAPE_CLOCK,
-} from 'react-bmap';
+} from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const SHAPES: { label: string; value: number }[] = [

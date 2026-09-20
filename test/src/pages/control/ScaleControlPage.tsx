@@ -4,8 +4,8 @@ import {
   BMAP_UNIT_IMPERIAL,
   BMAP_UNIT_METRIC,
   ScaleControl,
-} from 'react-bmap';
-import type { ControlAnchor, ScaleControlProps } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, ScaleControlProps } from '@baidumap/react-bmap';
 import { AnchorSelect, ControlPageLayout, DEFAULT_CONTROL_OFFSET, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function ScaleControlPage() {

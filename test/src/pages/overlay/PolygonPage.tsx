@@ -2,8 +2,8 @@
  * Polygon 全量测试页 — 覆盖 Polygon.d.ts + PolygonOptions.d.ts 全部功能。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, Polygon, useCapabilities } from 'react-bmap';
-import type { Point, MapRef } from 'react-bmap';
+import { Map, Polygon, useCapabilities } from '@baidumap/react-bmap';
+import type { Point, MapRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_PATH: Point[] = [

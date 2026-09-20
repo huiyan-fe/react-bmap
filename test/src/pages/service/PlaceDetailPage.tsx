@@ -3,7 +3,7 @@
  * render(uid) 渲染地点详情到面板容器。
  */
 import React, { useCallback, useState } from 'react';
-import { Map, usePlaceDetail, useCapabilities } from 'react-bmap';
+import { Map, usePlaceDetail, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_UID = '06d2dffda107b0ef89f15db6';

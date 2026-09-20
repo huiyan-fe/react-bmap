@@ -4,8 +4,8 @@
  * v3 下不渲染组件，避免误触发 unsupported 行为。
  */
 import React, { useMemo, useState } from 'react';
-import { Map, Marker, PlaceDetail, useCapabilities } from 'react-bmap';
-import type { Point, PlaceDetailOptions, PlaceDetailRenderOptions } from 'react-bmap';
+import { Map, Marker, PlaceDetail, useCapabilities } from '@baidumap/react-bmap';
+import type { Point, PlaceDetailOptions, PlaceDetailRenderOptions } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_POINT: Point = { lng: 116.404, lat: 39.915 };

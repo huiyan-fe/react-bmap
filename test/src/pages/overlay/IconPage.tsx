@@ -6,8 +6,8 @@
  * infoWindowAnchor / printImageUrl 为 @removed 4.0；srcset 为 @since 4.0 @hide。
  */
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Map, useMapContext, useCapabilities } from 'react-bmap';
-import type { OverlayHandle, Point, Size } from 'react-bmap';
+import { Map, useMapContext, useCapabilities } from '@baidumap/react-bmap';
+import type { OverlayHandle, Point, Size } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 /** 来自 SDK dts 示例的图片地址 */

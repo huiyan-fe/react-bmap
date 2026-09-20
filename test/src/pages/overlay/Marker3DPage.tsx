@@ -1,6 +1,6 @@
 /** Marker3D 测试页 */
 import React, { useState } from 'react';
-import { Map, Marker3D, useCapabilities } from 'react-bmap';
+import { Map, Marker3D, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function Marker3DPage() {

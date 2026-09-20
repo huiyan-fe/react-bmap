@@ -5,8 +5,8 @@
  * Setter：setPoint / setRotation / setRotationOrigin / setProperties。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, CustomOverlay, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import { Map, CustomOverlay, useCapabilities } from '@baidumap/react-bmap';
+import type { Point } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_POINT: Point = { lng: 116.404, lat: 39.915 };

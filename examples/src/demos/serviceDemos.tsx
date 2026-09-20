@@ -5,7 +5,7 @@ import {
   useBoundary, useGeolocation, useLocalCity, usePlaceDetail,
   useConvertor, usePanoramaService, useTruckRoute,
   useMapContext,
-} from 'react-bmap';
+} from '@baidumap/react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
 
@@ -54,7 +54,7 @@ registerDemo('local-search', {
       <LocalSearchInner />
     </MapContainer>
   ),
-  code: `import { Map, useLocalSearch } from 'react-bmap';
+  code: `import { Map, useLocalSearch } from '@baidumap/react-bmap';
 
 // 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 function Search() {
@@ -95,7 +95,7 @@ registerDemo('geocoder', {
       <GeocoderInner />
     </MapContainer>
   ),
-  code: `import { useGeocoder } from 'react-bmap';
+  code: `import { useGeocoder } from '@baidumap/react-bmap';
 
 const { data, getPoint } = useGeocoder();
 getPoint('天安门'); // 地址→坐标`,
@@ -127,7 +127,7 @@ registerDemo('driving-route', {
       <DrivingRouteInner />
     </MapContainer>
   ),
-  code: `import { useDrivingRoute } from 'react-bmap';
+  code: `import { useDrivingRoute } from '@baidumap/react-bmap';
 
 // 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useDrivingRoute({
@@ -161,7 +161,7 @@ registerDemo('walking-route', {
       <WalkingRouteInner />
     </MapContainer>
   ),
-  code: `import { useWalkingRoute } from 'react-bmap';
+  code: `import { useWalkingRoute } from '@baidumap/react-bmap';
 
 // 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useWalkingRoute({
@@ -195,7 +195,7 @@ registerDemo('riding-route', {
       <RidingRouteInner />
     </MapContainer>
   ),
-  code: `import { useRidingRoute } from 'react-bmap';
+  code: `import { useRidingRoute } from '@baidumap/react-bmap';
 
 // 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useRidingRoute({
@@ -235,7 +235,7 @@ registerDemo('transit-route', {
       <TransitRouteInner />
     </MapContainer>
   ),
-  code: `import { useTransitRoute } from 'react-bmap';
+  code: `import { useTransitRoute } from '@baidumap/react-bmap';
 
 // 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useTransitRoute({
@@ -274,7 +274,7 @@ registerDemo('bus-line-search', {
       <BusLineInner />
     </MapContainer>
   ),
-  code: `import { useBusLineSearch } from 'react-bmap';
+  code: `import { useBusLineSearch } from '@baidumap/react-bmap';
 
 const { data, getBusList } = useBusLineSearch();
 getBusList('1路');`,
@@ -297,7 +297,7 @@ registerDemo('autocomplete', {
       <AutocompleteInner />
     </MapContainer>
   ),
-  code: `import { useAutocomplete } from 'react-bmap';
+  code: `import { useAutocomplete } from '@baidumap/react-bmap';
 
 const { data } = useAutocomplete({ location: '北京', input: el });`,
 });
@@ -327,7 +327,7 @@ registerDemo('boundary', {
       <BoundaryInner />
     </MapContainer>
   ),
-  code: `import { useBoundary } from 'react-bmap';
+  code: `import { useBoundary } from '@baidumap/react-bmap';
 
 const { data, get } = useBoundary();
 get('北京市');`,
@@ -353,7 +353,7 @@ registerDemo('geolocation', {
       <GeolocationInner />
     </MapContainer>
   ),
-  code: `import { useGeolocation } from 'react-bmap';
+  code: `import { useGeolocation } from '@baidumap/react-bmap';
 
 const { data, getCurrentPosition } = useGeolocation();
 getCurrentPosition();`,
@@ -379,7 +379,7 @@ registerDemo('local-city', {
       <LocalCityInner />
     </MapContainer>
   ),
-  code: `import { useLocalCity } from 'react-bmap';
+  code: `import { useLocalCity } from '@baidumap/react-bmap';
 
 const { data, get } = useLocalCity();
 get();`,
@@ -410,7 +410,7 @@ registerDemo('place-detail', {
       <PlaceDetailInner />
     </MapContainer>
   ),
-  code: `import { usePlaceDetail } from 'react-bmap';
+  code: `import { usePlaceDetail } from '@baidumap/react-bmap';
 
 const { data, render } = usePlaceDetail();
 render('06d2dffda107b0ef89f15db6');`,
@@ -441,7 +441,7 @@ registerDemo('convertor', {
       <ConvertorInner />
     </MapContainer>
   ),
-  code: `import { useConvertor } from 'react-bmap';
+  code: `import { useConvertor } from '@baidumap/react-bmap';
 
 const { data, translate } = useConvertor();
 translate([{ lng: 116.404, lat: 39.915 }], 1, 5); // GPS→百度`,
@@ -467,7 +467,7 @@ registerDemo('panorama-service', {
       <PanoramaServiceInner />
     </MapContainer>
   ),
-  code: `import { usePanoramaService } from 'react-bmap';
+  code: `import { usePanoramaService } from '@baidumap/react-bmap';
 
 const { data, getPanoramaByLocation } = usePanoramaService();
 getPanoramaByLocation({ lng: 116.404, lat: 39.915 }, 100);`,
@@ -501,7 +501,7 @@ registerDemo('truck-route', {
       <TruckRouteInner />
     </MapContainer>
   ),
-  code: `import { useTruckRoute } from 'react-bmap';
+  code: `import { useTruckRoute } from '@baidumap/react-bmap';
 
 // 在 <Map> 内部：renderOptions 不用传 map，hook 自动取当前地图
 const { search } = useTruckRoute({

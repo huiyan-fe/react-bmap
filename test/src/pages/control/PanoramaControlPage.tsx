@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
   BMAP_ANCHOR_TOP_RIGHT,
   PanoramaControl,
-} from 'react-bmap';
-import type { ControlAnchor, PanoramaControlProps } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, PanoramaControlProps } from '@baidumap/react-bmap';
 import { AnchorSelect, ControlPageLayout, DEFAULT_CONTROL_OFFSET, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function PanoramaControlPage() {

@@ -1,7 +1,7 @@
 /** BaiduLayer 测试页 — v4+。百度底图图层。 */
 import React, { useState } from 'react';
-import { BaiduLayer } from 'react-bmap';
-import type { BaiduLayerProps } from 'react-bmap';
+import { BaiduLayer } from '@baidumap/react-bmap';
+import type { BaiduLayerProps } from '@baidumap/react-bmap';
 import { DEFAULT_BASE_OPTIONS, LayerBaseOptionControls, LayerPageLayout, PropsView } from './shared';
 
 const CODE = `<Map defaultCenter={center} defaultZoom={11}>

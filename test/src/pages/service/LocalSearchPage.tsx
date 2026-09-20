@@ -12,7 +12,7 @@
  * - onSearchComplete / onMarkersSet 回调
  */
 import { useCallback, useRef, useState } from 'react';
-import { Map, useLocalSearch, useCapabilities, useMapReady } from 'react-bmap';
+import { Map, useLocalSearch, useCapabilities, useMapReady } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 /** 在 <Map> 内捕获 map handle，传给外部 */
@@ -188,7 +188,7 @@ export function LocalSearchPage() {
         <section>
           <h3>代码示例</h3>
           <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
-{`import { useLocalSearch } from 'react-bmap';
+{`import { useLocalSearch } from '@baidumap/react-bmap';
 
 const {
   data, loading, error, supported,

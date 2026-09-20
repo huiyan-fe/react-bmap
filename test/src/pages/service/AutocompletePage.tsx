@@ -1,6 +1,6 @@
 /** useAutocomplete 测试页 — 输入提示。需要 input 元素才能工作。 */
 import React, { useCallback, useState } from 'react';
-import { Map, useAutocomplete, useCapabilities } from 'react-bmap';
+import { Map, useAutocomplete, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { safeStringifySdkResult } from '../../utils/sdkResult';
 

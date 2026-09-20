@@ -5,8 +5,8 @@
  * 棱柱是 3D 覆盖物，需要地图倾斜（tilt）才能看出高度。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, Prism, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import { Map, Prism, useCapabilities } from '@baidumap/react-bmap';
+import type { Point } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 /** 单坐标串预设（三角形 / 五边形） */

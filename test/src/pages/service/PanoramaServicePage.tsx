@@ -3,7 +3,7 @@
  * 覆盖：getPanoramaById / getPanoramaByLocation
  */
 import React, { useState } from 'react';
-import { Map, usePanoramaService, useCapabilities } from 'react-bmap';
+import { Map, usePanoramaService, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function PanoramaServicePage() {
@@ -85,7 +85,7 @@ export function PanoramaServicePage() {
         <section>
           <h3>代码示例</h3>
           <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
-{`import { usePanoramaService } from 'react-bmap';
+{`import { usePanoramaService } from '@baidumap/react-bmap';
 
 const { getPanoramaById, getPanoramaByLocation, data, cancel } = usePanoramaService();
 getPanoramaByLocation({ lng: 116.404, lat: 39.915 }, 100); // 按坐标查

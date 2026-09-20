@@ -3,7 +3,7 @@
  * 需要 url + params（LAYERS 等必填）。
  */
 import React, { useState } from 'react';
-import { Map, WMSLayer, useCapabilities } from 'react-bmap';
+import { Map, WMSLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_URL = 'https://mrdata.usgs.gov/services/mrds';

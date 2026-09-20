@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
   BMAP_ANCHOR_BOTTOM_RIGHT,
   OverviewMapControl,
-} from 'react-bmap';
-import type { ControlAnchor, OverviewMapControlProps } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, OverviewMapControlProps } from '@baidumap/react-bmap';
 import { AnchorSelect, BooleanRow, ControlPageLayout, DEFAULT_CONTROL_OFFSET, EventLog, formatEventValue, logEvent, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function OverviewMapControlPage() {

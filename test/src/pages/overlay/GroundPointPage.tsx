@@ -4,8 +4,8 @@
  * 继承 GroundOverlay，因此 GroundOverlayOptions 的字段（opacity/enableMassClear 等）也生效。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, GroundPoint, useCapabilities } from 'react-bmap';
-import type { Point, Size } from 'react-bmap';
+import { Map, GroundPoint, useCapabilities } from '@baidumap/react-bmap';
+import type { Point, Size } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 /** 来自 SDK dts 示例的车辆图标 */

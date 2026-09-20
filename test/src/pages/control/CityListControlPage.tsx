@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
   BMAP_ANCHOR_TOP_LEFT,
   CityListControl,
-} from 'react-bmap';
-import type { CityListControlProps, ControlAnchor } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { CityListControlProps, ControlAnchor } from '@baidumap/react-bmap';
 import { AnchorSelect, BooleanRow, ControlPageLayout, DEFAULT_CONTROL_OFFSET, EventLog, formatEventValue, logEvent, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function CityListControlPage() {

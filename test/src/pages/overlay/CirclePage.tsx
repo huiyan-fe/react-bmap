@@ -2,8 +2,8 @@
  * Circle 全量测试页 — 覆盖 Circle.d.ts + CircleOptions.d.ts 全部功能。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, Circle, useCapabilities } from 'react-bmap';
-import type { Point, MapRef } from 'react-bmap';
+import { Map, Circle, useCapabilities } from '@baidumap/react-bmap';
+import type { Point, MapRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_CENTER: Point = { lng: 116.404, lat: 39.915 };

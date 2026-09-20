@@ -7,8 +7,8 @@
  * 无 setter：offsets / minZoom / maxZoom → ctorOnlyProps。
  */
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Map, Marker, useMapContext, useCapabilities } from 'react-bmap';
-import type { OverlayHandle, Point } from 'react-bmap';
+import { Map, Marker, useMapContext, useCapabilities } from '@baidumap/react-bmap';
+import type { OverlayHandle, Point } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_POINT: Point = { lng: 116.380, lat: 39.930 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCapabilities, useDriver, CAPABILITY_MATRIX } from 'react-bmap';
+import { useCapabilities, useDriver, CAPABILITY_MATRIX } from '@baidumap/react-bmap';
 
 /**
  * 能力矩阵查看页 — 显示当前 driver 版本 + 完整能力清单（v3 / v4 两列对比）。

@@ -3,8 +3,8 @@
  * 整体 @removed 4.0，仅 v3 可用；v4 上类不存在，createOverlayFactory 会捕获并报告不支持。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, PointCollection, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import { Map, PointCollection, useCapabilities } from '@baidumap/react-bmap';
+import type { Point } from '@baidumap/react-bmap';
 import {
   BMAP_POINT_SHAPE_STAR,
   BMAP_POINT_SHAPE_WATERDROP,
@@ -18,7 +18,7 @@ import {
   BMAP_POINT_SIZE_BIG,
   BMAP_POINT_SIZE_BIGGER,
   BMAP_POINT_SIZE_HUGE,
-} from 'react-bmap';
+} from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const SHAPES: { label: string; value: number }[] = [

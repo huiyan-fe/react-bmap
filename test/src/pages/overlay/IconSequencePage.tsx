@@ -7,14 +7,14 @@
  * 无事件（值对象）。
  */
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Map, useMapContext } from 'react-bmap';
-import type { OverlayHandle, Point } from 'react-bmap';
+import { Map, useMapContext } from '@baidumap/react-bmap';
+import type { OverlayHandle, Point } from '@baidumap/react-bmap';
 import {
   BMap_Symbol_SHAPE_FORWARD_CLOSED_ARROW,
   BMap_Symbol_SHAPE_CIRCLE,
   BMap_Symbol_SHAPE_STAR,
   BMap_Symbol_SHAPE_RHOMBUS,
-} from 'react-bmap';
+} from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const SHAPES = [

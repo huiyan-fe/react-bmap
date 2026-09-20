@@ -5,8 +5,8 @@
  * 事件：InfoWindowEventMap（open/close/clickclose/maximize/restore/resize）。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, InfoWindow, Marker, useCapabilities } from 'react-bmap';
-import type { Point } from 'react-bmap';
+import { Map, InfoWindow, Marker, useCapabilities } from '@baidumap/react-bmap';
+import type { Point } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_POINT: Point = { lng: 116.404, lat: 39.915 };

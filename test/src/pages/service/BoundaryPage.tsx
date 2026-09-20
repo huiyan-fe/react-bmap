@@ -3,7 +3,7 @@
  * 覆盖：get(name)
  */
 import React, { useState } from 'react';
-import { Map, useBoundary, useCapabilities } from 'react-bmap';
+import { Map, useBoundary, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const PRESETS = ['北京市', '上海市', '广东省', '深圳市', '成都市'];
@@ -60,7 +60,7 @@ export function BoundaryPage() {
         <section>
           <h3>代码示例</h3>
           <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
-{`import { useBoundary } from 'react-bmap';
+{`import { useBoundary } from '@baidumap/react-bmap';
 
 const { get, data, loading, error, cancel } = useBoundary();
 get('北京市');`}

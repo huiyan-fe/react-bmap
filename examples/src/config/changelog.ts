@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '2.0.6',
+    date: '2026-09-20',
+    changes: [
+      'npm 包更名为 @baidumap/react-bmap（并入 @baidumap 官方 scope；旧包 react-bmap 停止更新，请改装/改引 @baidumap/react-bmap）',
+    ],
+  },
+  {
     version: '2.0.5',
     date: '2026-09-20',
     changes: [

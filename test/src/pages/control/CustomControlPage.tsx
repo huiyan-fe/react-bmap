@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
   BMAP_ANCHOR_TOP_LEFT,
   CustomControl,
-} from 'react-bmap';
-import type { CustomControlProps, ControlAnchor } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { CustomControlProps, ControlAnchor } from '@baidumap/react-bmap';
 import { AnchorSelect, ControlPageLayout, DEFAULT_CONTROL_OFFSET, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function CustomControlPage() {

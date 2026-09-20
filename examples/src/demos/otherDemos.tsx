@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Map, Marker, ContextMenu, MenuItem, Panorama } from 'react-bmap';
+import { Map, Marker, ContextMenu, MenuItem, Panorama } from '@baidumap/react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
 
@@ -26,7 +26,7 @@ function ContextMenuInner() {
 registerDemo('context-menu', {
   Component: () => <ContextMenuInner />,
   code: `import { useState } from 'react';
-import { Map, Marker, ContextMenu, MenuItem } from 'react-bmap';
+import { Map, Marker, ContextMenu, MenuItem } from '@baidumap/react-bmap';
 
 function Demo() {
   const [zoom, setZoom] = useState(11);
@@ -56,7 +56,7 @@ registerDemo('panorama', {
       <Panorama point={PANO_POINT} style={{ width: '100%', height: '100%' }} />
     </div>
   ),
-  code: `import { Panorama } from 'react-bmap';
+  code: `import { Panorama } from '@baidumap/react-bmap';
 
 <Panorama
   point={{ lng: 116.316169, lat: 40.005567 }}
@@ -88,7 +88,7 @@ registerDemo('panorama', {
 //       />
 //     </div>
 //   ),
-//   code: `import { Map, PlaceDetailPanel } from 'react-bmap';
+//   code: `import { Map, PlaceDetailPanel } from '@baidumap/react-bmap';
 //
 // <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} />
 // <PlaceDetailPanel

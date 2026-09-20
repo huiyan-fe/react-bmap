@@ -6,8 +6,8 @@
  * <PointShapeLayer style={{ shapeType: 2, size: 20, color: '#ff0000' }} data={geojson} />
  */
 import React, { useMemo, useState } from 'react';
-import { Map, PointShapeLayer, useCapabilities } from 'react-bmap';
-import type { PointShapeStyle } from 'react-bmap';
+import { Map, PointShapeLayer, useCapabilities } from '@baidumap/react-bmap';
+import type { PointShapeStyle } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 // shapeType: 1=圆形 2=三角形 3=方形 4=菱形 5=六边形 7=五角星

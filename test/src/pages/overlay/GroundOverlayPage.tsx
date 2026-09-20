@@ -4,8 +4,8 @@
  * 以及除 click/dblclick/remove 之外的事件都是 @since 4.0；stretch 反过来是 @removed 4.0（仅 v3）。
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Map, GroundOverlay, useCapabilities } from 'react-bmap';
-import type { Bounds } from 'react-bmap';
+import { Map, GroundOverlay, useCapabilities } from '@baidumap/react-bmap';
+import type { Bounds } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_BOUNDS: Bounds = {

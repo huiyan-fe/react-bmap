@@ -49,7 +49,7 @@ export function HomePage() {
         <h2 className="home-section-title">快速开始</h2>
         <div className="home-code-block">
           <div className="home-code-label">安装</div>
-          <pre><code>npm install react-bmap</code></pre>
+          <pre><code>npm install @baidumap/react-bmap</code></pre>
         </div>
         <p className="home-note">
           使用 BMapProvider 加载百度地图 JSAPI（无需在 HTML 中手动引入
@@ -61,7 +61,7 @@ export function HomePage() {
         </p>
         <div className="home-code-block">
           <div className="home-code-label">Hello World</div>
-          <pre><code>{`import { BMapProvider, Map, Marker } from 'react-bmap';
+          <pre><code>{`import { BMapProvider, Map, Marker } from '@baidumap/react-bmap';
 
 <BMapProvider ak="您的密钥" version="4.0">
   <Map center={{ lng: 116.4, lat: 39.9 }} zoom={11}>
@@ -126,7 +126,7 @@ export function HomePage() {
             GitHub
           </a>
           {' · '}
-          <a href="https://www.npmjs.com/package/react-bmap" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.npmjs.com/package/@baidumap/react-bmap" target="_blank" rel="noopener noreferrer">
             npm
           </a>
           {' · MIT License'}

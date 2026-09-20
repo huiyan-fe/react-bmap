@@ -1,6 +1,6 @@
 # React-BMap
 
-[![npm version](https://img.shields.io/npm/v/react-bmap.svg)](https://www.npmjs.com/package/react-bmap)
+[![npm version](https://img.shields.io/npm/v/@baidumap/react-bmap.svg)](https://www.npmjs.com/package/@baidumap/react-bmap)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 
 用 React 组件写百度地图。地图、标注、路线、控件都是普通的 React 组件和 Hook，跟着 state 走，无需手动操作 DOM 或记 SDK 的命令式 API。一套代码同时支持百度地图 **JSAPI 3.0（2D）** 和 **4.0（WebGL）**。
@@ -16,7 +16,7 @@
 ## 安装
 
 ```bash
-npm install react-bmap
+npm install @baidumap/react-bmap
 ```
 
 需要 React 18+（`react` / `react-dom` 为 peer 依赖）。
@@ -30,7 +30,7 @@ npm install react-bmap
 `BMapProvider` 负责加载地图并把密钥、版本传下去，通常放在应用最外层，只写一次。
 
 ```tsx
-import { BMapProvider } from 'react-bmap';
+import { BMapProvider } from '@baidumap/react-bmap';
 
 function Root() {
   return (
@@ -49,7 +49,7 @@ function Root() {
 `Map` 必须有确定的宽高，容器没高度会看不到地图。
 
 ```tsx
-import { Map } from 'react-bmap';
+import { Map } from '@baidumap/react-bmap';
 
 <div style={{ width: '100%', height: 500 }}>
   <Map center={{ lng: 116.404, lat: 39.915 }} zoom={12} />
@@ -61,7 +61,7 @@ import { Map } from 'react-bmap';
 覆盖物、控件都作为 `Map` 的子元素：
 
 ```tsx
-import { Map, Marker, InfoWindow, NavigationControl, ScaleControl } from 'react-bmap';
+import { Map, Marker, InfoWindow, NavigationControl, ScaleControl } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
   <Marker position={{ lng: 116.404, lat: 39.915 }} />
@@ -147,7 +147,7 @@ function Markers() {
 检索类功能都以 Hook 提供，返回强类型结果，也可让它直接画到地图上：
 
 ```tsx
-import { Map, useDrivingRoute } from 'react-bmap';
+import { Map, useDrivingRoute } from '@baidumap/react-bmap';
 
 function RouteDemo() {
   const { search, data } = useDrivingRoute({ location: '北京' });
@@ -171,7 +171,7 @@ function RouteDemo() {
 ### 地址转坐标（地理编码）
 
 ```tsx
-import { useGeocoder } from 'react-bmap';
+import { useGeocoder } from '@baidumap/react-bmap';
 
 const { getPoint, getLocation, data } = useGeocoder();
 getPoint('北京市海淀区上地十街10号'); // 地址转坐标，data.point 即坐标
@@ -184,7 +184,7 @@ getPoint('北京市海淀区上地十街10号'); // 地址转坐标，data.point
 
 ```tsx
 import { useRef } from 'react';
-import { Map, type MapRef } from 'react-bmap';
+import { Map, type MapRef } from '@baidumap/react-bmap';
 
 function Demo() {
   const map = useRef<MapRef>(null);
@@ -203,7 +203,7 @@ function Demo() {
 
 ## 能用哪些组件
 
-从 `react-bmap` 顶层直接 import，每个组件都带 TypeScript 类型。
+从 `@baidumap/react-bmap` 顶层直接 import，每个组件都带 TypeScript 类型。
 
 - **覆盖物**：`Marker`、`Label`、`Polyline`、`Polygon`、`Circle`、`Rectangle`、`BezierCurve`、`Prism`、`GroundOverlay`、`GroundPoint`、`PointCollection`、`InfoWindow`、`SimpleInfoWindow`、`Symbol`、`Icon`、`IconSequence`、`Hotspot`、`CustomOverlay`、`Marker3D`、`MapMask`、`PlaceDetail`、`PlaceDetailPanel`
 - **控件**：`NavigationControl`、`NavigationControl3D`、`ScaleControl`、`OverviewMapControl`、`MapTypeControl`、`CopyrightControl`、`GeolocationControl`、`PanoramaControl`、`ZoomControl`、`CityListControl`、`LocationControl`、`LogoControl`

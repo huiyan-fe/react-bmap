@@ -5,8 +5,8 @@ import {
   BMAP_MAPTYPE_CONTROL_HORIZONTAL,
   BMAP_MAPTYPE_CONTROL_MAP,
   MapTypeControl,
-} from 'react-bmap';
-import type { ControlAnchor, MapTypeControlProps } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, MapTypeControlProps } from '@baidumap/react-bmap';
 import { AnchorSelect, BooleanRow, ControlPageLayout, DEFAULT_CONTROL_OFFSET, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function MapTypeControlPage() {

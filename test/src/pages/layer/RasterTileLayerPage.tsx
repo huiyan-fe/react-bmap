@@ -2,7 +2,7 @@
  * RasterTileLayer 测试页 — v4+。栅格瓦片图层。
  */
 import React, { useState } from 'react';
-import { Map, RasterTileLayer, useCapabilities } from 'react-bmap';
+import { Map, RasterTileLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_URL = 'https://maponline0.bdimg.com/tile/?qt=tile&x={X}&y={Y}&z={Z}&styles=pl&scaler=1&udt=20230815';

@@ -3,8 +3,8 @@ import {
   BMAP_ANCHOR_BOTTOM_LEFT,
   BMAP_ANCHOR_BOTTOM_RIGHT,
   CopyrightControl,
-} from 'react-bmap';
-import type { ControlAnchor, CopyrightControlProps, CopyrightItem } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, CopyrightControlProps, CopyrightItem } from '@baidumap/react-bmap';
 import { AnchorSelect, ControlPageLayout, DEFAULT_CONTROL_OFFSET, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 const DEFAULT_COPYRIGHTS: CopyrightItem[] = [

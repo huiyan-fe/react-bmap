@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
   BMAP_ANCHOR_BOTTOM_RIGHT,
   ZoomControl,
-} from 'react-bmap';
-import type { ControlAnchor, ZoomControlProps } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { ControlAnchor, ZoomControlProps } from '@baidumap/react-bmap';
 import { AnchorSelect, ControlPageLayout, PropsView, SizeInputs, VisibilityControl } from './shared';
 
 export function ZoomControlPage() {

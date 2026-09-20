@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      'react-bmap': resolve(__dirname, 'src/index.ts'),
+      '@baidumap/react-bmap': resolve(__dirname, 'src/index.ts'),
     },
   },
   root: 'examples',

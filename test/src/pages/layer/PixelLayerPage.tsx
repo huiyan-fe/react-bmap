@@ -1,7 +1,7 @@
 /** PixelLayer 测试页 — v4+。像素图层。 */
 import React, { useState } from 'react';
-import { PixelLayer } from 'react-bmap';
-import type { PixelLayerProps } from 'react-bmap';
+import { PixelLayer } from '@baidumap/react-bmap';
+import type { PixelLayerProps } from '@baidumap/react-bmap';
 import { DEFAULT_BASE_OPTIONS, LayerBaseOptionControls, LayerPageLayout, PropsView } from './shared';
 
 const CODE = `<Map defaultCenter={center} defaultZoom={11}>

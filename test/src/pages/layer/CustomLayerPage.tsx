@@ -5,7 +5,7 @@
  * Options: databoxId, geotableId, q, tags, filter, pointDensity
  */
 import React, { useState } from 'react';
-import { Map, CustomLayer, useCapabilities } from 'react-bmap';
+import { Map, CustomLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function CustomLayerPage() {

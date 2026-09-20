@@ -1,10 +1,10 @@
 import React from 'react';
-import { BMapProvider, Marker, ScaleControl, useBMapContext } from 'react-bmap';
+import { BMapProvider, Marker, ScaleControl, useBMapContext } from '@baidumap/react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { EXAMPLE_AK, useMapVersion } from '../context/MapModeContext';
 import { registerDemo } from './index';
 
-const code = `import { Map, Marker, ScaleControl } from 'react-bmap';
+const code = `import { Map, Marker, ScaleControl } from '@baidumap/react-bmap';
 
 <Map
   center={{ lng: 116.402544, lat: 39.928216 }}
@@ -34,7 +34,7 @@ registerDemo('map', { Component: Demo, code });
 
 // ─── BMapProvider ───
 
-const providerCode = `import { BMapProvider, Map, Marker, useBMapContext } from 'react-bmap';
+const providerCode = `import { BMapProvider, Map, Marker, useBMapContext } from '@baidumap/react-bmap';
 
 function Status() {
   const { status, version, error } = useBMapContext();

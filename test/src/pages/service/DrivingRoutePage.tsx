@@ -1,6 +1,6 @@
 /** useDrivingRoute 测试页 — 驾车路线规划，完整覆盖 SDK dts。 */
 import React, { useCallback, useState } from 'react';
-import { Map, useDrivingRoute, useCapabilities, useMapReady } from 'react-bmap';
+import { Map, useDrivingRoute, useCapabilities, useMapReady } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 import { safeStringifySdkResult } from '../../utils/sdkResult';
 
@@ -144,7 +144,7 @@ export function DrivingRoutePage() {
         <section>
           <h3>代码示例</h3>
           <pre style={{ fontSize: 10, background: '#f5f5f5', padding: 8, borderRadius: 4, overflow: 'auto' }}>
-{`import { useDrivingRoute } from 'react-bmap';
+{`import { useDrivingRoute } from '@baidumap/react-bmap';
 
 const {
   search, clearResults, enableAutoViewport, disableAutoViewport,

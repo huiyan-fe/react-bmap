@@ -3,7 +3,7 @@ import {
   Map, NavigationControl, NavigationControl3D, ScaleControl, OverviewMapControl,
   MapTypeControl, CopyrightControl, GeolocationControl, PanoramaControl,
   ZoomControl, CityListControl, LocationControl, LogoControl, useCapabilities,
-} from 'react-bmap';
+} from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function ControlsTestPage() {

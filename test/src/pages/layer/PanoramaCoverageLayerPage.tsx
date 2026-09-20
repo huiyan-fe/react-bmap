@@ -4,7 +4,7 @@
  * 无参数构造，通过 map.addLayer / map.removeLayer 管理。
  */
 import React, { useState } from 'react';
-import { Map, PanoramaCoverageLayer, useCapabilities } from 'react-bmap';
+import { Map, PanoramaCoverageLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function PanoramaCoverageLayerPage() {

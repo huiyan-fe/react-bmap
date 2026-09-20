@@ -10,8 +10,8 @@ import {
   ScaleControl,
   BMAP_ANCHOR_TOP_LEFT,
   BMAP_ANCHOR_BOTTOM_LEFT,
-} from 'react-bmap';
-import type { MapRef, MapSnapshot, Point } from 'react-bmap';
+} from '@baidumap/react-bmap';
+import type { MapRef, MapSnapshot, Point } from '@baidumap/react-bmap';
 import { BEIJING } from '../TestProvider';
 
 /* ────────────────────────────────────────────────────────────

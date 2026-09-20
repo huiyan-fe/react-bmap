@@ -3,7 +3,7 @@
  * 支持 tileUrlTemplate（[z]/[x]/[y] 占位符）、layers 配置、style 样式、事件回调。
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Map, MVTLayer, useCapabilities } from 'react-bmap';
+import { Map, MVTLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 export function MVTLayerPage() {

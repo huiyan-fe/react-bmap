@@ -10,7 +10,7 @@ import {
   BMAP_ANCHOR_TOP_LEFT, BMAP_ANCHOR_TOP_RIGHT,
   BMAP_POINT_SHAPE_CIRCLE,
   BMap_Symbol_SHAPE_FORWARD_OPEN_ARROW,
-} from 'react-bmap';
+} from '@baidumap/react-bmap';
 import { MapContainer } from '../components/MapContainer';
 import { registerDemo } from './index';
 
@@ -24,7 +24,7 @@ registerDemo('marker', {
       <Marker position={C} />
     </MapContainer>
   ),
-  code: `import { Map, Marker } from 'react-bmap';
+  code: `import { Map, Marker } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Marker position={{ lng: 116.404, lat: 39.915 }} />
@@ -38,7 +38,7 @@ registerDemo('marker', {
       <Marker position={C} icon={{ url: 'https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_1.png', size: { width: 48, height: 48 } }} />
     </MapContainer>
   ),
-  code: `import { Map, Marker } from 'react-bmap';
+  code: `import { Map, Marker } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Marker position={{ lng: 116.404, lat: 39.915 }}
@@ -65,7 +65,7 @@ registerDemo('label', {
       <Label position={C} content="天安门" styles={labelBase} />
     </MapContainer>
   ),
-  code: `import { Map, Label } from 'react-bmap';
+  code: `import { Map, Label } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Label position={{ lng: 116.404, lat: 39.915 }} content="天安门"
@@ -98,7 +98,7 @@ registerDemo('label', {
       />
     </MapContainer>
   ),
-  code: `import { Map, Label } from 'react-bmap';
+  code: `import { Map, Label } from '@baidumap/react-bmap';
 
 // Label 宽度自适应内容、文字单行；offset 相对 position 做像素偏移
 const base = { padding: '6px 12px', fontSize: 16, borderRadius: 4, backgroundColor: '#fff' };
@@ -128,7 +128,7 @@ registerDemo('polyline', {
       />
     </MapContainer>
   ),
-  code: `import { Map, Polyline } from 'react-bmap';
+  code: `import { Map, Polyline } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Polyline
@@ -149,7 +149,7 @@ registerDemo('polygon', {
       />
     </MapContainer>
   ),
-  code: `import { Map, Polygon } from 'react-bmap';
+  code: `import { Map, Polygon } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Polygon
@@ -166,7 +166,7 @@ registerDemo('circle', {
       <ScaleControl />
     </MapContainer>
   ),
-  code: `import { Map, Circle } from 'react-bmap';
+  code: `import { Map, Circle } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Circle center={{ lng: 116.404, lat: 39.915 }} radius={5400}
@@ -185,7 +185,7 @@ registerDemo('rectangle', {
       <ScaleControl />
     </MapContainer>
   ),
-  code: `import { Map, Rectangle } from 'react-bmap';
+  code: `import { Map, Rectangle } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Rectangle
@@ -206,7 +206,7 @@ registerDemo('bezier-curve', {
       />
     </MapContainer>
   ),
-  code: `import { Map, BezierCurve } from 'react-bmap';
+  code: `import { Map, BezierCurve } from '@baidumap/react-bmap';
 
 // 二阶贝塞尔：每段一个控制点，所以 controlPoints 有 path.length - 1 组
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
@@ -229,7 +229,7 @@ registerDemo('prism', {
       />
     </MapContainer>
   ),
-  code: `import { Map, Prism } from 'react-bmap';
+  code: `import { Map, Prism } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} tilt={60}>
   <Prism
@@ -251,7 +251,7 @@ registerDemo('ground-overlay', {
       <ScaleControl />
     </MapContainer>
   ),
-  code: `import { Map, GroundOverlay } from 'react-bmap';
+  code: `import { Map, GroundOverlay } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <GroundOverlay
@@ -269,7 +269,7 @@ registerDemo('ground-point', {
       <GroundPoint point={{ lng: 116.489, lat: 39.98 }} url="https://jsapi-demo.bj.bcebos.com/images/markers/marker_demo_all.png" size={{ width: 96, height: 96 }} level={11} scale={1.5} rotation={45} />
     </MapContainer>
   ),
-  code: `import { Map, GroundPoint } from 'react-bmap';
+  code: `import { Map, GroundPoint } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} tilt={75} heading={30}>
   <GroundPoint point={{ lng: 116.404, lat: 39.915 }}
@@ -294,7 +294,7 @@ registerDemo('point-collection', {
       </MapContainer>
     );
   },
-  code: `import { Map, PointCollection, BMAP_POINT_SHAPE_CIRCLE } from 'react-bmap';
+  code: `import { Map, PointCollection, BMAP_POINT_SHAPE_CIRCLE } from '@baidumap/react-bmap';
 
 const pts = Array.from({ length: 50 }, () => ({
   lng: 116.21 + Math.random() * 0.388,
@@ -315,7 +315,7 @@ registerDemo('info-window', {
       <InfoWindow position={C} title="天安门" content="北京市东城区东长安街" />
     </MapContainer>
   ),
-  code: `import { Map, InfoWindow } from 'react-bmap';
+  code: `import { Map, InfoWindow } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <InfoWindow position={{ lng: 116.404, lat: 39.915 }}
@@ -334,7 +334,7 @@ registerDemo('info-window', {
       </MapContainer>
     );
   },
-  code: `import { Map, Marker, InfoWindow } from 'react-bmap';
+  code: `import { Map, Marker, InfoWindow } from '@baidumap/react-bmap';
 
 function Demo() {
   const [open, setOpen] = useState(false);
@@ -369,7 +369,7 @@ registerDemo('symbol', {
     </MapContainer>
     );
   },
-  code: `import { Map, Marker } from 'react-bmap';
+  code: `import { Map, Marker } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Marker position={{ lng: 116.404, lat: 39.915 }}
@@ -400,7 +400,7 @@ registerDemo('icon', {
       />
     </MapContainer>
   ),
-  code: `import { Map, Marker } from 'react-bmap';
+  code: `import { Map, Marker } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Marker position={{ lng: 116.404, lat: 39.915 }}
@@ -446,7 +446,7 @@ registerDemo('icon-sequence', {
     </MapContainer>
   ),
   code: `import { useEffect, useState } from 'react';
-import { Map, Polyline, useDriver, BMap_Symbol_SHAPE_FORWARD_OPEN_ARROW } from 'react-bmap';
+import { Map, Polyline, useDriver, BMap_Symbol_SHAPE_FORWARD_OPEN_ARROW } from '@baidumap/react-bmap';
 
 const path = Array.from({ length: 25 }, (_, i) => {
   const t = i / 24;
@@ -489,7 +489,7 @@ registerDemo('custom-overlay', {
       </CustomOverlay>
     </MapContainer>
   ),
-  code: `import { Map, CustomOverlay } from 'react-bmap';
+  code: `import { Map, CustomOverlay } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <CustomOverlay point={{ lng: 116.404, lat: 39.915 }} offsetY={-20}>
@@ -508,7 +508,7 @@ registerDemo('marker-3d', {
       <Marker3D position={{ lng: 116.489, lat: 39.98 }} height={450} shape={1} size={120} fillColor="#ff6600" fillOpacity={0.8} />
     </MapContainer>
   ),
-  code: `import { Map, Marker3D } from 'react-bmap';
+  code: `import { Map, Marker3D } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11} tilt={60}>
   <Marker3D position={{ lng: 116.404, lat: 39.915 }} height={300} shape={1} size={120} fillColor="#1890ff" fillOpacity={0.8} />
@@ -529,7 +529,7 @@ registerDemo('map-mask', {
       />
     </MapContainer>
   ),
-  code: `import { Map, MapMask } from 'react-bmap';
+  code: `import { Map, MapMask } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <MapMask
@@ -553,7 +553,7 @@ registerDemo('simple-info-window', {
       </MapContainer>
     );
   },
-  code: `import { Map, Marker, SimpleInfoWindow } from 'react-bmap';
+  code: `import { Map, Marker, SimpleInfoWindow } from '@baidumap/react-bmap';
 
 function Demo() {
   const [open, setOpen] = useState(true);
@@ -576,7 +576,7 @@ registerDemo('place-detail-overlay', {
       </Marker>
     </MapContainer>
   ),
-  code: `import { Map, Marker, PlaceDetail } from 'react-bmap';
+  code: `import { Map, Marker, PlaceDetail } from '@baidumap/react-bmap';
 
 <Map center={{ lng: 116.404, lat: 39.915 }} zoom={11}>
   <Marker position={{ lng: 116.404, lat: 39.915 }}>
@@ -621,7 +621,7 @@ registerDemo('raw-overlay', {
       <RawOverlayDemo />
     </MapContainer>
   ),
-  code: `import { Map, RawOverlay, useDriver } from 'react-bmap';
+  code: `import { Map, RawOverlay, useDriver } from '@baidumap/react-bmap';
 
 // 用户自己写继承 BMap.Overlay 的类（掌控 initialize/draw），库负责挂载卸载
 function CircleOverlayDemo() {

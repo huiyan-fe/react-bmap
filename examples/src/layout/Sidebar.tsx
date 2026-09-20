@@ -178,7 +178,7 @@ export function Sidebar() {
           {GITHUB_ICON}
         </a>
         <a
-          href="https://www.npmjs.com/package/react-bmap"
+          href="https://www.npmjs.com/package/@baidumap/react-bmap"
           target="_blank"
           rel="noopener noreferrer"
           className="app-sidebar-icon"

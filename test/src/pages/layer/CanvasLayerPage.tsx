@@ -4,7 +4,7 @@
  * 需要 update 回调来绘制内容。
  */
 import React, { useMemo, useState } from 'react';
-import { Map, CanvasLayer, useCapabilities } from 'react-bmap';
+import { Map, CanvasLayer, useCapabilities } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const COLORS = ['#1890ff', '#52c41a', '#fa8c16', '#ff4d4f', '#722ed1'];

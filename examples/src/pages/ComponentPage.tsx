@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { useCapabilities, BMapErrorBoundary } from 'react-bmap';
+import { useCapabilities, BMapErrorBoundary } from '@baidumap/react-bmap';
 import { CodeBlock } from '../components/CodeBlock';
 import { ApiTable } from '../components/ApiTable';
 import { COMPONENTS } from '../config/components';

@@ -2,8 +2,8 @@
  * Polyline 全量测试页 — 覆盖 bmap-jsapi-dts/src/overlay/Polyline.d.ts + PolylineOptions.d.ts 的全部功能。
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Map, Polyline, useCapabilities } from 'react-bmap';
-import type { Point, MapRef } from 'react-bmap';
+import { Map, Polyline, useCapabilities } from '@baidumap/react-bmap';
+import type { Point, MapRef } from '@baidumap/react-bmap';
 import { BEIJING } from '../../TestProvider';
 
 const DEFAULT_PATH: Point[] = [
