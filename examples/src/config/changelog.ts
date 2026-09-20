@@ -12,14 +12,16 @@ export interface ChangelogEntry {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     version: '2.0.4',
-    date: '2026-09-18',
+    date: '2026-09-19',
     changes: [
       'useLocalSearch：补齐 select / clearSelected / setLocation / enableAutoViewport / disableAutoViewport / enableFirstResultSelection / disableFirstResultSelection / setPageCapacity / getStatus 方法 + onPolylinesSet 回调',
       '路线 hook（Driving/Walking/Riding/Transit/Truck）：补 setPolylineStyle（运行时改路线折线样式）',
       'useBusLineSearch：补 enableAutoViewport / disableAutoViewport / setLocation / getStatus（clearResults 说明：SDK 无原生 clear，仅清 data 状态）',
       'useAutocomplete：补 setInputValue / setTypes / setLocation / getStatus',
       'useGeocoder：补 setOptions；useBoundary：补 parsebdStr',
+      'MapMask：新增 points（任意多边形遮罩路径），bounds 改为可选（与 points 二选一，同时传以 points 为准）',
       'fix：路线 hook 首次 search 首帧不渲染的竞态（自动渲染模式下复用服务实例首搜不出线，现在首搜完成后同参补搜一次兜底，确保首帧出线；autoRender:false 不受影响）',
+      '文档：use-driver 页补充「何时直接调 driver.createXxx」说明（仅当 handle 是组件给不了又必须传入的入参时才需要，如 Polyline icons）',
     ],
   },
   {
