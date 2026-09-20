@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '2.0.5',
+    date: '2026-09-20',
+    changes: [
+      'fix：Map displayOptions 首帧不生效——设 { poi:false } 首帧仍会渲染出 POI 再隐藏。改为在地图构造阶段（tilesloaded 暴露 map 之前）同步下发 setDisplayOptions，首批瓦片即按目标显示配置渲染，消除闪烁',
+    ],
+  },
+  {
     version: '2.0.4',
     date: '2026-09-20',
     changes: [

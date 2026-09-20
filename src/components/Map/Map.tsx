@@ -274,6 +274,13 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
       } catch { /* v3 不支持 */ }
     }
 
+    // 显示元素配置（displayOptions）：首帧同步应用，避免「先渲染出 POI/建筑、再隐藏」的闪烁。
+    // 与 mapType/customArea 同理——在 centerAndZoom 之后、tilesloaded 暴露 map 之前尽早下发，
+    // 让首批瓦片就按目标显示配置渲染（如 poi:false 首帧即不出 POI）。后续变化由下方运行时 effect 处理。
+    if (displayOptions !== undefined) {
+      try { driver.setDisplayOptions(handle, displayOptions); } catch { /* v3 不支持 */ }
+    }
+
     // 延迟暴露 map 实例：
     // v4 GL 的 WebGL 渲染器需要完成首帧瓦片渲染后，纹理/顶点管线才就绪。
     // 如果在 tilesloaded 之前添加 overlay，marker 默认图标的 image onload 触发时，

@@ -203,6 +203,18 @@ describe('Map 编排', () => {
     expect(listenersAfter).toBe(0);
   });
 
+  it('displayOptions：首帧同步下发（tilesloaded 之前即调用，避免先渲染出 POI 再隐藏）', () => {
+    const driver = makeFakeDriver({ loaded: true });
+    renderInBMapContext(
+      <Map defaultCenter={{ lng: 116, lat: 39 }} displayOptions={{ poi: false }}>
+        <div>c</div>
+      </Map>,
+      { driver },
+    );
+    // 注意：尚未 emit tilesloaded，构造阶段（centerAndZoom 后、map 暴露前）就应已下发
+    expect(driver.setDisplayOptions).toHaveBeenCalledWith(expect.anything(), { poi: false });
+  });
+
   it('displayOptions：受控更新调 setDisplayOptions', () => {
     const driver = makeFakeDriver({ loaded: true });
     const { rerender } = renderInBMapContext(
