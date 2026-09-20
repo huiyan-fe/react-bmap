@@ -421,7 +421,8 @@ export const API_DATA: Record<string, ApiProp[]> = {
     onClick, onDoubleClick, onRightClick, onMouseOver, onMouseOut, onMouseDown, onMouseUp,
   ],
   'map-mask': [
-    { name: 'bounds', type: 'Bounds', required: true, description: '遮罩边界 { sw, ne }' },
+    { name: 'points', type: 'Point[]', required: false, description: '任意多边形遮罩路径；与 bounds 二选一（同时传以 points 为准）。未闭合会自动补首点，可画不规则遮罩区' },
+    { name: 'bounds', type: 'Bounds', required: false, description: '矩形遮罩区简写 { sw, ne }，内部转成矩形路径；与 points 二选一' },
     { name: 'showRegion', type: '"inside" | "outside"', required: false, description: '显示区域：inside=遮罩内, outside=遮罩外' },
     { name: 'isBuildingMask', type: 'boolean', required: false, description: '是否遮罩建筑物' },
     { name: 'isPoiMask', type: 'boolean', required: false, description: '是否遮罩 POI' },
@@ -927,6 +928,7 @@ export const API_DATA: Record<string, ApiProp[]> = {
   'use-driver': [
     { name: '（无入参）', type: '—', required: false, description: 'useDriver() 不接受参数，只需在 <BMapProvider> 内调用（不要求有 <Map>）' },
     { name: '返回值', type: 'BMapDriver | null', required: false, description: '当前版本的 driver；SDK 未加载完成时为 null。driver 的方法都要把 map 当第一个参数传进去，日常不必这么写——useMapRef 已经全量转发过一遍了' },
+    { name: '💡 何时直接调 driver.createXxx', type: '—', required: false, description: 'driver 的 createXxx 是内部工厂层，日常用 React 组件（<Marker>/<Polyline> 等）和 hook 即可，无需直接调用。只有当某个 handle 是组件/hook 给不了、又必须传入的入参时，才需要自己调 driver.createXxx 拿 handle——典型如 <Polyline icons> 里的元素要用 driver.createIconSequence() 构造（注意 IconSequence 4.0 已废弃、纯 GL 下不渲染，折线箭头/纹理优先用 Polyline#strokeTexture）' },
   ],
   'use-map-ref': [
     { name: '（无入参）', type: '—', required: false, description: 'useMapRef() 不接受参数，需在 <Map> 子树内调用' },
