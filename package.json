@@ -1,6 +1,6 @@
 {
   "name": "@baidumap/react-bmap",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "React components for Baidu Map JSAPI",
   "main": "dist/index.cjs",
   "module": "dist/index.js",

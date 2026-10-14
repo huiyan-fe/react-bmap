@@ -7,7 +7,34 @@ import { MapRefImpl } from './MapRef';
 import type { MapRef } from './MapRef';
 import { useLatest } from '../../utils/useLatest';
 import { pointEquals } from '../../utils/pointEquals';
+import { tryGetSDK } from '../../utils/sdk';
+import { buildMaskPath, maskOptionsOf } from '../Overlay/maskPath';
+import type { MapMaskSpec } from '../Overlay/maskPath';
 import type { DisplayOptions } from '../../types/core';
+
+/** 往地图上加遮罩（首帧/运行时共用）；返回已创建的原生 MapMask 实例，供后续移除。 */
+function addMapMasks(driver: any, mapHandle: any, mask: MapMaskSpec | MapMaskSpec[]): unknown[] {
+  const specs = Array.isArray(mask) ? mask : [mask];
+  const SDK = tryGetSDK();
+  if (!SDK?.MapMask) return [];
+  const created: unknown[] = [];
+  for (const spec of specs) {
+    const path = buildMaskPath(SDK, spec);
+    if (!path) continue;
+    try {
+      const m = new SDK.MapMask(path as any, maskOptionsOf(spec) as Record<string, unknown>);
+      driver.addOverlay(mapHandle, { __brand: 'OverlayHandle' as const, raw: m, type: 'custom' });
+      created.push(m);
+    } catch { /* v3 不支持 MapMask */ }
+  }
+  return created;
+}
+
+function removeMapMasks(driver: any, mapHandle: any, handles: unknown[]): void {
+  for (const m of handles) {
+    try { driver.removeOverlay(mapHandle, { __brand: 'OverlayHandle' as const, raw: m, type: 'custom' }); } catch { /* noop */ }
+  }
+}
 
 /** 个性化生效区域配置（setCustomArea，4.0+，2.0.3 新增）。 */
 export interface MapCustomArea {
@@ -52,6 +79,14 @@ export interface MapProps {
    * 从对象切到 false：SDK 无官方清除 API，组件会对上一次区域重新下发空样式（styleJson: []）使其恢复默认渲染。
    */
   customArea?: MapCustomArea | false;
+  /**
+   * 区域掩膜（MapMask，4.0+，3.0 不支持）。传单个或多个 spec。
+   * **首帧随地图构造同步下发**（在 tilesloaded 暴露 map 之前），所以进入页面不会出现
+   * 「先画出未遮罩底图、再压暗」的闪烁——这是相对 `<MapMask>` 子组件的优势（子组件挂载在首帧之后）。
+   * 每个 spec 用 points（任意多边形）或 bounds（矩形）二选一 + showRegion/isBuildingMask/isPoiMask/isMapMask。
+   * 运行时改变 mask 会移除旧遮罩重加（切换时可能有一次重绘）；需要动态/频繁变化的遮罩也可继续用 `<MapMask>` 子组件。
+   */
+  mask?: MapMaskSpec | MapMaskSpec[];
   // 交互开关（受控；undefined 表示不主动控制，由 SDK 默认值决定）
   enableDragging?: boolean;
   enableInertialDragging?: boolean;
@@ -144,7 +179,7 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   const {
     center, zoom, heading, tilt,
     defaultCenter, defaultZoom, defaultHeading, defaultTilt,
-    options, displayOptions, mapStyle, mapStyleV2, customArea,
+    options, displayOptions, mapStyle, mapStyleV2, customArea, mask,
     enableDragging, enableInertialDragging, enableScrollWheelZoom, enableContinuousZoom,
     enableResizeOnCenter, enableDoubleClickZoom, enableKeyboard, enablePinchToZoom,
     enableRotate, enableRotateGestures, enableTilt: enableTiltProp, enableTiltGestures,
@@ -168,6 +203,10 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   const onHeadingChangeRef = useLatest(onHeadingChange);
   const onTiltChangeRef = useLatest(onTiltChange);
   const internalUpdateRef = useRef(false);
+  // 区域掩膜：首帧由构造阶段应用，运行时变化由下方受控 effect 接管。
+  const maskHandlesRef = useRef<unknown[]>([]);
+  const lastMaskKeyRef = useRef<string | null>(null);
+  const maskKey = useMemo(() => (mask ? JSON.stringify(mask) : ''), [mask]);
 
   // 把 ref 同步为最新 MapRefImpl（支持 ref 对象与 callback ref）
   useEffect(() => {
@@ -281,6 +320,14 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
       try { driver.setDisplayOptions(handle, displayOptions); } catch { /* v3 不支持 */ }
     }
 
+    // 区域掩膜（mask）：首帧同步应用——和 mapType/customArea 一样，在首帧瓦片画出来之前就 addOverlay，
+    // 使第一帧可见画面即为遮罩态，不会「先亮后暗」地闪，也不延迟地图显示。后续变化由下方受控 effect 处理。
+    // 记录 maskKey 让受控 effect 在首帧挂载时跳过（避免重复 add 又触发一次闪）。
+    lastMaskKeyRef.current = maskKey;
+    if (mask) {
+      maskHandlesRef.current = addMapMasks(driver, handle, mask);
+    }
+
     // 延迟暴露 map 实例：
     // v4 GL 的 WebGL 渲染器需要完成首帧瓦片渲染后，纹理/顶点管线才就绪。
     // 如果在 tilesloaded 之前添加 overlay，marker 默认图标的 image onload 触发时，
@@ -327,6 +374,8 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     return () => {
       tearingDown = true;
       unsubs.forEach(u => u());
+      maskHandlesRef.current = [];
+      lastMaskKeyRef.current = null;
       driver.destroyMap(handle);
       setMap(null);
       // 监听器多留一拍：SDK 在 destroy 之后还可能回调一次瓦片/raf
@@ -510,6 +559,16 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, driver, customAreaKey]);
+
+  // ─── 区域掩膜 mask 运行时变化（首帧已在构造阶段应用；此处只处理后续变化） ───
+  useEffect(() => {
+    if (!map || !driver) return;
+    if (lastMaskKeyRef.current === maskKey) return; // 构造阶段/上次已应用，首帧跳过，避免重复 add 又闪一下
+    removeMapMasks(driver, map, maskHandlesRef.current);
+    maskHandlesRef.current = mask ? addMapMasks(driver, map, mask) : [];
+    lastMaskKeyRef.current = maskKey;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, driver, maskKey]);
 
   // ─── 事件订阅（React 方式：onClick / onZoomEnd 等 prop） ───
   const eventProps = {

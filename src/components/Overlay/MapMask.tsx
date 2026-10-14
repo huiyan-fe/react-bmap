@@ -12,14 +12,11 @@ import { useMapContext } from '../../context/MapContext';
 import { stableStringify } from '../../utils/stableStringify';
 import { tryGetSDK } from '../../utils/sdk';
 import { devWarn } from '../../utils/debugWarn';
+import { buildMaskPath, maskOptionsOf } from './maskPath';
+import type { MapMaskOptions } from './maskPath';
 import type { Bounds, Point } from '../../types';
 
-export interface MapMaskOptions {
-  showRegion?: 'inside' | 'outside';
-  isBuildingMask?: boolean;
-  isPoiMask?: boolean;
-  isMapMask?: boolean;
-}
+export type { MapMaskOptions } from './maskPath';
 
 export interface MapMaskProps extends MapMaskOptions {
   /** 任意多边形遮罩路径（Point[]）；与 bounds 二选一，同时传时以 points 为准。未闭合会自动补首点。 */
@@ -29,46 +26,27 @@ export interface MapMaskProps extends MapMaskOptions {
 }
 
 export const MapMask = memo(function MapMask(props: MapMaskProps) {
-  const { bounds, points, ...opts } = props;
+  const { bounds, points } = props;
   const { map, driver } = useMapContext();
   const handleRef = useRef<any>(null);
 
   const boundsKey = stableStringify(bounds);
   const pointsKey = stableStringify(points);
-  const optsKey = stableStringify(opts);
+  const optsKey = stableStringify(maskOptionsOf(props));
 
   useLayoutEffect(() => {
     if (!map || !driver) return;
     const SDK = tryGetSDK();
     if (!SDK?.MapMask) return;
 
-    // SDK 期望 Point[]（闭合路径），不是 Bounds。points 优先；否则用 bounds 转矩形路径。
-    let pts: InstanceType<typeof SDK.Point>[];
-    if (points && points.length > 0) {
-      const raw = points.map((p) => new SDK.Point(p.lng, p.lat));
-      // 未闭合则补上首点，与 bounds 分支保持一致的闭合语义
-      const first = points[0];
-      const last = points[points.length - 1];
-      if (first.lng !== last.lng || first.lat !== last.lat) {
-        raw.push(new SDK.Point(first.lng, first.lat));
-      }
-      pts = raw;
-    } else if (bounds) {
-      const sw = bounds.sw;
-      const ne = bounds.ne;
-      pts = [
-        new SDK.Point(sw.lng, sw.lat),
-        new SDK.Point(ne.lng, sw.lat),
-        new SDK.Point(ne.lng, ne.lat),
-        new SDK.Point(sw.lng, ne.lat),
-        new SDK.Point(sw.lng, sw.lat), // 闭合
-      ];
-    } else {
+    // path 构建与 <Map mask> 共用同一套逻辑（points 优先，否则 bounds 转矩形）
+    const pts = buildMaskPath(SDK, props);
+    if (!pts) {
       devWarn('MapMask 需要传 points 或 bounds 之一，本次未渲染。');
       return;
     }
 
-    const mask = new SDK.MapMask(pts, opts);
+    const mask = new SDK.MapMask(pts as any, maskOptionsOf(props) as Record<string, unknown>);
     handleRef.current = mask;
     driver.addOverlay(map, { __brand: 'OverlayHandle' as const, raw: mask, type: 'custom' });
 

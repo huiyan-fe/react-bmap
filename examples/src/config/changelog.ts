@@ -11,6 +11,13 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '2.0.7',
+    date: '2026-10-14',
+    changes: [
+      'Map 新增 mask prop（MapMaskSpec | MapMaskSpec[]）：区域掩膜随地图构造首帧同步下发，进入页面不再「先亮后暗」闪烁；<MapMask> 子组件保留用于动态场景',
+    ],
+  },
+  {
     version: '2.0.6',
     date: '2026-09-20',
     changes: [

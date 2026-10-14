@@ -383,6 +383,7 @@ export const Marker3D = createOverlayComponent<Marker3DProps>({
 
 export { MapMask } from './MapMask';
 export type { MapMaskProps, MapMaskOptions } from './MapMask';
+export type { MapMaskSpec } from './maskPath';
 export { SimpleInfoWindow } from './SimpleInfoWindow';
 export type { SimpleInfoWindowProps, SimpleInfoWindowOptions } from './SimpleInfoWindow';
 

@@ -98,7 +98,7 @@ export type { HotspotProps } from './components/Overlay';
 export { CustomOverlay } from './components/Overlay';
 export type { CustomOverlayProps } from './components/Overlay';
 export { Marker3D, MapMask, SimpleInfoWindow } from './components/Overlay';
-export type { Marker3DProps, Marker3DOptions, MapMaskProps, MapMaskOptions, SimpleInfoWindowProps, SimpleInfoWindowOptions } from './components/Overlay';
+export type { Marker3DProps, Marker3DOptions, MapMaskProps, MapMaskOptions, MapMaskSpec, SimpleInfoWindowProps, SimpleInfoWindowOptions } from './components/Overlay';
 
 // Overlay Options 类型（给用户精确类型）
 export type {

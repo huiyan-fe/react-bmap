@@ -29,13 +29,9 @@ const ALLOWLIST = new Set([
   // 服务类 hook：均遵循 useGeocoder / useDrivingRoute 的同一套契约
   // （createXxx → {isNull, raw}，supported/unsupported/requestId-stale/cancel）。
   // 已有 useGeocoder、useDrivingRoute 两个代表性 L4 测试；其余待逐个补齐。
-  'useAutocomplete',
   'useBoundary',
-  'useBusLineSearch',
-  'useConvertor',
   'useGeolocation',
   'useLocalCity',
-  'useLocalSearch',
   'usePanoramaService',
   'usePlaceDetail',
   'useRidingRoute',
