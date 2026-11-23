@@ -139,6 +139,9 @@ export {
   FeatureLayer, FillLayer, DOMLayer, PointIconLayer, PointShapeLayer,
   PanoramaCoverageLayer,
   LineLayer, PixelLayer, BaiduLayer, ThreeLayer,
+  HeatmapLayer, ClusterLayer, PointLayer, PolylineLayer, PolygonLayer, TextLayer, BarLayer,
+  FlyLineLayer, TrackLine,
+  ThreejsLayer, DeckglLayer, WebGLCustomLayer,
 } from './components/Layer';
 export type {
   TileLayerProps, NormalLayerProps, GeoJSONLayerProps, DistrictLayerProps,
@@ -147,6 +150,11 @@ export type {
   FeatureLayerProps, FillLayerProps, DOMLayerProps, PointIconLayerProps, PointShapeLayerProps,
   PanoramaCoverageLayerProps,
   LineLayerProps, PixelLayerProps, BaiduLayerProps, ThreeLayerProps,
+  HeatmapLayerProps, ClusterLayerProps, PointLayerProps, PolylineLayerProps,
+  PolygonLayerProps, TextLayerProps, BarLayerProps, FlyLineLayerProps,
+  TrackLineProps, TrackLineRef,
+  ThreejsLayerProps, ThreejsLayerRef, DeckglLayerProps, DeckglLayerRef,
+  WebGLCustomLayerProps, WebGLCustomLayerRef,
 } from './components/Layer';
 export type {
   TileLayerOptions, NormalLayerOptions, GeoJSONLayerOptions, DistrictLayerOptions,
@@ -154,6 +162,9 @@ export type {
   RasterTileLayerOptions, WMSLayerOptions, WMTSLayerOptions, XYZLayerOptions, MVTLayerOptions,
   FeatureLayerOptions, FillLayerOptions, DOMLayerOptions, PointIconLayerOptions, PointShapeLayerOptions,
   LineLayerOptions, PixelLayerOptions, BaiduLayerOptions, ThreeLayerOptions,
+  HeatmapLayerOptions, ClusterLayerOptions, PointLayerOptions, PolylineLayerOptions,
+  PolygonLayerOptions, TextLayerOptions, BarLayerOptions, FlyLineLayerOptions, TrackLineOptions,
+  ThreejsLayerOptions, DeckglLayerOptions, WebGLCustomLayerOptions,
   FillLayerStyle, PointIconStyle, PointShapeStyle, LineLayerStyle,
 } from './components/Layer';
 // ThreeLayer 的命令式句柄与生命周期回调类型
@@ -194,15 +205,17 @@ export {
   useLocalSearch,
   useGeocoder, useDrivingRoute, useWalkingRoute,
   useRidingRoute, useTransitRoute, useBusLineSearch, useAutocomplete,
+  useEBikeRoute,
   useBoundary, useGeolocation, useLocalCity, usePlaceDetail, useConvertor,
   usePanoramaService, useTruckRoute,
 } from './hooks/services';
 export type {
-  LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions,
+  LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions, LocalSearchSearchOption,
   DrivingRouteOptions, DrivingRouteHookResult,
   TransitRouteOptions, TransitRouteHookResult,
   WalkingRouteOptions, WalkingRouteHookResult,
   RidingRouteOptions, RidingRouteHookResult,
+  EBikeRouteOptions, EBikeRouteHookResult,
   BusLineSearchOptions, BusLineSearchHookResult,
   AutocompleteOptions, AutocompleteHookResult,
   GeocoderHookResult,
@@ -237,22 +250,50 @@ export type {
 export type {
   DisplayOptions, Viewport, ViewportOptions, MapStyleConfig,
   MapStyleV2Options, MapLabel, MapPanes,
+  MapLabelStyle, StyleExpress, ParkingSpotOptions,
   ViewAnimation, ViewAnimationKeyFrames, ViewAnimationOptions,
   Projection, PredictDate,
 } from './types/core';
+
+// ─── 事件 / 可视化图层拾取类型 ───
+export type {
+  VisualPickEvent, NormalLayerPickEvent, MVTLayerPickEvent,
+  GraphEditEvent, GraphVertexEvent, GraphLineUpdateEvent, GraphMouseOutEvent, GraphEventMap,
+  ViewAnimationEventMap,
+  TrackLineProgressValue, TrackLineStatusValue, TrackLineEventMap,
+} from './types/events';
 
 // ─── 服务结果类型 ───
 export type {
   LocalResultPoi, LocalResult, AddressComponent, GeocoderResult,
   Step, Route, RoutePlan, DrivingRouteResult, WalkingRouteResult, RidingRouteResult,
+  TruckTrafficCondition, TruckRouteLine, TruckRoutePlan, TruckRouteResult,
   TransitLine, TransitPlan, TransitRouteResult,
   BusStation, BusLine, BusListItem, BusListResult,
   AutocompleteResultPoi, AutocompleteResult,
   GeolocationResult, LocalCityResult, TranslateResults,
   BoundaryResult,
   TaxiFare, TaxiFareDetail, PanoramaData,
-  RenderOptions,
+  RenderOptions, PanelTarget,
 } from './types/results';
+
+// ─── GeoJSONSource 静态工具 ───
+export {
+  GeoJSONSource,
+  // 与 vue-bmap 对齐的原始函数名
+  normalize,
+  replaceGeometry,
+  extractPoints,
+  toLineStrings,
+  toPolygons,
+  // 语义更明确的别名（避免与业务里的同名函数混淆）
+  normalize as normalizeGeoJSON,
+  replaceGeometry as replaceGeoJSONGeometry,
+  extractPoints as extractGeoJSONPoints,
+  toLineStrings as toGeoJSONLineStrings,
+  toPolygons as toGeoJSONPolygons,
+} from './utils/geojsonSource';
+export type { GeoJSONSourceFeature, GeoJSONSourcePoints } from './utils/geojsonSource';
 
 // ─── 常量（全量 28 组） ───
 export * from './constants';

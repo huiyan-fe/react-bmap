@@ -396,6 +396,26 @@ export interface BMapDriver {
   createPixelLayer(options?: unknown): LayerHandle | null;
   createBaiduLayer(options?: unknown): LayerHandle | null;
   createThreeLayer(options?: unknown): LayerHandle | null;
+  // 数据可视化图层（4.0+ Visualization）
+  createHeatmap(options?: unknown): LayerHandle | null;
+  createClusterLayer(options?: unknown): LayerHandle | null;
+  createPointLayer(options?: unknown): LayerHandle | null;
+  createPolylineLayer(options?: unknown): LayerHandle | null;
+  createPolygonLayer(options?: unknown): LayerHandle | null;
+  createTextLayer(options?: unknown): LayerHandle | null;
+  // 特效图层（4.0+ Visualization）
+  createBarLayer(options?: unknown): LayerHandle | null;
+  createFlyLineLayer(options?: unknown): LayerHandle | null;
+  createTrackLine(options?: unknown): LayerHandle | null;
+  // 外部库接入图层（4.0+ Visualization：deck.gl / three.js / 自写 WebGL）
+  createDeckglLayer(options?: unknown): LayerHandle | null;
+  createThreejsLayer(options?: unknown): LayerHandle | null;
+  createWebGLCustomLayer(options?: unknown): LayerHandle | null;
+  /**
+   * 数据实体（4.0+）：MVTLayer 等图层的数据单元，非覆盖物。
+   * kind 不适用，复用 OverlayHandle 形态（{__brand, raw}）。SDK 全局无 Entity 时返回 null。
+   */
+  createEntity(id: string, layerName: string, properties?: unknown): OverlayHandle | null;
 
   // ─────────────── 30. ContextMenu 工厂 ───────────────
   createContextMenu(options?: unknown): OverlayHandle | null;
@@ -414,6 +434,7 @@ export interface BMapDriver {
   createDrivingRoute(options?: unknown): ServiceHandle;
   createWalkingRoute(options?: unknown): ServiceHandle;
   createRidingRoute(options?: unknown): ServiceHandle;
+  createEBikeRoute(options?: unknown): ServiceHandle;
   createTransitRoute(options?: unknown): ServiceHandle;
   createBusLineSearch(options?: unknown): ServiceHandle;
   createAutocomplete(options?: unknown): ServiceHandle;

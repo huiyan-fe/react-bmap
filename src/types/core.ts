@@ -60,6 +60,52 @@ export interface MapLabel {
   bdWidth?: number;
 }
 
+/** MapLabel 样式（JSAPI MapLabelStyle：文字与描边样式）。 */
+export interface MapLabelStyle {
+  color?: string;
+  fontSize?: number;
+  fontWeight?: string | number;
+  fontFamily?: string;
+  /** 文字描边色 */
+  strokeColor?: string;
+  /** 文字描边宽度 */
+  strokeWeight?: number;
+  /** 背景色 */
+  bgColor?: string;
+  /** 背景边框色 */
+  borderColor?: string;
+  /** 背景边框宽度 */
+  borderWidth?: number;
+  /** 内边距 [x, y] */
+  padding?: [number, number];
+  /** 文本对齐 'center' | 'left' | 'right' */
+  textAlign?: 'center' | 'left' | 'right';
+}
+
+/** 图层样式表达式（JSAPI StyleExpress）：值 | 按属性取值的 map 映射 | 回调函数。 */
+export type StyleExpress<T> = T | Record<string, T> | ((properties: Record<string, unknown>, feature: unknown, index: number) => T);
+
+/** 停车位配置（JSAPI ParkingSpotOptions，Map.addParkingSpot）。 */
+export interface ParkingSpotOptions {
+  /** 车位中心点 */
+  point: Point;
+  /** 车位朝向（度，相对正北） */
+  heading?: number;
+  /** 车位颜色 */
+  color?: string;
+  /** 车位大小（米） */
+  size?: number;
+  /** 是否仅显示图标（无编号文字） */
+  iconOnly?: boolean;
+  /** 自定义图标 */
+  icon?: unknown;
+  /** 文字偏移 */
+  offset?: Size;
+  /** 最小/最大显示层级 */
+  minZoom?: number;
+  maxZoom?: number;
+}
+
 // ─── MapPanes (src/overlay/MapPanes.d.ts) ───
 export interface MapPanes {
   floatPane?: HTMLElement;

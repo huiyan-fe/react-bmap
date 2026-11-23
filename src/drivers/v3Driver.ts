@@ -341,6 +341,25 @@ export function createV3Driver(rawSDK: any, opts: { unsupportedBehavior: Unsuppo
     createDOMLayer: () => { reportUnsupported('DOMLayer', version, behavior); return null; },
     createPointIconLayer: () => { reportUnsupported('PointIconLayer', version, behavior); return null; },
     createPointShapeLayer: () => { reportUnsupported('PointShapeLayer', version, behavior); return null; },
+    // 数据可视化 / 特效 / 外部库接入图层（4.0+ Visualization）在 v3 不支持
+    createHeatmap: () => { reportUnsupported('Heatmap', version, behavior); return null; },
+    createClusterLayer: () => { reportUnsupported('ClusterLayer', version, behavior); return null; },
+    createPointLayer: () => { reportUnsupported('PointLayer', version, behavior); return null; },
+    createPolylineLayer: () => { reportUnsupported('PolylineLayer', version, behavior); return null; },
+    createPolygonLayer: () => { reportUnsupported('PolygonLayer', version, behavior); return null; },
+    createTextLayer: () => { reportUnsupported('TextLayer', version, behavior); return null; },
+    createBarLayer: () => { reportUnsupported('BarLayer', version, behavior); return null; },
+    createFlyLineLayer: () => { reportUnsupported('FlyLineLayer', version, behavior); return null; },
+    createTrackLine: () => { reportUnsupported('TrackLine', version, behavior); return null; },
+    createDeckglLayer: () => { reportUnsupported('DeckglLayer', version, behavior); return null; },
+    createThreejsLayer: () => { reportUnsupported('ThreejsLayer', version, behavior); return null; },
+    createWebGLCustomLayer: () => { reportUnsupported('WebGLCustomLayer', version, behavior); return null; },
+    createEntity: () => { reportUnsupported('Entity', version, behavior); return null; },
+    // 电动车路线是 4.0+ 服务
+    createEBikeRoute: () => {
+      reportUnsupported('EBikeRoute', version, behavior);
+      return { __brand: 'ServiceHandle' as const, raw: null, isNull: true };
+    },
     // PanoramaCoverageLayer：v3 SDK 也导出该类（publish.js:81），走 base 的真实实现
     // v3-only 图层在 v3 直接创建（v4 capability 闭包不包含这些类）
     createCustomLayer: (o) => {

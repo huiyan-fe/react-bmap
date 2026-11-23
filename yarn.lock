@@ -194,10 +194,10 @@
   resolved "http://registry.npm.baidu-int.com/@baidumap%2fjsapi-loader/-/jsapi-loader-1.0.0.tgz"
   integrity sha512-f88EFIvbICW3AtnbhYcnvlpG/bIY2hZyokdCgf30RVXvs67aDkBtFJnDO/C8Bf7p4O8MvlTU6rW8jz8ev1MayA==
 
-"@baidumap/jsapi-v4-types@^4.0.3":
-  version "4.0.3"
-  resolved "http://registry.npm.baidu-int.com/@baidumap%2fjsapi-v4-types/-/jsapi-v4-types-4.0.3.tgz"
-  integrity sha512-YWOd1nqCK5mnGtKnLD2bY4iQjXRDzMw6eeQGOJ0bEO0+6CPDaq34N1r/sGrqFZWU9eblXTamUydCcUvUGBw+4g==
+"@baidumap/jsapi-v4-types@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npmjs.org/@baidumap/jsapi-v4-types/-/jsapi-v4-types-4.0.6.tgz"
+  integrity sha512-9v8UlTH9oFVWSLBovC8qL+thfktZ8dQYurGf6LiJ9Ne8r4qjgiPWsvuAIdZlhR0PXf7lKHoVQ9n+K4tq9il1Jw==
 
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
@@ -1573,6 +1573,11 @@ picomatch@^4.0.2:
   version "4.0.5"
   resolved "http://registry.npm.baidu-int.com/picomatch/-/picomatch-4.0.5.tgz"
   integrity sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==
+
+playwright-core@*:
+  version "1.65.1"
+  resolved "http://registry.npm.baidu-int.com/playwright-core/-/playwright-core-1.65.1.tgz"
+  integrity sha512-hqPpz7blSMPxWVdoeE1yiBSzXsKiVOd2k+kjCvmUywD2GPO2Dd9HfcWnq9NN0GHbNZDFgZ9JfBFr+X5/BLo0qw==
 
 postcss@^8.4.43:
   version "8.5.20"

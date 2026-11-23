@@ -16,3 +16,4 @@ export { PlaceDetailPage } from './PlaceDetailPage';
 export { ConvertorPage } from './ConvertorPage';
 export { PanoramaServicePage } from './PanoramaServicePage';
 export { TruckRoutePage } from './TruckRoutePage';
+export { EBikeRoutePage } from './EBikeRoutePage';

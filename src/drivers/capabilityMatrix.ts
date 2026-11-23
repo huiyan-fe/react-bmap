@@ -28,6 +28,13 @@ const V4_LAYER_CLASS: Capability[] = [
   'FillLayer', 'DOMLayer',
   'PointIconLayer', 'PointShapeLayer',
   'LineLayer', 'PixelLayer', 'BaiduLayer', 'ThreeLayer',
+  // 数据可视化图层（4.0+ Visualization）
+  // HeatmapLayer 是组件名（SDK 类为 Heatmap），两个名字都注册，供能力判断与 driver 门控共用
+  'Heatmap', 'HeatmapLayer', 'ClusterLayer',
+  'PointLayer', 'PolylineLayer', 'PolygonLayer', 'TextLayer',
+  'BarLayer', 'FlyLineLayer', 'TrackLine',
+  // 外部库接入图层（deck.gl / three.js / 自写 WebGL）与 GeoJSON 归一化静态工具
+  'DeckglLayer', 'ThreejsLayer', 'WebGLCustomLayer', 'GeoJSONSource',
 ];
 
 // ── 4.0+ Map 图层方法 ──
@@ -51,7 +58,7 @@ const V4_CONTROL: Capability[] = [
 
 // ── 4.0+ 服务类 ──
 const V4_SERVICE: Capability[] = [
-  'PlaceDetail', 'PlaceDetailPanel',
+  'PlaceDetail', 'PlaceDetailPanel', 'EBikeRoute',
 ];
 
 // ── 4.0+ 其他公开类（SDK publicListForMap.js 导出、react-bmap 暂未封装） ──

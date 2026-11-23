@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@baidumap/react-bmap.svg)](https://www.npmjs.com/package/@baidumap/react-bmap)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 
-用 React 组件写百度地图。地图、标注、路线、控件都是普通的 React 组件和 Hook，跟着 state 走，无需手动操作 DOM 或记 SDK 的命令式 API。一套代码同时支持百度地图 **JSAPI 3.0（2D）** 和 **4.0（WebGL）**。
+用 React 组件写百度地图。地图、标注、路线、控件、数据可视化图层都是普通的 React 组件和 Hook，跟着 state 走，无需手动操作 DOM 或记 SDK 的命令式 API。一套代码同时支持百度地图 **JSAPI 3.0（2D）** 和 **4.0（WebGL）**。
 
 ```tsx
 <BMapProvider ak="您的密钥">
@@ -208,9 +208,11 @@ function Demo() {
 - **覆盖物**：`Marker`、`Label`、`Polyline`、`Polygon`、`Circle`、`Rectangle`、`BezierCurve`、`Prism`、`GroundOverlay`、`GroundPoint`、`PointCollection`、`InfoWindow`、`SimpleInfoWindow`、`Symbol`、`Icon`、`IconSequence`、`Hotspot`、`CustomOverlay`、`Marker3D`、`MapMask`、`PlaceDetail`、`PlaceDetailPanel`
 - **控件**：`NavigationControl`、`NavigationControl3D`、`ScaleControl`、`OverviewMapControl`、`MapTypeControl`、`CopyrightControl`、`GeolocationControl`、`PanoramaControl`、`ZoomControl`、`CityListControl`、`LocationControl`、`LogoControl`
 - **图层**：`TileLayer`、`NormalLayer`、`GeoJSONLayer`、`DistrictLayer`、`TrafficLayer`、`CustomLayer`、`CanvasLayer`、`RasterTileLayer`、`FeatureLayer`、`FillLayer`、`DOMLayer`、`PointIconLayer`、`PointShapeLayer`、`PanoramaCoverageLayer`、`LineLayer`、`PixelLayer`、`BaiduLayer`、`ThreeLayer`
+- **可视化图层（4.0+）**：`HeatmapLayer`、`ClusterLayer`、`PointLayer`、`PolylineLayer`、`PolygonLayer`、`TextLayer`、`BarLayer`、`FlyLineLayer`、`TrackLine`、`ThreejsLayer`、`DeckglLayer`、`WebGLCustomLayer`
 - **右键菜单**：`ContextMenu`、`MenuItem`
 - **全景**：`Panorama`、`PanoramaLabel`
-- **检索 Hook**：`useDrivingRoute`、`useWalkingRoute`、`useRidingRoute`、`useTransitRoute`、`useTruckRoute`、`useLocalSearch`、`useAutocomplete`、`useBusLineSearch`、`usePlaceDetail`、`useGeocoder`、`useBoundary`、`useLocalCity`、`useConvertor`、`useGeolocation`、`usePanoramaService`
+- **检索 Hook**：`useDrivingRoute`、`useWalkingRoute`、`useRidingRoute`、`useEBikeRoute`、`useTransitRoute`、`useTruckRoute`、`useLocalSearch`、`useAutocomplete`、`useBusLineSearch`、`usePlaceDetail`、`useGeocoder`、`useBoundary`、`useLocalCity`、`useConvertor`、`useGeolocation`、`usePanoramaService`
+- **工具**：`GeoJSONSource`（GeoJSON 归一化 / 点线面提取）、`normalize` / `replaceGeometry` / `extractPoints` / `toLineStrings` / `toPolygons`
 
 > 部分组件只在 4.0（WebGL）下可用（如 `Prism`、`MapMask`、`Marker3D`）。在不支持的版本使用时，默认会打印一条警告并跳过，不会让页面崩溃。
 
@@ -247,6 +249,114 @@ const layerRef = useRef<ThreeLayerRef>(null);
 ```
 
 只有 `alpha`、`antialias` 和「是否接了 `onRender`」是构造期参数，改它们会重建图层；`visible`、`minZoom`、`maxZoom`、`zIndex` 走 setter，改了不会销毁你的场景。图层级的 `opacity` 对 `ThreeLayer` 无效（SDK 从不读它），透明度请设在材质上。
+
+> `ThreeLayer` 对应 SDK 的 `BMap.ThreeLayer`；另有一个 `ThreejsLayer` 对应 `BMap.ThreejsLayer`（上下文式回调 + `add/removeObject` 句柄），用法见下面的「外部库接入图层」。
+
+## 区域掩膜
+
+给 `Map` 传 `mask` 即可压暗/高亮某个区域，首帧随地图构造同步下发，不会「先亮后暗」闪一下：
+
+```tsx
+<Map
+  center={{ lng: 116.404, lat: 39.915 }}
+  zoom={11}
+  mask={{
+    bounds: { sw: { lng: 116.229, lat: 39.802 }, ne: { lng: 116.586, lat: 40.028 } },
+    showRegion: 'outside',
+    isBuildingMask: true,
+    isPoiMask: true,
+    isMapMask: true,
+  }}
+/>
+```
+
+需要动态/后置添加时也可以用 `<MapMask>` 子组件。
+
+## 数据可视化图层（4.0+）
+
+大数据量的点、线、面用数据驱动图层，`data` 传 GeoJSON，变化时组件内部调用 `setData`：
+
+```tsx
+import { Map, HeatmapLayer, PointLayer } from '@baidumap/react-bmap';
+
+const points = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [116.404, 39.915] },
+      properties: { name: '天安门', count: 80 },
+    },
+  ],
+};
+
+<Map center={{ lng: 116.404, lat: 39.915 }} zoom={12}>
+  <HeatmapLayer data={points} size={30} weightField="count" />
+  <PointLayer data={points} size={16} fillColor="#1890ff" strokeColor="#fff" strokeWeight={2} />
+</Map>
+```
+
+可选图层：`HeatmapLayer`、`ClusterLayer`、`PointLayer`、`PolylineLayer`、`PolygonLayer`、`TextLayer`、`BarLayer`、`FlyLineLayer`、`TrackLine`。
+
+`TrackLine` 是轨迹动画，播放控制走 `ref`：
+
+```tsx
+const trackRef = useRef<TrackLineRef>(null);
+
+<TrackLine ref={trackRef} data={lineGeoJSON} duration={30} autoStart autoFollow />
+trackRef.current?.start();
+trackRef.current?.setSpeed(2);
+```
+
+> 注意：`strokeColor` 需要配合 `strokeWeight > 0` 才可见（SDK 默认 `strokeWeight = 0` 表示不描边）。
+
+### 外部库接入图层
+
+`ThreejsLayer`（three.js）、`DeckglLayer`（deck.gl）、`WebGLCustomLayer`（自写 WebGL）都不在包里打包这些库，由宿主挂到全局：
+
+```tsx
+import * as THREE from 'three';
+window.THREE = THREE;   // ThreejsLayer 用
+
+import * as deck from 'deck.gl';  // 8.9.x，9.x 不支持共享地图 GL 上下文
+window.deck = deck;               // DeckglLayer 用
+```
+
+`ThreejsLayer` 必须传 `referCenter`（局部坐标原点），否则 `projectToLayer` 返回绝对墨卡托坐标，物体会被放到视野外：
+
+```tsx
+// 承接上一段：window.THREE 已就绪
+const meshRef = useRef<any>(null);
+
+<ThreejsLayer
+  referCenter={center}
+  animation
+  preRender={() => { if (meshRef.current) meshRef.current.rotation.y += 0.03; }}
+  onInit={(ctx) => {
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(500, 500, 500),
+      new THREE.MeshBasicMaterial({ color: 0x1890ff }),
+    );
+    const [x, y] = ctx.projectToLayer([center.lng, center.lat]);
+    mesh.position.set(x, y, 250);
+    meshRef.current = mesh;
+    ctx.layer.add(mesh);
+  }}
+/>
+```
+
+`animation` 只表示「每帧自动重绘」，场景变化要写在 `preRender` / `onRender` 里。Deck 的显隐请用 `visible` / `opacity`，不要在 finalize 后重建 Deck（deck.gl 8.x 限制）。
+
+### GeoJSONSource 工具
+
+```tsx
+import { GeoJSONSource } from '@baidumap/react-bmap';
+
+const features = GeoJSONSource.normalize(geojson);       // 归一化为内部要素形态
+const { points, weights } = GeoJSONSource.extractPoints(features, 'count');
+```
+
+也可以直接用 `normalize` / `replaceGeometry` / `extractPoints` / `toLineStrings` / `toPolygons`。
 
 ## 常见问题
 

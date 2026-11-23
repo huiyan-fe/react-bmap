@@ -46,8 +46,14 @@ export function reportUnsupported(
  * 的字符串，所以 SDK 压缩混淆换版本也不会失效。判错的最坏后果只是日志分类不准，
  * 不会引入新的失败路径。
  */
-export function isMissingMember(e: unknown): boolean {
-  return e instanceof TypeError && /is not a (function|constructor)/.test(e.message);
+export function isMissingMember(e: unknown, member?: string): boolean {
+  if (!(e instanceof TypeError)) return false;
+  const m = e.message.match(/([A-Za-z0-9_$]+) is not a (?:function|constructor)/);
+  if (!m) return false;
+  // 未指定 member 时保持旧行为；指定时必须是「被调用的那个成员」本身缺失。
+  // 否则 SDK 内部实现缺失（如 removeLayer 内部的 this._removeVisualLayer）
+  // 会被误判成「当前版本不支持 removeLayer」。
+  return member ? m[1] === member : true;
 }
 
 /**
@@ -64,7 +70,10 @@ export function reportCallFailure(
   behavior: UnsupportedBehavior,
   error: unknown,
 ): void {
-  if (isMissingMember(error)) {
+  // 能力名形如 `Map.removeLayer` / `Heatmap`，取最后一段作为「被调用成员」。
+  // 只有该成员本身不存在才算能力不支持；SDK 内部调用链里的 TypeError 归为运行时失败。
+  const member = typeof capability === 'string' ? capability.split('.').pop() : undefined;
+  if (isMissingMember(error, member)) {
     reportUnsupported(capability, version, behavior);
     return;
   }

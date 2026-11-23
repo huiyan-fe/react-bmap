@@ -46,6 +46,22 @@ export interface LocalSearchRenderOptions {
   viewportOptions?: { noAnimation?: boolean; margins?: number[]; zoomFactor?: number };
 }
 
+/** JSAPI 4.0 LocalSearchSearchOption：与本地搜索请求强相关的配置项（对齐 bmap-jsapi-dts）。 */
+export interface LocalSearchSearchOption {
+  /** 页码，从 0 开始 */
+  pageNum?: number;
+  /** 每页结果数 */
+  pageCapacity?: number;
+  /** 过滤条件（如 "adcode:110000"） */
+  filter?: string;
+  /** 检索范围（矩形） */
+  bounds?: unknown;
+  /** 排序字段（如 "distance"） */
+  sortBy?: string;
+  /** 扩展参数 */
+  extra?: Record<string, unknown>;
+}
+
 export interface LocalSearchOptions {
   /** 搜索城市/区域，可为字符串、Point 或 Map。**非必传**：缺省时自动回退到当前 `<Map>`（或 `renderOptions.map`），与原生 `new BMap.LocalSearch(map, {...})` 一致 */
   location?: string | Point | { __brand: string; raw: unknown };

@@ -60,6 +60,19 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'point-shape-layer', name: 'PointShapeLayer', category: 'Layer', description: '图形点图层' },
   { id: 'panorama-coverage-layer', name: 'PanoramaCoverageLayer', category: 'Layer', description: '全景覆盖图层' },
   { id: 'three-layer', name: 'ThreeLayer', category: 'Layer', description: 'three.js 图层（4.0+，three.js 需宿主自备并挂到 window.THREE）' },
+  // 数据可视化图层（4.0+ Visualization，2.1.0 新增）
+  { id: 'heatmap-layer', name: 'HeatmapLayer', category: 'Layer', description: '热力图图层（4.0+）' },
+  { id: 'cluster-layer', name: 'ClusterLayer', category: 'Layer', description: '聚合图层（4.0+）' },
+  { id: 'point-layer', name: 'PointLayer', category: 'Layer', description: '点图层（4.0+）' },
+  { id: 'polyline-layer', name: 'PolylineLayer', category: 'Layer', description: '折线图层（4.0+）' },
+  { id: 'polygon-layer', name: 'PolygonLayer', category: 'Layer', description: '面图层（4.0+）' },
+  { id: 'text-layer', name: 'TextLayer', category: 'Layer', description: '文本图层（4.0+）' },
+  { id: 'bar-layer', name: 'BarLayer', category: 'Layer', description: '柱状图层（4.0+）' },
+  { id: 'fly-line-layer', name: 'FlyLineLayer', category: 'Layer', description: '飞线图层（4.0+）' },
+  { id: 'track-line', name: 'TrackLine', category: 'Layer', description: '轨迹线图层（4.0+，含播放控制 ref）' },
+  { id: 'threejs-layer', name: 'ThreejsLayer', category: 'Layer', description: 'three.js 接入图层（4.0+，three.js 需宿主挂 window.THREE）' },
+  { id: 'deckgl-layer', name: 'DeckglLayer', category: 'Layer', description: 'deck.gl 接入图层（4.0+，deck 需宿主挂 window.deck）' },
+  { id: 'webgl-custom-layer', name: 'WebGLCustomLayer', category: 'Layer', description: '自写 WebGL 图层（4.0+）' },
 
   // Service (15)
   { id: 'local-search', name: 'useLocalSearch', category: 'Service', description: '本地搜索' },
@@ -67,6 +80,7 @@ export const COMPONENTS: ComponentMeta[] = [
   { id: 'driving-route', name: 'useDrivingRoute', category: 'Service', description: '驾车路线' },
   { id: 'walking-route', name: 'useWalkingRoute', category: 'Service', description: '步行路线' },
   { id: 'riding-route', name: 'useRidingRoute', category: 'Service', description: '骑行路线' },
+  { id: 'e-bike-route', name: 'useEBikeRoute', category: 'Service', description: '电动车路线（4.0+，2.1.0 新增）' },
   { id: 'transit-route', name: 'useTransitRoute', category: 'Service', description: '公交路线' },
   { id: 'bus-line-search', name: 'useBusLineSearch', category: 'Service', description: '公交线路查询' },
   { id: 'autocomplete', name: 'useAutocomplete', category: 'Service', description: '输入提示' },

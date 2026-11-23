@@ -88,7 +88,7 @@ function createServiceHook(
 
 // useLocalSearch — 完整实现，见 useLocalSearch.ts
 export { useLocalSearch } from './useLocalSearch';
-export type { LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions } from './useLocalSearch';
+export type { LocalSearchOptions, LocalSearchHookResult, LocalSearchRenderOptions, LocalSearchSearchOption } from './useLocalSearch';
 
 // useGeocoder — 完整实现，见 useGeocoder.ts
 export { useGeocoder } from './useGeocoder';
@@ -124,6 +124,9 @@ export type { WalkingRouteOptions, WalkingRouteHookResult } from './useWalkingRo
 
 export { useRidingRoute } from './useRidingRoute';
 export type { RidingRouteOptions, RidingRouteHookResult } from './useRidingRoute';
+
+export { useEBikeRoute } from './useEBikeRoute';
+export type { EBikeRouteOptions, EBikeRouteHookResult } from './useEBikeRoute';
 
 export { useTransitRoute } from './useTransitRoute';
 export type { TransitRouteOptions, TransitRouteHookResult } from './useTransitRoute';

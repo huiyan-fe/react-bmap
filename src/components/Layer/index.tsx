@@ -250,3 +250,40 @@ export { ThreeLayer } from './ThreeLayer';
 export type {
   ThreeLayerProps, ThreeLayerOptions, ThreeLayerRef, ThreeLayerInstance, ThreeLayerHook, ThreeObject,
 } from './ThreeLayer';
+
+// ─── 数据可视化图层（4.0+ Visualization）───
+// Heatmap / Cluster / Point / Polyline / Polygon / Text / Bar 统一走 createVisualLayer。
+export {
+  HeatmapLayer, ClusterLayer, PointLayer, PolylineLayer, PolygonLayer, TextLayer, BarLayer, FlyLineLayer,
+} from './VisualLayers';
+export type {
+  HeatmapLayerProps, HeatmapLayerOptions,
+  ClusterLayerProps, ClusterLayerOptions,
+  PointLayerProps, PointLayerOptions,
+  PolylineLayerProps, PolylineLayerOptions,
+  PolygonLayerProps, PolygonLayerOptions,
+  TextLayerProps, TextLayerOptions,
+  BarLayerProps, BarLayerOptions,
+  FlyLineLayerProps, FlyLineLayerOptions,
+} from './VisualLayers';
+
+// TrackLine — 手写组件（带命令式播放控制 ref），见 TrackLine.tsx
+export { TrackLine } from './TrackLine';
+export type { TrackLineProps, TrackLineOptions, TrackLineRef } from './TrackLine';
+
+// ─── 外部库接入图层（4.0+ Visualization）───
+// 均不声明 three / deck.gl 依赖，由宿主挂全局 window.THREE / window.deck。
+export { ThreejsLayer } from './ThreejsLayer';
+export type {
+  ThreejsLayerProps, ThreejsLayerOptions, ThreejsLayerRef,
+  ThreejsLayerContext, ThreejsLayerHook, ThreejsObject,
+} from './ThreejsLayer';
+
+export { DeckglLayer } from './DeckglLayer';
+export type { DeckglLayerProps, DeckglLayerOptions, DeckglLayerRef } from './DeckglLayer';
+
+export { WebGLCustomLayer } from './WebGLCustomLayer';
+export type {
+  WebGLCustomLayerProps, WebGLCustomLayerOptions, WebGLCustomLayerRef,
+  WebGLCustomLayerContext, WebGLCustomLayerHook,
+} from './WebGLCustomLayer';

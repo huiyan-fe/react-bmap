@@ -1,6 +1,6 @@
 {
   "name": "@baidumap/react-bmap",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "description": "React components for Baidu Map JSAPI",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -44,7 +44,7 @@
     "@baidumap/jsapi-loader": "^1.0.0"
   },
   "devDependencies": {
-    "@baidumap/jsapi-v4-types": "^4.0.3",
+    "@baidumap/jsapi-v4-types": "^4.0.6",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.10.0",
     "@testing-library/react": "^16.3.2",

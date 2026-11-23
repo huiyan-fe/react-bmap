@@ -68,6 +68,20 @@ export const PAGES: TestPage[] = [
   { id: 'pixel-layer', name: 'PixelLayer', category: L, ready: true },
   { id: 'baidu-layer', name: 'BaiduLayer', category: L, ready: true },
   { id: 'three-layer', name: 'ThreeLayer', category: L, ready: true },
+  // 数据可视化图层（4.0+ Visualization，2.1.0 新增）
+  { id: 'heatmap-layer', name: 'HeatmapLayer', category: L, ready: true },
+  { id: 'cluster-layer', name: 'ClusterLayer', category: L, ready: true },
+  { id: 'point-layer', name: 'PointLayer', category: L, ready: true },
+  { id: 'polyline-layer', name: 'PolylineLayer', category: L, ready: true },
+  { id: 'polygon-layer', name: 'PolygonLayer', category: L, ready: true },
+  { id: 'text-layer', name: 'TextLayer', category: L, ready: true },
+  { id: 'bar-layer', name: 'BarLayer', category: L, ready: true },
+  { id: 'fly-line-layer', name: 'FlyLineLayer', category: L, ready: true },
+  { id: 'track-line', name: 'TrackLine', category: L, ready: true },
+  { id: 'track-line-demo', name: 'TrackLine 官方示例', category: L, ready: true },
+  { id: 'deckgl-layer', name: 'DeckglLayer', category: L, ready: true },
+  { id: 'threejs-layer', name: 'ThreejsLayer', category: L, ready: true },
+  { id: 'webgl-custom-layer', name: 'WebGLCustomLayer', category: L, ready: true },
   // 服务（15 个）
   { id: 'local-search', name: 'useLocalSearch', category: S, ready: true },
   { id: 'geocoder', name: 'useGeocoder', category: S, ready: true },
@@ -84,6 +98,7 @@ export const PAGES: TestPage[] = [
   { id: 'convertor', name: 'useConvertor', category: S, ready: true },
   { id: 'panorama-service', name: 'usePanoramaService', category: S, ready: true },
   { id: 'truck-route', name: 'useTruckRoute', category: S, ready: true },
+  { id: 'e-bike-route', name: 'useEBikeRoute', category: S, ready: true },
   // 其他
   { id: 'context-menu', name: 'ContextMenu', category: '其他', ready: true },
   { id: 'panorama', name: 'Panorama', category: '其他', ready: true },

@@ -11,8 +11,21 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '2.1.0',
+    date: '2026-11-20',
+    changes: [
+      '新增数据可视化图层（4.0+ Visualization）：HeatmapLayer / ClusterLayer / PointLayer / PolylineLayer / PolygonLayer / TextLayer / BarLayer / FlyLineLayer / TrackLine',
+      '新增外部库接入图层：ThreejsLayer（宿主挂 window.THREE）、DeckglLayer（宿主挂 window.deck）、WebGLCustomLayer（原生 WebGL）',
+      'TrackLine：支持命令式播放控制 ref（start/resume/pause/stop/setSpeed/setAutoFollow/setOptions）与 progress/statuschange 事件',
+      'useEBikeRoute：电动车路线规划（与 useRidingRoute 同构，4.0+）',
+      '新增 GeoJSONSource 静态工具（normalize/replaceGeometry/extractPoints/toLineStrings/toPolygons）；Polygon/Prism 支持 GeoJSON path',
+      '类型补全：StyleExpress / VisualPickEvent / GraphEventMap / TrackLineEventMap / TruckRouteResult 等',
+      'useLocalSearch：新增 LocalSearchSearchOption 类型（pageNum/pageCapacity/filter/bounds/sortBy/extra）',
+    ],
+  },
+  {
     version: '2.0.7',
-    date: '2026-10-14',
+    date: '2026-11-20',
     changes: [
       'Map 新增 mask prop（MapMaskSpec | MapMaskSpec[]）：区域掩膜随地图构造首帧同步下发，进入页面不再「先亮后暗」闪烁；<MapMask> 子组件保留用于动态场景',
     ],

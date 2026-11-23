@@ -49,6 +49,12 @@ describe('isMissingMember', () => {
     expect(isMissingMember(new TypeError('X is not a constructor'))).toBe(true);
   });
 
+  it('指定 member 时只认被调用成员本身缺失', () => {
+    expect(isMissingMember(new TypeError('map.flyTo is not a function'), 'flyTo')).toBe(true);
+    // SDK 内部实现缺失（removeLayer 内部调用 _removeVisualLayer）不能算 removeLayer 缺失
+    expect(isMissingMember(new TypeError('this._removeVisualLayer is not a function'), 'removeLayer')).toBe(false);
+  });
+
   it('其它 TypeError / 普通 Error / 非 Error → false', () => {
     expect(isMissingMember(new TypeError('cannot read x of undefined'))).toBe(false);
     expect(isMissingMember(new Error('is not a function'))).toBe(false);
@@ -59,8 +65,16 @@ describe('isMissingMember', () => {
 describe('reportCallFailure', () => {
   it('成员不存在 → 分流到 reportUnsupported（throw 模式抛错）', () => {
     expect(() =>
-      reportCallFailure('Map.flyTo', '3.0', 'throw', new TypeError('foo is not a function')),
+      reportCallFailure('Map.flyTo', '3.0', 'throw', new TypeError('map.flyTo is not a function')),
     ).toThrow(UnsupportedCapabilityError);
+  });
+
+  it('SDK 内部调用的成员缺失 → debugWarn，不误报为版本不支持', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(() =>
+      reportCallFailure('Map.removeLayer', '4.0', 'throw', new TypeError('this._removeVisualLayer is not a function')),
+    ).not.toThrow();
+    expect(warn).toHaveBeenCalled();
   });
 
   it('成员存在但执行报错 → debugWarn，不抛', () => {

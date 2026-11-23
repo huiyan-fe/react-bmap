@@ -14,6 +14,7 @@ import { useLocalSearch } from '../useLocalSearch';
 import { useConvertor } from '../useConvertor';
 import { useBusLineSearch } from '../useBusLineSearch';
 import { useAutocomplete } from '../useAutocomplete';
+import { useEBikeRoute } from '../useEBikeRoute';
 
 // L4：service hook 契约层。
 // 组件从 useBMapContext() 拿 driver，driver.createXxx() 返回 { isNull, raw } 句柄。
@@ -395,5 +396,50 @@ describe('service hook 补齐方法（2.0.4）', () => {
     expect(raw.setInputValue).toHaveBeenCalledWith('天安');
     expect(raw.setTypes).toHaveBeenCalledWith(['city']);
     expect(raw.setLocation).toHaveBeenCalledWith('北京');
+  });
+});
+
+describe('useEBikeRoute（与 RidingRoute 同构）', () => {
+  it('search → raw.search，onSearchComplete 回到 data', () => {
+    installFakeSDK();
+    const raw = { search: vi.fn(), getResults: vi.fn(() => ({ routes: ['e'] })), setSearchCompleteCallback: vi.fn() };
+    const driver = makeFakeDriver({ loaded: true });
+    driver.createEBikeRoute = vi.fn(() => ({ isNull: false, raw }));
+    const { result } = renderHook(() => useEBikeRoute(), { wrapper: bmapWrapper(driver) });
+    act(() => result.current.search({ lng: 1, lat: 1 }, { lng: 2, lat: 2 }));
+    // 通过 setSearchCompleteCallback 注册的 cb 完成
+    const cb = (raw.setSearchCompleteCallback as any).mock.calls.at(-1)?.[0];
+    act(() => cb({ routes: ['e'] }));
+    expect(raw.search).toHaveBeenCalledTimes(1);
+    expect(result.current.data).toEqual({ routes: ['e'] });
+    expect(result.current.loading).toBe(false);
+  });
+
+  it('unsupported：createEBikeRoute.isNull → supported=false', () => {
+    const driver = makeFakeDriver({ loaded: true, version: '3.0' });
+    driver.createEBikeRoute = vi.fn(() => ({ isNull: true }));
+    const { result } = renderHook(() => useEBikeRoute(), { wrapper: bmapWrapper(driver) });
+    expect(result.current.supported).toBe(false);
+    expect(result.current.error).toBeInstanceOf(UnsupportedCapabilityError);
+  });
+
+  it('自动渲染：首次完成后同参补搜一次；autoRender:false 不补', () => {
+    installFakeSDK();
+    const run = (autoRender: boolean) => {
+      let capturedOpts: any;
+      const raw = { search: vi.fn(), getResults: vi.fn(() => ({})), setSearchCompleteCallback: vi.fn() };
+      const driver = makeFakeDriver({ loaded: true });
+      driver.createEBikeRoute = vi.fn((o: any) => { capturedOpts = o; return { isNull: false, raw }; });
+      const mapHandle = { __brand: 'map', raw: { MOCK: true } };
+      const { result } = renderHook(
+        () => useEBikeRoute({ renderOptions: { map: mapHandle as any }, autoRender }),
+        { wrapper: bmapWrapper(driver) },
+      );
+      act(() => result.current.search({ lng: 1, lat: 1 }, { lng: 2, lat: 2 }));
+      act(() => capturedOpts.onSearchComplete({ routes: ['e'] }));
+      return raw.search.mock.calls.length;
+    };
+    expect(run(true)).toBe(2);
+    expect(run(false)).toBe(1);
   });
 });

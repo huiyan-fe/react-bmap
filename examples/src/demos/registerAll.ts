@@ -5,3 +5,4 @@ import './layerDemos';
 import './serviceDemos';
 import './otherDemos';
 import './hookDemos';
+import './visualizationDemos';

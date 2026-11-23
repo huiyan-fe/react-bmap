@@ -161,6 +161,11 @@ class CollisionManager {
 function toRawPoint(SDK: BMapSDK, p: Point | null | undefined): BMap.Point {
   if (!p) return p as unknown as BMap.Point;
   if (p instanceof SDK.Point) return p;
+  // GeoJSON 坐标是 [lng, lat] 数组；普通写法是 {lng, lat} 对象，两种都支持
+  if (Array.isArray(p)) {
+    const a = p as unknown as [number, number];
+    return new SDK.Point(Number(a[0]), Number(a[1]));
+  }
   return new SDK.Point(p.lng, p.lat);
 }
 /** 官方 IconOptions 只声明了 anchor/imageOffset/imageSize，其余几项是 SDK 额外支持的 */
@@ -251,9 +256,26 @@ function toRawPointGroups(SDK: BMapSDK, groups: Point[][] | null | undefined): B
 function isNestedPath(path: unknown): path is Point[][] {
   return Array.isArray(path) && Array.isArray(path[0]);
 }
-/** Prism 路径：单坐标串走 toRawPoints，多坐标串逐串转换 */
-function toRawPathOrPaths(SDK: BMapSDK, path: Point[] | Point[][] | null | undefined): BMap.Point[] | BMap.Point[][] {
-  return isNestedPath(path) ? toRawPointGroups(SDK, path) : toRawPoints(SDK, path as Point[]);
+/**
+ * GeoJSON 路径归一化：原生 BMap.Polygon 支持直接传 GeoJSON（Feature / geometry），
+ * 这里取出 coordinates，后续再转成 SDK Point[] / Point[][]。
+ */
+function normalizeGeoJsonPath(path: unknown): unknown {
+  if (path && typeof path === 'object' && !Array.isArray(path)) {
+    const p = path as Record<string, any>;
+    if (p.type === 'Feature') {
+      return p.geometry?.coordinates ?? path;
+    }
+    if (typeof p.type === 'string' && p.type !== 'FeatureCollection' && 'coordinates' in p) {
+      return p.coordinates;
+    }
+  }
+  return path;
+}
+/** Prism / Polygon 路径：单坐标串走 toRawPoints，多坐标串逐串转换；GeoJSON 先取 coordinates */
+function toRawPathOrPaths(SDK: BMapSDK, path: unknown): BMap.Point[] | BMap.Point[][] {
+  const normalized = normalizeGeoJsonPath(path);
+  return isNestedPath(normalized) ? toRawPointGroups(SDK, normalized) : toRawPoints(SDK, normalized as Point[]);
 }
 /** 编辑态节点图标 node/nodeT：把 {url,size} 图标配置转成 SDK Icon 实例写入 ctorOpts（enableEditing 时生效） */
 function applyEditNodeIcons(SDK: BMapSDK, raw: Record<string, unknown> | undefined, ctorOpts: Record<string, unknown>): void {
@@ -658,11 +680,39 @@ export function createV4Driver(
     // ─────────────── 15. 图层 ───────────────
     addLayer: (map, l) => {
       if (isOverlayLikeLayer(l)) { callRaw('Map.addOverlay', () => rawMap(map).addOverlay(rawOf(l))); return; }
-      callRaw('Map.addLayer', () => rawMap(map).addLayer(unwrapTileWrapper(rawOf(l))));
+      const raw = rawMap(map);
+      const rawLayer = unwrapTileWrapper(rawOf(l));
+      // 正常 4.0 走 addLayer；若拿到的原生 Map 实例没有 addLayer（版本错配 / 被代理的实例），
+      // 退回 3.0 风格的 addTileLayer / addOverlay，避免把「成员不存在」误报成能力不支持。
+      if (typeof raw?.addLayer === 'function') {
+        callRaw('Map.addLayer', () => raw.addLayer(rawLayer));
+        return;
+      }
+      callRaw('Map.addLayer', () => {
+        if (typeof raw?.addTileLayer === 'function') raw.addTileLayer(rawLayer);
+        else if (typeof raw?.addOverlay === 'function') raw.addOverlay(rawLayer);
+      });
     },
     removeLayer: (map, l) => {
       if (isOverlayLikeLayer(l)) { callRaw('Map.removeOverlay', () => rawMap(map).removeOverlay(rawOf(l))); return; }
-      callRaw('Map.removeLayer', () => rawMap(map).removeLayer(unwrapTileWrapper(rawOf(l))));
+      const raw = rawMap(map);
+      const rawLayer = unwrapTileWrapper(rawOf(l));
+      if (typeof raw?.removeLayer === 'function') {
+        try { raw.removeLayer(rawLayer); }
+        catch (e) {
+          // 地图销毁时序：React 卸载时 Map 的 cleanup 可能先于子图层 cleanup 执行，
+          // SDK 销毁后内部 `_removeVisualLayer` 已不可用，此时 removeLayer 会抛
+          // `this._removeVisualLayer is not a function`。地图都销毁了，无需再移除图层，
+          // 直接跳过（也不要误报成「能力不支持」）。
+          if (e instanceof TypeError && /_removeVisualLayer is not a function/.test(e.message)) return;
+          reportCallFailure('Map.removeLayer', version, behavior, e);
+        }
+        return;
+      }
+      callRaw('Map.removeLayer', () => {
+        if (typeof raw?.removeTileLayer === 'function') raw.removeTileLayer(rawLayer);
+        else if (typeof raw?.removeOverlay === 'function') raw.removeOverlay(rawLayer);
+      });
     },
     addTileLayer: (map, l) => callRaw('Map.addTileLayer', () => rawMap(map).addTileLayer(rawOf(l))),
     removeTileLayer: (map, l) => callRaw('Map.removeTileLayer', () => rawMap(map).removeTileLayer(rawOf(l))),
@@ -1158,18 +1208,19 @@ export function createV4Driver(
     },
     setOverlayPath: (ov, path) => {
       try {
+        const normalized = normalizeGeoJsonPath(path);
         // PointCollection 用 setPoints 而非 setPath
         if (ov.type === 'pointCollection') {
-          rawOf(ov).setPoints?.(toRawPoints(rawSDK, path as Point[]));
+          rawOf(ov).setPoints?.(toRawPoints(rawSDK, normalized as Point[]));
           return;
         }
-        if (isNestedPath(path)) {
+        if (isNestedPath(normalized)) {
           // 只有 Polygon 的 setPath 支持多坐标串（Point[][]，镂空/多环，对齐 JSAPI）。
           // 其余（如 Prism）无法用多坐标串更新，交由 ctorOnlyProps/key 重建处理。
-          if (ov.type === 'polygon') rawOf(ov).setPath?.(toRawPointGroups(rawSDK, path));
+          if (ov.type === 'polygon') rawOf(ov).setPath?.(toRawPointGroups(rawSDK, normalized));
           return;
         }
-        rawOf(ov).setPath?.(toRawPoints(rawSDK, path as Point[]));
+        rawOf(ov).setPath?.(toRawPoints(rawSDK, normalized as Point[]));
       } catch { /* ignore */ }
     },
     setOverlayOptions: (ov, options) => {
@@ -1410,6 +1461,34 @@ export function createV4Driver(
     createBaiduLayer: (o) => createLayerFactory('BaiduLayer', () => new rawSDK.BaiduLayer(o), 'custom'),
     createThreeLayer: (o) => createLayerFactory('ThreeLayer', () => new rawSDK.ThreeLayer(o), 'custom'),
 
+    // 数据可视化图层（4.0+ Visualization；@baidumap/jsapi-v4-types >=4.0.6 已声明）
+    createHeatmap: (o) => createLayerFactory('HeatmapLayer', () => new rawSDK.Heatmap(o), 'custom'),
+    createClusterLayer: (o) => createLayerFactory('ClusterLayer', () => new rawSDK.ClusterLayer(o), 'custom'),
+    createPointLayer: (o) => createLayerFactory('PointLayer', () => new rawSDK.PointLayer(o), 'custom'),
+    createPolylineLayer: (o) => createLayerFactory('PolylineLayer', () => new rawSDK.PolylineLayer(o), 'custom'),
+    createPolygonLayer: (o) => createLayerFactory('PolygonLayer', () => new rawSDK.PolygonLayer(o), 'custom'),
+    createTextLayer: (o) => createLayerFactory('TextLayer', () => new rawSDK.TextLayer(o), 'custom'),
+    // 特效图层（4.0+ Visualization）
+    createBarLayer: (o) => createLayerFactory('BarLayer', () => new rawSDK.BarLayer(o), 'custom'),
+    createFlyLineLayer: (o) => createLayerFactory('FlyLineLayer', () => new rawSDK.FlyLineLayer(o), 'custom'),
+    createTrackLine: (o) => createLayerFactory('TrackLine', () => new rawSDK.TrackLine(o), 'custom'),
+    // 外部库接入图层（4.0+ Visualization：deck.gl / three.js / 自写 WebGL）
+    createDeckglLayer: (o) => createLayerFactory('DeckglLayer', () => new rawSDK.DeckglLayer(o), 'custom'),
+    createThreejsLayer: (o) => createLayerFactory('ThreejsLayer', () => new rawSDK.ThreejsLayer(o), 'custom'),
+    createWebGLCustomLayer: (o) => createLayerFactory('WebGLCustomLayer', () => new rawSDK.WebGLCustomLayer(o), 'custom'),
+
+    // 数据实体（4.0+）：MVTLayer 等图层的数据单元，不是图层/覆盖物；kind 不适用，
+    // 复用 OverlayHandle 形态（{__brand, raw}）承载。SDK 全局没有 Entity 时返回 null 并告警。
+    createEntity: (id, layerName, properties) => {
+      const EntityCtor = rawSDK.Entity;
+      if (typeof EntityCtor !== 'function') { debugWarn('Entity'); return null; }
+      try {
+        const entity = new EntityCtor(id, layerName);
+        if (properties !== undefined) entity.properties = properties;
+        return overlayHandle(entity, 'entity');
+      } catch (e) { reportCallFailure('Entity', version, behavior, e); return null; }
+    },
+
     // ─────────────── 30. ContextMenu ───────────────
     createContextMenu: (o) => createOverlayFactory('ContextMenu', () => new rawSDK.ContextMenu(o), 'contextMenu'),
     createMenuItem: (text, cb, o) => createOverlayFactory('MenuItem', () => new rawSDK.MenuItem(text, cb, o), 'menuItem'),
@@ -1440,6 +1519,7 @@ export function createV4Driver(
     createDrivingRoute: (o) => createServiceFactory('DrivingRoute', () => new rawSDK.DrivingRoute((o as any)?.location, o)),
     createWalkingRoute: (o) => createServiceFactory('WalkingRoute', () => new rawSDK.WalkingRoute((o as any)?.location, o)),
     createRidingRoute: (o) => createServiceFactory('RidingRoute', () => new rawSDK.RidingRoute((o as any)?.location, o)),
+    createEBikeRoute: (o) => createServiceFactory('EBikeRoute', () => new rawSDK.EBikeRoute((o as any)?.location, o)),
     createTransitRoute: (o) => createServiceFactory('TransitRoute', () => new rawSDK.TransitRoute((o as any)?.location, o)),
     createBusLineSearch: (o) => createServiceFactory('BusLineSearch', () => new rawSDK.BusLineSearch((o as any)?.location, o)),
     createAutocomplete: (o) => createServiceFactory('Autocomplete', () => new rawSDK.Autocomplete(o)),
