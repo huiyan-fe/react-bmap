@@ -207,6 +207,10 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   const maskHandlesRef = useRef<unknown[]>([]);
   const lastMaskKeyRef = useRef<string | null>(null);
   const maskKey = useMemo(() => (mask ? JSON.stringify(mask) : ''), [mask]);
+  // 首帧已在创建阶段应用的配置，运行时 effect 需要跳过第一次，避免重复下发导致地图重绘/闪烁
+  const skipInitialDisplayOptionsRef = useRef(false);
+  const skipInitialMapStyleRef = useRef(false);
+  const skipInitialMapStyleV2Ref = useRef(false);
 
   // 把 ref 同步为最新 MapRefImpl（支持 ref 对象与 callback ref）
   useEffect(() => {
@@ -268,6 +272,9 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     // 的闪烁。mapStyleV2 优先于 mapStyle（与下面运行时切换 effect 的优先级一致）。
     const initialStyle = mapStyleV2 ?? mapStyle;
     if (initialStyle !== undefined) initial.style = initialStyle;
+    // 首帧样式已随构造选项下发，运行时 effect 首次挂载时跳过
+    skipInitialMapStyleRef.current = initialStyle !== undefined;
+    skipInitialMapStyleV2Ref.current = mapStyleV2 !== undefined;
 
     const handle = driver.createMap(containerRef.current, initial);
 
@@ -319,6 +326,8 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
     if (displayOptions !== undefined) {
       try { driver.setDisplayOptions(handle, displayOptions); } catch { /* v3 不支持 */ }
     }
+    // 首帧显示配置已在创建阶段应用，运行时 effect 首次挂载时跳过
+    skipInitialDisplayOptionsRef.current = displayOptions !== undefined;
 
     // 区域掩膜（mask）：首帧同步应用——和 mapType/customArea 一样，在首帧瓦片画出来之前就 addOverlay，
     // 使第一帧可见画面即为遮罩态，不会「先亮后暗」地闪，也不延迟地图显示。后续变化由下方受控 effect 处理。
@@ -521,17 +530,20 @@ export const Map = forwardRef<MapRef, MapProps>(function Map(props, ref) {
   // ─── 显示元素配置 ───
   useLayoutEffect(() => {
     if (!map || !driver || displayOptions === undefined) return;
+    if (skipInitialDisplayOptionsRef.current) { skipInitialDisplayOptionsRef.current = false; return; }
     try { driver.setDisplayOptions(map, displayOptions); } catch { /* v3 不支持 */ }
   }, [map, driver, displayOptions]);
 
   // ─── 样式 ───
   useEffect(() => {
     if (!map || !driver || mapStyle === undefined) return;
+    if (skipInitialMapStyleRef.current) { skipInitialMapStyleRef.current = false; return; }
     driver.setMapStyle(map, mapStyle);
   }, [map, driver, mapStyle]);
 
   useEffect(() => {
     if (!map || !driver || mapStyleV2 === undefined) return;
+    if (skipInitialMapStyleV2Ref.current) { skipInitialMapStyleV2Ref.current = false; return; }
     driver.setMapStyleV2(map, mapStyleV2);
   }, [map, driver, mapStyleV2]);
 
